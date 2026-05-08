@@ -1,5 +1,5 @@
 import type { FeeService } from "./service";
-import { legacySuccess } from "../../shared/runtime/response-builder";
+import { legacyFailure, legacySuccess } from "../../shared/runtime/response-builder";
 
 export function createLegacyFeeAdapter(service: FeeService) {
 	return {
@@ -38,6 +38,10 @@ export function createLegacyFeeAdapter(service: FeeService) {
 			return legacySuccess(result, "查询欠费成功");
 		},
 		async nativeQrcodePayment(input: Record<string, unknown>) {
+			if (!isLegacyMutationAllowed()) {
+				return legacyMutationGuarded("payment.nativeQrcodePayment");
+			}
+
 			const result = await service.createNativeQrcodePayment({
 				roomId: toString(input.roomId) || "ROOM_001",
 				communityId: toString(input.communityId) || "COMM_001",
@@ -56,6 +60,10 @@ export function createLegacyFeeAdapter(service: FeeService) {
 			return legacySuccess(result, "查询欠费催缴成功");
 		},
 		async writeOweFeeCallable(input: Record<string, unknown>) {
+			if (!isLegacyMutationAllowed()) {
+				return legacyMutationGuarded("oweFeeCallable.writeOweFeeCallable");
+			}
+
 			const result = await service.writeOweFeeCallable({
 				communityId: toString(input.communityId) || "COMM_001",
 				feeIds: toStringArray(input.feeIds),
@@ -65,6 +73,10 @@ export function createLegacyFeeAdapter(service: FeeService) {
 			return legacySuccess(result, "登记欠费催缴成功");
 		},
 		async saveRoomCreateFee(input: Record<string, unknown>) {
+			if (!isLegacyMutationAllowed()) {
+				return legacyMutationGuarded("fee.saveRoomCreateFee");
+			}
+
 			return legacySuccess(await service.saveRoomCreateFee(input), "创建费用成功");
 		},
 		async listFeeConfigs(input: Record<string, unknown>) {
@@ -111,6 +123,18 @@ export function createLegacyFeeAdapter(service: FeeService) {
 			);
 		},
 	};
+}
+
+function isLegacyMutationAllowed(): boolean {
+	return process.env.PHASE7_ALLOW_LEGACY_MUTATIONS === "1";
+}
+
+function legacyMutationGuarded(action: string) {
+	return legacyFailure(
+		`Phase7 mutation guard blocked ${action}; set PHASE7_ALLOW_LEGACY_MUTATIONS=1 only for controlled rollback evidence runs.`,
+		409,
+		{ errorCode: "PHASE7_MUTATION_GUARDED" },
+	);
 }
 
 function toReportQuery(input: Record<string, unknown>) {

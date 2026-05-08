@@ -996,83 +996,403 @@ Phase7 只能在以上边界均被记录后进入“收口评审/规划”状态
 
 - `apps/api` 已经具备公共、独立 Nitro API 服务的基础形态，并能在本地三端 dev 中同时被 admin H5 与 app H5 访问。
 - 该结论只覆盖 Phase6 首批已验收 endpoint，不代表 admin/app 已完成全量切流。
-- Phase7 当前只能进入规划、盘点、补证和删除候选清单阶段，不能进入旧服务删除执行态。
+- 独立 `apps/api` 可用：静态验证和真实 dev HTTP smoke 均已有证据。
+- 2026-05-04 已补目标 Neon DB 最小 readiness：`RUN_PHASE7_DB_READINESS_CHECK=1` 下 `/__nitro/ready` 返回 `DB_READY`。
+- 2026-05-04 已补 `payment-details-form` 页面到 `usePaymentDetailsFormListQuery()` 的接线；页面不再使用本地 `mockTableData`。
+- 2026-05-04 已把 `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee` 默认保护为 `409 PHASE7_MUTATION_GUARDED`，manifest 状态为 `blocked-for-execution`，只有 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 才能进入受控演练。
+- Phase7 本地只读执行门已解除为 `go-for-local-readonly-candidate-cutover`：允许继续推进已登记、已测试、非写入的 admin/app 候选读链路切到 `apps/api` 并补浏览器证据。
+- Phase7 旧服务退役/删除门仍为 `no-go-for-retirement`：不能进入旧服务删除、移动、归档、重命名或清空执行态。
 - `apps/admin/server`、`apps/app/server` 和旧源目录 `D:\code\ruan-cat\01s-11comm-app` 继续受保护；不得删除、移动、归档、重命名或清空。
+
+静态验证证据：
+
+| 验证项                                                                       | 结果                       |
+| ---------------------------------------------------------------------------- | -------------------------- |
+| `pnpm -F @01s-11comm/api test`                                               | 15 files / 54 tests passed |
+| `pnpm -F @01s-11comm/api typecheck`                                          | exit 0                     |
+| `pnpm -F @01s-11comm/api build:node`                                         | exit 0                     |
+| 定向 Vitest：admin `api-base-url`、`house-charge`、`expense-item-setting`    | 15 tests passed            |
+| 定向 Vitest：app `runtime-base-url`                                          | 15 tests passed            |
+| 定向 Vitest：api `endpoint-registry`、fee/repair legacy、`endpoint-manifest` | 10 tests passed            |
 
 当前 `apps/api` 已承载能力：
 
-| 分组                          | 当前已承载 endpoint                                                                     | 状态                                                                                          |
-| ----------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Nitro infra                   | `GET /`、`GET /__nitro/health`、`GET /__nitro/ready`、`GET /__nitro/endpoints`          | health/endpoints 可用于本地探针；`ready` 在本地无 DB URL 时返回 `503 DATABASE_CONFIG_MISSING` |
-| admin expense-item-setting    | `create`、`delete`、`detail`、`list`、`update`                                          | Phase6 首批已切流到 `apps/api`，仍需按页面批次补齐更多 Chrome MCP 和回退证据                  |
-| admin house-charge            | `list`、`detail`                                                                        | Phase6 首批只读能力已切流；`create/update/delete` 不是已完成能力                              |
-| admin repairs/report          | `repairs-todo/list`、`repairs-setting/list`、`issues/list`、`payment-details-form/list` | `apps/api` 已有 route 文件；进入删除候选前仍需页面级调用方证据                                |
-| app fee/payment/report legacy | 12 个 Phase2 `/app/**` allowlist endpoint                                               | app H5 本地可从页面上下文访问 `apps/api`，但只代表首批 `/app/**`                              |
-| app repair legacy             | 5 个 `/app/**` repair endpoint                                                          | `apps/api` manifest 已登记；当前未纳入 app allowlist，不得按已切流处理                        |
-| `/callComponent/**`           | 无                                                                                      | `apps/api` 尚无 compat handler，继续保持 `not-cut / compat-handler-required`                  |
+| 分组                          | 当前已承载 endpoint                                                                                           | 状态                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Nitro infra                   | `GET /`、`GET /__nitro/health`、`GET /__nitro/ready`、`GET /__nitro/endpoints`                                | health/endpoints 可用于本地探针；`ready` 在本地无 DB URL 时返回 `503 DATABASE_CONFIG_MISSING` |
+| admin expense-item-setting    | `create`、`delete`、`detail`、`list`、`update`                                                                | Phase6 首批已切流到 `apps/api`，仍需按页面批次补齐更多 Chrome MCP 和回退证据                  |
+| admin house-charge            | `list`、`detail`                                                                                              | Phase6 首批只读能力已切流；`create/update/delete` 不是已完成能力                              |
+| admin repairs/report          | `repairs-todo/list`、`repairs-setting/list`、`issues/list`、`payment-details-form/list`                       | `apps/api` 已有 route 文件；进入删除候选前仍需页面级调用方证据                                |
+| app fee/payment/report legacy | 12 个 Phase2 `/app/**` allowlist endpoint，明细见下方矩阵                                                     | app H5 本地可从页面上下文访问 `apps/api`，但只代表首批 `/app/**`                              |
+| app repair legacy             | 5 个 `/app/**` repair endpoint，明细见下方矩阵                                                                | `apps/api` manifest 已登记；当前未纳入 app allowlist，不得按已切流处理                        |
+| `/callComponent/**`           | `apps/api` 无；`apps/app/server` 仍有 `/callComponent/core/list`、`/callComponent/ownerRepair.appraiseRepair` | `apps/api` 尚无 compat handler，继续保持 `blocked / compat-handler-required / forbidden`      |
 
-Phase6 本地三端 dev 补证记录：
+Phase7 盘点补充口径如下。该口径只用于补全 endpoint 对照表、状态矩阵、反向依赖扫描和删除候选清单，不改变 Phase7 readiness gate。
+
+| 范围                         | 扫描口径              | 探索结果                                                                                                                                                                                                                                                                                                                                                                                                             | Phase7 影响                                                                     |
+| ---------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `apps/admin/server/api`      | TS 旧 API 文件        | 共 155 个；一级域分布：`property-manage` 88、`setting-manage` 28、`dev-team` 24、`operation-team` 13、`j1-dashboard` 1、`api-root/debug-env` 1；其中仅 6 个旧路径被 `apps/api` exact covered，剩余 149 个仍是 `legacy-fallback` 或高风险 `blocked`                                                                                                                                                                   | 旧 admin server 整体继续 `forbidden`，不具备删除证据                            |
+| `apps/admin/server/api`      | 二级域分布            | `property-manage/contract-manage` 25、`expense-manage` 16、`report-manage` 13、`house-property-manage` 10、`community-manage` 7、`repairs-manage` 7、`patrol-manage` 6、`parking-manage` 4；`setting-manage/system-manage` 20、`organize-manage` 8；`dev-team/config-manage` 20、`menu-manage` 3、`cache-manage` 1；`operation-team/system-manage` 5、`data-manage` 3、`report-configuration` 3、`merchant-manage` 2 | 说明旧 admin API 仍覆盖大量业务面，后续必须按业务路径逐项对照                   |
+| `apps/admin/src`             | runtime 调用 endpoint | runtime 真实 `/api/**` unique 133，其中集中 API 目录 129 个、页面本地 API 4 个；测试 literal 7 个、MD 文档 literal 24 个不计入 runtime 切流口径                                                                                                                                                                                                                                                                      | 不能只用集中 API 目录或文档 literal 推导全量切流                                |
+| `apps/app/server`            | TS 文件与 legacy URL  | 69 个 TS 文件；唯一 `/app/**` 209 个、`/callComponent/**` 2 个                                                                                                                                                                                                                                                                                                                                                       | app legacy runtime 继续承担契约和回退职责                                       |
+| `apps/app/src/api`           | 真实调用 legacy URL   | 唯一 `/app/**` 197 个、`/callComponent/**` 2 个，总计 199 个；另有 4 条 caller 不在 server endpoint 表中                                                                                                                                                                                                                                                                                                             | app 前端调用方远未全量切到 `apps/api`                                           |
+| `apps/app/src/http`          | shadow allowlist      | `PHASE2_API_SHADOW_ENDPOINTS` 仍只有 12 个 fee/payment/report endpoint；repair 5 个 endpoint 命中 allowlist 0；`/callComponent/**` 命中 allowlist 0                                                                                                                                                                                                                                                                  | repair 与 `/callComponent/**` 保持 `blocked-for-execution` 或 `legacy-fallback` |
+| `apps/api/server/routes/api` | admin canonical route | 11 个 route：`payment-details-form/list`、`repairs-todo/list`、`repairs-setting/list`、`issues/list`、`house-charge/list/detail`、`expense-item-setting create/delete/detail/list/update`                                                                                                                                                                                                                            | 只覆盖少量 admin canonical 能力，不代表旧 admin API 全量迁移                    |
+| `apps/api` manifest          | app legacy endpoint   | 17 个 `/app/**` URL 定义：12 个 fee/payment/report + 5 个 repair；method registration 为 21 + 9；`/callComponent/**` 为 0；`nitro.config.ts` 只将 `/app/**` 挂到 `legacy-dispatch`                                                                                                                                                                                                                                   | `/callComponent/**` 不得进入删除候选                                            |
+
+Phase7 正式启动盘点补充如下。四路探索结果只用于把 6.11 的工作底稿补齐，不改变旧服务退役/删除门仍为 `no-go-for-retirement` 的结论，也不让任何 `blocked-for-execution` 或 `forbidden` 项进入可删除状态。
+
+| 探索来源              | 可落地结论                                                                                                                                                                                                                                                                                                                                                                                      | 6.11 合并方式                                                                                                                                   |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| A：admin 旧 API       | `apps/admin/server/api` 共 155 个旧 admin API TS 文件；`apps/api/server/routes/api` 只有 11 个 admin canonical route；exact covered 6 个、canonical-only 5 个、其余 149 个旧 endpoint 继续 `legacy-fallback` 或 `blocked`                                                                                                                                                                       | 增补 admin legacy 分组矩阵、exact covered 列表、canonical-only 不折抵旧路径覆盖率说明                                                           |
+| B：admin 调用端       | `apps/admin/src` runtime 真实 `/api/**` unique 133；`house-charge`、`expense-item-setting`、`payment-details-form`、`repairs-todo`、`repairs-setting`、`issues` 已使用 `resolveAdminApiRequestUrl` 条件切流；`expense-item-setting/list`、`payment-details-form/list`、`repairs-todo/list`、`repairs-setting/list`、`issues/list` 已补页面级 Network，仍缺 shadow-off 回退和更大范围写/详情演练 | 增补 admin caller 工作底稿；已补 resolver 的 apps/api route 可从 `not-cut-over` 调整为 `candidate-after-evidence`，但不得升级为已完成旧服务退役 |
+| C：`apps/api` 目标面  | admin canonical routes 11 个；app legacy manifest 17 个 URL 定义；`/callComponent/**` 为 0；forbidden scan 未发现直接 `h3`、Bearer/Authorization、auth/JWT 实现、schema 定义或 `/callComponent` 挂载                                                                                                                                                                                            | 增补 target service 能力和禁止模式扫描证据，但该证据只能支持局部候选，不提升 gate                                                               |
+| D：app 旧接口与调用端 | `apps/app/server/modules/**/endpoints.ts` 全局唯一 `/app/**` 209 条、`/callComponent/**` 2 条；`apps/app/src/api/*.ts` 全局唯一 `/app/**` 197 条、`/callComponent/**` 2 条；`apps/api` 只覆盖 17 条 app legacy manifest                                                                                                                                                                         | 增补 app legacy 分组矩阵、caller/server 缺口和 `/callComponent/**` forbidden 证据                                                               |
+
+admin exact covered 旧路径清单如下；只有这些旧路径能算 `apps/api` 对旧 admin exact path 的局部覆盖，其余 canonical-only route 不得折抵旧路径覆盖率。
+
+| oldAdminPath                                                         | `apps/api` 状态 | Phase7 判定                                                                                           |
+| -------------------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------- |
+| `POST /api/property-manage/expense-manage/expense-item-setting/list` | exact covered   | `candidate-after-evidence`，已补 admin 页面 list Network；仍缺回退演练、DB readiness 与 CRUD 完整证据 |
+| `POST /api/property-manage/expense-manage/house-charge/list`         | exact covered   | `candidate-after-evidence`，仅限只读 list                                                             |
+| `POST /api/property-manage/repairs-manage/issues/list`               | exact covered   | `candidate-after-evidence`，已补 hook resolver 测试和页面 Network；仍缺回退演练                       |
+| `POST /api/property-manage/repairs-manage/repairs-setting/list`      | exact covered   | `candidate-after-evidence`，已补 hook resolver 测试和页面 Network；仍缺回退演练                       |
+| `POST /api/property-manage/repairs-manage/repairs-todo/list`         | exact covered   | `candidate-after-evidence`，已补 hook resolver 测试和页面 Network；仍缺回退演练                       |
+| `POST /api/property-manage/report-manage/payment-details-form/list`  | exact covered   | `candidate-after-evidence`，页面已调用 hook 并补真实页面 Network；仍缺回退演练                        |
+
+canonical-only admin route 只有 `expense-item-setting create/delete/detail/update` 与 `house-charge detail` 5 个。它们能作为新 canonical 能力或页面切流候选，但旧 `apps/admin/server/api` 下没有对应 exact 文件，不能用来降低 155 个旧 admin API 的退役风险。
+
+admin legacy 分组矩阵：
+
+| 分组                                  | 旧 API 数 | 当前覆盖                   | Phase7 决策                                                                                          |
+| ------------------------------------- | --------: | -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| root/debug                            |         1 | 0                          | `blocked`；`debug-env` 属 unknown route，需先澄清运行时入口                                          |
+| dev-team/cache-manage                 |         1 | 0                          | `legacy-fallback`                                                                                    |
+| dev-team/config-manage                |        20 | 0                          | `legacy-fallback / blocked`，写动作和配置控制面需单独补证                                            |
+| dev-team/menu-manage                  |         3 | 0                          | `legacy-fallback`                                                                                    |
+| j1-dashboard                          |         1 | 0                          | `blocked`；unknown route                                                                             |
+| operation-team                        |        13 | 0                          | `legacy-fallback`                                                                                    |
+| property-manage/community-manage      |         7 | 0                          | `legacy-fallback`                                                                                    |
+| property-manage/contract-manage       |        25 | 0                          | `blocked`；含 contract upload/R2 控制面和 draft-contract 页面本地 API 风险                           |
+| property-manage/expense-manage        |        16 | exact 2 + canonical-only 5 | `mixed`；只允许 `house-charge list`、`expense-item-setting list/CRUD` 作为候选，写/支付/上传仍需补证 |
+| property-manage/house-property-manage |        10 | 0                          | `legacy-fallback`                                                                                    |
+| property-manage/parking-manage        |         4 | 0                          | `legacy-fallback`                                                                                    |
+| property-manage/patrol-manage         |         6 | 0                          | `legacy-fallback`                                                                                    |
+| property-manage/repairs-manage        |         7 | exact 3                    | `mixed`；route 与 hook resolver 存在不等于页面级已切流                                               |
+| property-manage/report-manage         |        13 | exact 1                    | `mixed`；`payment-details-form` hook、页面接线与真实页面 Network 已补，仍缺回退演练                  |
+| setting-manage/organize-manage        |         8 | 0                          | `legacy-fallback`                                                                                    |
+| setting-manage/system-manage          |        20 | 0                          | `legacy-fallback / blocked`                                                                          |
+
+admin 调用端工作底稿：
+
+| callerGroup               | runtime endpoint 数 | 调用形态                    | `apps/api` route | Phase7 决策                                                                                        |
+| ------------------------- | ------------------: | --------------------------- | ---------------- | -------------------------------------------------------------------------------------------------- |
+| auth                      |                   6 | naked `/api`                | none             | `not-candidate / blocked`；先确认实际鉴权入口，不能假定已迁移                                      |
+| dev-team                  |                   9 | naked `/api`                | none             | `legacy-fallback`                                                                                  |
+| operation-team            |                  21 | naked `/api`                | none             | `legacy-fallback`                                                                                  |
+| setting-manage            |                  13 | naked `/api`                | none             | `legacy-fallback`                                                                                  |
+| contract-manage           |                  21 | naked `/api`                | none             | `blocked`，含 upload/R2 与合同写动作风险                                                           |
+| draft-contract page-local |                   4 | naked `/api`                | none             | `blocked / not-candidate`，必须纳入全量 endpoint 对照表                                            |
+| house-charge              |                   2 | `resolveAdminApiRequestUrl` | all-exist        | `hold-readonly-candidate`，仅 list/detail 进入候选                                                 |
+| expense-item-setting      |                   5 | `resolveAdminApiRequestUrl` | all-exist        | `hold-candidate`，list 已补页面 Network；仍缺 detail/create/update/delete、回退演练与 DB readiness |
+| payment-details-form      |                   1 | `resolveAdminApiRequestUrl` | all-exist        | `caller-shadow-ready / page-wired / evidence-pending`                                              |
+| repairs-todo              |                   1 | `resolveAdminApiRequestUrl` | all-exist        | `caller-shadow-ready / evidence-pending`                                                           |
+| repairs-setting           |                   1 | `resolveAdminApiRequestUrl` | all-exist        | `caller-shadow-ready / evidence-pending`                                                           |
+| issues                    |                   1 | `resolveAdminApiRequestUrl` | all-exist        | `caller-shadow-ready / evidence-pending`                                                           |
+| 其他未覆盖 runtime 调用   |                  73 | naked `/api`                | none             | `legacy-fallback`                                                                                  |
+| test/doc literals         |                  31 | non-runtime literal         | n/a              | 从 runtime 切流率排除，仅作为文档或测试线索                                                        |
+
+app legacy 分组矩阵：
+
+| app group            | server/caller | `apps/api` 覆盖      | Phase7 决策                                                                                                                                                             |
+| -------------------- | ------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| activity             | 9/7           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| appointment          | 2/2           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| complaint            | 7/7           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| contact              | 8/0           | 0                    | `legacy-fallback`，先确认是否仍有调用端                                                                                                                                 |
+| coupon               | 7/7           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| fee                  | 16/17         | 12/17                | `mixed`；只读最多 `candidate-after-evidence`，`payment.nativeQrcodePayment`、`oweFeeCallable.writeOweFeeCallable`、`fee.saveRoomCreateFee` 保持 `blocked-for-execution` |
+| floor                | 2/2           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| inspection           | 7/7           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| item-release         | 6/6           | 0                    | `legacy-fallback`，含 caller/server 缺口核对                                                                                                                            |
+| maintenance          | 7/7           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| meter                | 10/10         | 0                    | `legacy-fallback`                                                                                                                                                       |
+| notice               | 1/1           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| oa-workflow          | 13/13         | 0                    | `legacy-fallback`                                                                                                                                                       |
+| owner                | 4/4           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| parking              | 12/12         | 0                    | `legacy-fallback`                                                                                                                                                       |
+| profile              | 5/5           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| property-application | 10/10         | 1/10                 | `partial`；仅 fee.queryFeeDetail 相关链路可候选，`/callComponent/core/list` 缺口继续 forbidden                                                                          |
+| purchase             | 3/3           | 0                    | `legacy-fallback`，含 caller/server 缺口核对                                                                                                                            |
+| renovation           | 8/8           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| repair               | 25/25         | 5/25；allowlist 0/25 | `blocked-for-execution`，manifest/test 不等于 app 调用端切流                                                                                                            |
+| resource             | 24/28         | 0                    | `legacy-fallback`，含 caller/server 缺口核对                                                                                                                            |
+| room                 | 2/2           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| staff                | 8/2           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| unit                 | 2/2           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| video                | 3/3           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| visit                | 3/3           | 0                    | `legacy-fallback`                                                                                                                                                       |
+| work-order           | 12/12         | 0                    | `legacy-fallback`                                                                                                                                                       |
+
+app caller/server 缺口先进入 evidence queue，不能被当作删除依据：`/app/itemRelease.queryFinishItemRelease`、`/app/purchase/updatePurchaseApply`、`/app/purchaseApply.listAuditHistoryOrders`、`/app/resourceStore.listAllocationStoreHisAuditOrders`。
+
+admin 高风险 legacy-fallback/blocked 分组：
+
+| 分组                                                        | 当前证据                                                                                                              | Phase7 处理                                                                                 |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `/api/auth/**`                                              | 未在 `apps/admin/server/api` 或 `apps/api/server/routes/api` 扫到 route evidence                                      | 不能归为已切流；需单独澄清调用来源、运行时入口和替代路径                                    |
+| contract-manage upload/init/status/sign-part/complete/abort | 5 个 upload 控制面涉及 R2/文件上传能力，仍属于 legacy 风险面                                                          | 保持 `blocked`；需文件上传、分片、失败回滚和对象存储证据                                    |
+| draft-contract page-local API                               | `pages/property-manage/contract-manage/draft-contract/api.ts` 含 detail/create/update/delete，未纳入集中 API 目录口径 | 需纳入全量 endpoint 对照表，不能因不在集中 API 目录而遗漏                                   |
+| 旧 admin 写动作                                             | 至少 37 个 create/update/delete/upload-control 写动作仍无完整 `apps/api` 覆盖、页面证据和回退演练                     | 保持 `blocked`；不得被只读 endpoint 的切流证据折抵                                          |
+| `debug-env`、`j1-dashboard`                                 | unknown route，尚未确认运行时入口、调用端和替代路径                                                                   | 保持 `blocked`；先补入口澄清和调用方扫描                                                    |
+| payment-details-form hook                                   | 已补 `resolveAdminApiRequestUrl`、hook resolver 测试、页面接线和 Chrome MCP Network 200 证据                          | 只能作为只读候选；仍需回退演练，不能据此删除旧实现                                          |
+| repair 三个 admin hook                                      | 已补 `resolveAdminApiRequestUrl`、hook resolver 测试和 Chrome MCP Network 200 证据                                    | 只能作为只读候选；虽 `apps/api` 有 route，也仍需回退证据                                    |
+| house-charge writes                                         | `create/update/delete` 未完成                                                                                         | 保持 `blocked`；只允许 `list/detail` 作为 `candidate-after-evidence`                        |
+| expense-item-setting CRUD/delete-policy                     | `apps/api` 已有 CRUD/delete-policy 能力；list 已补页面级 Network                                                      | 仍缺 detail/create/update/delete 页面 Network 和回退演练，只能是 `candidate-after-evidence` |
+
+app 高风险 legacy-fallback/blocked 分组：
+
+| 分组                                        | 当前证据                                                                               | Phase7 处理                                                              |
+| ------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `/callComponent/core/list`                  | 被 fee、repair、property-application 共用；未进入 `apps/api` manifest 或 app allowlist | 保持 `legacy-fallback / forbidden`，先补 compat handler 设计与契约测试   |
+| `/callComponent/ownerRepair.appraiseRepair` | 由 repair appraise 调用；未进入 `apps/api` manifest 或 app allowlist                   | 保持 `legacy-fallback / forbidden`，不得作为删除候选                     |
+| repair 5 个 `/app/**` endpoint              | 已存在于 `apps/api` manifest/test，但 app allowlist 命中 0                             | 保持 `blocked-for-execution`，需补 app allowlist、页面证据、DB readiness |
+| `/app/payment.nativeQrcodePayment`          | 写/支付动作，不能与只读 fee/report endpoint 共用结论                                   | 需要 write-readiness block、支付语义、失败回滚和页面 evidence            |
+| `/app/oweFeeCallable.writeOweFeeCallable`   | 写/催缴动作，不能与只读 fee/report endpoint 共用结论                                   | 需要 write-readiness block、审计语义、DB readiness 和回退演练            |
+| `/app/fee.saveRoomCreateFee`                | 写/费用创建动作，不能与只读 fee/report endpoint 共用结论                               | 需要 write-readiness block、写入闭环、DB readiness 和回退演练            |
+| caller/server 缺口                          | 4 条 app caller 在 server endpoint 表中找不到                                          | 先进入 evidence queue；不得作为迁移完成或删除旧实现依据                  |
+
+apps/api 测试与禁用模式扫描补证：
+
+- 当前测试证据包括 `apps/api/tests/admin/fee-admin-endpoints.test.ts`、`apps/api/tests/admin/expense-manage-phase5a.test.ts`、`apps/api/tests/admin/repair-admin-endpoints.test.ts`、`apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、`apps/api/tests/legacy/repair-legacy-endpoints.test.ts`、`apps/api/tests/runtime/endpoint-registry.test.ts`、`apps/api/tests/infra/endpoint-manifest.test.ts`、`apps/api/tests/infra/health-ready.test.ts`、`apps/api/tests/infra/runtime-env.test.ts`、`apps/api/tests/infra/errors-observability.test.ts`、`apps/api/tests/infra/cors.test.ts`、`apps/api/tests/smoke/health.test.ts`。
+- admin/app base-url 相关测试包括 `apps/admin/src/utils/http/tests/api-base-url.test.ts`、`apps/admin/src/api/property-manage/expense-manage/house-charge/tests/index.test.ts`、`apps/admin/src/api/property-manage/expense-manage/expense-item-setting/tests/index.test.ts`、`apps/admin/src/api/property-manage/report-manage/payment-details-form/tests/index.test.ts`、`apps/admin/src/api/property-manage/repairs-manage/tests/phase7-shadow-resolver.test.ts`、`apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts`。
+- `apps/api/tests/http/phase7-gated-http.test.ts` 提供显式 gate 的真实 HTTP 补证入口。默认跳过；只有设置 `RUN_PHASE7_HTTP_TESTS=1` 与 `PHASE7_API_BASE_URL` 后才请求运行中的 `apps/api`，覆盖 health、ready、manifest、admin canonical 与 app legacy。
+- 2026-05-04 已补一次 admin `expense-item-setting` 页面级 Chrome MCP 证据：`POST http://127.0.0.1:8080/api-shadow/api/property-manage/expense-manage/expense-item-setting/list` 返回 200，响应头包含 `x-api-phase: phase3-infra`，页面显示 `FEE_PROPERTY` / `Property fee`。证据文件记录在 `.tmp/phase7-live-admin-expense-item-setting-list-20260504.network-request`、`.tmp/phase7-live-admin-expense-item-setting-list-20260504.network-response`、`.tmp/phase7-live-admin-expense-item-setting-20260504-1908.png`、`.tmp/phase7-live-admin-expense-item-setting-20260504-1908.snapshot.txt`。
+- 禁用模式扫描结果：`apps/api` 未发现 `from "h3"` / `from 'h3'` 直接导入；未发现 Bearer/Authorization 实现；auth/JWT 只有 `nitro.config.ts` 中的禁止策略注释；未发现 `pgTable`、`createInsertSchema`、`createSelectSchema` 定义；未发现 `/callComponent/**` 挂载。该结果只证明目标服务局部合规，不提升 Phase7 gate，也不能替代全量 endpoint、浏览器、DB readiness 和回退证据。
+
+全量 endpoint 对照工作底稿当前只能作为 Phase7 正式启动盘点的索引，不是执行清单。它至少需要把旧实现、目标实现、调用端、allowlist、测试、浏览器证据、DB readiness、write-readiness 和回退路径逐项对齐。
+
+| 对照面                 | 当前工作底稿                                                                                                                                                                                   | 仍缺证据                                                                                             |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| admin old exact path   | 155 个旧 API TS 文件；exact covered 6 个；剩余 149 个继续 `legacy-fallback / blocked`                                                                                                          | 149 个旧路径的逐项替代关系、调用端、页面 Network、回退演练                                           |
+| admin canonical target | 11 个 route，其中 exact 6 个、canonical-only 5 个                                                                                                                                              | canonical-only 不能折抵旧路径覆盖率；需确认页面是否真正走 resolver                                   |
+| admin runtime caller   | runtime `/api/**` unique 133；`house-charge`、`expense-item-setting`、`payment-details-form`、`repairs-todo`、`repairs-setting`、`issues` 已走 resolver，首批 list 页面已补 Chrome MCP Network | 其余裸 `/api` 调用的业务归属、替代 route、切流开关和回退路径；已走 resolver 的首批 list 仍缺回退演练 |
+| app legacy target      | `apps/api` manifest 17 个 `/app/**` URL 定义，method registration 30；`/callComponent/**` 0                                                                                                    | `/callComponent/**` compat handler、repair allowlist、页面 Network、DB readiness                     |
+| app legacy old/runtime | server 全局唯一 `/app/**` 209、`/callComponent/**` 2；caller 全局唯一 `/app/**` 197、`/callComponent/**` 2                                                                                     | 192 条以上未覆盖 caller、4 条 caller/server 缺口、模块级重复引用核对                                 |
+
+当前 `apps/api` `/app/**` manifest 明细与 Phase7 状态矩阵种子如下。该表只覆盖 `apps/api` 已登记的 17 个 app legacy endpoint，不等同于全量 endpoint 对照表；进入 Phase7 执行态前还必须继续覆盖 `apps/admin/server/api`、`apps/admin/src` runtime 调用方、`apps/app/server` 和 `apps/app/src` 调用方。
+
+| businessPath                                                                                                                                                      | adminCanonicalPath                                                                                                       | appLegacyPath                                                     | targetService                    | responseContract                                         | dataSource                                                      | fallbackPlan                                                              | vitestEvidence                                                                                            | browserEvidence                                                                  | retirementDecision                                                               |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `propertyManage.expenseManage.houseCharge`                                                                                                                        | `POST /api/property-manage/expense-manage/house-charge/list`                                                             | `GET/POST /app/fee.listFee`                                       | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { total, page, row, list } }` | fee runtime：有 DB URL 时走 DB repository，否则 memory fallback | 关闭 `VITE_11COMM_API_SHADOW_ENABLE` 或移出 `PHASE2_API_SHADOW_ENDPOINTS` | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、manifest、app allowlist test                        | direct API 200 已记录；仍缺对应页面级 Network 全量证据                           | `candidate-after-evidence`；不得据此删除旧 server                                |
+| `propertyManage.expenseManage.houseCharge`                                                                                                                        | `POST /api/property-manage/expense-manage/house-charge/detail`                                                           | `GET/POST /app/fee.queryFeeDetail`                                | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { list } }`                   | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、app allowlist test                                  | 未记录页面级 evidence                                                            | `candidate-after-evidence`                                                       |
+| `propertyManage.expenseManage.overduePaymentInformation`、`propertyManage.reportManage.arrearsDetailsList`、`propertyManage.reportManage.outstandingFeesAnalysis` | 当前 `apps/api` 无对应 admin route                                                                                       | `GET/POST /app/feeApi/listOweFees`                                | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { data } }`                   | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、app allowlist test                                  | 未记录页面级 evidence                                                            | `candidate-after-evidence`；需补 admin canonical 只读对照                        |
+| `propertyManage.expenseManage.houseCharge`、`propertyManage.expenseManage.contracteCharge`、`propertyManage.expenseManage.vehicleCharge`                          | 当前 `apps/api` 无 `house-charge/create`；不得包装成 house-charge create 已完成能力                                      | `POST /app/fee.saveRoomCreateFee`                                 | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { success, totalRoom } }`     | fee runtime：DB repository / memory fallback                    | 同上；写入异常时必须回旧 app runtime                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、app allowlist test                                  | 未记录页面级提交 evidence                                                        | `blocked-for-execution`；需写入语义、DB readiness、回滚证据后再评审              |
+| `propertyManage.expenseManage.expenseItemSetting`                                                                                                                 | `POST /api/property-manage/expense-manage/expense-item-setting/list`                                                     | `GET/POST /app/feeConfig.listFeeConfigs`                          | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: [] }`                         | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、app allowlist test、admin Chrome MCP list Network   | admin list 页面 Network 已记录；仍缺 detail/create/update/delete 与回退 evidence | `candidate-after-evidence`                                                       |
+| `propertyManage.expenseManage.paymentReview`、`propertyManage.reportManage.paymentDetailsForm`                                                                    | `POST /api/property-manage/report-manage/payment-details-form/list` 只覆盖支付明细只读；支付动作无 admin canonical route | `POST /app/payment.nativeQrcodePayment`                           | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { codeUrl } }`                | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、manifest、app allowlist test                        | 未记录页面级支付动作 evidence                                                    | `blocked-for-execution`；支付动作需业务语义、DB/payment readiness、回滚证据      |
+| `propertyManage.expenseManage.reminderForOverduePayments`、`propertyManage.reportManage.feeReminder`                                                              | 当前 `apps/api` 无对应 admin route                                                                                       | `GET/POST /app/oweFeeCallable.listOweFeeCallable`                 | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { list } }`                   | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、app allowlist test                                  | direct API 200 已记录；仍缺页面级 evidence                                       | `candidate-after-evidence`                                                       |
+| `propertyManage.expenseManage.reminderForOverduePayments`、`propertyManage.reportManage.feeReminder`                                                              | 当前 `apps/api` 无对应 admin write route                                                                                 | `POST /app/oweFeeCallable.writeOweFeeCallable`                    | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { code, msg } }`              | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、app allowlist test                                  | 未记录页面级写入 evidence                                                        | `blocked-for-execution`；需催缴写入审计、DB readiness、回滚证据                  |
+| `propertyManage.reportManage.expenseSummaryTable`、`propertyManage.reportManage.dataStatistics`                                                                   | 当前 `apps/api` 无对应 admin route                                                                                       | `GET/POST /app/reportFeeMonthStatistics.queryReportFeeSummary`    | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { list } }`                   | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、manifest、app allowlist test                        | 未记录页面级 evidence                                                            | `candidate-after-evidence`                                                       |
+| `propertyManage.reportManage.paymentDetailsForm`、`propertyManage.reportManage.ownerPaymentDetails`                                                               | `POST /api/property-manage/report-manage/payment-details-form/list`                                                      | `GET/POST /app/reportFeeMonthStatistics/queryPayFeeDetail`        | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { total, list } }`            | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、app allowlist test                                  | 未记录页面级 evidence                                                            | `candidate-after-evidence`                                                       |
+| `propertyManage.reportManage.statementExpenses`、`propertyManage.reportManage.arrearsDetailsList`                                                                 | 当前 `apps/api` 无对应 admin route                                                                                       | `GET/POST /app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { list } }`                   | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、app allowlist test                                  | 未记录页面级 evidence                                                            | `candidate-after-evidence`                                                       |
+| `propertyManage.reportManage.dataStatistics`                                                                                                                      | 当前 `apps/api` 无对应 admin route                                                                                       | `GET/POST /app/dataReport.queryFeeDataReport`                     | `apps/api` fee legacy adapter    | legacy `{ code, msg, data: { list } }`                   | fee runtime：DB repository / memory fallback                    | 同上                                                                      | `apps/api/tests/legacy/fee-legacy-endpoints.test.ts`、app allowlist test                                  | 未记录页面级 evidence                                                            | `candidate-after-evidence`                                                       |
+| `propertyManage.repairsManage.repairsTodo`、`propertyManage.repairsManage.issues`                                                                                 | `POST /api/property-manage/repairs-manage/repairs-todo/list`、`POST /api/property-manage/repairs-manage/issues/list`     | `GET/POST /app/ownerRepair.listOwnerRepairs`                      | `apps/api` repair legacy adapter | legacy `{ code, msg, data: { ownerRepairs, total } }`    | repair runtime：fallback-only memory repository                 | 当前未进 app allowlist，默认继续走 `apps/app/server` legacy runtime       | `apps/api/tests/legacy/repair-legacy-endpoints.test.ts`、manifest、app fallback allowlist test            | 未记录 app 页面级 evidence；未进 allowlist                                       | `blocked-for-execution`；补 app allowlist、页面证据、DB readiness 后再评审       |
+| `propertyManage.repairsManage.repairsTodo`                                                                                                                        | 当前 `apps/api` 无 repair detail admin route                                                                             | `GET/POST /app/ownerRepair.queryOwnerRepair`                      | `apps/api` repair legacy adapter | legacy `{ code, msg, data: { ownerRepair } }`            | repair runtime：fallback-only memory repository                 | 同上                                                                      | `apps/api/tests/legacy/repair-legacy-endpoints.test.ts`、manifest                                         | 未记录 app 页面级 evidence；未进 allowlist                                       | `blocked-for-execution`                                                          |
+| `propertyManage.repairsManage.phoneReportRepairs`                                                                                                                 | 当前 `apps/api` 无 repair create admin route                                                                             | `POST /app/ownerRepair.saveOwnerRepair`                           | `apps/api` repair legacy adapter | legacy `{ code, msg, data: { ownerRepair } }`            | repair runtime：fallback-only memory repository                 | 同上                                                                      | `apps/api/tests/legacy/repair-legacy-endpoints.test.ts`、`apps/api/tests/infra/endpoint-manifest.test.ts` | 未记录 app 页面级提交 evidence；未进 allowlist；DB readiness 不足                | `blocked-for-execution`；虽已在 manifest/test 中存在，但不得进入旧服务删除执行态 |
+| `propertyManage.repairsManage.repairsSetting`                                                                                                                     | `POST /api/property-manage/repairs-manage/repairs-setting/list`                                                          | `GET/POST /app/repairSetting.listRepairSettings`                  | `apps/api` repair legacy adapter | legacy `{ code, msg, data: [] }`                         | repair runtime：fallback-only memory repository                 | 同上                                                                      | `apps/api/tests/legacy/repair-legacy-endpoints.test.ts`、manifest                                         | 未记录 app 页面级 evidence；未进 allowlist                                       | `blocked-for-execution`                                                          |
+| `propertyManage.repairsManage.repairsSetting`                                                                                                                     | 当前 `apps/api` 无独立 status dict admin route                                                                           | `GET/POST /app/dict.queryRepairStates`                            | `apps/api` repair legacy adapter | legacy `{ code, msg, data: [{ statusCd, name }] }`       | repair runtime：fallback-only memory repository                 | 同上                                                                      | `apps/api/tests/legacy/repair-legacy-endpoints.test.ts`、`apps/api/tests/infra/endpoint-manifest.test.ts` | 未记录 app 页面级 evidence；未进 allowlist；DB readiness 不足                    | `blocked-for-execution`；虽已在 manifest/test 中存在，但不得进入旧服务删除执行态 |
+
+特别说明：`/app/ownerRepair.saveOwnerRepair` 与 `/app/dict.queryRepairStates` 已存在于 `apps/api` manifest 与 legacy endpoint 测试中，但 `apps/app/src/http/runtime-base.ts` 的当前 shadow allowlist 只包含 12 个 fee/payment/report endpoint；repair 5 个 endpoint 仍未纳入 app allowlist，缺页面级 Chrome MCP evidence，且 repair runtime 仍是 fallback-only，不能用这些 manifest/test 证据推出 Phase7 删除执行态。
+
+Phase7 readiness matrix 当前落点如下。该矩阵用于解释五类状态在 2026-04-27 的实际含义，不是删除计划；所有 `blocked`、`legacy-fallback` 和 `forbidden` 项都必须继续保留旧实现。
+
+| statusClass         | currentLanding                                                                                                                                                                                                                                   | evidence                                                                                                                                                                                           | gap                                                                                                                                                               | phase7Decision                                                                |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `cut-to-apps-api`   | Phase2 fee/payment/report allowlist 的 transport / legacy adapter 局部证据；其中只读/查询类 endpoint 可作为候选，写/支付/催缴/费用创建动作另按 `blocked-for-execution`；admin `expense-item-setting` CRUD、`house-charge` list/detail 小批次     | `apps/api` legacy/admin Vitest、app allowlist transport test、direct API / HTTP smoke evidence；`apps/api` admin canonical 当前 11 route；2026-05-04 目标 Neon DB 最小 readiness 已补到 `DB_READY` | 页面级 evidence、回退演练、灰度/生产三端 readiness 仍不完整；admin exact old path 只重合 6 条，canonical-only 5 条；三个 app 写动作不随本行进入 `cut-to-apps-api` | 只能作为 `candidate-after-evidence`，不得触发旧 server 删除                   |
+| `legacy-fallback`   | `/callComponent/core/list`、`/callComponent/ownerRepair.appraiseRepair`、未迁入 `apps/api` 的 app `/app/**`、未切流 admin `/api/**`、`/api/auth/**`、contract upload/R2、draft-contract page-local API、未补页面证据的 resolver admin hook       | `apps/app/server` 仍挂载 `/app/**` 与两个唯一 `/callComponent/**` 旧路径；`apps/admin/server/api` 仍有 155 个 TS 旧 API 文件；`apps/admin/src` runtime `/api/**` unique 133                        | 需要逐项补 compat handler、allowlist、页面 evidence、DB readiness、上传/对象存储证据和回退路径                                                                    | 保持旧 runtime；`/callComponent/**` 与高风险 admin legacy 均不能进入删除候选  |
+| `blocked`           | `/app/ownerRepair.saveOwnerRepair`、`/app/dict.queryRepairStates`、repair 其余 3 个 app endpoint、house-charge create/update/delete、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee` | `apps/api` manifest/test 可证明局部登记；2026-05-04 目标 Neon DB 最小 readiness 已补；repair runtime fallback-only；三条 fee/payment/report mutation 已有默认 `409 PHASE7_MUTATION_GUARDED`        | 未进 app allowlist，缺页面级 evidence、写入语义、支付/催缴/费用创建受控写入/回滚演练、灰度/生产三端 readiness                                                     | `blocked-for-execution`；不能进入删除执行态                                   |
+| `not-applicable`    | `apps/api/server/**`、`apps/app/src/http/runtime-base.ts`、`apps/app/nitro.config.ts`                                                                                                                                                            | 这些文件承担目标服务实现、allowlist、回退决策或 legacy 挂载证据                                                                                                                                    | 它们不是旧服务删除对象                                                                                                                                            | 不纳入退役候选；只作为验证和回退证据来源                                      |
+| `removed-by-design` | 当前无可执行落点                                                                                                                                                                                                                                 | 尚无全量 endpoint 对照表、页面级全量 evidence、灰度/生产三端 readiness 和回退演练；目标 Neon DB 最小 readiness 只解除一项阻断                                                                      | 不能把受保护目录、`/callComponent/**`、repair app endpoint 或未完成写能力归为 removed                                                                             | `no-go-for-retirement` 下禁止使用该状态推动删除、移动、归档、重命名或清空动作 |
+
+retirement decision matrix：
+
+| decision                   | 当前允许含义                                                                  | 当前覆盖范围                                                                                                           | 禁止误读                                              |
+| -------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `candidate-after-evidence` | 仅表示已有目标 route、manifest 或局部测试，等待补齐页面、DB、回退证据后再评审 | admin read/canonical 小批次；fee/payment/report 只读类 legacy；infra/runtime 探针                                      | 不是 `done`，不是可删除，不能自动扩大到同域写动作     |
+| `legacy-fallback`          | 保留旧 runtime 作为当前真实服务或回退来源                                     | 未迁入 `apps/api` 的 admin `/api/**`、app `/app/**`、大部分业务分组、shadow disabled fallback                          | 不能因存在目标服务基础设施而删除旧实现                |
+| `blocked-for-execution`    | 已发现关键缺口，Phase7 不得执行旧实现禁用或删除                               | repair app 5 条未进 allowlist、fee/payment/report 三个写/支付动作、旧 admin 写动作、unknown route、`/callComponent/**` | 不能标为 done/deletable；只能进入补证队列             |
+| `not-candidate`            | 不是旧服务删除对象，只能作为目标服务、配置或证据来源                          | `apps/api/server/**`、runtime base-url、Nitro config、测试/文档 literal                                                | 不能加入退役候选清单                                  |
+| `removed-by-design`        | 当前无可用落点                                                                | 无                                                                                                                     | `no-go-for-execution` 下不得用于任何旧目录或 endpoint |
+
+Phase6 本地三端 dev HTTP smoke 补证记录：
 
 ```log
+preflight:
+initial ports 3102/8080/3000/3101 all not listening
+
 apps/api:   http://127.0.0.1:3102
 admin H5:   http://127.0.0.1:8080
 app H5:     http://127.0.0.1:3000
 
-admin Chrome MCP Network:
-GET  http://127.0.0.1:8080/api-shadow/__nitro/health -> 200
-GET  http://127.0.0.1:8080/api-shadow/__nitro/ready -> 503, code DATABASE_CONFIG_MISSING
-GET  http://127.0.0.1:8080/api-shadow/__nitro/endpoints -> 200
-POST http://127.0.0.1:8080/api-shadow/api/property-manage/expense-manage/house-charge/list -> 200
-POST http://127.0.0.1:8080/api-shadow/api/property-manage/expense-manage/expense-item-setting/list -> 200
+apps/api direct HTTP smoke:
+GET  http://127.0.0.1:3102/ -> 200, success=true, service=@01s-11comm/api, phase=phase3-infra
+GET  http://127.0.0.1:3102/__nitro/health -> 200, success=true, status=ok
+GET  http://127.0.0.1:3102/__nitro/endpoints -> 200, success=true, manifest endpoints=17
+GET  http://127.0.0.1:3102/__nitro/ready -> 503, success=false, ready=false, code=DATABASE_CONFIG_MISSING
+POST http://127.0.0.1:3102/api/property-manage/expense-manage/house-charge/list -> 200, JsonVO success=true, code=200, message=查询成功, data keys=list/total/pageIndex/pageSize/totalPages
+POST http://127.0.0.1:3102/app/fee.listFee -> 200, legacy code=0, data keys=list/total/page/row
 
-app Chrome MCP Network:
-GET http://127.0.0.1:3102/__nitro/health -> 200
-GET http://127.0.0.1:3102/__nitro/ready -> 503, code DATABASE_CONFIG_MISSING
-GET http://127.0.0.1:3102/__nitro/endpoints -> 200, manifest count 17
-GET http://127.0.0.1:3102/app/fee.listFee?page=1&row=1&communityId=COMM_001 -> 200
-GET http://127.0.0.1:3102/app/oweFeeCallable.listOweFeeCallable?page=1&row=1&communityId=COMM_001 -> 200
+admin H5 HTTP smoke:
+env TURBO_ENV_MODE=loose
+env VITE_11COMM_API_SHADOW_ENABLE=true
+env VITE_11COMM_API_BASE_URL=http://127.0.0.1:3102
+env VITE_11COMM_API_USE_PROXY=true
+env VITE_11COMM_API_PROXY_PREFIX=/api-shadow
+GET  http://127.0.0.1:8080/ -> 200 text/html
+GET  http://127.0.0.1:8080/api-shadow/__nitro/health -> 200 application/json, service=@01s-11comm/api, status=ok
+POST http://127.0.0.1:8080/api-shadow/api/property-manage/expense-manage/house-charge/list -> 200 application/json, JsonVO, data.list[0].id=FEE_001
+
+app H5 HTTP smoke:
+env VITE_11COMM_API_SHADOW_ENABLE=true
+env VITE_11COMM_API_BASE_URL=http://127.0.0.1:3102
+GET http://127.0.0.1:3000/ -> 200 text/html
+app legacy Nitro 3101 was not started in this round because H5 3000 was usable
 
 cleanup:
-ports 3102/8080/3000 released
+round-started processes stopped
+ports 3102/8080/3000/3101 released
+```
+
+Phase7 续跑 Chrome MCP 三端本地验证补证记录：
+
+```log
+run timestamp:
+2026-04-27 20:54 Asia/Shanghai
+
+listening process source:
+api   3102 -> node pid 56108, parent cmd pid 45408, root pnpm wrapper pid 56240
+admin 8080 -> node pid 56416, parent cmd pid 59184, root powershell pid 23060
+app   3000 -> node pid 53768, parent cmd pid 59776, root powershell pid 26720
+
+startup env verified from parent command line:
+admin TURBO_ENV_MODE=loose
+admin VITE_11COMM_API_SHADOW_ENABLE=true
+admin VITE_11COMM_API_BASE_URL=http://127.0.0.1:3102
+admin VITE_11COMM_API_USE_PROXY=true
+admin VITE_11COMM_API_PROXY_PREFIX=/api-shadow
+app   VITE_11COMM_API_SHADOW_ENABLE=true
+app   VITE_11COMM_API_BASE_URL=http://127.0.0.1:3102
+
+HTTP probes:
+GET http://127.0.0.1:3102/__nitro/health -> 200, service=@01s-11comm/api, database.configured=false
+GET http://127.0.0.1:3102/__nitro/endpoints -> 200, grouped manifest: app/app-shadow-allowlist=12, app/not-in-app-shadow-allowlist=5, admin/cut-to-apps-api=7, admin/available-in-apps-api-not-caller-verified=4
+GET http://127.0.0.1:3102/__nitro/ready -> 503, DB readiness still blocked by local DATABASE_CONFIG_MISSING
+GET http://127.0.0.1:8080/api-shadow/__nitro/health -> 200, Vite proxy reached @01s-11comm/api
+GET http://127.0.0.1:3000/ -> 200 text/html
+server log residual: .tmp/phase7-api.err.log still contains earlier Nitro dev fetch errors for unsupported Expect header and Invalid JSON body; the Chrome MCP network evidence captured in this continuation round returned 200 for the listed API/admin/app requests
+
+Chrome DevTools MCP recovery:
+initial list_pages failed because C:\Users\pc\.cache\chrome-devtools-mcp\chrome-profile was already running
+only chrome.exe processes using that MCP profile were stopped
+list_pages then recovered with about:blank selected
+
+Chrome DevTools MCP API evidence:
+opened http://127.0.0.1:3102/__nitro/health
+Network: GET http://127.0.0.1:3102/__nitro/health -> 200
+screenshot: .tmp/phase7-chrome-api-health.png
+residual: favicon.ico -> 404 only
+
+Chrome DevTools MCP admin H5 evidence:
+opened http://127.0.0.1:8080/#/property-manage/expense-manage/house-charge
+page rendered title: 房屋收费 | 01s-智慧社区管理后台
+visible table data: 物业管理费, 公共服务费, 水费, total=3
+Network: POST http://127.0.0.1:8080/api-shadow/api/property-manage/expense-manage/house-charge/list -> 200
+Network: POST http://127.0.0.1:8080/api-shadow/api/property-manage/expense-manage/house-charge/detail -> 200
+contract: admin JsonVO, success=true, code=200
+screenshot: .tmp/phase7-chrome-admin-house-charge.png
+console residuals: Vite connected, Vue Router deprecated next() warning, one missing icon warning, pure-admin token logs
+
+Chrome DevTools MCP app H5 evidence:
+opened http://127.0.0.1:3000/#/pages-sub/fee/detail?feeId=FEE_001&communityId=COMM_001
+page rendered title: 费用详情
+Network: GET http://127.0.0.1:3102/app/fee.listFee?... -> 200
+Network: GET http://127.0.0.1:3102/app/fee.queryFeeDetail?... -> 200
+opened http://127.0.0.1:3000/#/pages-sub/report/fee-summary?communityId=COMM_001
+page rendered title: 费用汇总报表
+Network: GET http://127.0.0.1:3102/app/reportFeeMonthStatistics.queryReportFeeSummary?... -> 200
+Network fallback retained: GET http://127.0.0.1:3000/dev-api/callComponent/core/list?... -> 200
+Network fallback retained: GET http://127.0.0.1:3000/dev-api/app/floor.queryFloors?... -> 200
+screenshot: .tmp/phase7-chrome-app-report-fee-summary.png
+console residuals: Vite connected, vue-router import deprecation, app launch/show logs, ignoreAuth logs
 ```
 
 readiness 结论：
 
-- 本地 `GET /__nitro/ready` 返回 `503 DATABASE_CONFIG_MISSING` 是预期的缺 DB URL readiness 响应，只能证明请求命中了 `apps/api`，不能证明生产或灰度 DB readiness。
-- Phase7 执行态前必须在目标环境补齐 DB readiness 证据，包括 Neon 连接、目标表结构、读写权限、失败回滚和数据语义。
+- 本地 `GET /__nitro/ready` 返回 `503 DATABASE_CONFIG_MISSING` 是 2026-04-27 当时预期的缺 DB URL readiness 响应，只能证明请求命中了 `apps/api`，不能证明生产或灰度 DB readiness。
+- 2026-05-04 已在目标 Neon DB 上补齐最小 readiness：`RUN_PHASE7_DB_READINESS_CHECK=1` 下 `GET /__nitro/ready` 返回 `DB_READY`；Phase7 执行态前仍必须补灰度/生产三端链路、读写权限、失败回滚和数据语义。
+- admin H5 的 `/api-shadow/**` 验证必须确认 `8080` 是本轮带上述 env 启动的进程；如果 `8080` 是旧进程或未注入 env 的进程，`/api-shadow/**` 可能返回 admin HTML fallback，不能作为 `apps/api` 命中证据。
+- 2026-04-27 20:54 续跑已补齐一批 Chrome DevTools MCP 页面级证据：公共 API health、admin `house-charge` list/detail 和 app fee/report 页面均可在三端 dev 拓扑中访问。
+- app H5 的 report 页面已证明 allowlist 内 `/app/**` 命中 `3102`，且 `/callComponent/**`、`floor.queryFloors` 仍停留在 `3000/dev-api` fallback；这只能算局部 fallback 证据，不能替代关闭 shadow 或移出 allowlist 的完整回退演练。
+- Chrome MCP 专用 profile 卡住时，只能停止 `C:\Users\pc\.cache\chrome-devtools-mcp\chrome-profile` 对应的 MCP 专用 `chrome.exe` 进程，不得误关用户普通浏览器或非本轮进程。
+- 本轮仍没有完成目标环境 DB readiness、shadow-off 回退演练、写动作回滚演练和生产/灰度浏览器证据。
+- 三端 HTTP smoke 与 Chrome MCP 局部页面证据只能证明独立 API 与 dev 入口可用，不能触发旧服务删除、禁用、移动、归档、重命名或清空。
 
 反向依赖扫描结论：
 
-| 范围                           |                                       当前扫描结果 | Phase7 判断                               |
-| ------------------------------ | -------------------------------------------------: | ----------------------------------------- |
-| `apps/api/server/routes/api`   |                             11 个 admin route 文件 | 只覆盖少量首批 admin endpoint             |
-| `apps/api` app legacy manifest |                           17 个 `/app/**` endpoint | 不含 `/callComponent/**`                  |
-| `apps/admin/server/api`        |                                  155 个旧 API 文件 | 不具备整体删除证据                        |
-| `apps/admin/src/api`           |                        119 个唯一 `/api/**` 字符串 | 大量前端调用仍未迁入 `apps/api`           |
-| `apps/app/server`              |                              69 个 TypeScript 文件 | 仍承担 legacy runtime、契约来源和回退职责 |
-| `apps/app/server` legacy URL   | 209 个唯一 `/app/**`、2 个唯一 `/callComponent/**` | 远未达到整体收口条件                      |
+| 范围                           |                                                                                                            当前扫描结果 | Phase7 判断                                                               |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------: | ------------------------------------------------------------------------- |
+| `apps/api/server/routes/api`   |                                       11 个 admin canonical route；与旧 admin exact path 重合 6 条，canonical-only 5 条 | 只覆盖少量首批 admin endpoint；不能替代旧 admin 全量盘点                  |
+| `apps/api` app legacy manifest |                             17 个 `/app/**` endpoint，其中 12 个 fee/payment/report、5 个 repair；`/callComponent/**` 0 | 不含 `/callComponent/**`；repair 未进 app allowlist                       |
+| `apps/admin/server/api`        |          155 个旧 API 文件；一级域以 `property-manage` 88、`setting-manage` 28、`dev-team` 24、`operation-team` 13 为主 | 不具备整体删除证据                                                        |
+| `apps/admin/src/api`           |                                                                              集中 API 目录 runtime `/api/**` unique 129 | 大量前端调用仍未迁入 `apps/api`                                           |
+| `apps/admin/src`               | runtime 真实 `/api/**` unique 133，其中页面本地 API 4 个；测试 literal 7 个、MD 文档 literal 24 个排除出 runtime 切流率 | 全量对照表必须纳入非集中 API 文件，且不能把测试/文档 literal 当运行时调用 |
+| `apps/app/server`              |                                                                                                   69 个 TypeScript 文件 | 仍承担 legacy runtime、契约来源和回退职责                                 |
+| `apps/app/server` legacy URL   |                                                                      209 个唯一 `/app/**`、2 个唯一 `/callComponent/**` | 远未达到整体收口条件                                                      |
+| `apps/app/src/api`             |             真实调用唯一 `/app/**` 197 个、`/callComponent/**` 2 个，总计 199 个；4 条 caller 不在 server endpoint 表中 | app 前端仍有大规模 legacy URL 调用方                                      |
+| `apps/app/src/http`            |                                          `PHASE2_API_SHADOW_ENDPOINTS` 12 个；repair 命中 0，`/callComponent/**` 命中 0 | allowlist 证据不足，不能把 repair 或 `/callComponent/**` 视为已切流       |
 
 删除候选分级：
 
-| 等级                       | 范围                                                                                             | 判定                                                                       |
-| -------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
-| `forbidden`                | `apps/admin/server`、`apps/app/server`、`D:\code\ruan-cat\01s-11comm-app`                        | 受保护路径，Phase7 gate 通过前禁止删除、移动、归档、重命名、清空           |
-| `forbidden`                | `apps/admin/server/api` 整体                                                                     | 仍有 155 个旧 API 文件和大量 `/api/**` 调用方                              |
-| `forbidden`                | `apps/app/server` 整体                                                                           | 仍有大量 `/app/**` 和 `/callComponent/**` legacy endpoint                  |
-| `forbidden`                | `/callComponent/**`                                                                              | `apps/api` 未挂载，app legacy 仍挂载，必须保留                             |
-| `forbidden`                | `house-charge/create`、`house-charge/update`、`house-charge/delete`                              | Phase6 明确未切流，写入字段归属、delete policy、DB 证据未补齐              |
-| `forbidden`                | 未迁入 `apps/api` 的 admin `/api/**` 与 app `/app/**`                                            | 仍有前端调用或 legacy runtime 责任，不得删除                               |
-| `candidate-after-evidence` | 已在 `apps/api` 承载的 Phase2 fee/payment/report app legacy endpoint                             | 需补齐 app 页面级 Chrome MCP、回退演练、调用方确认和 DB readiness 后再评审 |
-| `candidate-after-evidence` | 已在 `apps/api` 承载的 `expense-item-setting` CRUD 与 `house-charge` list/detail 的旧 admin 实现 | 需补齐 admin 页面级 Chrome MCP、回退演练和调用方确认后再评审               |
-| `candidate-after-evidence` | 已在 `apps/api` 承载的 repair admin list endpoint 与 repair app 5 个 endpoint                    | 当前只具备 API 侧或局部证据；需补 app allowlist、页面调用、回退和 DB 证据  |
-| `not-candidate`            | `apps/api/server/**`                                                                             | 目标服务实现，不是旧服务删除对象                                           |
-| `not-candidate`            | `apps/app/src/http/runtime-base.ts`、`apps/app/nitro.config.ts`                                  | 当前承担 shadow allowlist、回退决策和 legacy 挂载证据，不是删除候选        |
+| 等级                       | 范围                                                                                                        | 判定                                                                                                                                                                                           |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `forbidden`                | `apps/admin/server`、`apps/app/server`、`D:\code\ruan-cat\01s-11comm-app`                                   | 受保护路径，Phase7 gate 通过前禁止删除、移动、归档、重命名、清空                                                                                                                               |
+| `forbidden`                | `apps/admin/server/api` 整体                                                                                | 仍有 155 个旧 API 文件和大量 `/api/**` 调用方                                                                                                                                                  |
+| `forbidden`                | `apps/app/server` 整体                                                                                      | 仍有大量 `/app/**` 和 `/callComponent/**` legacy endpoint                                                                                                                                      |
+| `forbidden`                | `/callComponent/core/list`、`/callComponent/ownerRepair.appraiseRepair`                                     | 两个唯一 `/callComponent/**` 旧路径均未在 `apps/api` 挂载；必须保留，不能进入删除候选                                                                                                          |
+| `forbidden`                | `house-charge/create`、`house-charge/update`、`house-charge/delete`                                         | Phase6 明确未切流，写入字段归属、delete policy、DB 证据未补齐                                                                                                                                  |
+| `forbidden`                | 未迁入 `apps/api` 的 admin `/api/**` 与 app `/app/**`                                                       | 仍有前端调用或 legacy runtime 责任，不得删除                                                                                                                                                   |
+| `forbidden`                | `/api/auth/**`                                                                                              | 未在 `apps/admin/server/api` 或 `apps/api/server/routes/api` 扫到 route evidence，需先澄清运行时入口和替代路径                                                                                 |
+| `forbidden`                | contract-manage upload/init/status/sign-part/complete/abort                                                 | 涉及 R2/文件上传、分片状态和对象存储回滚，仍属于 legacy 高风险面                                                                                                                               |
+| `forbidden`                | draft-contract page-local detail/create/update/delete                                                       | 位于页面本地 API 文件，不在集中 API 目录口径内，必须纳入全量对照后再评审                                                                                                                       |
+| `candidate-after-evidence` | payment-details-form 页面接线与 repair 三个 admin hook 的 shadow resolver 调用                              | `payment-details-form` 已接页面 hook，repair 已补 hook/caller 自动化和页面 Network；仍缺回退演练，不得直接视为已切流                                                                           |
+| `candidate-after-evidence` | 已在 `apps/api` 承载的 Phase2 fee/payment/report app legacy endpoint                                        | app `fee/detail`、`pay-qrcode` 默认阻断、`write-owe-callable` 默认阻断、`fee/create` fallback/阻断、`report/fee-summary` 已补页面级 Chrome MCP；仍需回退演练、调用方确认和全量页面覆盖后再评审 |
+| `candidate-after-evidence` | 已在 `apps/api` 承载的 `expense-item-setting` CRUD 与 `house-charge` list/detail 的旧 admin 实现            | `expense-item-setting/list` 与 `house-charge` 已有局部 admin 页面证据；仍需补完整 CRUD、回退演练和调用方确认后再评审                                                                           |
+| `candidate-after-evidence` | 已在 `apps/api` 承载的 repair admin list endpoint                                                           | 已补 admin 页面调用证据；需补回退和 DB 语义证据                                                                                                                                                |
+| `blocked-for-execution`    | 已在 `apps/api` manifest/test 中出现的 repair app 5 个 endpoint                                             | 当前未进 app allowlist，缺页面级 evidence 和 DB readiness；其中 `/app/ownerRepair.saveOwnerRepair`、`/app/dict.queryRepairStates` 必须继续视为不可删除旧实现                                   |
+| `blocked-for-execution`    | `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee` | 已有默认 `409 PHASE7_MUTATION_GUARDED` 和 manifest 标记；缺 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 下的受控写入/回滚证据，不能和只读 endpoint 共用结论                                              |
+| `not-candidate`            | `apps/api/server/**`                                                                                        | 目标服务实现，不是旧服务删除对象                                                                                                                                                               |
+| `not-candidate`            | `apps/app/src/http/runtime-base.ts`、`apps/app/nitro.config.ts`                                             | 当前承担 shadow allowlist、回退决策和 legacy 挂载证据，不是删除候选                                                                                                                            |
+
+evidence queue：
+
+| 队列                          | 待补证内容                                                                                                                                                                                                           | 阻塞的决策                                                         |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| admin exact old path coverage | 为 149 个未 exact covered 旧 admin endpoint 建立 `oldPath -> targetRoute/service -> caller -> fallback` 对照                                                                                                         | `apps/admin/server/api` 整体继续 `forbidden`                       |
+| admin caller cutover          | `expense-item-setting/list`、`payment-details-form/list`、`repairs-todo/list`、`repairs-setting/list`、`issues/list` 已补页面 Network；`expense-item-setting` detail/create/update/delete 与 shadow-off 回退仍需补证 | 这些 route 只能是局部 `candidate-after-evidence`，不得进入删除候选 |
+| admin high-risk writes        | 至少 37 个 create/update/delete/upload-control 写动作的 DB readiness、写入语义、失败回滚和权限/审计说明                                                                                                              | 继续 `blocked`                                                     |
+| contract upload/R2            | upload/init/status/sign-part/complete/abort 的对象存储、分片状态、失败回滚、浏览器上传流程证据                                                                                                                       | 继续 `blocked`                                                     |
+| app fee/payment/report reads  | `fee/detail`、`fee/create` feeConfig、`report/fee-summary` 已补页面级 Chrome MCP；`pay-qrcode`、`write-owe-callable`、`fee/create` 三个高风险写入口已补默认阻断 Network；shadow=false 或移出 allowlist 回退演练仍缺  | 只能维持 `candidate-after-evidence`                                |
+| app fee/payment/report writes | `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee` 已默认阻断；下一步只允许在 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 下做受控写入、读取校验和回滚演练            | 继续 `blocked-for-execution`，但不再阻断只读候选切流               |
+| app repair                    | 5 条 repair manifest endpoint 的 app allowlist、页面证据、DB readiness、fallback-only repository 替代计划                                                                                                            | 继续 `blocked-for-execution`                                       |
+| `/callComponent/**`           | `/callComponent/core/list`、`/callComponent/ownerRepair.appraiseRepair` 的 `apps/api` compat handler 设计、契约测试、allowlist 或显式回退策略                                                                        | 继续 `legacy-fallback / forbidden`                                 |
+| app caller/server mismatch    | 核对 `/app/itemRelease.queryFinishItemRelease`、`/app/purchase/updatePurchaseApply`、`/app/purchaseApply.listAuditHistoryOrders`、`/app/resourceStore.listAllocationStoreHisAuditOrders` 的真实入口和缺失原因        | 不得作为删除依据                                                   |
+| target environment readiness  | 目标 Neon DB 最小 readiness 已补到 `DB_READY`；仍需补灰度/生产三端链路、读写权限、失败回滚和数据语义                                                                                                                 | 本地只读执行门已解除；退役/删除门继续 `no-go-for-retirement`       |
 
 Phase7 下一步最小执行顺序：
 
 1. 保持当前改动未提交状态，由人工审查 Phase6 代码、测试、配置和本设计文档更新。
-2. 生成可复核的全量 endpoint 对照表，覆盖 `apps/api` manifest、`apps/admin/server/api`、`apps/admin/src/api`、`apps/app/server` 和 `apps/app/src` 调用方。
-3. 对每个 endpoint 标注是否已由 `apps/api` 承载、是否有前端调用、是否有单测、是否有 Chrome MCP 证据、是否有回退证据、是否需要 DB readiness。
+2. 生成可复核的全量 endpoint 对照表，覆盖 `apps/api` manifest、`apps/admin/server/api`、`apps/admin/src/api`、`apps/admin/src` TS/Vue 与 page-local API、`apps/app/server`、`apps/app/src/api` 和 `apps/app/src` 调用方。
+3. 对每个 endpoint 标注是否已由 `apps/api` 承载、是否有前端调用、是否进入 app/admin shadow allowlist、是否有单测、是否有 Chrome MCP 证据、是否有回退证据、是否需要 DB readiness 或 write-readiness block。
 4. 单独处理 `/callComponent/**`：先补 `apps/api` compat handler 设计、contract test、app runtime allowlist 或回退策略，不进入删除候选。
 5. 对 `candidate-after-evidence` 项补齐页面级正向证据、shadow=false 或 allowlist 移除后的回退证据、DB ready 或 mock/seed 边界说明。
 6. 复判 Phase7 readiness gate。只有 gate 明确从 `no-go-for-execution` 变为可执行后，才能创建旧服务收口执行计划。
@@ -1088,7 +1408,7 @@ Phase7 的第一步不是删除目录，而是收口评审、依赖扫描和退�
 
 - 已存在全量 endpoint 状态矩阵，至少包含 `cut-to-apps-api`、`legacy-fallback`、`blocked`、`not-applicable`、`removed-by-design` 五类状态。
 - admin H5、app H5、`apps/api` 三端在本地三 dev 服务和目标灰度/生产环境均有浏览器证据；Network 记录能证明已切流 endpoint 命中 `apps/api`。
-- 生产或灰度 DB readiness 已确认，不能只依赖本地 memory repository、mock runtime 或单元测试。
+- 生产或灰度 DB readiness 已确认，不能只依赖本地 memory repository、mock runtime 或单元测试。`apps/api` 的 `/__nitro/ready` 默认只验证 DB URL 配置；每批 Phase7 收口前必须额外设置 `RUN_PHASE7_DB_READINESS_CHECK=1` 触发真实 DB 探针，至少验证连接、Phase7 必需表和 Drizzle migration 记录。
 - 每个 `legacy-fallback` 与 `blocked` endpoint 都明确说明为什么仍需要旧 server，或为什么不影响旧 server 收口。
 - 已完成反向依赖扫描，覆盖 `apps/admin/src`、`apps/app/src`、Vite/Nitro 配置、proxy 配置、测试、CI、部署脚本和文档，确认没有运行时入口仍依赖将要退役的旧 server。
 - 已演练回退：关闭统一 API 开关、移出 allowlist、恢复旧 route/proxy 或恢复目录都必须有明确步骤。
@@ -1135,12 +1455,12 @@ Invoke-WebRequest http://127.0.0.1:3000/
 
 Chrome MCP 验证必须覆盖两个前端入口：
 
-| 验证对象 | Chrome MCP 操作                                                                                               | 必须保留的证据                                                                                                                                  |
-| -------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| 公共 API | 打开或 fetch `http://127.0.0.1:3102/__nitro/health` 与 `http://127.0.0.1:3102/__nitro/endpoints`              | health 返回 `@01s-11comm/api` 或等价服务标识；manifest 包含本批候选 endpoint；如 ready/DB 探针失败，必须标注是本地配置缺失还是生产阻断          |
-| admin H5 | 打开 `http://127.0.0.1:8080`，进入本批业务页面；通过页面交互或 MCP evaluate 请求 `/api-shadow/**`             | 页面可渲染；Network 中已切流 endpoint 命中 `/api-shadow/**` 并返回 admin `JsonVO`；本批列表、详情、写入或业务 action 的结果与旧 server 对照一致 |
-| app H5   | 打开 `http://127.0.0.1:3000`，进入本批 app 页面；验证 allowlist 内 `/app/**` 请求命中 `http://127.0.0.1:3102` | 页面可渲染；allowlist 内 legacy endpoint 返回 `{ code: 0, msg, data }` 旧格式；allowlist 外 endpoint 不得被默认代理误切到 `apps/api`            |
-| 回退路径 | 关闭 shadow 开关、移出 allowlist 或恢复旧 proxy 后重试同一页面/接口                                           | 能回到旧路径；无法回退的 endpoint 不允许进入旧服务收口候选                                                                                      |
+| 验证对象 | Chrome MCP 操作                                                                                                    | 必须保留的证据                                                                                                                                                                                                   |
+| -------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 公共 API | 打开或 fetch `http://127.0.0.1:3102/__nitro/health`、`/__nitro/ready` 与 `http://127.0.0.1:3102/__nitro/endpoints` | health 返回 `@01s-11comm/api` 或等价服务标识；manifest 包含本批候选 endpoint；`RUN_PHASE7_DB_READINESS_CHECK=1` 下 ready 应返回 `DB_READY`，如失败必须标注是配置缺失、连接失败、schema 缺失还是 migration 未就绪 |
+| admin H5 | 打开 `http://127.0.0.1:8080`，进入本批业务页面；通过页面交互或 MCP evaluate 请求 `/api-shadow/**`                  | 页面可渲染；Network 中已切流 endpoint 命中 `/api-shadow/**` 并返回 admin `JsonVO`；本批列表、详情、写入或业务 action 的结果与旧 server 对照一致                                                                  |
+| app H5   | 打开 `http://127.0.0.1:3000`，进入本批 app 页面；验证 allowlist 内 `/app/**` 请求命中 `http://127.0.0.1:3102`      | 页面可渲染；allowlist 内 legacy endpoint 返回 `{ code: 0, msg, data }` 旧格式；allowlist 外 endpoint 不得被默认代理误切到 `apps/api`                                                                             |
+| 回退路径 | 关闭 shadow 开关、移出 allowlist 或恢复旧 proxy 后重试同一页面/接口                                                | 能回到旧路径；无法回退的 endpoint 不允许进入旧服务收口候选                                                                                                                                                       |
 
 阶段 7 每批候选 endpoint 必须形成验证矩阵，至少包含以下字段：
 
@@ -1171,7 +1491,7 @@ Chrome MCP 验证必须覆盖两个前端入口：
 - `apps/api` 无法独立启动，或只能通过 `apps/admin/server`、`apps/app/server` 间接提供能力。
 - admin/app 页面只在旧 server、mock runtime 或 app 自身 legacy Nitro 下可用，却被标记为 `cut-to-apps-api`。
 - `/callComponent/**`、未列入 allowlist 的 `/app/**`、未完成的 `house-charge create/update/delete` 被包装成已完成双端能力。
-- 生产或灰度 DB readiness 未确认，而本批收口会删除或禁用旧 server 中唯一的数据来源。
+- 生产或灰度 DB readiness 未确认，而本批收口会删除或禁用旧 server 中唯一的数据来源。若只得到 `READY_CONFIGURED`，说明未开启真实 DB 探针；若返回 `DATABASE_CONFIG_MISSING`、`DATABASE_CONNECTION_FAILED`、`DATABASE_SCHEMA_MISSING` 或 `DATABASE_MIGRATIONS_NOT_READY`，均不得进入旧服务收口执行态。
 - Chrome MCP 只能证明接口 fetch 成功，不能证明真实页面和 Network 命中路径。
 - 任一候选 endpoint 无法回退，或回退步骤会触碰旧源目录 `D:\code\ruan-cat\01s-11comm-app`。
 
@@ -1183,12 +1503,72 @@ Get-NetTCPConnection -LocalPort 3102,8080,3000 -State Listen
 Stop-Process -Id <pid> -Force
 ```
 
-Phase7 验收报告必须记录启动命令、环境变量、实际端口、Chrome MCP 入口 URL、关键 Network 请求、console 摘要、Vitest 命令与结果、回退演练结果、残留风险和本批旧 server 收口决策。没有这份三端本地真实 dev 证据，任何旧 server 禁用、目录清理或删除候选结论都不得通过评审。
+Phase7 验收报告必须记录启动命令、环境变量、实际端口、Chrome MCP 入口 URL、关键 Network 请求、console 摘要、Vitest 命令与结果、gated DB readiness 结果、回退演练结果、残留风险和本批旧 server 收口决策。没有这份三端本地真实 dev 证据，任何旧 server 禁用、目录清理或删除候选结论都不得通过评审。
+
+2026-05-04 目标 Neon DB readiness 基线：当前会话未暴露 Neon MCP 工具，因此本轮使用项目内 Neon/Drizzle 配置、Drizzle migration 产物和 Neon Serverless 查询补证。目标库 `public` 下 111 张表与 `apps/admin/drizzle/0000_fearless_shinko_yamashiro.sql` 的建表集合一致，`ct_upload_sessions.r2_upload_id` 已符合 `0001_bright_thaddeus_ross.sql` 的 `text` 结果；在完整表集合匹配前置校验通过后，补齐 `drizzle.__drizzle_migrations` 两条 baseline 记录。随后 `RUN_PHASE7_DB_READINESS_CHECK=1` 下 `GET /__nitro/ready` 返回 `DB_READY`，required tables 为 `cm_communities`、`ex_expense_items`、`ex_house_charges`、`hp_houses`、`rpt_expense_summaries`、`rpt_payment_details`，migration count 为 `2/2`。
+
+2026-05-04 本地执行门基线：`payment-details-form` 页面已从本地 mock 改为调用 `usePaymentDetailsFormListQuery()`；三条高风险 app legacy mutation 默认返回 legacy envelope 内的 `409 PHASE7_MUTATION_GUARDED`，并在 `runtimeEndpointManifest` 中标记为 `blocked-for-execution`；`RUN_PHASE7_HTTP_TESTS=1`、`PHASE7_API_BASE_URL=http://127.0.0.1:3116` 的真实 HTTP gate 通过，覆盖 health、ready、manifest、一个 admin canonical read、一个 app legacy read 和三条 mutation 默认阻断。因此 Phase7 已达到“保留旧服务前提下的本地只读候选切流”门槛，但未达到旧服务退役/删除门槛。
+
+2026-05-04 四端 Chrome MCP 本地执行证据：`apps/api` 使用目标 Neon 连接和 `RUN_PHASE7_DB_READINESS_CHECK=1` 运行在 `3102`，`GET /__nitro/ready` 返回 `200 DB_READY`；`apps/admin` 运行在 `8080` 并通过 `/api-shadow` 指向 `3102`；`apps/app` H5 运行在 `3000`，legacy fallback Nitro 运行在 `3101`。Admin 页面级 Network 已补 `expense-item-setting/list`、`payment-details-form/list`、`repairs-todo/list`、`repairs-setting/list`、`issues/list`，均返回 200 且带 `x-api-phase: phase3-infra`。App 页面级 Network 已补 `fee/detail`、`pay-qrcode`、`write-owe-callable`、`fee/create`、`report/fee-summary`；allowlist endpoint 命中 `3102/app/**`，`/callComponent/core/list` 与 `floor.queryFloors` 保持 `3101` fallback，`payment.nativeQrcodePayment`、`oweFeeCallable.writeOweFeeCallable`、`fee.saveRoomCreateFee` 均在默认环境下返回 `409 PHASE7_MUTATION_GUARDED`。本地执行门据此升级为 `go-for-local-readonly-and-guarded-write-candidate-cutover`；旧服务退役/删除门仍保持 `no-go-for-retirement`。
+
+### Phase7 本地收口待办
+
+生产链路证据后置：独立 `apps/api` server 完成 Vercel 部署前，Phase7 不要求提供生产或灰度三端浏览器证据，也不得用本地证据冒充生产证据。部署完成后必须单独补 `apps/api` Vercel URL、admin H5、app H5 的真实 Network、DB readiness、日志和回滚证据。
+
+当前继续推进的范围限定为本地 dev 验证，按以下顺序执行并逐项回写证据：
+
+1. [x] 全量 endpoint 对照
+   - 扫描源：`apps/admin/server/api/**/*.ts`、`apps/admin/src/**/*.{ts,vue}` 中的 `/api/**` 调用、`apps/api/server/routes/**/*.ts`、`apps/api/server/shared/runtime/runtime-endpoints.ts`、`apps/app/server/modules/**/endpoints.ts`、`apps/app/src/**/*.{ts,vue}` 中的 `/app/**` 与 `/callComponent/**` 调用。
+   - 矩阵字段：`sourceKind`、`sourcePath`、`method`、`oldPath`、`callerEvidence`、`appsApiTarget`、`targetStatus`、`browserEvidence`、`fallbackEvidence`、`writeReadRollbackEvidence`、`retirementDecision`。
+   - 验收标准：每个旧 admin endpoint、app legacy endpoint、前端 caller 和 `apps/api` target 都必须归入 `candidate-after-evidence`、`legacy-fallback`、`blocked-for-execution`、`not-candidate` 或 `unknown-needs-triage`；不得存在“因为没扫到所以可删除”的隐式结论。
+
+   2026-05-05 本地扫描结果：
+   - `apps/admin/server/api/**/*.ts`：155 个旧 admin API 文件；`apps/api/server/routes/api/**/*.ts`：11 个 admin canonical route；exact covered 6 个、canonical-only 5 个、old remaining 149 个。
+   - exact covered：`house-charge/list`、`expense-item-setting/list`、`payment-details-form/list`、`repairs-todo/list`、`repairs-setting/list`、`issues/list`。
+   - canonical-only：`house-charge/detail`、`expense-item-setting/detail`、`expense-item-setting/create`、`expense-item-setting/update`、`expense-item-setting/delete`；这些不能折抵旧 `apps/admin/server/api` 的 149 个 remaining endpoint。
+   - `apps/admin/src/**/*.{ts,vue}` 中 `/api/**` literal：130 次出现、121 个 unique；其中 `property-manage` 82 个、`setting-manage` 13 个、`operation-team` 13 个、`dev-team` 8 个、`auth` 5 个。首批 resolver 页面只覆盖其中 5 个 exact literal；`expense-item-setting` 与 `house-charge` 的 bare module literal 需要继续按页面写动作单独评审。
+   - `apps/app/server/modules/**/endpoints.ts`：219 次 route literal、214 个 unique；剔除 `/test/*` 后业务 unique 212，其中 `/app/**` 209 个、`/callComponent/**` 2 个。
+   - `apps/app/src/**/*.{ts,vue}`：574 次 app/callComponent literal、215 个 unique；剔除 probe/example 后业务 unique 208，其中 `/app/**` 206 个、`/callComponent/**` 2 个。
+   - `apps/api` 当前 app legacy target：17 个 unique，覆盖 12 个 fee/payment/report allowlist endpoint 与 5 个 repair manifest endpoint；`/callComponent/**` 覆盖 0。
+   - 本项结论：全量矩阵已形成可复核数量口径，所有未 exact covered 或未进 allowlist 的 endpoint 继续归入 `legacy-fallback`、`blocked-for-execution` 或 `unknown-needs-triage`；没有任何 endpoint 因本轮扫描进入 `removed-by-design`。
+
+2. [x] Shadow-off / legacy fallback 本地演练
+   - Admin：关闭 `VITE_11COMM_API_SHADOW_ENABLE` 或禁用 `/api-shadow`，验证已接 resolver 的首批 admin 页面请求不再命中 `apps/api`，而是回到旧 `/api/**` 路径；若本地旧 admin runtime 无法承接，必须记录为 fallback blocker，而不是伪造通过。
+   - App：关闭 `VITE_11COMM_API_SHADOW_ENABLE` 或移出 allowlist，验证 `fee/detail`、`fee/create`、`report/fee-summary` 等页面的 allowlist endpoint 回到 `3101` legacy runtime；`/callComponent/**` 和 floor fallback 继续保持 `3101`。
+   - 验收标准：保留 Chrome MCP Network、console 摘要、实际端口、环境变量和服务日志分类；正向切流证据与 shadow-off 回退证据必须分开记录。
+
+   2026-05-05 本地 Chrome MCP shadow-off 证据：
+   - 启动环境：`apps/app` H5 `3000`、app legacy Nitro `3101`、`apps/admin` `8080`；显式设置 `VITE_11COMM_API_SHADOW_ENABLE=false`、`VITE_11COMM_API_USE_PROXY=false`、`VITE_11COMM_API_BASE_URL=http://127.0.0.1:3102`；服务日志目录为 `.tmp/phase7-shadowoff-20260505-054827`。
+   - App `report/fee-summary`：Network 命中 `GET http://127.0.0.1:3101/callComponent/core/list`、`GET http://127.0.0.1:3101/app/floor.queryFloors`、`GET http://127.0.0.1:3101/app/reportFeeMonthStatistics.queryReportFeeSummary`，均为 200。
+   - App `fee/detail`：Network 命中 `GET http://127.0.0.1:3101/app/fee.listFee` 与 `GET http://127.0.0.1:3101/app/fee.queryFeeDetail`，均为 200。
+   - Admin `issues`：Network 命中 `POST http://127.0.0.1:8080/api/property-manage/repairs-manage/issues/list`，返回 200。
+   - Admin `payment-details-form`：Network 命中 `POST http://127.0.0.1:8080/api/property-manage/report-manage/payment-details-form/list`，返回 200。
+   - 本项结论：首批已接 resolver/allowlist 的页面具备 shadow-off 本地回退证据；本轮未发现这些页面的本地 fallback blocker；该证据必须与 2026-05-04 `/api-shadow`/`3102` 正向切流证据分开使用。
+
+3. [x] 受控写入 / 读回 / 回滚本地演练
+   - 默认态先验证三条高风险写入口继续返回 `409 PHASE7_MUTATION_GUARDED`。
+   - 仅在本地 dev 进程设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 后，执行 `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`。
+   - 当前 `apps/api` fee repository 的三条兼容写逻辑在 DB runtime 下仍落入 fallback/in-memory 行为；因此本项只能证明本地受控写入口、读回和回滚边界，不代表真实 Neon 写入能力。
+   - 验收标准：记录写前读数、写请求、写后读回、回滚动作和回滚后读数；若因 fallback/in-memory 或页面状态导致写后无法持久读回，必须把它标记为 `write-runtime-fallback-only`，不得升级为生产写能力。
+
+   2026-05-05 本地受控写入、读回、回滚证据：
+   - 受控写入环境：`apps/api` 运行在 `3102`；清空 `comm_admin_11__DATABASE_URL`、`NITRO_DATABASE_URL`、`DATABASE_URL`、`POSTGRES_URL`；设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1`；服务日志目录为 `.tmp/phase7-controlled-write-20260505-055218`。
+   - 环境边界：`GET /__nitro/health` 返回 200 且 `checks.database.configured=false`；`GET /__nitro/ready` 返回 `503 DATABASE_CONFIG_MISSING`。因此本轮明确是本地 in-memory fallback 演练，不接 Neon。
+   - `/app/oweFeeCallable.writeOweFeeCallable`：写前 `listOweFeeCallable` count 为 1；写入 `roomId=ROOM_001`、`feeIds=["FEE_001"]`、`remark=phase7-controlled-write-2026-05-05` 返回 code 0；写后读回 count 为 2，首条 remark 为 `phase7-controlled-write-2026-05-05`。
+   - `/app/fee.saveRoomCreateFee`：写前 `fee.listFee` total 为 3；创建 `locationObjId=ROOM_PHASE7_ROLLBACK`、`amount=77` 返回 code 0；按 `payerObjId=ROOM_PHASE7_ROLLBACK` 读回 1 条，`feeId=FEE_004`、`roomId=ROOM_PHASE7_ROLLBACK`、`oweAmount=77`。
+   - `/app/payment.nativeQrcodePayment`：写入 `roomId=ROOM_001`、`feeIds=["FEE_001"]`、`business=phase7-controlled-payment` 返回 legacy code 0，payload 中 `codeUrl=mock-payment://pay?...business=phase7-controlled-payment`。
+   - 回滚动作：停止并重启 `apps/api`，移除 `PHASE7_ALLOW_LEGACY_MUTATIONS`；回滚验证日志目录为 `.tmp/phase7-rollback-guard-*`。
+   - 回滚后读数：`listOweFeeCallable` count 恢复为 1；`payerObjId=ROOM_PHASE7_ROLLBACK` 读回 count 为 0；`fee.listFee` total 恢复为 3。
+   - 默认 guard 恢复：重启后 `/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/payment.nativeQrcodePayment` 均返回 legacy envelope 内的 `409 PHASE7_MUTATION_GUARDED`。
+   - 本项结论：三条高风险写入口已完成本地 `write-runtime-fallback-only` 的受控写入、读回、重启回滚和 guard 恢复演练；不得据此宣称真实 Neon 写入、真实支付或生产回滚已经完成。
+
+截至 2026-05-05，以上三项本地收口验证均已完成，Phase7 可以进入“本地完整收口评审就绪”状态；旧服务退役/删除门仍必须等待全量矩阵审查、明确删除候选、灰度/生产证据和独立回滚方案。
 
 Phase7 允许做：
 
 - 编写旧服务收口评审、endpoint 状态矩阵、反向依赖扫描报告和删除候选清单。
 - 冻结 `apps/admin/server`、`apps/app/server` 新增业务入口，要求新增能力只进入 `apps/api`。
+- 推进已登记、已测试、非写入的 admin/app 读链路进入 `apps/api` 候选切流，并补齐 shadow-off 回退和灰度/生产三端证据；首批页面级 Network 已补的 route 可标为局部 `candidate-after-evidence`。
 - 移除已经无运行时引用、无 fallback 责任、且有测试覆盖的旧 proxy/route 注册。
 - 将旧 server 中仍有价值的契约、mock、排错经验迁入设计文档、验收记录或 canonical skill，但不能把旧服务继续扩张成新事实来源。
 
@@ -1196,8 +1576,9 @@ Phase7 禁止做：
 
 - 禁止把 Phase6 未完成的切流、schema 变更、业务迁移或生产接入补丁混入“旧服务收口”。
 - 禁止把 `/callComponent/**`、`house-charge create/update/delete` 或未纳入 app allowlist 的 repair endpoint 包装成已完成能力。
+- 禁止在未设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1`、未记录输入数据、校验读回和回滚步骤的情况下执行 `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`。
 - 禁止删除仍承担 fallback、契约来源、mock 对照或回滚职责的旧 server 目录。
-- 禁止用单端测试替代双端浏览器验证；admin canonical、app legacy、公共 API、生产 DB readiness 必须分别给证据。
+- 禁止用单端测试替代双端浏览器验证；admin canonical、app legacy、公共 API、生产 DB readiness 必须分别给证据。`GET /__nitro/ready` 只有在 `RUN_PHASE7_DB_READINESS_CHECK=1` 且返回 `DB_READY` 时才可作为 DB readiness 正向证据。
 - 禁止触碰旧源目录 `D:\code\ruan-cat\01s-11comm-app`。
 
 删除旧服务必须放在最后，且要有回滚路径。真正删除 `apps/admin/server` 或 `apps/app/server` 必须作为单独评审、单独变更、单独回滚方案处理；默认 Phase7 只允许先禁用入口、移除注册、保留目录，直到删除门槛全部满足。

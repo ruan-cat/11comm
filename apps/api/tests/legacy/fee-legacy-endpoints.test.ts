@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test } from "vitest";
 
 import {
 	createEndpointRegistry,
@@ -8,6 +8,10 @@ import {
 import { runtimeEndpointDefinitions } from "../../server/shared/runtime/runtime-endpoints";
 
 describe("fee legacy endpoints", () => {
+	afterEach(() => {
+		delete process.env.PHASE7_ALLOW_LEGACY_MUTATIONS;
+	});
+
 	test("keeps Phase2 fee payment report endpoints registered and excludes device endpoints", () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
@@ -23,7 +27,38 @@ describe("fee legacy endpoints", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/machine/listMachineRecords")).toBeUndefined();
 	});
 
-	test("serves fee list, fee detail, owe fee, callable, create fee and payment qrcode legacy shapes", async () => {
+	test("blocks payment, callable write, and fee-create actions by default in phase7 execution guard", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				method: "POST",
+				path: "/app/oweFeeCallable.writeOweFeeCallable",
+				body: { communityId: "COMM_001", feeIds: ["FEE_001"], roomId: "ROOM_001" },
+			},
+			{
+				method: "POST",
+				path: "/app/fee.saveRoomCreateFee",
+				body: { locationObjId: "ROOM_001", configId: "CONFIG_001", communityId: "COMM_001" },
+			},
+			{
+				method: "POST",
+				path: "/app/payment.nativeQrcodePayment",
+				body: { roomId: "ROOM_001", communityId: "COMM_001", feeIds: ["FEE_001"] },
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, request);
+
+			expect(response).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining("Phase7"),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+		}
+	});
+
+	test("serves fee list, fee detail, owe fee and callable list legacy shapes", async () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
 		const feeList = await dispatchEndpoint(registry, {
@@ -78,6 +113,11 @@ describe("fee legacy endpoints", () => {
 			callableWayName: expect.any(String),
 			remark: expect.any(String),
 		});
+	});
+
+	test("serves legacy mutation compatibility shapes only when explicitly allowed", async () => {
+		process.env.PHASE7_ALLOW_LEGACY_MUTATIONS = "1";
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
 		const writeCallable = await dispatchEndpoint(registry, {
 			method: "POST",

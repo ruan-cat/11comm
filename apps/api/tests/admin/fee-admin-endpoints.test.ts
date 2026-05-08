@@ -29,6 +29,7 @@ describe("fee admin canonical adapter", () => {
 		delete process.env.comm_admin_11__DATABASE_URL;
 		delete process.env.DATABASE_URL;
 		delete process.env.NITRO_DATABASE_URL;
+		delete process.env.PHASE7_ALLOW_LEGACY_MUTATIONS;
 		mockedReadBody.mockReset();
 	});
 
@@ -36,6 +37,7 @@ describe("fee admin canonical adapter", () => {
 		restoreEnv("comm_admin_11__DATABASE_URL", envSnapshot.comm_admin_11__DATABASE_URL);
 		restoreEnv("DATABASE_URL", envSnapshot.DATABASE_URL);
 		restoreEnv("NITRO_DATABASE_URL", envSnapshot.NITRO_DATABASE_URL);
+		delete process.env.PHASE7_ALLOW_LEGACY_MUTATIONS;
 	});
 
 	test("returns house-charge list with JsonVO PageDTO shape", async () => {
@@ -87,10 +89,17 @@ describe("fee admin canonical adapter", () => {
 			id: expect.any(String),
 			name: expect.any(String),
 			status: expect.any(String),
+			orderNumber: expect.any(String),
+			community: expect.any(String),
+			roomNumberOwner: expect.any(String),
+			feeItem: expect.any(String),
+			paymentMethod: expect.any(String),
+			actualAmount: expect.any(String),
 		});
 	});
 
 	test("legacy and admin adapters resolved from fee runtime share repository state", async () => {
+		process.env.PHASE7_ALLOW_LEGACY_MUTATIONS = "1";
 		const runtime = getFeeRuntime();
 
 		const legacyResponse = await runtime.legacyAdapter.saveRoomCreateFee({

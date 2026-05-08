@@ -1,3 +1,23 @@
+## v1.0.1-beta.6
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.5...v1.0.1-beta.6)
+
+### ✨ 新增功能
+
+- **api:** 增加 Nitro 环境变量观测接口 ([fbef591b](https://github.com/ruan-cat/11comm/commit/fbef591b))
+
+### 📖 Documentation
+
+- **vercel:** 编写 Nitro 独立部署方案 ([1ec7a387](https://github.com/ruan-cat/11comm/commit/1ec7a387))
+
+### 🔨 构建相关
+
+- **api:** 串联 Nitro Vercel 构建产物搬运 ([88d65603](https://github.com/ruan-cat/11comm/commit/88d65603))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.1-beta.5
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.4...v1.0.1-beta.5)

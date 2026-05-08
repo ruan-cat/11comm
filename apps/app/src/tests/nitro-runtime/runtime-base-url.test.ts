@@ -6,7 +6,6 @@ import {
   prependRuntimeBaseUrl,
   resolveApiRuntime,
   resolveHttpBaseUrl,
-  resolveHttpBaseUrlForPath,
   resolveUploadBaseUrl,
 } from '@/http/runtime-base'
 
@@ -154,6 +153,51 @@ describe('phase6 app api shadow base url', () => {
         VITE_11COMM_API_SHADOW_ENABLE: 'true',
       }),
     ).toBe('http://127.0.0.1:3102/app/feeConfig.listFeeConfigs')
+  })
+
+  test('routes fee payment and report legacy endpoints to apps/api while keeping non-allowlisted endpoints on legacy runtime', () => {
+    const shadowEnv = {
+      ...legacyRuntimeEnv,
+      VITE_11COMM_API_SHADOW_ENABLE: 'true',
+    }
+
+    expect(prependRuntimeBaseUrl('/app/fee.listFee', shadowEnv)).toBe('http://127.0.0.1:3102/app/fee.listFee')
+    expect(prependRuntimeBaseUrl('/app/payment.nativeQrcodePayment', shadowEnv)).toBe(
+      'http://127.0.0.1:3102/app/payment.nativeQrcodePayment',
+    )
+    expect(prependRuntimeBaseUrl('/app/reportFeeMonthStatistics/queryPayFeeDetail', shadowEnv)).toBe(
+      'http://127.0.0.1:3102/app/reportFeeMonthStatistics/queryPayFeeDetail',
+    )
+    expect(prependRuntimeBaseUrl('/app/ownerRepair.listOwnerRepairs', shadowEnv)).toBe(
+      'http://legacy.example.com/app/ownerRepair.listOwnerRepairs',
+    )
+    expect(prependRuntimeBaseUrl('/callComponent/core/list', shadowEnv)).toBe(
+      'http://legacy.example.com/callComponent/core/list',
+    )
+  })
+
+  test.each(PHASE2_API_SHADOW_ENDPOINTS)('routes allowlisted %s to apps/api when shadow is enabled', (endpoint) => {
+    expect(
+      prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe(`http://127.0.0.1:3102${endpoint}?communityId=COMM_001`)
+  })
+
+  test.each([
+    '/callComponent/core/list',
+    '/app/ownerRepair.listOwnerRepairs',
+    '/app/floor.queryFloors',
+    '/app/floor.queryFloorDetail',
+  ])('keeps non-allowlisted %s on the legacy runtime when shadow is enabled', (endpoint) => {
+    expect(
+      prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
+        ...legacyRuntimeEnv,
+        VITE_SERVER_BASEURL: 'http://127.0.0.1:3101',
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe(`http://127.0.0.1:3101${endpoint}?communityId=COMM_001`)
   })
 
   test('falls back to existing runtime base for non-allowlisted app endpoint when shadow is enabled', () => {

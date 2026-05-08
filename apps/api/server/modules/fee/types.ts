@@ -118,6 +118,8 @@ export interface PayFeeDetailReportItem {
 	roomId: string;
 	roomName: string;
 	stateName: string;
+	collector?: string;
+	transactionNo?: string;
 }
 
 export interface RoomFeeReportItem {

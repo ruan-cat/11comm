@@ -164,8 +164,7 @@ export function createInMemoryFeeRepository(seed?: Partial<InMemoryFeeSeed>): Fe
 export function createDbFeeRepository(db: DbType): FeeRepository {
 	const fallback = createInMemoryFeeRepository();
 
-	return {
-		...fallback,
+	return Object.assign(fallback, {
 		async listHouseCharges(params) {
 			const conditions = [];
 			if (params.expenseItem) {
@@ -311,6 +310,8 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 				payTime: formatDateTime(item.paymentTime),
 				payMethod: item.paymentMethod || "",
 				stateName: item.paymentAmount ? "已缴费" : "未缴费",
+				collector: item.collector || "",
+				transactionNo: item.transactionNo || "",
 			}));
 
 			return { list, total: Number(countResult[0]?.total || 0) };
@@ -329,7 +330,7 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 			void exPayments;
 			return fallback.createNativeQrcodePayment(params);
 		},
-	};
+	} satisfies Partial<FeeRepository>);
 }
 
 interface InMemoryFeeSeed {
@@ -877,10 +878,32 @@ function toAdminHouseCharge(fee: FeeItem): AdminHouseChargeListItem {
 }
 
 export function toPaymentDetailsFormItem(item: PayFeeDetailReportItem): PaymentDetailsFormListItem {
+	const amount = String(item.receivedAmount);
+	const orderNumber = item.transactionNo || item.feeId;
+
 	return {
 		id: item.feeId,
 		name: item.feeName,
 		status: item.stateName,
+		orderNumber,
+		community: "COMM_001",
+		roomNumberOwner: [item.roomName, item.ownerName].filter(Boolean).join(" / "),
+		feeType: item.feeName,
+		feeItem: item.feeName,
+		feeStatus: item.stateName,
+		paymentMethod: item.payMethod,
+		paymentTime: item.payTime,
+		cashier: item.collector || "apps/api",
+		payableAmount: amount,
+		receivableAmount: amount,
+		actualAmount: amount,
+		accountDeduction: "0",
+		discountAmount: "0",
+		giftAmount: "0",
+		lateFee: "0",
+		area: "",
+		parkingSpace: "",
+		description: item.roomName,
 		createTime: item.payTime,
 		updateTime: item.payTime,
 		remark: `${item.roomName} ${item.payMethod}`.trim(),
