@@ -1728,3 +1728,33 @@ Phase2 -> Phase3 的 GitHub workflow 交接验收必须满足：
 - workflow 不包含 `run_install`、`--global`、`pnpm ls -g`、直接 `turbo --version` 或其他依赖全局工具的步骤。
 - workflow、job、step 名称为语义化中文。
 - 不通过降级 `actions/checkout@v6`、`pnpm/action-setup@v5`、`actions/setup-node@v6` 等必要 action major versions 规避 CI 问题。
+
+## 2026-05-09 Phase7 生产 server 接入待办与边界
+
+独立 `apps/api` server 的生产入口已确定为 `https://01s-11-server.ruan-cat.com`。阶段 7 后续验证必须把它作为 admin 与 app 的统一后端 base URL，而不是继续依赖 `apps/admin/server`、`apps/app/server` 或旧 app Nitro 作为业务主入口。
+
+本轮生产 server 验证范围：
+
+- `apps/api` 生产部署必须通过 `GET /__nitro/health`、`GET /__nitro/ready`、`GET /__nitro/endpoints`。
+- 生产 CORS 必须允许 admin/app H5 域名访问统一 server，包括 `https://01s-11comm.ruan-cat.com`、`https://01s-11-app.ruan-cat.com`、`https://01s.11.app.ruan-cat.com`。
+- 已迁移或候选切流的 admin canonical 路由必须命中 `https://01s-11-server.ruan-cat.com/api/**`。
+- 已纳入 app allowlist 的 legacy 路由必须命中 `https://01s-11-server.ruan-cat.com/app/**`。
+- 暂未迁入 `apps/api` 的 `/app/**` 与 `/callComponent/**` 路由可以由统一 server 显式 fallback 到旧 app Nitro，但必须保留为 `legacy-fallback` 结论，不得记为已完成迁移。
+- 生产 `ready` 如果只返回 `READY_CONFIGURED`，表示生产环境未开启深度 DB readiness probe；只有 `RUN_PHASE7_DB_READINESS_CHECK=1` 下返回 `DB_READY` 才能作为生产 DB readiness 完成证据。
+
+前端生产接入要求：
+
+- `apps/admin/.env.production` 的阶段 7 API base URL 必须指向 `https://01s-11-server.ruan-cat.com`，但 admin 登录、模板鉴权等仍依赖旧 `VITE_BASE_URL` 的部分不得被无依据切换。
+- `apps/app/env/.env.production` 的 `VITE_SERVER_BASEURL`、`VITE_UPLOAD_BASEURL`、`VITE_11COMM_API_BASE_URL` 必须指向统一 server。
+- admin H5 与 app H5 均必须完成生产部署后，再用真实浏览器 Network 证明页面请求命中统一 server。
+- app H5 发布当前暂停：发布前必须先把 `apps/app` 正确 link 到 Vercel 项目 `11comm-app-h5`，未完成 link 前不得继续执行 app H5 生产发布，也不得把 app H5 生产 Network 证据记为已完成。
+
+2026-05-09 当前状态：
+
+- `apps/api` 生产部署已完成并别名到 `https://01s-11-server.ruan-cat.com`。
+- 统一 server 的 health、ready、endpoint manifest、CORS、admin canonical read、app legacy read 与高风险 mutation 默认阻断的生产 HTTP gate 已通过。
+- `/app/floor.queryFloors` 与 `/callComponent/core/list` 已通过统一 server fallback 到 `https://01s-11-app-server.ruan-cat.com` 返回 200，但结论只能是 `legacy-fallback`。
+- `apps/admin` 本地生产构建已通过；生产部署尝试因 Vercel 项目在独立目录安装时找不到 workspace 包 `@01s-11comm/type@workspace:^` 而失败，需要修正 Vercel monorepo/root directory 或改用等价的预构建部署策略后再继续。
+- `apps/app` 本地 H5 生产构建已通过并确认构建时环境变量指向统一 server；生产发布暂停，等待 link 到 `11comm-app-h5` 后再执行。
+
+阶段 7 不能因为生产 server 已通过而直接结束。只有在 admin H5 与 app H5 的生产部署都完成，且真实浏览器 Network 证明两端已使用 `https://01s-11-server.ruan-cat.com` 后，生产前端接入 gate 才能从 `no-go-for-production-h5-cutover` 转为可评审状态。
