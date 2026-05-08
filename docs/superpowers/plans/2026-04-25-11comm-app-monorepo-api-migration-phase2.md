@@ -277,7 +277,7 @@ H3 只从 nitro/h3 导入。
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@10.32.1",
+	"packageManager": "pnpm@11.0.8",
 	"engines": {
 		"node": ">=22.14.0"
 	},
