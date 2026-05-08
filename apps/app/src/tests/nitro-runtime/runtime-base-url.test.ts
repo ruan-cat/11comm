@@ -226,4 +226,23 @@ describe('phase6 app api shadow base url', () => {
       }),
     ).toBe('http://legacy.example.com/callComponent/core/list')
   })
+
+  test('routes production app requests through the unified standalone server', () => {
+    const productionEnv = {
+      VITE_API_RUNTIME: 'nitro-standalone',
+      VITE_SERVER_BASEURL: 'https://01s-11-server.ruan-cat.com',
+      VITE_11COMM_API_BASE_URL: 'https://01s-11-server.ruan-cat.com',
+      VITE_11COMM_API_SHADOW_ENABLE: 'true',
+    }
+
+    expect(prependRuntimeBaseUrl('/app/fee.listFee', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/fee.listFee',
+    )
+    expect(prependRuntimeBaseUrl('/callComponent/core/list', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/callComponent/core/list',
+    )
+    expect(prependRuntimeBaseUrl('/app/floor.queryFloors', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/floor.queryFloors',
+    )
+  })
 })
