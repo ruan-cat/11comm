@@ -9,9 +9,21 @@
 - [前端技术文档](https://01s-10wms-frontend-docs.ruancat6312.top/)
 - [本项目技术文档](./apps/admin/src/docs/technical-doc.md)
 
+## 生产环境地址
+
+生产环境地址的权威来源是各子项目 `package.json` 的 `homepage` 字段。自动化脚本、AI 代理和文档更新时都应先读取该字段，不要从历史报告、Vercel 列表截图或旧域名反推。
+
+| 子项目                | 地址来源                                | 当前生产地址                         |
+| --------------------- | --------------------------------------- | ------------------------------------ |
+| admin 后台 H5         | `apps/admin/package.json` 的 `homepage` | <https://01s-11comm.ruan-cat.com>    |
+| app H5                | `apps/app/package.json` 的 `homepage`   | <https://01s-11-app.ruan-cat.com>    |
+| 统一 Nitro API server | `apps/api/package.json` 的 `homepage`   | <https://01s-11-server.ruan-cat.com> |
+
+如果生产域名变更，先更新对应 `homepage`，再同步环境变量、部署说明和验证文档。
+
 ## 部署项目
 
-生产部署、环境变量与构建产物说明不在根 README 展开，请阅读 **[admin 项目的文档](./apps/admin/README.md)**。
+生产部署、环境变量与构建产物说明不在根 README 展开。admin 侧请阅读 **[admin 项目的文档](./apps/admin/README.md)**；app H5 与统一 API server 以各自 `apps/*/package.json` 的 scripts、env 文件和 `homepage` 字段为准。
 
 ## 项目结构
 
@@ -19,6 +31,8 @@
 01s-11comm/
 ├─ apps/
 │  ├─ admin/              # 管理端（Vue 3 + Vite + Nitro 等）
+│  ├─ app/                # 移动端 H5 / uni-app 子应用
+│  ├─ api/                # 独立统一 Nitro API server
 │  └─ type/               # 共享类型与 DB schema（workspace 包）
 ├─ examples/              # 示例（pnpm-workspace 中排除，非工作区子包）
 ├─ apps/admin/src/docs/  # 技术说明、报告与 prompts
