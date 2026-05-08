@@ -1,3 +1,16 @@
+## v1.0.1-beta.9
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.8...v1.0.1-beta.9)
+
+### 🔧 更新配置
+
+- **pnpm:** 启用工作区依赖提升兼容 pnpm v11 ([a5ec5bd9](https://github.com/ruan-cat/11comm/commit/a5ec5bd9))
+- **turbo:** 同步 Vercel 构建环境变量白名单 ([cfafb4a2](https://github.com/ruan-cat/11comm/commit/cfafb4a2))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.1-beta.8
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.7...v1.0.1-beta.8)
