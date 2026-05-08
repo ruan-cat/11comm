@@ -1758,3 +1758,160 @@ Phase2 -> Phase3 的 GitHub workflow 交接验收必须满足：
 - `apps/app` 本地 H5 生产构建已通过并确认构建时环境变量指向统一 server；生产发布暂停，等待 link 到 `11comm-app-h5` 后再执行。
 
 阶段 7 不能因为生产 server 已通过而直接结束。只有在 admin H5 与 app H5 的生产部署都完成，且真实浏览器 Network 证明两端已使用 `https://01s-11-server.ruan-cat.com` 后，生产前端接入 gate 才能从 `no-go-for-production-h5-cutover` 转为可评审状态。
+
+## 2026-05-09 Phase7 生产三端验证结果
+
+说明：上一小节中的前端生产接入待办与 app H5 暂停状态，是用户统一 Vercel 部署流之前的历史边界；本小节为最新生产复验结论。
+
+用户已通过 Vercel 统一 `11comm-nitro-server`、`11comm-admin`、`11comm-app-h5` 的部署流，`dev` 分支提交 `93e814253aaabf3848750688d5ed0c755453f78e` 已触发 admin 与 app H5 生产部署。本轮不再修改 app H5 代码、不执行 app H5 link、不触发发布，只验证线上结果。
+
+Vercel production deployment 基线：
+
+- `11comm-nitro-server`：`dpl_ANQAQ5fqwKYJEPjdoWu58sg6Ekmi`，`READY`，域名 `https://01s-11-server.ruan-cat.com`。
+- `11comm-admin`：`dpl_3FVhpb3BkBmvyKC3ERhyF6MUWSW4`，`READY`，域名 `https://01s-11comm.ruan-cat.com`。
+- `11comm-app-h5`：`dpl_52RgYjqkP9Mw3eFEZXxQF6dFoUWY`，`READY`，域名 `https://01s-11-app.ruan-cat.com` 与 `https://01s.11.app.ruan-cat.com`。
+
+生产 server 与 CORS gate：
+
+- `GET https://01s-11-server.ruan-cat.com/__nitro/health` 返回 200。
+- `GET https://01s-11-server.ruan-cat.com/__nitro/ready` 返回 200 `READY_CONFIGURED`，`checks.database.configured=true`，`probeEnabled=false`。该结果只证明生产已配置数据库 URL；仍不能替代深度 DB probe 的 `DB_READY`。
+- `GET https://01s-11-server.ruan-cat.com/__nitro/endpoints` 返回 200。
+- `OPTIONS https://01s-11-server.ruan-cat.com/__nitro/health` 对 `https://01s-11comm.ruan-cat.com`、`https://01s-11-app.ruan-cat.com`、`https://01s.11.app.ruan-cat.com` 均返回 204，并回显对应 `access-control-allow-origin`。
+
+生产浏览器 Network gate：
+
+- Admin `https://01s-11comm.ruan-cat.com/#/property-manage/report-manage/payment-details-form` 页面渲染缴费明细表，`POST https://01s-11-server.ruan-cat.com/api/property-manage/report-manage/payment-details-form/list` 返回 200，响应头包含 `x-api-phase: phase3-infra`，响应体 `cashier=apps/api`。
+- Admin `https://01s-11comm.ruan-cat.com/#/property-manage/repairs-manage/issues` 页面渲染工单池，`POST https://01s-11-server.ruan-cat.com/api/property-manage/repairs-manage/issues/list` 返回 200，响应头包含 `x-api-phase: phase3-infra`。
+- App H5 `https://01s-11-app.ruan-cat.com/#/pages-sub/fee/detail?feeId=FEE_001&communityId=COMM_001` 页面渲染费用详情，`GET https://01s-11-server.ruan-cat.com/app/fee.listFee` 与 `GET https://01s-11-server.ruan-cat.com/app/fee.queryFeeDetail` 均返回 200。
+- App H5 `https://01s-11-app.ruan-cat.com/#/pages-sub/report/fee-summary?communityId=COMM_001` 页面渲染费用汇总报表，`GET https://01s-11-server.ruan-cat.com/callComponent/core/list`、`GET https://01s-11-server.ruan-cat.com/app/floor.queryFloors`、`GET https://01s-11-server.ruan-cat.com/app/reportFeeMonthStatistics.queryReportFeeSummary` 均返回 200。
+
+生产 HTTP gate：
+
+- `RUN_PHASE7_HTTP_TESTS=1 PHASE7_API_BASE_URL=https://01s-11-server.ruan-cat.com pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts` 返回 `1 passed / 3 passed`。
+- 该 gate 覆盖 health、ready、endpoint manifest、一个 admin canonical read、一个 app legacy read，以及 `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee` 三个高风险写入口默认 `409 PHASE7_MUTATION_GUARDED` 阻断。
+
+生产 runtime 日志：
+
+- `11comm-nitro-server`、`11comm-admin`、`11comm-app-h5` 最近 30 分钟 production runtime error/warning 查询均无记录。
+
+当前 gate 结论：
+
+- `no-go-for-production-h5-cutover` 可解除，升级为 `go-for-production-readonly-and-guarded-write-candidate-cutover`。
+- 仍保持 `no-go-for-retirement`：`/callComponent/core/list` 与 `/app/floor.queryFloors` 在统一 server 上通过 legacy fallback 兼容返回 200，不能归类为已完成 DB/repository 迁移；生产 deep DB readiness 仍为 `READY_CONFIGURED` 而非 `DB_READY`；高风险写入口仍只允许默认阻断或显式受控演练，不能当作真实生产写能力完成。
+
+## 2026-05-09 Phase7 旧服务退役卡点与接口批量迁移接续清单
+
+本节用于后续 AI 会话接续阶段 7。当前不是“完全不能推进”，而是推进边界已经拆成两层：
+
+1. `go-for-production-readonly-and-guarded-write-candidate-cutover`：生产 admin/app H5 首批页面已能通过统一 `apps/api` server 读取，且高风险写入口默认阻断可验证。
+2. `no-go-for-retirement`：旧 `apps/admin/server` 与 `apps/app/server` 仍不能删除、移动、清空、归档或改名；只能进入“批量迁移、冻结新增入口、删除候选评审”的下一轮。
+
+### 当前不能删除旧 Nitro 服务的核心原因
+
+1. **admin 旧 endpoint 仍大面积未迁移。**
+   - 2026-05-05 全量扫描口径：`apps/admin/server/api/**/*.ts` 仍有 155 个旧 admin API 文件。
+   - `apps/api/server/routes/api/**/*.ts` 只有 11 个 admin canonical route。
+   - 对旧 admin 路径的 exact covered 只有 6 个，canonical-only 5 个，old remaining 149 个。
+   - `canonical-only` 包括 `house-charge/detail`、`expense-item-setting/detail`、`expense-item-setting/create`、`expense-item-setting/update`、`expense-item-setting/delete`；这些是新 canonical 能力，不能自动抵扣旧 `apps/admin/server/api` 的 149 个 remaining endpoint。
+   - 因此删除 `apps/admin/server` 会直接丢失大量未迁移、未归类、未验证的旧后台接口。
+
+2. **app legacy endpoint 仍大面积未迁移。**
+   - 2026-05-05 全量扫描口径：`apps/app/server/modules/**/endpoints.ts` 有 219 次 route literal、214 个 unique；剔除 `/test/*` 后，业务 unique 为 212。
+   - 这 212 个业务 legacy endpoint 中，`/app/**` 为 209 个，`/callComponent/**` 为 2 个。
+   - `apps/api` 当前只承载 17 个 app legacy target；`/callComponent/**` 的 DB/repository 迁移覆盖为 0。
+   - 因此删除 `apps/app/server` 会破坏仍未迁入 `apps/api` 的 app 端 legacy API 与兼容 fallback。
+
+3. **生产仍存在明确的 legacy fallback，不是完成迁移。**
+   - 生产 `https://01s-11-server.ruan-cat.com/callComponent/core/list` 返回 200，但该请求仍通过统一 server fallback 到旧 app Nitro 兼容实现。
+   - 生产 `https://01s-11-server.ruan-cat.com/app/floor.queryFloors` 返回 200，但该请求仍是 `legacy-fallback`，不能归类为已完成 `apps/api` DB/repository 迁移。
+   - 后续会话必须避免把“统一 server 能返回 200”误判成“旧服务可以删除”。只有 endpoint 已在 `apps/api` 内有 canonical/adapter 实现、浏览器 Network 命中统一 server、shadow-off 回退已验证、并从矩阵中标记为 `candidate-after-evidence` 或 `delete-candidate`，才允许进入收口评审。
+
+4. **生产 deep DB readiness 尚未完成。**
+   - 生产 `GET https://01s-11-server.ruan-cat.com/__nitro/ready` 当前返回 `READY_CONFIGURED`，`probeEnabled=false`。
+   - 该状态只证明生产配置了数据库连接信息，不证明生产环境执行了真实数据库连接、关键表检查、migration count 检查和 schema readiness 检查。
+   - 旧服务退役前必须取得生产环境 `RUN_PHASE7_DB_READINESS_CHECK=1` 且 `/__nitro/ready` 返回 `DB_READY` 的证据；否则不能删除仍承担数据来源、fallback 或回滚职责的旧服务。
+
+5. **高风险写入口还没有生产真实写入/读回/回滚证据。**
+   - 当前生产 gate 证明了 `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee` 默认返回 `409 PHASE7_MUTATION_GUARDED`，这是正确的默认阻断状态。
+   - 2026-05-05 本地受控演练是在清空 DB URL、使用 in-memory/fallback runtime、显式设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 的前提下完成，只能标记为 `write-runtime-fallback-only`。
+   - 该证据不能替代真实 Neon 写入、真实支付边界、生产数据读回、业务回滚、幂等性和审计记录。
+   - 后续如要推进写入口，必须先定义测试数据、业务允许范围、回滚脚本/手工回滚步骤、审计字段、失败清理策略，再开启 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 做受控演练；未完成前不能把这些写入口算作旧服务删除条件已满足。
+
+6. **删除旧服务必须单独评审，不能夹带在接口迁移提交里。**
+   - 阶段 7 当前默认策略是：先禁用入口、移除注册、保留目录；真正删除 `apps/admin/server` 或 `apps/app/server` 必须作为单独评审、单独变更、单独回滚方案处理。
+   - 删除前必须存在可复核的 endpoint 状态矩阵、反向依赖扫描报告、删除候选清单、fallback/rollback 清单、生产浏览器 Network 证据、生产 DB readiness 证据和写入口策略结论。
+   - 任何“没有被当前页面访问到”“全局搜索暂时没有命中”“统一 server 可返回 200”的事实，都不能单独构成删除依据。
+
+### 后续 AI 会话应继续推进的工作顺序
+
+1. **冻结旧服务新增入口。**
+   - 明确 `apps/admin/server` 与 `apps/app/server` 只作为迁移来源、fallback 与回滚参考，不再接受新增业务能力。
+   - 新增接口、修复后的主实现、DB repository、Drizzle 查询、Zod 校验和运行时 adapter 必须进入 `apps/api` 与 `apps/type`。
+   - 若发现新提交继续往旧服务添加业务入口，应在报告中标记为 Phase7 regression。
+
+2. **补全 endpoint 状态矩阵。**
+   - 输入源必须包括：
+     - `apps/admin/server/api/**/*.ts`
+     - `apps/admin/src/**/*.{ts,vue}` 中的 `/api/**` 调用
+     - `apps/api/server/routes/**/*.ts`
+     - `apps/api/server/shared/runtime/runtime-endpoints.ts`
+     - `apps/app/server/modules/**/endpoints.ts`
+     - `apps/app/src/**/*.{ts,vue}` 中的 `/app/**` 与 `/callComponent/**` 调用
+   - 每条记录至少要有：`sourceKind`、`sourcePath`、`method`、`oldPath`、`callerEvidence`、`appsApiTarget`、`targetStatus`、`browserEvidence`、`fallbackEvidence`、`writeReadRollbackEvidence`、`retirementDecision`。
+   - `targetStatus` 只能使用明确状态，例如 `candidate-after-evidence`、`legacy-fallback`、`blocked-for-execution`、`not-candidate`、`unknown-needs-triage`、`delete-candidate`。
+   - 不允许出现“扫描不到所以可删除”的隐式结论。
+
+3. **优先迁移仍在生产 fallback 的 app endpoint。**
+   - 第一优先级：`/callComponent/core/list`。
+   - 第二优先级：`/app/floor.queryFloors`。
+   - 迁移完成标准不是“统一 server 返回 200”，而是：
+     - `apps/api` 内有明确 route/adapter/service/repository 实现。
+     - 数据来自 Neon/Drizzle 或明确的 canonical 数据源，而不是旧 app Nitro fallback。
+     - endpoint manifest 不再标记为 legacy fallback。
+     - 生产或本地三端浏览器 Network 命中统一 server。
+     - shadow-off 或 fallback 策略可验证。
+     - 测试覆盖正常路径、空数据、错误路径和兼容响应格式。
+
+4. **分批迁移 admin remaining endpoint。**
+   - 从 149 个 old remaining 中按真实页面调用和业务风险排序，不要无差别全量重写。
+   - 优先级建议：
+     - 已有页面入口、用户能点击到、生产 Network 可观察的 list/detail 读接口。
+     - 已有 `apps/type` schema 与 Drizzle 表的费用、报表、工单、房屋、资源类接口。
+     - 已在 `apps/api` 有相邻 canonical route 的同域 endpoint。
+     - 最后再处理无人调用、历史 mock、模板遗留或需要业务确认的接口。
+   - 每迁一批必须补：Vitest contract/module test、gated HTTP test 或页面级 Network 证据、shadow-off 回退证据、矩阵状态更新。
+
+5. **分批迁移 app legacy endpoint。**
+   - 从 212 个业务 unique endpoint 中优先处理生产 H5 会访问的路径。
+   - 已在 fee/payment/report allowlist 的 endpoint 可继续扩展，但必须区分只读、默认阻断写、受控写、真实 DB 写。
+   - 对仍无 schema/表结构支撑的 endpoint，先标记为 `unknown-needs-triage` 或 `legacy-fallback`，不要强行制造不可信 mock 作为迁移完成证据。
+
+6. **补生产 `DB_READY` 证据。**
+   - 生产 server 需要在受控环境下开启 `RUN_PHASE7_DB_READINESS_CHECK=1`。
+   - `/__nitro/ready` 必须返回 `DB_READY`，并记录 required tables、migration count、连接目标、probeEnabled、失败时的 error code。
+   - 若只能拿到 `READY_CONFIGURED`，仍然不能解除 `no-go-for-retirement`。
+
+7. **写入口只做受控推进，不能绕过 guard。**
+   - 默认生产必须保持 `409 PHASE7_MUTATION_GUARDED`。
+   - 如需验证真实写入，必须先准备测试数据、业务允许范围、回滚方式、读回断言、失败清理和审计记录。
+   - 验证完成后必须恢复 `PHASE7_ALLOW_LEGACY_MUTATIONS` 关闭状态，并再次证明默认阻断恢复。
+
+8. **最后才进入旧服务删除候选评审。**
+   - 某个 endpoint 进入 `delete-candidate` 前，必须满足：
+     - `apps/api` 已有替代实现。
+     - 前端调用已切到统一 server 或该旧 endpoint 已无调用者。
+     - 浏览器 Network、HTTP gate、contract/module test 通过。
+     - shadow-off/fallback/rollback 已明确。
+     - 生产 DB readiness 与写入口策略不阻塞该 endpoint。
+   - 整个 `apps/admin/server` 或 `apps/app/server` 目录删除前，还必须额外证明目录内所有 endpoint 都已归类为 `delete-candidate`、`not-candidate-but-unused` 或保留清单；否则只能移除入口或注册，不能删除目录。
+
+### 后续会话禁止误判的点
+
+- 不要把 `go-for-production-readonly-and-guarded-write-candidate-cutover` 误读为旧服务可删除。
+- 不要把 `READY_CONFIGURED` 误读为 `DB_READY`。
+- 不要把 legacy fallback 返回 200 误读为 DB/repository 迁移完成。
+- 不要把本地 in-memory/fallback 写入演练误读为真实 Neon/生产写入完成。
+- 不要把 canonical-only route 误算成旧 path exact covered。
+- 不要因为某个页面的首批 Network 已通过，就推断同模块所有 detail/create/update/delete 均已完成。
+- 不要触碰旧源目录 `D:\code\ruan-cat\01s-11comm-app`；该目录永久保留，不属于旧服务退役对象。
+- 不要在没有删除候选清单和回滚方案前删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`。

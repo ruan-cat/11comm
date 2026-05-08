@@ -708,3 +708,143 @@ app H5 当前生产发布暂停。发布前必须先把 `apps/app` 正确 link �
 - admin H5 生产接入 gate：未通过，阻塞于 Vercel workspace 安装配置。
 - app H5 生产接入 gate：暂停，等待 link 到 `11comm-app-h5` 后再发布和验证。
 - Phase7 总体状态：仍不能关闭旧 server，也不能从 `no-go-for-production-h5-cutover` 升级为完成态。
+
+## 2026-05-09 生产三端复验
+
+说明：上一小节中的 admin/app H5 未完成或暂停结论，是用户统一 Vercel 部署流之前的历史状态；本小节为最新生产复验结论。
+
+用户已将 `11comm-nitro-server`、`11comm-admin`、`11comm-app-h5` 统一到 Vercel 的 dev 分支部署流。本轮不再修改 app H5，也不触发发布，只做线上验证并记录证据。
+
+### Vercel deployment 基线
+
+```log
+11comm-nitro-server
+  project: prj_BanYs5i6t2lmdGmJrkpYTXKrPzF4
+  deployment: dpl_ANQAQ5fqwKYJEPjdoWu58sg6Ekmi
+  target: production
+  state: READY
+  domain: https://01s-11-server.ruan-cat.com
+
+11comm-admin
+  project: prj_2juh4lgFmMT3q0WfsO3AEhHZlODN
+  deployment: dpl_3FVhpb3BkBmvyKC3ERhyF6MUWSW4
+  target: production
+  state: READY
+  branch: dev
+  commit: 93e814253aaabf3848750688d5ed0c755453f78e
+  domain: https://01s-11comm.ruan-cat.com
+
+11comm-app-h5
+  project: prj_LCXbBKhjv5chZN2qFtFZ12nbZBLj
+  deployment: dpl_52RgYjqkP9Mw3eFEZXxQF6dFoUWY
+  target: production
+  state: READY
+  branch: dev
+  commit: 93e814253aaabf3848750688d5ed0c755453f78e
+  domain: https://01s-11-app.ruan-cat.com
+```
+
+### Server 与 CORS
+
+```log
+GET https://01s-11-server.ruan-cat.com/__nitro/health -> 200
+GET https://01s-11-server.ruan-cat.com/__nitro/ready -> 200 READY_CONFIGURED
+GET https://01s-11-server.ruan-cat.com/__nitro/endpoints -> 200
+
+OPTIONS Origin=https://01s-11comm.ruan-cat.com -> 204 allow=https://01s-11comm.ruan-cat.com
+OPTIONS Origin=https://01s-11-app.ruan-cat.com -> 204 allow=https://01s-11-app.ruan-cat.com
+OPTIONS Origin=https://01s.11.app.ruan-cat.com -> 204 allow=https://01s.11.app.ruan-cat.com
+```
+
+`READY_CONFIGURED` 表示生产已配置数据库 URL，但未开启深度 DB readiness probe；因此生产 DB readiness 仍不能按 `DB_READY` 结案。
+
+### Chrome MCP 页面级 Network
+
+Admin `payment-details-form`：
+
+```log
+page: https://01s-11comm.ruan-cat.com/#/property-manage/report-manage/payment-details-form
+network: POST https://01s-11-server.ruan-cat.com/api/property-manage/report-manage/payment-details-form/list
+status: 200
+response header: x-api-phase=phase3-infra
+render evidence: 表格显示 A-101 / 张三、A-102 / 李四，cashier=apps/api
+evidence files:
+  .tmp/phase7-prod-admin-payment-details-form-20260509.network-request
+  .tmp/phase7-prod-admin-payment-details-form-20260509.network-response
+```
+
+Admin `issues`：
+
+```log
+page: https://01s-11comm.ruan-cat.com/#/property-manage/repairs-manage/issues
+network: POST https://01s-11-server.ruan-cat.com/api/property-manage/repairs-manage/issues/list
+status: 200
+response header: x-api-phase=phase3-infra
+render evidence: 表格显示 WO202604250002、WO202604250001
+evidence files:
+  .tmp/phase7-prod-admin-issues-20260509.network-request
+  .tmp/phase7-prod-admin-issues-20260509.network-response
+  .tmp/phase7-prod-admin-issues-20260509.png
+```
+
+App H5 `fee/detail`：
+
+```log
+page: https://01s-11-app.ruan-cat.com/#/pages-sub/fee/detail?feeId=FEE_001&communityId=COMM_001
+network: GET https://01s-11-server.ruan-cat.com/app/fee.listFee?page=1&row=1&communityId=COMM_001&feeId=FEE_001
+network: GET https://01s-11-server.ruan-cat.com/app/fee.queryFeeDetail?page=1&row=30&feeId=FEE_001&communityId=COMM_001
+status: 200 / 200
+render evidence: 页面显示 费用详情、物业管理费、部分缴费、缴费历史
+evidence files:
+  .tmp/phase7-prod-app-fee-list-20260509.network-response
+  .tmp/phase7-prod-app-fee-detail-20260509.network-response
+  .tmp/phase7-prod-app-fee-detail-20260509.png
+```
+
+App H5 `report/fee-summary`：
+
+```log
+page: https://01s-11-app.ruan-cat.com/#/pages-sub/report/fee-summary?communityId=COMM_001
+network: GET https://01s-11-server.ruan-cat.com/callComponent/core/list?name=pay_fee_config&type=fee_type_cd
+network: GET https://01s-11-server.ruan-cat.com/app/floor.queryFloors?page=1&row=50&communityId=COMM_001
+network: GET https://01s-11-server.ruan-cat.com/app/reportFeeMonthStatistics.queryReportFeeSummary?page=1&row=1&communityId=COMM_001&startDate=2026-05-01&endDate=2026-05-31&feeTypeCd=&floorId=
+status: 200 / 200 / 200
+render evidence: 页面显示 欠费 ¥656.00、实缴 ¥400、收费率 54.35%
+evidence files:
+  .tmp/phase7-prod-app-callcomponent-20260509.network-response
+  .tmp/phase7-prod-app-floor-20260509.network-response
+  .tmp/phase7-prod-app-fee-summary-20260509.network-response
+  .tmp/phase7-prod-app-fee-summary-20260509.png
+```
+
+`/callComponent/core/list` 与 `/app/floor.queryFloors` 当前通过统一 server 返回 200，但结论仍是 `legacy-fallback`，不是 `apps/api` DB/repository 迁移完成。
+
+### 生产 HTTP gate 与日志
+
+```log
+RUN_PHASE7_HTTP_TESTS=1
+PHASE7_API_BASE_URL=https://01s-11-server.ruan-cat.com
+pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts
+
+Test Files  1 passed
+Tests       3 passed
+```
+
+该 gate 覆盖 health、ready、manifest、一个 admin canonical read、一个 app legacy read，以及 `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee` 默认 `409 PHASE7_MUTATION_GUARDED` 阻断。
+
+Vercel production runtime logs 最近 30 分钟检查结果：
+
+```log
+11comm-nitro-server error/warning: No logs found
+11comm-admin error/warning: No logs found
+11comm-app-h5 error/warning: No logs found
+```
+
+### 复验结论
+
+- `apps/api` 生产 server gate：通过。
+- admin H5 生产接入 gate：通过首批页面级 Network 证据。
+- app H5 生产接入 gate：通过首批页面级 Network 证据。
+- 高风险写入口生产默认阻断 gate：通过。
+- Phase7 当前升级为 `go-for-production-readonly-and-guarded-write-candidate-cutover`。
+- 旧服务退役/删除仍是 `no-go-for-retirement`：生产 deep DB readiness 尚未返回 `DB_READY`，`/callComponent/**` 与部分 `/app/**` 仍依赖 legacy fallback，高风险写入口仍未做生产受控写入/读回/回滚演练。
