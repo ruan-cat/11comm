@@ -3,6 +3,7 @@
 	"tasks": {
 		"nitro:build:vercel": {
 			"cache": true,
+			"env": ["ENABLE_EXPERIMENTAL_COREPACK", "R2_*", "comm_admin_11__*"],
 			"outputs": [".vercel/output/**"]
 		},
 		"move-vercel-output-to-root": {
