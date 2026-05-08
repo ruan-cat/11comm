@@ -1,3 +1,34 @@
+## v1.0.1-beta.7
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.6...v1.0.1-beta.7)
+
+### ✨ 新增功能
+
+- **api:** 接入 Phase7 运行时兜底链路 ([049b8185](https://github.com/ruan-cat/11comm/commit/049b8185))
+
+### 📖 Documentation
+
+- **api:** 更新 Phase7 生产接入记录 ([6bd88441](https://github.com/ruan-cat/11comm/commit/6bd88441))
+
+### 🔨 构建相关
+
+- **app:** 添加 Vercel H5 构建入口 ([807ee16e](https://github.com/ruan-cat/11comm/commit/807ee16e))
+
+### ✅ Tests
+
+- **api:** 覆盖 Phase7 运行时契约 ([9f4c9f93](https://github.com/ruan-cat/11comm/commit/9f4c9f93))
+- **app:** 覆盖生产统一 server 地址解析 ([32a54e9e](https://github.com/ruan-cat/11comm/commit/32a54e9e))
+- **admin:** 补充物业表单接线用例 ([74a8f5a2](https://github.com/ruan-cat/11comm/commit/74a8f5a2))
+
+### 🔧 更新配置
+
+- **api:** 设置 Nitro 服务主页地址 ([0ab51b08](https://github.com/ruan-cat/11comm/commit/0ab51b08))
+- **api:** 切换生产环境 API 配置 ([ee172363](https://github.com/ruan-cat/11comm/commit/ee172363))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.1-beta.6
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.5...v1.0.1-beta.6)
