@@ -42,6 +42,12 @@ export default defineConfig({
 			route: "/app/**",
 			handler: "./server/handlers/legacy-dispatch",
 		},
+		{
+			// Phase7 production cutover still needs app legacy fallback for routes not yet
+			// migrated into apps/api, such as /callComponent/core/list.
+			route: "/callComponent/**",
+			handler: "./server/handlers/legacy-dispatch",
+		},
 	],
 	alias: {
 		server: path.resolve(apiRoot, "server"),

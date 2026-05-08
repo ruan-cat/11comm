@@ -16,6 +16,21 @@ export interface PublicRuntimeConfig {
 
 export type RuntimeEnvRecord = Record<string, string | undefined>;
 
+export const defaultCorsAllowedOrigins = [
+	"http://localhost:3000",
+	"http://127.0.0.1:3000",
+	"http://localhost:8080",
+	"http://127.0.0.1:8080",
+	"https://01s-11comm.ruan-cat.com",
+	"https://01s-11-app.ruan-cat.com",
+	"https://01s.11.app.ruan-cat.com",
+	"https://01s-11.ruan-cat.com",
+	"https://01s-11comm-app.ruan-cat.com",
+	"https://01s-11comm-h5.ruan-cat.com",
+];
+
+export const defaultLegacyAppFallbackBaseUrl = "https://01s-11-app-server.ruan-cat.com";
+
 const databaseUrlKeys = [
 	"comm_admin_11__DATABASE_URL",
 	"NITRO_DATABASE_URL",
@@ -60,6 +75,7 @@ export function resolvePublicRuntimeConfig(raw: RuntimeConfigLike["public"] = {}
 		serviceName: String(raw.serviceName || "@01s-11comm/api"),
 		phase: String(raw.phase || "phase3-infra"),
 		corsAllowedOrigins: uniqueStrings([
+			...defaultCorsAllowedOrigins,
 			...parseCsv(raw.corsAllowedOrigins),
 			...parseCsv(process.env.NITRO_CORS_ALLOWED_ORIGINS),
 			...parsePlatformOrigins(process.env.VERCEL_URL),

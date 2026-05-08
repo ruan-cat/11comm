@@ -5,6 +5,7 @@ import { getPublicRuntimeConfig } from "../shared/runtime/env";
 import { apiLogger, logApiError, logApiRequest } from "../shared/runtime/observability";
 import { getApiRequestContext, getRequestDurationMs } from "../shared/runtime/request-context";
 import { toEndpointDispatchInput } from "../shared/runtime/request-adapter";
+import { isLegacyAppFallbackPath, proxyLegacyAppRequest } from "../shared/runtime/legacy-fallback";
 import { legacyFailure } from "../shared/runtime/response-builder";
 import { runtimeEndpointDefinitions } from "../shared/runtime/runtime-endpoints";
 
@@ -12,9 +13,10 @@ const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
 export default defineHandler(async (event) => {
 	const requestContext = getApiRequestContext(event);
+	const input = await toEndpointDispatchInput(event);
 
 	try {
-		const response = await dispatchEndpoint(registry, await toEndpointDispatchInput(event));
+		const response = await dispatchEndpoint(registry, input);
 		logApiRequest(apiLogger, {
 			requestId: requestContext.requestId,
 			method: requestContext.method,
@@ -24,6 +26,23 @@ export default defineHandler(async (event) => {
 		});
 		return response;
 	} catch (error) {
+		if (Number((error as any)?.statusCode) === 404 && isLegacyAppFallbackPath(requestContext.path)) {
+			try {
+				const fallbackResponse = await proxyLegacyAppRequest(input);
+				setResponseStatus(event, fallbackResponse.status);
+				logApiRequest(apiLogger, {
+					requestId: requestContext.requestId,
+					method: requestContext.method,
+					path: requestContext.path,
+					statusCode: fallbackResponse.status,
+					durationMs: getRequestDurationMs(requestContext),
+				});
+				return fallbackResponse.body;
+			} catch (fallbackError) {
+				logApiError(apiLogger, fallbackError, requestContext);
+			}
+		}
+
 		const statusCode = Number((error as any)?.statusCode || 500);
 		setResponseStatus(event, statusCode);
 		logApiError(apiLogger, error, requestContext);
