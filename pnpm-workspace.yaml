@@ -3,6 +3,8 @@ packages:
   - "!examples/*"
   - "!.vercel/**"
 
+shamefullyHoist: true
+
 allowBuilds:
   "@parcel/watcher": true
   "@uni-helper/unocss-preset-uni": true
