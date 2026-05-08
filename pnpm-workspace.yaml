@@ -3,6 +3,17 @@ packages:
   - "!examples/*"
   - "!.vercel/**"
 
+allowBuilds:
+  "@parcel/watcher": true
+  "@uni-helper/unocss-preset-uni": true
+  core-js: true
+  core-js-pure: true
+  es5-ext: true
+  esbuild: true
+  simple-git-hooks: true
+  typeit: true
+  vue-demi: true
+
 allowedDeprecatedVersions:
   abab: "*"
   are-we-there-yet: "*"
