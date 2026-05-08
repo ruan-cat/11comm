@@ -1,3 +1,23 @@
+## v1.0.1-beta.8
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.7...v1.0.1-beta.8)
+
+### 📖 Documentation
+
+- **ai:** 补充生产环境地址来源规范 ([44510741](https://github.com/ruan-cat/11comm/commit/44510741))
+- 新增生产环境地址对照表与项目结构说明 ([5c29a3c2](https://github.com/ruan-cat/11comm/commit/5c29a3c2))
+- **phase7:** 追加生产三端复验结论与退役卡点清单 ([ca0e56a6](https://github.com/ruan-cat/11comm/commit/ca0e56a6))
+- **migration:** 更新 phase2 迁移计划文档 ([03dbc36c](https://github.com/ruan-cat/11comm/commit/03dbc36c))
+
+### 🔧 更新配置
+
+- **app:** 更新 homepage 为生产域名 ([9a9251e4](https://github.com/ruan-cat/11comm/commit/9a9251e4))
+- **workspace:** 更新 pnpm-workspace 配置并清理冗余锁文件 ([00c1a692](https://github.com/ruan-cat/11comm/commit/00c1a692))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.1-beta.7
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.6...v1.0.1-beta.7)
