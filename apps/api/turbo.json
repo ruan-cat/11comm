@@ -1,0 +1,13 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"nitro:build:vercel": {
+			"cache": true,
+			"outputs": [".vercel/output/**"]
+		},
+		"move-vercel-output-to-root": {
+			"cache": false,
+			"dependsOn": ["nitro:build:vercel"]
+		}
+	}
+}

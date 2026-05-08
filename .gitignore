@@ -85,6 +85,7 @@ vite.config.ts.*.mjs
 # 忽略通用中间缓存目录
 **/.cache/
 **/.temp/
+.tmp/
 
 # 忽略typedoc生成的md文件
 /src/docs/typedoc-md

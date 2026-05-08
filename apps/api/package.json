@@ -11,7 +11,7 @@
 		"dev": "nitro dev",
 		"build": "nitro build",
 		"build:node": "nitro build --preset node-server",
-		"build:vercel": "nitro build --preset vercel",
+		"build:vercel": "turbo move-vercel-output-to-root",
 		"build:cloudflare": "nitro build --preset cloudflare-module",
 		"preview": "nitro preview",
 		"typecheck": "tsc --noEmit",
@@ -19,7 +19,9 @@
 		"test:infra": "vitest run tests/infra tests/smoke tests/runtime",
 		"verify:phase3": "pnpm run test:infra && pnpm run typecheck && pnpm run build:node && pnpm run build:vercel && pnpm run build:cloudflare",
 		"verify:phase4": "vitest run tests/legacy tests/admin tests/modules tests/runtime tests/infra && pnpm run typecheck && pnpm run build:node",
-		"verify:phase5": "vitest run tests/admin tests/modules tests/runtime tests/infra && pnpm run typecheck && pnpm run build:node"
+		"verify:phase5": "vitest run tests/admin tests/modules tests/runtime tests/infra && pnpm run typecheck && pnpm run build:node",
+		"nitro:build:vercel": "nitro build --preset vercel",
+		"move-vercel-output-to-root": "move-vercel-output-to-root"
 	},
 	"dependencies": {
 		"@01s-11comm/type": "workspace:^",
