@@ -2,6 +2,7 @@ import { test, describe } from "vitest";
 import { expect } from "vitest";
 
 import { applyStandardHeaders, buildCorsHeaders, isOriginAllowed } from "../../server/shared/runtime/cors";
+import { defaultCorsAllowedOrigins } from "../../server/shared/runtime/env";
 
 describe("api cors policy", () => {
 	test("allows configured origins only when a list is present", () => {
@@ -35,6 +36,23 @@ describe("api cors policy", () => {
 			"access-control-allow-headers": "content-type,x-request-id",
 			vary: "Origin",
 		});
+	});
+
+	test("allows production admin and app origins by default", () => {
+		for (const origin of [
+			"https://01s-11comm.ruan-cat.com",
+			"https://01s-11-app.ruan-cat.com",
+			"https://01s.11.app.ruan-cat.com",
+		]) {
+			const headers = buildCorsHeaders({
+				origin,
+				allowedOrigins: defaultCorsAllowedOrigins,
+				requestHeaders: "content-type",
+				preflight: true,
+			});
+
+			expect(headers["access-control-allow-origin"]).toBe(origin);
+		}
 	});
 
 	test("writes headers to plain test events", () => {

@@ -2,6 +2,7 @@ import { test, describe } from "vitest";
 import { afterEach, beforeEach, expect } from "vitest";
 
 import {
+	defaultCorsAllowedOrigins,
 	resolveCloudflareRuntimeEnv,
 	resolveDatabaseUrlFromSources,
 	resolvePublicRuntimeConfig,
@@ -83,6 +84,7 @@ describe("api runtime env resolver", () => {
 			serviceName: "@01s-11comm/api",
 			phase: "phase3-infra",
 			corsAllowedOrigins: [
+				...defaultCorsAllowedOrigins,
 				"http://localhost:5173",
 				"https://example.com",
 				"https://env.example.com",
