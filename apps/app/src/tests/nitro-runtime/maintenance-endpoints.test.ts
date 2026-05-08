@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 import { createMaintenanceEndpointDefinitions } from '../../../server/modules/maintenance/endpoints'
 import { createMaintenanceMockRepository } from '../../../server/modules/maintenance/repository'
 import {
@@ -50,6 +50,31 @@ describe('maintenance endpoints', () => {
         },
       },
     })
+  })
+
+  test('seeds a pending maintenance task regardless of random values', async () => {
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.99)
+
+    try {
+      const registry = createEndpointRegistry(
+        createMaintenanceEndpointDefinitions(createMaintenanceMockRepository()),
+      )
+
+      const listResponse = await dispatchEndpoint(registry, {
+        method: 'GET',
+        path: '/app/maintenance.listMaintenanceTasks',
+        query: {
+          page: 1,
+          row: 20,
+          communityId: 'COMM_001',
+        },
+      })
+
+      expect(listResponse.data.list.some((task: any) => task.status === '10001')).toBe(true)
+    }
+    finally {
+      randomSpy.mockRestore()
+    }
   })
 
   test('persists repository mutations across start, single submit and complete endpoints', async () => {

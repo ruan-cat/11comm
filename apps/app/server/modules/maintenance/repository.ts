@@ -175,7 +175,7 @@ export const maintenanceMockRepository = createMaintenanceMockRepository()
 
 /** 生成保养任务。 */
 function generateMaintenanceTask(index: number): MaintenanceTask {
-  const statusItem = MAINTENANCE_STATES[Math.floor(Math.random() * MAINTENANCE_STATES.length)]
+  const statusItem = MAINTENANCE_STATES[(index - 1) % MAINTENANCE_STATES.length]
   const machineName = MACHINE_NAMES[Math.floor(Math.random() * MACHINE_NAMES.length)]
   const planTime = dayjs().add(Math.floor(Math.random() * 14) - 7, 'day')
 
