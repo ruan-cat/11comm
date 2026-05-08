@@ -20,6 +20,12 @@ importers:
       "@01s-11comm/admin":
         specifier: workspace:^
         version: link:apps/admin
+      "@01s-11comm/api":
+        specifier: workspace:^
+        version: link:apps/api
+      "@01s-11comm/app":
+        specifier: workspace:^
+        version: link:apps/app
       "@01s-11comm/type":
         specifier: workspace:^
         version: link:apps/type
@@ -378,6 +384,9 @@ importers:
       swiper:
         specifier: ^11.2.10
         version: 11.2.10
+      tippy.js:
+        specifier: 6.3.7
+        version: 6.3.7
       typeit:
         specifier: ^8.8.7
         version: 8.8.7
@@ -1013,7 +1022,7 @@ importers:
     dependencies:
       "@ruan-cat/utils":
         specifier: ^4.25.1
-        version: 4.25.1(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)))(vue@3.5.34(typescript@5.9.3))
+        version: 4.25.1(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)))(vue@3.5.34(typescript@5.9.3))
       drizzle-orm:
         specifier: 0.42.0
         version: 0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0)
@@ -27068,7 +27077,7 @@ snapshots:
       - universal-cookie
       - vue
 
-  "@ruan-cat/utils@4.25.1(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)))(vue@3.5.34(typescript@5.9.3))":
+  "@ruan-cat/utils@4.25.1(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)))(vue@3.5.34(typescript@5.9.3))":
     dependencies:
       "@vueuse/integrations": 13.9.0(async-validator@4.2.5)(axios@1.16.0)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(vue@3.5.34(typescript@5.9.3))
       axios: 1.16.0
@@ -27080,7 +27089,7 @@ snapshots:
     optionalDependencies:
       js-yaml: 4.1.1
       typescript: 5.9.3
-      vite-plugin-autogeneration-import-file: 3.0.1(vite@7.1.12(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4))
+      vite-plugin-autogeneration-import-file: 3.0.1(vite@7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4))
     transitivePeerDependencies:
       - async-validator
       - change-case
@@ -27096,7 +27105,7 @@ snapshots:
       - universal-cookie
       - vue
 
-  "@ruan-cat/utils@4.25.1(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)))(vue@3.5.34(typescript@5.9.3))":
+  "@ruan-cat/utils@4.25.1(async-validator@4.2.5)(change-case@5.4.4)(focus-trap@7.8.0)(js-yaml@4.1.1)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(typescript@5.9.3)(vite-plugin-autogeneration-import-file@3.0.1(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)))(vue@3.5.34(typescript@5.9.3))":
     dependencies:
       "@vueuse/integrations": 13.9.0(async-validator@4.2.5)(axios@1.16.0)(change-case@5.4.4)(focus-trap@7.8.0)(nprogress@0.2.0)(qrcode@1.5.4)(sortablejs@1.15.7)(vue@3.5.34(typescript@5.9.3))
       axios: 1.16.0
@@ -27108,7 +27117,7 @@ snapshots:
     optionalDependencies:
       js-yaml: 4.1.1
       typescript: 5.9.3
-      vite-plugin-autogeneration-import-file: 3.0.1(vite@7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4))
+      vite-plugin-autogeneration-import-file: 3.0.1(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4))
     transitivePeerDependencies:
       - async-validator
       - change-case
@@ -40000,18 +40009,18 @@ snapshots:
       vite: 7.1.12(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)
     optional: true
 
-  vite-plugin-autogeneration-import-file@3.0.1(vite@7.1.12(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)):
-    dependencies:
-      fast-glob: 3.3.3
-      micromatch: 4.0.8
-      vite: 7.1.12(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)
-    optional: true
-
   vite-plugin-autogeneration-import-file@3.0.1(vite@7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)):
     dependencies:
       fast-glob: 3.3.3
       micromatch: 4.0.8
       vite: 7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)
+
+  vite-plugin-autogeneration-import-file@3.0.1(vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)):
+    dependencies:
+      fast-glob: 3.3.3
+      micromatch: 4.0.8
+      vite: 7.3.3(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)
+    optional: true
 
   vite-plugin-cdn-import@1.0.1(rollup@4.60.3)(vite@7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)):
     dependencies:
@@ -40228,26 +40237,6 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.4
 
-  vite@7.1.12(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4):
-    dependencies:
-      esbuild: 0.25.0
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
-      postcss: 8.5.14
-      rollup: 4.60.3
-      tinyglobby: 0.2.16
-    optionalDependencies:
-      "@types/node": 25.6.1
-      fsevents: 2.3.3
-      jiti: 2.7.0
-      less: 4.6.4
-      lightningcss: 1.32.0
-      sass: 1.99.0
-      terser: 5.47.1
-      tsx: 4.21.0
-      yaml: 2.8.4
-    optional: true
-
   vite@7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4):
     dependencies:
       esbuild: 0.25.0
@@ -40285,6 +40274,26 @@ snapshots:
       terser: 5.47.1
       tsx: 4.21.0
       yaml: 2.8.4
+
+  vite@7.3.3(@types/node@25.6.1)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4):
+    dependencies:
+      esbuild: 0.27.7
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
+      postcss: 8.5.14
+      rollup: 4.60.3
+      tinyglobby: 0.2.16
+    optionalDependencies:
+      "@types/node": 25.6.1
+      fsevents: 2.3.3
+      jiti: 2.7.0
+      less: 4.6.4
+      lightningcss: 1.32.0
+      sass: 1.99.0
+      terser: 5.47.1
+      tsx: 4.21.0
+      yaml: 2.8.4
+    optional: true
 
   vitepress-demo-plugin@1.5.1(shiki@3.23.0)(vitepress@1.6.4(@algolia/client-search@5.52.1)(@types/node@24.12.3)(async-validator@4.2.5)(axios@1.16.0)(change-case@5.4.4)(less@4.6.4)(lightningcss@1.32.0)(markdown-it-mathjax3@4.3.2)(nprogress@0.2.0)(postcss@8.5.14)(qrcode@1.5.4)(sass@1.99.0)(search-insights@2.9.0)(sortablejs@1.15.7)(terser@5.47.1)(typescript@5.9.3))(vue@3.5.34(typescript@5.9.3)):
     dependencies:

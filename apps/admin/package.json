@@ -137,6 +137,7 @@
 		"responsive-storage": "^2.2.0",
 		"sortablejs": "^1.15.7",
 		"swiper": "^11.2.10",
+		"tippy.js": "6.3.7",
 		"typeit": "^8.8.7",
 		"unhead": "^2.1.15",
 		"v-contextmenu": "^3.2.0",

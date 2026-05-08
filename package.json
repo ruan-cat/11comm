@@ -107,6 +107,8 @@
 	},
 	"dependencies": {
 		"@01s-11comm/admin": "workspace:^",
+		"@01s-11comm/app": "workspace:^",
+		"@01s-11comm/api": "workspace:^",
 		"@01s-11comm/type": "workspace:^"
 	}
 }
