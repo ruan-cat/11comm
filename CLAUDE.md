@@ -76,6 +76,14 @@ OpenSpec 是本项目用于管理大型任务和变更的工作流系统。以�
 - `业务路径`： 即 `apps\admin\src\router\rank\rank-route-keys.ts` 文件的全部`三级路由`所体现出来的文件路径。被认定为`业务路径`。`类型项目`、`服务端代码`、`后台项目`、`客户端代码`等。都要依赖于`业务路径`来组织代码。是本项目**非常重要**的路径概念。
   - `业务路径`几乎不会新增。一旦新增了`业务路径`，都会在 `rank-route-keys.ts` 内新增。所以在你执行相关任务时，请不要凭空新建内容。一律在`业务路径`对应的目录和文件内做修改或新增。
 
+### 2.5. 生产环境地址来源
+
+- 生产环境地址的权威读取入口是各子项目 `package.json` 的 `homepage` 字段；不要从 Vercel 控制台截图、历史报告、旧域名或 README 中反向推断。
+- admin 后台 H5：读取 `apps/admin/package.json` 的 `homepage`，当前为 `https://01s-11comm.ruan-cat.com`。
+- app H5：读取 `apps/app/package.json` 的 `homepage`，当前为 `https://01s-11-app.ruan-cat.com`。
+- 独立统一 Nitro API server：读取 `apps/api/package.json` 的 `homepage`，当前为 `https://01s-11-server.ruan-cat.com`。
+- 文档、脚本或验证流程需要引用生产地址时，必须先读取或核对对应 `homepage`；变更域名时先改 `homepage`，再同步环境变量、部署说明和验证文档。
+
 ## 3. 禁止全局安装工具包
 
 **严禁**使用 `npm install -g` 或 `pnpm add -g` 等命令进行工具的全局安装。
