@@ -15,7 +15,7 @@
     "gitee": "https://gitee.com/feige996"
   },
   "license": "MIT",
-  "homepage": "https://unibest.tech",
+  "homepage": "https://01s-11-app.ruan-cat.com",
   "repository": "https://github.com/feige996/unibest",
   "bugs": {
     "url": "https://github.com/feige996/unibest/issues",
@@ -54,7 +54,6 @@
     "dev:h5:test": "uni --mode test",
     "dev:h5:prod": "uni --mode production",
     "dev:h5:ssr": "uni --ssr",
-
     "dev:mp-alipay": "uni -p mp-alipay",
     "dev:mp-baidu": "uni -p mp-baidu",
     "dev:mp-jd": "uni -p mp-jd",
