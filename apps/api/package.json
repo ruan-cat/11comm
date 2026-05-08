@@ -3,6 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
+	"homepage": "https://01s-11-server.ruan-cat.com",
 	"packageManager": "pnpm@10.32.1",
 	"engines": {
 		"node": ">=22.14.0"
