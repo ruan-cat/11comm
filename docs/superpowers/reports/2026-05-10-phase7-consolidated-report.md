@@ -1,5 +1,3 @@
-<!-- TODO: 未完成 -->
-
 # 2026-05-10 Phase7 阶段探索与状态汇总报告
 
 **日期**: 2026-05-10
@@ -179,42 +177,44 @@ property-manage/report-manage/statement-expenses/list.post.ts
 | endpoints.ts 模块文件数             | 29   |
 | Endpoint 总数（含 test）            | ~228 |
 | 业务 endpoint 总数（剔除 /test/\*） | ~221 |
-| 已迁移到 `apps/api` Nitro 层        | 17   |
-| 仍在 legacy fallback 兼容           | ~211 |
+| 已迁移到 `apps/api` Nitro 层        | 19   |
+| 仍在 legacy fallback 兼容           | ~209 |
 | Legacy fallback 已识别冲突端点      | 4    |
 
 ### 2.2 已迁移端点清单（apps/api Nitro 层）
 
-| #   | URL                                                      | 方法     | 模块   | 状态                        |
-| :-- | :------------------------------------------------------- | :------- | :----- | :-------------------------- |
-| 1   | `/app/fee.listFee`                                       | GET/POST | fee    | app-shadow-allowlist        |
-| 2   | `/app/fee.queryFeeDetail`                                | GET/POST | fee    | app-shadow-allowlist        |
-| 3   | `/app/feeApi/listOweFees`                                | GET/POST | fee    | app-shadow-allowlist        |
-| 4   | `/app/payment.nativeQrcodePayment`                       | POST     | fee    | **blocked-for-execution**   |
-| 5   | `/app/oweFeeCallable.listOweFeeCallable`                 | GET/POST | fee    | app-shadow-allowlist        |
-| 6   | `/app/oweFeeCallable.writeOweFeeCallable`                | POST     | fee    | **blocked-for-execution**   |
-| 7   | `/app/fee.saveRoomCreateFee`                             | POST     | fee    | **blocked-for-execution**   |
-| 8   | `/app/feeConfig.listFeeConfigs`                          | GET/POST | fee    | app-shadow-allowlist        |
-| 9   | `/app/reportFeeMonthStatistics.queryReportFeeSummary`    | GET/POST | fee    | app-shadow-allowlist        |
-| 10  | `/app/reportFeeMonthStatistics/queryPayFeeDetail`        | GET/POST | fee    | app-shadow-allowlist        |
-| 11  | `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | GET/POST | fee    | app-shadow-allowlist        |
-| 12  | `/app/dataReport.queryFeeDataReport`                     | GET/POST | fee    | app-shadow-allowlist        |
-| 13  | `/app/ownerRepair.listOwnerRepairs`                      | GET/POST | repair | not-in-app-shadow-allowlist |
-| 14  | `/app/ownerRepair.queryOwnerRepair`                      | GET/POST | repair | not-in-app-shadow-allowlist |
-| 15  | `/app/ownerRepair.saveOwnerRepair`                       | POST     | repair | not-in-app-shadow-allowlist |
-| 16  | `/app/repairSetting.listRepairSettings`                  | GET/POST | repair | not-in-app-shadow-allowlist |
-| 17  | `/app/dict.queryRepairStates`                            | GET/POST | repair | not-in-app-shadow-allowlist |
+| #   | URL                                                      | 方法     | 模块                        | 状态                      |
+| :-- | :------------------------------------------------------- | :------- | :-------------------------- | :------------------------ |
+| 1   | `/app/fee.listFee`                                       | GET/POST | fee                         | app-shadow-allowlist      |
+| 2   | `/app/fee.queryFeeDetail`                                | GET/POST | fee                         | app-shadow-allowlist      |
+| 3   | `/app/feeApi/listOweFees`                                | GET/POST | fee                         | app-shadow-allowlist      |
+| 4   | `/app/payment.nativeQrcodePayment`                       | POST     | fee                         | **blocked-for-execution** |
+| 5   | `/app/oweFeeCallable.listOweFeeCallable`                 | GET/POST | fee                         | app-shadow-allowlist      |
+| 6   | `/app/oweFeeCallable.writeOweFeeCallable`                | POST     | fee                         | **blocked-for-execution** |
+| 7   | `/app/fee.saveRoomCreateFee`                             | POST     | fee                         | **blocked-for-execution** |
+| 8   | `/app/feeConfig.listFeeConfigs`                          | GET/POST | fee                         | app-shadow-allowlist      |
+| 9   | `/app/reportFeeMonthStatistics.queryReportFeeSummary`    | GET/POST | fee                         | app-shadow-allowlist      |
+| 10  | `/app/reportFeeMonthStatistics/queryPayFeeDetail`        | GET/POST | fee                         | app-shadow-allowlist      |
+| 11  | `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | GET/POST | fee                         | app-shadow-allowlist      |
+| 12  | `/app/dataReport.queryFeeDataReport`                     | GET/POST | fee                         | app-shadow-allowlist      |
+| 13  | `/app/ownerRepair.listOwnerRepairs`                      | GET/POST | repair                      | app-shadow-allowlist      |
+| 14  | `/app/ownerRepair.queryOwnerRepair`                      | GET/POST | repair                      | app-shadow-allowlist      |
+| 15  | `/app/ownerRepair.saveOwnerRepair`                       | POST     | repair                      | **blocked-for-execution** |
+| 16  | `/app/repairSetting.listRepairSettings`                  | GET/POST | repair                      | app-shadow-allowlist      |
+| 17  | `/app/dict.queryRepairStates`                            | GET/POST | repair                      | app-shadow-allowlist      |
+| 18  | `/callComponent/core/list`                               | GET/POST | repair/property-application | app-shadow-allowlist      |
+| 19  | `/callComponent/ownerRepair.appraiseRepair`              | POST     | repair                      | **blocked-for-execution** |
 
 ### 2.3 Legacy Fallback 端点清单
 
-以下端点仍在统一 server 上通过 fallback 兼容：
+以下端点是 Batch 1 前的 fallback 关注项；Batch 1 后 `/callComponent/core/list` 已由 apps/api in-memory compat handler 承载，`/callComponent/ownerRepair.appraiseRepair` 已登记但默认 guard，均不能写成 DB 完成：
 
 #### /callComponent/\*\* 端点（2 个）
 
-| #   | URL                                         | 方法     | 定义位置                                                   | 说明                 |
-| :-- | :------------------------------------------ | :------- | :--------------------------------------------------------- | :------------------- |
-| 1   | `/callComponent/core/list`                  | GET/POST | `repair/endpoints.ts`, `property-application/endpoints.ts` | 字典查询，多模块冲突 |
-| 2   | `/callComponent/ownerRepair.appraiseRepair` | POST     | `repair/endpoints.ts`                                      | 维修评价             |
+| #   | URL                                         | 方法     | 定义位置                                                   | 说明                                                       |
+| :-- | :------------------------------------------ | :------- | :--------------------------------------------------------- | :--------------------------------------------------------- |
+| 1   | `/callComponent/core/list`                  | GET/POST | `repair/endpoints.ts`, `property-application/endpoints.ts` | 已迁入 apps/api compat；in-memory-only；需 Chrome MCP 证据 |
+| 2   | `/callComponent/ownerRepair.appraiseRepair` | POST     | `repair/endpoints.ts`                                      | 已登记 apps/api compat；默认 `409 PHASE7_MUTATION_GUARDED` |
 
 #### /app/\*\* Legacy Fallback 端点（部分冲突示例）
 
@@ -573,12 +573,12 @@ property-manage/report-manage/statement-expenses/list.post.ts
 #### 已迁移覆盖率
 
 - **fee 模块**: 12/17 端点已迁移（70.6%）
-- **repair 模块**: 5/28 端点已迁移（17.9%）
-- **整体覆盖率**: 17/~221 端点（7.7%）
+- **repair/callComponent 模块**: 7/30 端点已迁移到 Nitro 兼容层（DB 覆盖仍为 0）
+- **整体覆盖率**: 19/~221 端点（8.6%）
 
 #### Legacy Fallback 机制
 
-所有 `/app/**` 和 `/callComponent/**` 路径的请求，如果在 Nitro 层 404，会自动 fallback 代理到 `PHASE7_LEGACY_APP_FALLBACK_BASE_URL`（默认 `https://01s-11-app-server.ruan-cat.com`）。
+所有 `/app/**` 和 `/callComponent/**` 路径的请求，如果在 Nitro 层 404，会自动 fallback 代理到 `PHASE7_LEGACY_APP_FALLBACK_BASE_URL`（默认 `https://01s-11-app-server.ruan-cat.com`）。Batch 1 后两条 `/callComponent/**` 已进入 registry，不再依赖 404 fallback，但仍是 in-memory/guard 状态。
 
 ---
 
@@ -604,9 +604,9 @@ property-manage/report-manage/statement-expenses/list.post.ts
 | 10  | `/api/property-manage/repairs-manage/repairs-setting/list`        | POST   | repair | available-in-apps-api-not-caller-verified |
 | 11  | `/api/property-manage/repairs-manage/issues/list`                 | POST   | repair | available-in-apps-api-not-caller-verified |
 
-#### App Legacy Routes（17 个）
+#### App Legacy Routes（19 个）
 
-来自 `runtime-endpoints.ts` 的 fee(12) + repair(5) 定义：
+来自 `runtime-endpoints.ts` 的 fee(12) + repair/callComponent(7) 定义：
 
 ##### Fee Legacy Endpoints（12 个）
 
@@ -625,15 +625,17 @@ property-manage/report-manage/statement-expenses/list.post.ts
 | 11  | `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | GET/POST | app-shadow-allowlist      |
 | 12  | `/app/dataReport.queryFeeDataReport`                     | GET/POST | app-shadow-allowlist      |
 
-##### Repair Legacy Endpoints（5 个）
+##### Repair / CallComponent Legacy Endpoints（7 个）
 
-| #   | 路由路径                                | Method   | 状态                        |
-| --- | --------------------------------------- | -------- | --------------------------- |
-| 1   | `/app/ownerRepair.listOwnerRepairs`     | GET/POST | not-in-app-shadow-allowlist |
-| 2   | `/app/ownerRepair.queryOwnerRepair`     | GET/POST | not-in-app-shadow-allowlist |
-| 3   | `/app/ownerRepair.saveOwnerRepair`      | POST     | not-in-app-shadow-allowlist |
-| 4   | `/app/repairSetting.listRepairSettings` | GET/POST | not-in-app-shadow-allowlist |
-| 5   | `/app/dict.queryRepairStates`           | GET/POST | not-in-app-shadow-allowlist |
+| #   | 路由路径                                    | Method   | 状态                  |
+| --- | ------------------------------------------- | -------- | --------------------- |
+| 1   | `/app/ownerRepair.listOwnerRepairs`         | GET/POST | app-shadow-allowlist  |
+| 2   | `/app/ownerRepair.queryOwnerRepair`         | GET/POST | app-shadow-allowlist  |
+| 3   | `/app/ownerRepair.saveOwnerRepair`          | POST     | blocked-for-execution |
+| 4   | `/app/repairSetting.listRepairSettings`     | GET/POST | app-shadow-allowlist  |
+| 5   | `/app/dict.queryRepairStates`               | GET/POST | app-shadow-allowlist  |
+| 6   | `/callComponent/core/list`                  | GET/POST | app-shadow-allowlist  |
+| 7   | `/callComponent/ownerRepair.appraiseRepair` | POST     | blocked-for-execution |
 
 #### Nitro System Routes（4 个）
 
@@ -656,7 +658,7 @@ property-manage/report-manage/statement-expenses/list.post.ts
 | **Legacy Adapter** | `modules/fee/legacy-adapter.ts` | 依赖 Service，输出 { code, msg, data }      |
 | **Runtime**        | `modules/fee/runtime.ts`        | 负责 DI，检测 hasDatabaseUrl                |
 
-##### Repository DB 覆盖情况（Fee）
+##### Repository DB 覆盖情况（Fee，已按 Batch4 更新）
 
 | 方法                          | DB 实现          | Fallback          |
 | ----------------------------- | ---------------- | ----------------- |
@@ -676,19 +678,19 @@ property-manage/report-manage/statement-expenses/list.post.ts
 | `listOweFeeCallables`         | ❌ 无 DB         | **InMemory only** |
 | `writeOweFeeCallable`         | ❌ 无 DB         | **InMemory only** |
 | `saveRoomCreateFee`           | ❌ 无 DB         | **InMemory only** |
-| `listFeeConfigs`              | ❌ 无 DB         | **InMemory only** |
-| `getFeeSummaryReport`         | ❌ 无 DB         | **InMemory only** |
+| `listFeeConfigs`              | ✅ Drizzle       | InMemory          |
+| `getFeeSummaryReport`         | ✅ Drizzle       | InMemory          |
 | `getRoomFeeReport`            | ❌ 无 DB         | **InMemory only** |
 
-#### Repair Module（仅 InMemory，**无 DB 实现**）
+#### Repair Module（历史快照；最新 Batch3 状态见 §10）
 
-| 层级               | 文件                               | 数据来源                                               |
-| ------------------ | ---------------------------------- | ------------------------------------------------------ |
-| **Repository**     | `modules/repair/repository.ts`     | **仅 InMemory**                                        |
-| **Service**        | `modules/repair/service.ts`        | 依赖 Repository                                        |
-| **Admin Adapter**  | `modules/repair/admin-adapter.ts`  | 依赖 Service，输出 JsonVO                              |
-| **Legacy Adapter** | `modules/repair/legacy-adapter.ts` | 依赖 Service                                           |
-| **Runtime**        | `modules/repair/runtime.ts`        | **无数据库连接**（getRepairRuntime 直接返回 fallback） |
+| 层级               | 文件                               | 数据来源                                           |
+| ------------------ | ---------------------------------- | -------------------------------------------------- |
+| **Repository**     | `modules/repair/repository.ts`     | Batch3 前仅 InMemory；最新只读 DB 分支见 §10       |
+| **Service**        | `modules/repair/service.ts`        | 依赖 Repository                                    |
+| **Admin Adapter**  | `modules/repair/admin-adapter.ts`  | 依赖 Service，输出 JsonVO                          |
+| **Legacy Adapter** | `modules/repair/legacy-adapter.ts` | 依赖 Service                                       |
+| **Runtime**        | `modules/repair/runtime.ts`        | Batch3 前固定 fallback；最新只读 DB runtime 见 §10 |
 
 ##### Repository DB 覆盖情况（Repair）
 
@@ -716,11 +718,12 @@ property-manage/report-manage/statement-expenses/list.post.ts
 
 #### Legacy Fallback 状态
 
-| 类别                            | 数量  | 说明                                      |
-| ------------------------------- | ----- | ----------------------------------------- |
-| **Legacy-only（无 DB）**        | 14 个 | fee 的欠费/催缴/配置相关全部仅 InMemory   |
-| **blocked-for-execution**       | 3 个  | mutation 类被 phase7 guard 拦截           |
-| **not-in-app-shadow-allowlist** | 5 个  | repair 全部 5 个 endpoint 未在 app 侧开放 |
+| 类别                            | 数量  | 说明                                                                    |
+| ------------------------------- | ----- | ----------------------------------------------------------------------- |
+| **Legacy-only（无 DB）**        | 14 个 | fee 的欠费/催缴/配置相关全部仅 InMemory                                 |
+| **blocked-for-execution**       | 4 个  | mutation 类被 phase7 guard 拦截                                         |
+| **not-in-app-shadow-allowlist** | 5 个  | repair 全部 5 个 endpoint 未在 app 侧开放                               |
+| **callComponent compat**        | 1 个  | `/callComponent/core/list` 已进入 app shadow allowlist，但仍是 InMemory |
 
 ### 3.4 Schema 覆盖状态
 
@@ -760,44 +763,45 @@ property-manage/report-manage/statement-expenses/list.post.ts
 
 #### Critical（必须迁移）
 
-| 端点                                    | 当前数据源    | 目标 Schema                   | 优先级 |
-| --------------------------------------- | ------------- | ----------------------------- | ------ |
-| `/app/ownerRepair.listOwnerRepairs`     | InMemory only | `rpRepairOrders`              | **P0** |
-| `/app/ownerRepair.queryOwnerRepair`     | InMemory only | `rpRepairOrders`              | **P0** |
-| `/app/ownerRepair.saveOwnerRepair`      | InMemory only | `rpRepairOrders`              | **P0** |
-| `/app/repairSetting.listRepairSettings` | InMemory only | `rpRepairSettings`            | **P0** |
-| `/app/dict.queryRepairStates`           | InMemory only | `rpRepairOrders.status`       | **P0** |
-| `/app/fee.listFee`                      | InMemory only | `exHouseCharges + exPayments` | **P0** |
-| `/app/fee.queryFeeDetail`               | InMemory only | `exHouseCharges + exPayments` | **P0** |
-| `/app/feeApi/listOweFees`               | InMemory only | `exHouseCharges`              | **P0** |
+| 端点                                    | 当前数据源                                      | 目标 Schema                   | 优先级 |
+| --------------------------------------- | ----------------------------------------------- | ----------------------------- | ------ |
+| `/app/ownerRepair.listOwnerRepairs`     | InMemory only                                   | `rpRepairOrders`              | **P0** |
+| `/app/ownerRepair.queryOwnerRepair`     | InMemory only                                   | `rpRepairOrders`              | **P0** |
+| `/app/ownerRepair.saveOwnerRepair`      | InMemory only                                   | `rpRepairOrders`              | **P0** |
+| `/app/repairSetting.listRepairSettings` | InMemory only                                   | `rpRepairSettings`            | **P0** |
+| `/app/dict.queryRepairStates`           | InMemory only                                   | `rpRepairOrders.status`       | **P0** |
+| `/app/fee.listFee`                      | InMemory only                                   | `exHouseCharges + exPayments` | **P0** |
+| `/app/fee.queryFeeDetail`               | InMemory only                                   | `exHouseCharges + exPayments` | **P0** |
+| `/app/feeApi/listOweFees`               | Batch4 后为 `db-read-repository-wired-with-gap` | `exHouseCharges`              | **P0** |
 
 #### High（应尽快迁移）
 
-| 端点                                                     | 当前数据源    | 目标 Schema           | 优先级 |
-| -------------------------------------------------------- | ------------- | --------------------- | ------ |
-| `/app/oweFeeCallable.listOweFeeCallable`                 | InMemory only | `exOverdueReminders`  | P1     |
-| `/app/oweFeeCallable.writeOweFeeCallable`                | InMemory only | `exOverdueReminders`  | P1     |
-| `/app/feeConfig.listFeeConfigs`                          | InMemory only | `exExpenseItems`      | P1     |
-| `/app/fee.saveRoomCreateFee`                             | InMemory only | `exHouseCharges`      | P1     |
-| `/app/reportFeeMonthStatistics.queryReportFeeSummary`    | InMemory only | `rptExpenseSummaries` | P1     |
-| `/app/reportFeeMonthStatistics/queryPayFeeDetail`        | InMemory only | `rptPaymentDetails`   | P1     |
-| `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | InMemory only | `exHouseCharges`      | P1     |
+| 端点                                                     | 当前数据源                             | 目标 Schema           | 优先级 |
+| -------------------------------------------------------- | -------------------------------------- | --------------------- | ------ |
+| `/app/oweFeeCallable.listOweFeeCallable`                 | InMemory only                          | `exOverdueReminders`  | P1     |
+| `/app/oweFeeCallable.writeOweFeeCallable`                | InMemory only                          | `exOverdueReminders`  | P1     |
+| `/app/feeConfig.listFeeConfigs`                          | Batch4 后为 `db-read-repository-wired` | `exExpenseItems`      | P1     |
+| `/app/fee.saveRoomCreateFee`                             | InMemory only                          | `exHouseCharges`      | P1     |
+| `/app/reportFeeMonthStatistics.queryReportFeeSummary`    | Batch4 后为 `db-read-repository-wired` | `rptExpenseSummaries` | P1     |
+| `/app/reportFeeMonthStatistics/queryPayFeeDetail`        | Batch4 后为 `db-read-repository-wired` | `rptPaymentDetails`   | P1     |
+| `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | InMemory only                          | `exHouseCharges`      | P1     |
 
 #### 特殊关注：`/callComponent/**` 和 `/app/floor.queryFloors`
 
-**状态：DB/Repository 迁移覆盖为 0**
+**状态：Batch 1 已补 `/callComponent/**`Nitro compat/guard；Batch 2 已补`/app/floor.queryFloors`与`/app/floor.queryFloorDetail` 的 apps/api legacy-compatible handler，但 floor 仍不是 DB-ready。\*\*
 
 - `legacy-fallback.ts` 明确将 `/app/` 和 `/callComponent/` 路径识别为 legacy fallback 路径
 - 当 Nitro 端点 registry 匹配失败时，流量会被代理到 `PHASE7_LEGACY_APP_FALLBACK_BASE_URL`
-- 目前 `/callComponent/**` 和 `floor.queryFloors` **没有任何 Nitro 实现**，完全依赖 legacy fallback 代理
+- Batch 1 后 `/callComponent/core/list` 与 `/callComponent/ownerRepair.appraiseRepair` 已有 Nitro registry 实现；`core/list` 只代表 in-memory compat，`appraiseRepair` 默认 guard
+- Batch 2 后 `/app/floor.queryFloors` 与 `/app/floor.queryFloorDetail` 已进入 apps/api registry 与 app shadow allowlist；当前已补 `hpHouses` 只读 DB 分支，但因 `floorId` 为合成兼容 ID，仍只能标 `db-read-repository-wired-with-gap`，Chrome MCP 与 DB-ready 证据仍待补
 
 ### 3.6 关键发现
 
-1. **Repair Module 完全无 DB 实现**：所有 repair 相关端点（admin 和 app）均依赖 InMemory Repository，`getRepairRuntime` 固定返回 fallback
-2. **Fee Module DB 覆盖约 50%**：CRUD 操作已接入 DB，但查询和报表类大部分仍仅 InMemory
-3. **Schema 存在但未接入**：rpRepairOrders/rpRepairSettings/rpRepairTypes 等 schema 已定义但未被使用
-4. **Legacy fallback 路径零迁移**：所有 `/callComponent/**` 和未匹配的 `/app/**` 路径仍然透传到旧服务
-5. **3 个 Mutation 被 blocked**：`payment.nativeQrcodePayment`、`oweFeeCallable.writeOweFeeCallable`、`fee.saveRoomCreateFee` 设置了 `PHASE7_ALLOW_LEGACY_MUTATIONS` 开关
+1. **Repair Module Batch3 前完全无 DB 实现**：最新已补 repair 只读 DB 首切片，状态见 §10
+2. **Fee Module DB 覆盖约 50%+**：CRUD 操作与 Batch4 部分只读报表已接入 DB；剩余查询仍需逐项复核
+3. **Schema 存在但未接入（历史发现）**：rpRepairOrders/rpRepairSettings/rpRepairTypes 已在 Batch3 首切片接入只读路径，剩余写入和完整语义仍未完成
+4. **Legacy fallback 路径已开始收口**：两条 `/callComponent/**` 与两条 floor `/app/**` 已进入 apps/api registry；其他未匹配的 `/app/**` 仍透传到旧服务
+5. **4 个 Mutation 被 blocked**：`payment.nativeQrcodePayment`、`oweFeeCallable.writeOweFeeCallable`、`fee.saveRoomCreateFee`、`callComponent/ownerRepair.appraiseRepair` 设置了 `PHASE7_ALLOW_LEGACY_MUTATIONS` 开关或默认 guard
 
 ---
 
@@ -976,11 +980,11 @@ function legacyMutationGuarded(action: string) {
 
 ### 5.4 完善 repair module DB 实现
 
-**Repair Module 当前完全无 DB 实现**，所有 repair 相关端点均依赖 InMemory Repository。需要：
+**Batch3 已完成 repair 只读首切片，最新状态见 §10。剩余需要继续补：**
 
-1. 为 repair module 创建 DB Repository 实现，替换 InMemory 实现
-2. 将 `/app/ownerRepair.listOwnerRepairs`、`/app/ownerRepair.queryOwnerRepair`、`/app/ownerRepair.saveOwnerRepair` 等端点接入 `rpRepairOrders` schema
-3. 将 `/app/repairSetting.listRepairSettings` 接入 `rpRepairSettings` schema
+1. 为 repair module 补全剩余 DB Repository 实现，保留 fallback 与 guard 边界
+2. `/app/ownerRepair.saveOwnerRepair` 等写入口只有在具备 controlled write、read-back、rollback、guard restored 证据后才能解除 `blocked-for-execution`
+3. 继续补 admin/app 页面级 Network 与 shadow evidence，未完成前不得声明旧服务可退役
 
 ### 5.5 补生产 `DB_READY` 证据
 
@@ -1038,5 +1042,276 @@ function legacyMutationGuarded(action: string) {
 
 ---
 
+## 8. Phase7 Batch 1 执行记录（2026-05-10）
+
+**目标**：为 `/callComponent/core/list` 和 `/callComponent/ownerRepair.appraiseRepair` 添加 Nitro compat handler。
+
+### 8.1 变更文件清单
+
+| 文件                                                        | 变更类型                                                                       |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `apps/api/server/modules/repair/legacy-adapter.ts`          | 新增 `listCoreDict()` 和 `appraiseRepair()` adapter                            |
+| `apps/api/server/modules/repair/service.ts`                 | 新增 `listCoreDict` 和 `appraiseRepair` 方法                                   |
+| `apps/api/server/modules/repair/repository.ts`              | 新增 `listCoreDict` 与 `appraiseOwnerRepair` InMemory 实现                     |
+| `apps/api/server/modules/repair/types.ts`                   | 新增 `CoreDictItem` 和 `CoreDictQuery` 类型                                    |
+| `apps/api/server/modules/repair/legacy-endpoints.ts`        | 注册 `/callComponent/core/list` 和 `/callComponent/ownerRepair.appraiseRepair` |
+| `apps/api/server/shared/runtime/runtime-endpoints.ts`       | manifest 登记；`appraiseRepair` 纳入 `phase7BlockedAppLegacyMutationUrls`      |
+| `apps/app/src/http/runtime-base.ts`                         | `PHASE2_API_SHADOW_ENDPOINTS` 新增两个 endpoint                                |
+| `apps/api/tests/legacy/callcomponent-batch1.test.ts`        | 新增 13 个 Vitest 测试                                                         |
+| `apps/api/tests/infra/endpoint-manifest.test.ts`            | 更新 manifest 断言                                                             |
+| `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts` | 更新 app shadow allowlist 断言                                                 |
+
+### 8.2 测试结果
+
+```log
+pnpm -F @01s-11comm/api exec vitest run tests/runtime tests/http tests/legacy tests/modules tests/infra
+Test Files  15 passed | 1 skipped (16)
+Tests       62 passed | 3 skipped (65)
+
+pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/runtime-base-url.test.ts
+Test Files  1 passed (1)
+Tests       34 passed (34)
+
+pnpm -F @01s-11comm/api run typecheck
+$ tsc --noEmit
+```
+
+关键测试覆盖：
+
+- `/callComponent/core/list` GET/POST 路由注册
+- `domain=repair_status/repair_type/maintenance_type` 返回正确字典数据
+- `name=apply_room_discount&type=state` 返回 property-application 旧字典数据
+- 空/未知 domain 与未知 name/type 按旧兼容行为返回空结果
+- `/callComponent/ownerRepair.appraiseRepair` 默认 `409 PHASE7_MUTATION_GUARDED`
+- `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 旁路与缺失 repair 的 legacy 404 envelope
+- manifest 与 app runtime allowlist 均包含两个新 endpoint；`core/list` 为 `app-shadow-allowlist`，`appraiseRepair` 为 `blocked-for-execution`
+
+### 8.3 矩阵状态更新
+
+| batchId                   | oldPath                                     | coverageKind             | appsApiTarget                                        | dataSourceStatus | targetStatus               | retirementDecision |
+| ------------------------- | ------------------------------------------- | ------------------------ | ---------------------------------------------------- | ---------------- | -------------------------- | ------------------ |
+| P1-callcomponent-core     | `/callComponent/core/list`                  | `old-path-exact-covered` | `apps/api/server/modules/repair/legacy-endpoints.ts` | `in-memory-only` | `candidate-after-evidence` | `keep-source`      |
+| P1-callcomponent-appraise | `/callComponent/ownerRepair.appraiseRepair` | `old-path-exact-covered` | `apps/api/server/modules/repair/legacy-endpoints.ts` | `in-memory-only` | `blocked-for-execution`    | `keep-source`      |
+
+### 8.4 遗留证据缺口
+
+| 缺口                          | 当前状态                                                                                     |
+| ----------------------------- | -------------------------------------------------------------------------------------------- |
+| Chrome MCP Network 证据       | `pending-chrome-mcp` — 需在 H5 页面验证命中 `01s-11-server.ruan-cat.com`                     |
+| 页面级 Network 证据           | 代码与 resolver 测试已通过；仍需 Chrome MCP 页面证据证明生产/本地 H5 Network 命中统一 server |
+| `appraiseRepair` 受控写入演练 | 需 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` + 写入 + 读回 + 回滚 + guard 恢复完整证据链             |
+| DB readiness                  | 仍为 `READY_CONFIGURED-only`；未达到 `DB_READY`                                              |
+
+### 8.5 禁止误判合规
+
+- ✅ `coverageKind` 已更新为 `old-path-exact-covered`
+- ✅ `dataSourceStatus` 记录为 `in-memory-only`，未写成 `db-ready`
+- ✅ `appraiseRepair` 标记为 `blocked-for-execution`，未写成完成
+- ✅ 未触碰 `D:\code\ruan-cat\01s-11comm-app`
+- ✅ 未触碰 `apps/admin/server`、`apps/app/server`
+
+---
+
 _报告生成时间：2026-05-10_
 _探索团队：phase7-exploration（4 个并行探索子代理）_
+
+---
+
+## 9. Phase7 Batch2 执行记录（2026-05-10）
+
+**目标**：为 `/app/floor.queryFloors` 和 `/app/floor.queryFloorDetail` 添加 Nitro compat handler，消除旧服务 fallback。
+
+### 9.1 变更文件清单
+
+| 文件                                                                | 变更类型                                                                                                                               |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/api/server/modules/floor/types.ts`                            | 新增 Floor/FloorListQuery/FloorListResult 类型                                                                                         |
+| `apps/api/server/modules/floor/repository.ts`                       | 新增 InMemory FloorRepository；COMM_001/002/003 各 30 条固定数据                                                                       |
+| `apps/api/server/modules/floor/service.ts`                          | 新增薄转发 FloorService                                                                                                                |
+| `apps/api/server/modules/floor/runtime.ts`                          | 新增无 DB FloorRuntime，getFloorRuntime 返回 in-memory fallbackRuntime                                                                 |
+| `apps/api/server/modules/floor/legacy-adapter.ts`                   | 新增 listFloors/queryFloorDetail adapter，参数归一化 + 错误 envelope                                                                   |
+| `apps/api/server/modules/floor/legacy-endpoints.ts`                 | 注册 GET/POST /app/floor.queryFloors 和 /app/floor.queryFloorDetail                                                                    |
+| `apps/api/server/modules/floor/index.ts`                            | 模块统一导出                                                                                                                           |
+| `apps/api/server/shared/runtime/runtime-endpoints.ts`               | import floorLegacyEndpointDefinitions；manifest 新增 2 条 floor entries，phase=phase7-batch2-floor，cutoverStatus=app-shadow-allowlist |
+| `apps/app/src/http/runtime-base.ts`                                 | PHASE2_API_SHADOW_ENDPOINTS 新增 2 条 floor endpoint                                                                                   |
+| `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts`         | 更新 allowlist 断言；移除 floor 两个 endpoint 从 non-allowlisted 表；生产路由断言已覆盖 floor                                          |
+| `apps/api/tests/legacy/floor-legacy-endpoints.test.ts`              | 新增 14 个 Vitest 测试覆盖 list/detail GET/POST                                                                                        |
+| `apps/api/tests/infra/endpoint-manifest.test.ts`                    | 更新 manifest 断言                                                                                                                     |
+| `apps/api/tests/infra/phase7-api-contracts.test.ts`                 | 新增 floor 两个 entry 的 app-shadow-allowlist + dispatch envelope 断言                                                                 |
+| `docs/superpowers/reports/phase7-endpoint-migration-matrix.md`      | App apps/api legacy manifest 从 19 改 21；P2-floor 行更新 coverageKind=dataSourceStatus=targetStatus                                   |
+| `docs/superpowers/reports/2026-05-10-phase7-consolidated-report.md` | 更新 Batch2 执行摘要                                                                                                                   |
+
+### 9.2 测试命令
+
+```bash
+pnpm -F @01s-11comm/api exec vitest run tests/legacy/floor-legacy-endpoints.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts
+pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/runtime-base-url.test.ts
+RUN_PHASE7_HTTP_TESTS=1 PHASE7_API_BASE_URL=http://127.0.0.1:3192 pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts
+pnpm -F @01s-11comm/api run typecheck
+```
+
+### 9.3 矩阵状态更新
+
+| batchId  | oldPath                       | coverageKind             | appsApiTarget                                       | dataSourceStatus                    | targetStatus               | retirementDecision |
+| -------- | ----------------------------- | ------------------------ | --------------------------------------------------- | ----------------------------------- | -------------------------- | ------------------ |
+| P2-floor | `/app/floor.queryFloors`      | `old-path-exact-covered` | `apps/api/server/modules/floor/legacy-endpoints.ts` | `db-read-repository-wired-with-gap` | `candidate-after-evidence` | `keep-source`      |
+| P2-floor | `/app/floor.queryFloorDetail` | `old-path-exact-covered` | `apps/api/server/modules/floor/legacy-endpoints.ts` | `db-read-repository-wired-with-gap` | `candidate-after-evidence` | `keep-source`      |
+
+### 9.4 遗留证据缺口
+
+| 缺口                    | 当前状态                                                                                           |
+| ----------------------- | -------------------------------------------------------------------------------------------------- |
+| Chrome MCP Network 证据 | `pending-chrome-mcp` — 需在 H5 页面验证命中 `01s-11-server.ruan-cat.com`                           |
+| 本地 HTTP gate          | 已通过：临时启动 `apps/api` 于 `127.0.0.1:3192`，`tests/http/phase7-gated-http.test.ts` 3/3 passed |
+| DB readiness            | 仍为 `legacy-compatible-api-only`；无 Neon/Drizzle 实现                                            |
+| 旧服务删除候选          | ❌ 不得宣称旧服务可删除 — 仍是 `keep-source`                                                       |
+
+### 9.5 禁止误判合规
+
+- ✅ coverageKind 已更新为 `old-path-exact-covered`
+- ✅ dataSourceStatus 记录为 `legacy-compatible-api-only`，未写成 `db-ready`
+- ✅ 未触碰 `apps/type` schema
+- ✅ 未触碰 `apps/admin/server`、`apps/app/server`
+- ✅ 旧服务仍标记为 `keep-source`
+
+---
+
+## 10. Phase7 Batch3 执行记录（2026-05-10，进行中）
+
+**目标**：推进 repair DB 接入，覆盖 app repair 5 个 legacy endpoint 与 admin repairs list 的数据源状态复核。
+
+### 10.1 当前状态
+
+| 项                   | 状态                                                                                                                                                                                                                                                       |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| agent team           | 已启动 4 个探索子代理：ownerRepair、repairSetting/dict、旧端语义、矩阵验收                                                                                                                                                                                 |
+| 首个切片             | 已完成 repair 只读 DB repository 首切片：DB URL 存在时 runtime 切换到 `rpRepairOrders` / `rpRepairSettings` / `rpRepairTypes` 只读数据源                                                                                                                   |
+| 写入口策略           | `/app/ownerRepair.saveOwnerRepair`、`/callComponent/ownerRepair.appraiseRepair` 默认返回 `409 PHASE7_MUTATION_GUARDED`；仅 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 可用于受控演练，未做生产写入演练                                                              |
+| app shadow allowlist | `/app/ownerRepair.listOwnerRepairs`、`/app/ownerRepair.queryOwnerRepair`、`/app/repairSetting.listRepairSettings`、`/app/dict.queryRepairStates` 已加入 app shadow allowlist；`/app/ownerRepair.saveOwnerRepair` 仍未加入 allowlist，继续走 legacy runtime |
+| DB readiness         | 仍为 `READY_CONFIGURED-only`，不得写成 `DB_READY`                                                                                                                                                                                                          |
+| 退役结论             | 旧 app/admin 服务仍是 `keep-source`，不得删除、移动、归档或清空                                                                                                                                                                                            |
+
+### 10.2 下一步验收边界
+
+- 已更新 `phase7-endpoint-migration-matrix.md` 中 repair 只读行的 `dataSourceStatus=db-read-repository-wired`；`saveOwnerRepair` 仍保持 `blocked-for-execution` / `in-memory-only`，默认服务端 guard 已补齐，但未声明写入 DB 完成。
+- 字段映射覆盖 `rpRepairOrders.id -> repairId`、工单号、报修人、电话、位置、类型、状态与时间格式；`communityId` 在当前 schema 无字段，只能兼容默认 `COMM_001`，不作为强过滤保证。
+- 状态码兼容已补齐：DB enum `pending/processing/completed/cancelled/paused` 对外映射为旧 app `statusCd` 数字码 `10001/10003/10004/10005/10006` 与中文状态名；`params.statusCd` 同时兼容旧数字码和 DB enum 入参。
+- `listRepairSettings` 已修正为以 `rpRepairSettings` 为主，`rpRepairTypes` 只补名称或在 settings 为空时作为兼容 fallback；缺失语义字段使用兼容默认值，不代表完整语义迁移。
+- app runtime resolver 已验证四个 repair 只读 endpoint 在 shadow enabled 时路由到 apps/api base；`saveOwnerRepair` 仍回落 legacy runtime。
+- browser/shadow evidence 仍 pending；DB readiness 仍为 `READY_CONFIGURED-only`，不得写成 `DB_READY`。
+
+### 10.3 首切片验证命令
+
+```log
+pnpm -F @01s-11comm/api exec vitest run tests/modules/repair-db-repository.test.ts tests/modules/repair-runtime.test.ts tests/legacy/repair-legacy-endpoints.test.ts tests/legacy/callcomponent-batch1.test.ts tests/admin/repair-admin-endpoints.test.ts tests/modules/repair-service.test.ts
+结果：6 files passed, 29 tests passed
+
+pnpm -F @01s-11comm/api run typecheck
+结果：tsc --noEmit 通过
+```
+
+### 10.4 Batch3 app shadow allowlist 小切片
+
+```log
+pnpm -F @01s-11comm/api exec vitest run tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts tests/legacy/repair-legacy-endpoints.test.ts tests/modules/repair-db-repository.test.ts tests/modules/repair-runtime.test.ts
+结果：5 files passed, 19 tests passed
+
+pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/runtime-base-url.test.ts
+结果：1 file passed, 42 tests passed
+
+pnpm -F @01s-11comm/api run typecheck
+结果：tsc --noEmit 通过
+```
+
+本切片仅把已完成 DB-read repository wired 的四个 repair 只读 legacy endpoint 加入 app shadow allowlist：`/app/ownerRepair.listOwnerRepairs`、`/app/ownerRepair.queryOwnerRepair`、`/app/repairSetting.listRepairSettings`、`/app/dict.queryRepairStates`。`/app/ownerRepair.saveOwnerRepair` 仍保持 non-allowlisted，矩阵继续写 blocked / in-memory-only；browser/shadow evidence pending，旧服务仍 `keep-source`。
+
+### 10.5 Batch3 HTTP gate 小切片
+
+`apps/api/tests/http/phase7-gated-http.test.ts` 已补充真实 HTTP gate 覆盖：`GET /app/ownerRepair.listOwnerRepairs?page=1&row=1&communityId=COMM_001` 返回 legacy envelope 且 `data.ownerRepairs/total` 存在；`GET /app/repairSetting.listRepairSettings?page=1&row=1&publicArea=T` 返回 legacy envelope 且 `data` 为数组；`GET /app/dict.queryRepairStates` 返回 legacy envelope 且包含旧数字状态码 `10001`。
+
+`/app/ownerRepair.saveOwnerRepair` 已纳入 high-risk mutation guard：默认返回 `409 PHASE7_MUTATION_GUARDED`，且 `runtimeEndpointManifest` 标记为 `blocked-for-execution`。`PHASE7_ALLOW_LEGACY_MUTATIONS=1` 仅用于受控演练；没有 write -> read-back -> rollback -> guard restored 证据前，不得写成 apps/api 写入 cutover 或 `DB_READY`。
+
+```log
+NITRO_PORT=3196 pnpm -F @01s-11comm/api run dev
+RUN_PHASE7_HTTP_TESTS=1 PHASE7_API_BASE_URL=http://127.0.0.1:3196 pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts
+结果：1 file passed, 4 tests passed
+覆盖：health/ready/endpoints、admin canonical、fee/floor app legacy、repair read-only、payment/oweFee/fee-create/saveOwnerRepair 默认 guard。
+```
+
+---
+
+## 11. Phase7 Batch4 fee 只读 DB wiring（2026-05-10，进行中）
+
+**目标**：优先补齐 fee 只读端点的数据源证据，不触碰 fee 写入口，不声明旧服务可退役。
+
+### 11.1 已完成切片
+
+| endpoint                                              | 当前状态                                                                                            |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `/app/feeConfig.listFeeConfigs`                       | DB runtime 下读取 `exExpenseItems`，映射 legacy `FeeConfigItem[]`；`isDefault`/`feeFlag` 为兼容字段 |
+| `/app/reportFeeMonthStatistics.queryReportFeeSummary` | DB runtime 下读取并聚合 `rptExpenseSummaries`；历史欠费/历史实收缺少可靠字段，保守返回 `0`          |
+| `/app/reportFeeMonthStatistics/queryPayFeeDetail`     | 既有 DB 分支读取 `rptPaymentDetails`，已补 repository test 与 HTTP gate                             |
+| `/app/dataReport.queryFeeDataReport`                  | 既有 DB 分支读取 `rptExpenseSummaries`，已补 repository test 与 HTTP gate                           |
+
+兼容边界：旧 app 默认 `communityId=COMM_001` 不是 UUID，不下推到 `rptExpenseSummaries.communityId`，避免真实 DB UUID 列报错；生产 `DB_READY` 仍需要 `/__nitro/ready` 与页面/Chrome evidence 共同支撑。
+
+### 11.2 验证命令
+
+```log
+pnpm -F @01s-11comm/api exec vitest run tests/modules/fee-db-repository.test.ts tests/legacy/fee-legacy-endpoints.test.ts tests/modules/fee-service.test.ts
+结果：3 files passed, 14 tests passed
+
+pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts tests/modules/fee-db-repository.test.ts tests/legacy/fee-legacy-endpoints.test.ts
+结果：2 files passed, 10 tests passed；HTTP gate 在未设置环境变量时 5 tests skipped
+
+NITRO_PORT=3197 pnpm -F @01s-11comm/api run dev
+RUN_PHASE7_HTTP_TESTS=1 PHASE7_API_BASE_URL=http://127.0.0.1:3197 pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts
+结果：1 file passed, 5 tests passed
+覆盖：新增 `/app/feeConfig.listFeeConfigs`、`/app/reportFeeMonthStatistics.queryReportFeeSummary`、`/app/reportFeeMonthStatistics/queryPayFeeDetail`、`/app/dataReport.queryFeeDataReport` 四个 fee 只读 HTTP smoke。
+```
+
+### 11.3 仍待补齐
+
+- `/app/fee.listFee`、`/app/fee.queryFeeDetail`、`/app/oweFeeCallable.listOweFeeCallable` 仍需逐项确认 DB 来源或保留矩阵状态；`/app/feeApi/listOweFees` 已完成最小 DB 分支，见 §11.4。
+- Chrome MCP / 页面 Network 证据仍未补；旧 `apps/app/server` 和 `apps/admin/server` 继续 `keep-source`。
+
+### 11.4 fee-read-a 最小增量：`feeApi/listOweFees`
+
+`/app/feeApi/listOweFees` 已补 DB repository 最小分支：DB runtime 下以 `exHouseCharges` 为主表，只返回 `receivableAmount - receivedAmount > 0` 的欠费记录，并保留旧 `{ data, totalAmount, total, page, row }` 响应结构。
+
+兼容边界：`exHouseCharges` 不包含 owner/community 字段，当前 `ownerName`、`ownerTel`、`communityId` 为空兼容值；`lateFee`、`oweDays` 暂无可靠来源，保持 `0`。此切片只代表 `db-read-repository-wired-with-gap`，不代表完整欠费语义迁移。
+
+```log
+pnpm -F @01s-11comm/api exec vitest run tests/modules/fee-db-repository.test.ts tests/legacy/fee-legacy-endpoints.test.ts
+结果：2 files passed, 11 tests passed
+```
+
+---
+
+## 12. Phase7 Batch2 floor DB wiring 增量（2026-05-10，进行中）
+
+**目标**：在已完成 floor legacy-compatible handler 的基础上，补齐 `/app/floor.queryFloors` 与 `/app/floor.queryFloorDetail` 的只读 DB repository 分支。
+
+### 12.1 已完成切片
+
+- `apps/api/server/modules/floor/runtime.ts` 已接入 `hasDatabaseUrl(event)` / `useDb(event)`；无 event 或无 DB URL 时继续使用 in-memory fallback。
+- `apps/api/server/modules/floor/repository.ts` 新增 `createDbFloorRepository(db)`，从 `hpHouses` 聚合 `communityId + buildingNo + floor` 为 legacy `Floor`。
+- legacy 响应仍保持 `floorId/floorNum/floorName/communityId`，没有扩张字段。
+- `floorId` 是合成兼容 ID，只保证 list/detail 往返，不代表真实 floor 专表主键。
+- 非 UUID 的旧默认 `COMM_001` 不下推到 `hpHouses.communityId`，避免真实 DB UUID 列报错。
+
+### 12.2 验证命令
+
+```log
+pnpm -F @01s-11comm/api exec vitest run tests/modules/floor-db-repository.test.ts tests/legacy/floor-legacy-endpoints.test.ts tests/http/phase7-gated-http.test.ts
+结果：2 files passed, 19 tests passed；HTTP gate 在未设置环境变量时 5 tests skipped
+
+NITRO_PORT=3198 pnpm -F @01s-11comm/api run dev
+RUN_PHASE7_HTTP_TESTS=1 PHASE7_API_BASE_URL=http://127.0.0.1:3198 pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts
+结果：1 file passed, 5 tests passed
+```
+
+### 12.3 仍待补齐
+
+- Chrome MCP / 页面 Network 证据仍未补，矩阵只能写 `db-read-repository-wired-with-gap`。
+- 生产 `DB_READY`、旧服务退役和真实 floor 主键语义均未完成。

@@ -1,432 +1,609 @@
-# Phase 7 分批次迁移执行计划
+# 2026-05-10 Phase7 旧服务退役准备批量迁移执行计划
 
-**日期**: 2026-05-10
-**阶段**: Phase 7 旧服务退役准备
-**策略**: 增量矩阵 + 按业务域分批 + 完整迁移（Route + Adapter + Service + Repository + Test + Evidence）
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development or the project agent-team workflow to implement this plan batch-by-batch. Steps use checkbox (`- [ ]`) syntax for tracking.
 
----
+**Goal:** 本计划用于驱动后续子代理分批执行 Phase7 大批量迁移，为旧服务退役评审准备证据；它不是删除计划。
 
-## 1. 背景与目标
+**Architecture:** `apps/api` 是 admin 与 app 的唯一目标 Nitro API 服务，`apps/type` 是 Schema / Zod / Drizzle / TypeScript 类型唯一事实来源。`apps/admin/server` 与 `apps/app/server` 在 `no-go-for-retirement` 解除前只作为迁移来源、legacy fallback 与回滚参考保留。
 
-### 1.1 当前状态
-
-| 维度             | 数据                                                                       |
-| ---------------- | -------------------------------------------------------------------------- |
-| Admin 旧 API     | 155 文件，已迁移 11 个 (7.1%)，未迁移 144 个                               |
-| App Legacy API   | ~221 端点，已迁移 17 个 (7.7%)，legacy fallback ~211 个                    |
-| apps/api DB 实现 | fee 约 50%，repair **0%**（完全 InMemory）                                 |
-| Phase7 Gate      | `go-for-production-readonly-and-guarded-write-candidate-cutover` ✅ 已满足 |
-| 旧服务退役 Gate  | `no-go-for-retirement` ⚠️ 仍确认                                           |
-
-### 1.2 Phase7 目标
-
-在 admin/app 都稳定消费 `apps/api` 后，逐步退役：
-
-- `apps/admin/server`
-- `apps/app/server`
-
-**禁止删除对象**：
-
-- `D:\code\ruan-cat\01s-11comm-app`（旧源目录，**永久保留**）
-- `apps/admin/server`（在 `no-go-for-retirement` 解除前）
-- `apps/app/server`（在 `no-go-for-retirement` 解除前）
-
-### 1.3 迁移原则
-
-1. **每批完整迁移**：Route + Adapter + Service + Repository + Vitest + Chrome MCP + shadow-off 演练
-2. **增量矩阵维护**：每批完成后更新 endpoint 状态矩阵
-3. **禁止跳跃**：未完成当前批次证据前，不得进入下一批次
-4. **禁止误判**：
-   - `READY_CONFIGURED` ≠ `DB_READY`
-   - legacy fallback 200 ≠ DB/repository 迁移完成
-   - 写操作需要独立证据
+**Tech Stack:** Nitro v3、H3、Drizzle ORM、Neon Postgres、Zod、Vitest、Chrome DevTools MCP、Vercel。
 
 ---
 
-## 2. 分批次迁移计划
+## 1. 强约束与当前口径
 
-### 批次 0：Endpoint 状态矩阵初始化
+### 1.1 本计划的边界
 
-**目标**：建立基础矩阵文档
+本计划只安排“迁移、补矩阵、补证据、复核、汇总报告”工作，不安排删除旧服务目录。后续即使某批端点达到 `delete-candidate`，也只能进入单独的删除候选评审，不能在迁移批次中夹带删除、移动、归档、重命名或清空动作。
 
-**输入源**：
-| 来源 | 规模 |
-|------|-------|
-| `apps/admin/server/api/**/*.ts` | 155 文件 |
-| `apps/admin/src/**/*.{ts,vue}` 中的 `/api/**` 调用 | 133 个 unique |
-| `apps/api/server/routes/**/*.ts` | 11 admin + 17 app routes |
-| `apps/api/server/shared/runtime/runtime-endpoints.ts` | manifest 定义 |
-| `apps/app/server/modules/**/endpoints.ts` | ~221 端点 |
-| `apps/app/src/**/*.{ts,vue}` 中的 `/app/**` 调用 | ~208 个 unique |
+### 1.2 永久保留与 no-go 约束
 
-**矩阵字段**：
+- `D:\code\ruan-cat\01s-11comm-app` 是旧源目录，永久保留，禁止删除、移动、归档、重命名或清空。
+- `apps/admin/server` 在 `no-go-for-retirement` 解除前禁止删除、移动、归档、重命名或清空。
+- `apps/app/server` 在 `no-go-for-retirement` 解除前禁止删除、移动、归档、重命名或清空。
+- 当前 gate 为 `go-for-production-readonly-and-guarded-write-candidate-cutover`，只代表生产只读与默认受保护写入口候选切流可继续推进，不代表旧服务可退役。
+- 生产 DB readiness 当前只能按 `READY_CONFIGURED` 记录；只有生产开启 `RUN_PHASE7_DB_READINESS_CHECK=1` 且 `/__nitro/ready` 返回 `DB_READY`，才算生产 DB readiness 完成。
 
-- `sourceKind`: source file type
-- `sourcePath`: file path
-- `method`: HTTP method
-- `oldPath`: legacy URL path
-- `callerEvidence`: frontend caller proof
-- `appsApiTarget`: target route in apps/api
-- `targetStatus`: `candidate-after-evidence` | `legacy-fallback` | `blocked-for-execution` | `not-candidate` | `unknown-needs-triage` | `delete-candidate`
-- `browserEvidence`: Chrome MCP evidence path
-- `fallbackEvidence`: shadow-off proof
-- `writeReadRollbackEvidence`: write operation proof
-- `retirementDecision`: final decision
+### 1.3 当前统计口径
 
-**验收标准**：
-
-- 所有端点都归入明确状态
-- 无隐式结论（"没扫到 = 可删除"）
+| 维度           | 当前口径                                                                                                                                                                                                                                                   |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Admin 旧 API   | `apps/admin/server/api/**/*.ts` 共 155 个旧 API 文件；old path exact covered = 6；canonical-only = 5；11 = 6 exact covered + 5 canonical-only；old path 口径 remaining = 149；144 只能作为执行计划管理口径，不能误读为旧 path exact covered 后的真实剩余数 |
+| App legacy API | 业务 endpoint 约 221 个，`apps/api` Nitro 层已登记/承载 21 个；其中不少只是 Nitro 层、allowlist、guard 或 InMemory/fallback/legacy-compatible 证据，不得写成 DB 迁移完成                                                                                   |
+| App fallback   | `/callComponent/**` 与 `/app/floor.queryFloors` 已开始由 apps/api 精确承载，但仍存在 InMemory/legacy-compatible-only 或 guard 状态；其他未匹配 `/app/**` 仍可走旧服务 fallback，不能写成 DB/repository 完成                                                |
+| DB 实现        | fee 模块 DB 覆盖约 50%；repair 模块已完成只读首切片 DB repository wired，但仍非 `DB_READY`，写入口保持 guard                                                                                                                                               |
+| 高风险写入口   | `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/ownerRepair.saveOwnerRepair`、`/callComponent/ownerRepair.appraiseRepair` 默认必须返回 `409 PHASE7_MUTATION_GUARDED`                    |
 
 ---
 
-### 批次 1：`/callComponent/**` 端点（2 个）
+## 2. 执行方式：必须使用 Agent Team
 
-**优先级**: P0（DB 迁移覆盖为 0，多模块冲突）
+### 2.1 团队角色
 
-#### 1.1 端点清单
+每批至少配置三类成员，主代理负责任务拆分、上下文传递、结果合并与最终复核：
 
-| #   | URL                                         | 方法     | 模块冲突                     | 当前状态      |
-| --- | ------------------------------------------- | -------- | ---------------------------- | ------------- |
-| 1   | `/callComponent/core/list`                  | GET/POST | repair, property-application | DB 迁移覆盖 0 |
-| 2   | `/callComponent/ownerRepair.appraiseRepair` | POST     | repair                       | DB 迁移覆盖 0 |
+| 角色       | 职责                                                                                                 | 产出                                     |
+| ---------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| 探索子代理 | 读取业务路径、旧服务实现、`apps/api` 覆盖、schema、调用端、历史报告，确认端点清单和风险              | 更新矩阵草案、范围说明、数据源与风险记录 |
+| 编辑子代理 | 按批次实施迁移：route / adapter / service / repository / tests / docs evidence，不修改批次外业务代码 | 代码变更、测试、证据路径、矩阵状态更新   |
+| 复核子代理 | 独立检查批次范围、禁止误判、测试与浏览器证据、shadow-off、DB readiness、写入回滚                     | 复核结论，合并到单一汇总报告             |
 
-#### 1.2 关键问题
+### 2.2 批次拆分规则
 
-| 问题                | 说明                                                              | 处理方式                            |
-| ------------------- | ----------------------------------------------------------------- | ----------------------------------- |
-| **多模块冲突**      | `/callComponent/core/list` 被 repair 和 property-application 共用 | compat handler 设计，需要统一数据源 |
-| **无 DB 实现**      | 当前完全透传到旧服务                                              | 需要调研 `hp_houses` 或新建 schema  |
-| **dispatcher 登记** | 需要在 `legacy-dispatch` 中正确路由                               | 避免与 `/app/**` 冲突               |
+- 每个编辑子代理只负责 2-3 个具体三级业务路由或同规模 endpoint 组，避免单个子代理吞下过大范围。
+- admin 批次必须按 `apps/admin/src/router/rank/rank-route-keys.ts` 所体现的三级业务路径划分，不凭空创建业务路径。
+- app 批次按 legacy endpoint 模块与端点规模拆分，优先处理生产 H5 会访问、仍在 fallback 或已有 schema 支撑的端点。
+- 每批都必须按顺序执行：先更新任务清单/矩阵，再实施，再复核。不得先改代码再回填矩阵。
+- 子代理反馈默认合并到单一汇总报告；除非用户明确要求，不新增碎片化报告文件。
 
-#### 1.3 迁移目标
+### 2.3 每批固定流程
 
-**Route 层**：
-
-- 在 `apps/api/server/routes/app/` 下建立 `/callComponent/` 路由
-
-**Adapter 层**：
-
-- `legacy-adapter.ts` 支持 `/callComponent/` 路径
-
-**Repository 层**：
-
-- 调研数据来源（`hp_houses` 或其他 schema）
-- 建立兼容 handler
-
-#### 1.4 验收标准
-
-| 验收项       | 说明                               |
-| ------------ | ---------------------------------- |
-| Vitest       | `/callComponent/**` contract test  |
-| Chrome MCP   | app H5 页面 Network 证据           |
-| shadow-off   | 关闭 shadow 后回退到旧服务仍可访问 |
-| DB readiness | `DB_READY` 或明确数据来源          |
+- [ ] 更新 `docs/superpowers/reports/phase7-endpoint-migration-matrix.md` 中本批涉及端点的初始状态、负责人、证据占位与风险。
+- [ ] 探索数据源：旧服务实现、调用端、`apps/api` 现状、`apps/type` schema、Drizzle 表、manifest、fallback 注册。
+- [ ] 编写或调整 Vitest，先覆盖 contract、DTO 兼容、空数据、错误路径和 guard 行为。
+- [ ] 实施 repository / service / adapter / route / manifest / frontend resolver 等必要变更。
+- [ ] 运行批次相关 Vitest 与 typecheck。
+- [ ] 使用 Chrome DevTools MCP 采集真实页面 Network 证据；没有页面入口的端点必须说明原因并补 HTTP gate 或 contract 证据。
+- [ ] 执行 shadow-off 或 fallback 演练，确认回退路径仍明确。
+- [ ] 写入口只在具备测试数据、业务允许范围、读回断言、回滚步骤和审计字段后执行受控演练。
+- [ ] 更新矩阵最终状态与证据路径。
+- [ ] 复核子代理独立检查后，将结论合并到单一汇总报告。
 
 ---
 
-### 批次 2：`/app/floor.queryFloors`（2 个端点）
+## 3. 批次 0：Endpoint 迁移矩阵与 P0 Gate
 
-**优先级**: P0（DB 迁移覆盖为 0）
+**目标：** 建立后续所有批次的唯一状态矩阵，冻结旧服务新增入口，防止“没扫到 = 可删除”的隐式结论。
 
-#### 2.1 端点清单
+**范围：**
 
-| #   | URL                           | 方法     | 当前状态      |
-| --- | ----------------------------- | -------- | ------------- |
-| 1   | `/app/floor.queryFloors`      | GET/POST | DB 迁移覆盖 0 |
-| 2   | `/app/floor.queryFloorDetail` | GET/POST | DB 迁移覆盖 0 |
+- `apps/admin/server/api/**/*.ts`
+- `apps/admin/src/**/*.{ts,vue}` 中的 `/api/**` 调用
+- `apps/api/server/routes/**/*.ts`
+- `apps/api/server/shared/runtime/runtime-endpoints.ts`
+- `apps/app/server/modules/**/endpoints.ts`
+- `apps/app/src/**/*.{ts,vue}` 中的 `/app/**` 与 `/callComponent/**` 调用
 
-#### 2.2 关键问题
+**产物路径：**
 
-| 问题                | 说明                                                                                   | 处理方式          |
-| ------------------- | -------------------------------------------------------------------------------------- | ----------------- |
-| **无 DB 实现**      | 完全透传到旧服务                                                                       | 调研数据来源      |
-| **report 页面依赖** | report/fee-summary 页面同时调用 `/callComponent/core/list` 和 `/app/floor.queryFloors` | 批次 1 完成后处理 |
+- 主矩阵：`docs/superpowers/reports/phase7-endpoint-migration-matrix.md`
+- 单一汇总报告：继续维护 `docs/superpowers/reports/2026-05-10-phase7-consolidated-report.md`
 
-#### 2.3 迁移目标
+**矩阵字段：**
 
-**Repository 层**：
+| 字段                        | 含义                                                                                                                                |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `batchId`                   | 批次编号，如 `P0-matrix`、`P1-callcomponent`                                                                                        |
+| `ownerRole`                 | 探索 / 编辑 / 复核子代理角色                                                                                                        |
+| `sourceKind`                | `admin-server-api`、`admin-client-call`、`app-legacy-endpoint`、`app-client-call`、`apps-api-route`、`manifest`                     |
+| `sourcePath`                | 源文件路径                                                                                                                          |
+| `businessPath`              | admin 三级业务路径或 app legacy 模块                                                                                                |
+| `method`                    | HTTP method                                                                                                                         |
+| `oldPath`                   | 旧路径，如 `/api/**`、`/app/**`、`/callComponent/**`                                                                                |
+| `coverageKind`              | 覆盖口径：`old-path-exact-covered`、`canonical-only`、`not-covered`                                                                 |
+| `callerEvidence`            | 前端调用证据或“无调用者待复核”                                                                                                      |
+| `appsApiTarget`             | `apps/api` 目标 route / adapter / dispatcher                                                                                        |
+| `dataSourceStatus`          | `db-ready`、`in-memory-only`、`legacy-fallback`、`schema-exists-not-wired`、`unknown-needs-triage`                                  |
+| `targetStatus`              | `candidate-after-evidence`、`legacy-fallback`、`blocked-for-execution`、`not-candidate`、`unknown-needs-triage`、`delete-candidate` |
+| `browserEvidence`           | Chrome MCP evidence path                                                                                                            |
+| `fallbackEvidence`          | shadow-off / fallback / rollback evidence path                                                                                      |
+| `writeReadRollbackEvidence` | 写入、读回、回滚证据；非写端点填 `not-applicable`                                                                                   |
+| `dbReadinessEvidence`       | `DB_READY` 证据路径；没有开启 probe 时必须写 `READY_CONFIGURED-only`                                                                |
+| `retirementDecision`        | `keep-source`、`candidate-after-review`、`not-candidate`、`blocked`                                                                 |
+| `notes`                     | 风险、冲突、禁止误判说明                                                                                                            |
 
-- 建立 `floor` repository（如 `hp_houses` 或新 schema）
+**文件热点：**
 
-**Adapter 层**：
+- `docs/superpowers/reports/phase7-endpoint-migration-matrix.md`
+- `docs/superpowers/reports/2026-05-10-phase7-consolidated-report.md`
+- 只读参考：`apps/admin/server/api/**`、`apps/app/server/modules/**/endpoints.ts`、`apps/api/server/shared/runtime/runtime-endpoints.ts`
 
-- `legacy-adapter.ts` 支持 floor 端点
+**数据源/风险：**
 
----
+- admin 旧 API 必须区分数字口径：`apps/admin/server/api/**/*.ts` 共 155；old path exact covered = 6；canonical-only = 5；11 = 6 exact covered + 5 canonical-only；old path 口径 remaining = 149；144 只能作为执行计划管理口径，不能误读为旧 path exact covered 后的真实剩余数。
+- 矩阵字段必须用 `coverageKind` 区分 exact covered 与 canonical-only：旧 path 精确覆盖填 `old-path-exact-covered`，仅 canonical route 覆盖填 `canonical-only`，未覆盖填 `not-covered`。
+- app 已迁移 17 只能说明 Nitro 层登记或承载，不代表 DB 完成。
+- legacy fallback 返回 200 不能升级为 `candidate-after-evidence`。
 
-### 批次 3：repair 模块（5 个端点）
+**子代理拆分建议：**
 
-**优先级**: P0（完全 InMemory，0% DB 实现）
+- 探索 A：admin 旧 API 与 admin client `/api/**` 调用。
+- 探索 B：app legacy endpoint 与 app client `/app/**`、`/callComponent/**` 调用。
+- 探索 C：`apps/api` routes、manifest、legacy dispatch、readiness 与 guard。
+- 复核 D：核对数量、状态枚举、禁止误判、矩阵字段完整性。
 
-#### 3.1 端点清单
+**验收门：**
 
-| #   | URL                                     | 方法     | 当前状态                    |
-| --- | --------------------------------------- | -------- | --------------------------- |
-| 1   | `/app/ownerRepair.listOwnerRepairs`     | GET/POST | InMemory only               |
-| 2   | `/app/ownerRepair.queryOwnerRepair`     | GET/POST | InMemory only               |
-| 3   | `/app/ownerRepair.saveOwnerRepair`      | POST     | InMemory only（**写操作**） |
-| 4   | `/app/repairSetting.listRepairSettings` | GET/POST | InMemory only               |
-| 5   | `/app/dict.queryRepairStates`           | GET/POST | InMemory only               |
+- 矩阵文件存在且包含全部字段。
+- 每个 endpoint 至少有 `sourcePath`、`oldPath`、`targetStatus`、`dataSourceStatus`、`retirementDecision`。
+- 所有未知项只能标为 `unknown-needs-triage`，不得标为可删除。
 
-#### 3.2 关键问题
+**禁止误判：**
 
-| 问题                                 | 说明                                                | 处理方式                                             |
-| ------------------------------------ | --------------------------------------------------- | ---------------------------------------------------- |
-| **完全无 DB**                        | `modules/repair/repository.ts` 当前只有 InMemory    | 需要对接 `rpRepairOrders`、`rpRepairSettings` schema |
-| **Schema 存在但未接入**              | `rpRepairOrders`、`rpRepairSettings` 已定义但未使用 | 建立 Repository → Schema 映射                        |
-| **写操作**                           | `saveOwnerRepair` 是 POST，需要单独处理             | 需要受控写入演练                                     |
-| **manifest 已登记但 allowlist 为 0** | 5 个端点已在 manifest，但 app allowlist 未包含      | 修复 allowlist 配置                                  |
-
-#### 3.3 迁移目标
-
-**Repository 层**：
-
-- 建立 `repair` repository，对接 `rpRepairOrders`、`rpRepairSettings` schema
-- 替换 InMemory 实现
-
-**Adapter 层**：
-
-- `legacy-adapter.ts` 支持 repair 端点
-
-**Route 层**：
-
-- 5 个端点全部接入
-
-#### 3.4 验收标准
-
-| 验收项       | 说明                                  |
-| ------------ | ------------------------------------- |
-| Vitest       | repair 模块 contract test             |
-| Chrome MCP   | app H5 repair 页面 Network            |
-| shadow-off   | 关闭 shadow 后回退验证                |
-| DB readiness | `DB_READY`                            |
-| 写操作       | `saveOwnerRepair` 受控演练 + 回滚方案 |
+- 禁止把 canonical-only route 抵扣为旧 path exact covered。
+- 禁止把无调用者初扫结果作为删除依据。
+- 禁止把 `READY_CONFIGURED` 写成 `DB_READY`。
 
 ---
 
-### 批次 4：fee 查询/报表（14 个端点）
+## 4. 批次 1：`/callComponent/**` 生产 fallback 清理
 
-**优先级**: P1（大部分仍 InMemory）
+**目标：** 优先处理仍在生产 fallback 的 `/callComponent/core/list` 与 `/callComponent/ownerRepair.appraiseRepair`，明确 compat handler、数据源和迁移边界。
 
-#### 4.1 端点清单
+**范围：**
 
-| #   | URL                                                      | 方法     | 当前状态 |
-| --- | -------------------------------------------------------- | -------- | -------- |
-| 1   | `/app/fee.listFee`                                       | GET/POST | InMemory |
-| 2   | `/app/fee.queryFeeDetail`                                | GET/POST | InMemory |
-| 3   | `/app/feeApi/listOweFees`                                | GET/POST | InMemory |
-| 4   | `/app/feeConfig.listFeeConfigs`                          | GET/POST | InMemory |
-| 5   | `/app/reportFeeMonthStatistics.queryReportFeeSummary`    | GET/POST | InMemory |
-| 6   | `/app/reportFeeMonthStatistics/queryPayFeeDetail`        | GET/POST | InMemory |
-| 7   | `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | GET/POST | InMemory |
-| 8   | `/app/dataReport.queryFeeDataReport`                     | GET/POST | InMemory |
+| endpoint                                    | 方法     | 当前状态                                               |
+| ------------------------------------------- | -------- | ------------------------------------------------------ |
+| `/callComponent/core/list`                  | GET/POST | 多模块复用，生产 legacy fallback，DB/repository 覆盖 0 |
+| `/callComponent/ownerRepair.appraiseRepair` | POST     | repair 评价路径，legacy fallback                       |
 
-#### 4.2 关键问题
+**文件热点：**
 
-| 问题               | 说明                                              | 处理方式             |
-| ------------------ | ------------------------------------------------- | -------------------- |
-| **部分 DB 已实现** | fee CRUD 已接入，但查询/报表仍 InMemory           | 补充 Repository 方法 |
-| **已有 schema**    | `exHouseCharges`、`exPayments` 等已定义           | 对接 Repository      |
-| **多模块冲突**     | `fee.queryFeeDetail` 被 property-application 复用 | compat handler       |
+- `apps/app/server/modules/**/endpoints.ts`
+- `apps/api/server/handlers/legacy-dispatch.ts`
+- `apps/api/server/shared/runtime/runtime-endpoints.ts`
+- `apps/api/server/modules/**/legacy-adapter.ts`
+- `apps/api/tests/**`
+- app H5 相关页面：`pages-sub/fee/create`、`pages-sub/report/fee-summary`、repair / property-application 相关页面
 
-#### 4.3 迁移目标
+**数据源/风险：**
 
-**Repository 层**：
+- `/callComponent/core/list` 被 repair 与 property-application 共用，不能只按单模块假设实现。
+- 当前生产 200 是统一 server fallback 到旧 app Nitro，不能作为迁移完成证据。
+- 若数据源无法确定，端点应保持 `legacy-fallback` 或 `unknown-needs-triage`，不得制造不可信 mock。
 
-- 补充 `listLegacyFees`、`listFeeDetails`、`listOweFees` 等方法
-- 对接 `exHouseCharges`、`exPayments` schema
+**子代理拆分建议：**
 
----
+- 探索子代理：只负责 `/callComponent/core/list` 与调用页面，确认参数 `name/type` 语义和旧服务数据来源。
+- 编辑子代理：只负责 compat handler、manifest、adapter 和测试。
+- 复核子代理：只复核 fallback 是否消除、Network 是否命中统一 server、矩阵是否更新。
 
-### 批次 5：fee 高风险写端点（3 个端点）
+**验收门：**
 
-**优先级**: P1（**blocked-for-execution**）
+- Vitest 覆盖旧响应 envelope、典型 `name/type`、空数据和未知字典。
+- Chrome MCP 证明相关 H5 页面命中 `https://01s-11-server.ruan-cat.com` 或本地 `apps/api` 目标实现，而不是旧 app fallback。
+- shadow-off/fallback 策略有证据：若仍保留 fallback，矩阵必须标 `legacy-fallback`，不能标完成。
+- 生产 DB readiness 只有 `RUN_PHASE7_DB_READINESS_CHECK=1` 返回 `DB_READY` 才能记为完成。
 
-#### 5.1 端点清单
+**禁止误判：**
 
-| #   | URL                                       | 方法 | 当前状态                  |
-| --- | ----------------------------------------- | ---- | ------------------------- |
-| 1   | `/app/payment.nativeQrcodePayment`        | POST | **blocked-for-execution** |
-| 2   | `/app/oweFeeCallable.writeOweFeeCallable` | POST | **blocked-for-execution** |
-| 3   | `/app/fee.saveRoomCreateFee`              | POST | **blocked-for-execution** |
-
-#### 5.2 关键问题
-
-| 问题                        | 说明                     | 处理方式                                            |
-| --------------------------- | ------------------------ | --------------------------------------------------- |
-| **PHASE7_MUTATION_GUARDED** | 默认返回 409             | 需要设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 才能演练 |
-| **高风险写入**              | 涉及支付、催缴、费用创建 | 需要业务语义验证                                    |
-| **无回滚演练**              | 当前没有受控演练证据     | 编写演练方案                                        |
-
-#### 5.3 迁移目标
-
-**前提条件**：
-
-- 准备好测试数据
-- 确定回滚步骤
-- 准备审计字段设计
-
-**演练流程**：
-
-1. 设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1`
-2. 执行写操作
-3. 验证数据写入
-4. 验证回滚步骤
-5. 恢复 `PHASE7_ALLOW_LEGACY_MUTATIONS` 关闭状态
-6. 验证默认阻断恢复
-
-#### 5.4 验收标准
-
-| 验收项   | 说明                        |
-| -------- | --------------------------- |
-| 受控演练 | 写操作 + 读回 + 回滚        |
-| 业务语义 | 支付/催缴/费用创建语义明确  |
-| 审计字段 | 记录操作用户、时间、业务 ID |
-| 幂等性   | 重复执行不会产生副作用      |
+- 不要把 `/callComponent/core/list` 的 200 当作 DB 完成。
+- 不要因为 fee-summary 页面渲染成功就推断所有 callComponent 语义完成。
 
 ---
 
-### 批次 6：admin remaining（144 个端点）
+## 5. 批次 2：floor legacy endpoint DB 化
 
-**优先级**: P1-P3（按业务域分批）
+**目标：** 迁移 `/app/floor.queryFloors` 与 `/app/floor.queryFloorDetail`，消除 report 页面关键 floor fallback。
 
-#### 6.1 端点分布
+**范围：**
 
-| 子域                  | 端点数 | 优先级               |
-| --------------------- | ------ | -------------------- |
-| contract-manage       | 25     | P2（高风险，含上传） |
-| expense-manage        | 16     | P1                   |
-| report-manage         | 13     | P1                   |
-| house-property-manage | 10     | P2                   |
-| repairs-manage        | 7      | P1                   |
-| community-manage      | 7      | P2                   |
-| setting-manage        | 28     | P2                   |
-| patrol-manage         | 6      | P2                   |
-| parking-manage        | 4      | P2                   |
-| dev-team              | 24     | P3                   |
-| operation-team        | 13     | P3                   |
+| endpoint                      | 方法     | 当前状态                                                                                                           |
+| ----------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `/app/floor.queryFloors`      | GET/POST | Batch2 已进入 apps/api registry/allowlist；当前为 `db-read-repository-wired-with-gap`，DB-ready 与 Chrome MCP 待补 |
+| `/app/floor.queryFloorDetail` | GET/POST | Batch2 已进入 apps/api registry/allowlist；当前为 `db-read-repository-wired-with-gap`，`floorId` 为合成兼容 ID     |
 
-#### 6.2 关键问题
+**文件热点：**
 
-| 问题              | 说明                                   | 处理方式         |
-| ----------------- | -------------------------------------- | ---------------- |
-| **155 → 11**      | 仅 11 个已迁移，144 个待处理           | 按业务域分批迁移 |
-| **高风险写操作**  | 至少 37 个 create/update/delete/upload | 需要单独处理     |
-| **contract 上传** | R2/文件上传，涉及分片状态              | 保持 legacy      |
-| **无 schema**     | 部分端点无对应 schema                  | 先建 schema      |
+- `apps/app/server/modules/**/endpoints.ts`
+- `apps/api/server/handlers/legacy-dispatch.ts`
+- `apps/api/server/modules/**`
+- `apps/type/src/business/**/schema.ts`
+- app H5 `pages-sub/report/fee-summary`
 
-#### 6.3 迁移顺序建议
+**数据源/风险：**
 
-1. **expense-manage** (16) - 已有 schema 基础
-2. **report-manage** (13) - 已有 schema 基础
-3. **repairs-manage** (7) - 已有 schema 基础
-4. **house-property-manage** (10) - 调研 schema
-5. **community-manage** (7) - 调研 schema
-6. **patrol-manage** (6) - 调研 schema
-7. **parking-manage** (4) - 调研 schema
-8. **contract-manage** (25) - P2，含高风险上传
-9. **setting-manage** (28) - P2
-10. **dev-team** (24) - P3
-11. **operation-team** (13) - P3
+- 可能依赖 `hp_houses` 或房屋/楼栋相关 schema，必须由探索子代理确认。
+- report/fee-summary 同时依赖 `/callComponent/core/list`，批次 2 的验收不能被批次 1 未完成项污染。
 
----
+**子代理拆分建议：**
 
-## 3. 验收标准总表
+- 探索子代理：floor 数据模型与旧响应字段对照。
+- 编辑子代理：repository/service/legacy adapter/manifest/tests。
+- 复核子代理：Chrome MCP 与矩阵状态。
 
-### 3.1 每批次必须满足
+**执行进度（2026-05-10）：**
 
-| 验收项                 | 说明                                              |
-| ---------------------- | ------------------------------------------------- |
-| **Vitest 测试**        | contract test + module test，100% 通过            |
-| **Chrome MCP**         | 页面级 Network 证据，真实浏览器验证               |
-| **shadow-off 演练**    | 关闭 shadow 后回退到旧服务验证                    |
-| **DB readiness**       | `RUN_PHASE7_DB_READINESS_CHECK=1` 返回 `DB_READY` |
-| **写操作（仅写端点）** | 受控演练 + 回滚方案 + 审计字段                    |
+- [x] 探索子代理已完成：建议基于 `hpHouses` 聚合楼层兼容视图；`floorId` 只能合成，不具备真实 floor 主键语义。
+- [x] 编辑子代理已完成：新增 DB runtime/repository 分支与 fake DB 单测；非 UUID `COMM_001` 不下推到 UUID `communityId`。
+- [ ] 仍缺 Chrome MCP / 页面 Network 证据；当前只能标 `db-read-repository-wired-with-gap`，不得写 `DB_READY`。
 
-### 3.2 禁止事项
+**验收门：**
 
-| 禁止项                             | 说明                                                      |
-| ---------------------------------- | --------------------------------------------------------- |
-| `READY_CONFIGURED` 当作 `DB_READY` | 必须实际开启深度探针                                      |
-| legacy fallback 200 当作 DB 完成   | 需要明确数据来源                                          |
-| 删除旧源目录                       | `D:\code\ruan-cat\01s-11comm-app` 永久保留                |
-| 删除旧服务                         | `apps/admin/server`、`apps/app/server` 在 gate 解除前禁止 |
-| 跳跃式迁移                         | 未完成当前批次不得进入下一批次                            |
+- Vitest 覆盖列表、详情、空楼栋、未知 community/floor。
+- Chrome MCP 在 report 页面记录 floor 请求命中目标实现。
+- 矩阵中 `dataSourceStatus` 从 `legacy-fallback` 更新为真实状态；若只做 fallback 包装，必须保持 `legacy-fallback`。
 
-### 3.3 Phase7 Gate 状态
+**禁止误判：**
 
-| Gate                                                             | 当前状态  | 说明                 |
-| ---------------------------------------------------------------- | --------- | -------------------- |
-| `go-for-production-readonly-and-guarded-write-candidate-cutover` | ✅ 已满足 | 只读 + guarded write |
-| `no-go-for-retirement`                                           | ⚠️ 仍确认 | 旧服务禁止删除       |
+- 不要把统一 server 代理旧 app 返回 200 写成 apps/api repository 完成。
 
 ---
 
-## 4. 参考上下文与 Skills
+## 6. 批次 3：repair DB 接入
 
-### 4.1 参考文档
+**目标：** 将 app repair 5 个 endpoint 与 admin repairs 相关 list 的数据源从 InMemory/未接入状态推进到 Drizzle repository 或明确的阻断状态。
 
-| 文档                                                                            | 说明                               |
-| ------------------------------------------------------------------------------- | ---------------------------------- |
-| `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md` | 主设计文档                         |
-| `docs/superpowers/reports/2026-05-10-phase7-consolidated-report.md`             | 探索汇总报告                       |
-| `apps/api/server/db/readiness.ts`                                               | DB readiness 探针逻辑              |
-| `apps/api/server/modules/fee/legacy-adapter.ts`                                 | fee legacy adapter（参考实现）     |
-| `apps/api/server/modules/repair/repository.ts`                                  | repair repository（当前 InMemory） |
+**范围：**
 
-### 4.2 项目 Skills
+| endpoint                                                         | 方法     | 当前状态                                     |
+| ---------------------------------------------------------------- | -------- | -------------------------------------------- |
+| `/app/ownerRepair.listOwnerRepairs`                              | GET/POST | InMemory only                                |
+| `/app/ownerRepair.queryOwnerRepair`                              | GET/POST | InMemory only                                |
+| `/app/ownerRepair.saveOwnerRepair`                               | POST     | InMemory only，写操作                        |
+| `/app/repairSetting.listRepairSettings`                          | GET/POST | InMemory only                                |
+| `/app/dict.queryRepairStates`                                    | GET/POST | InMemory only                                |
+| admin `repairs-todo/list`、`repairs-setting/list`、`issues/list` | POST     | 已有页面证据，但 schema 存在未充分接入需复核 |
 
-| Skill                      | 用途                        |
-| -------------------------- | --------------------------- |
-| `nitro-api-development`    | Nitro API 开发规范          |
-| `schema-and-seed-guardian` | Schema 定义与 Seed 编写规范 |
-| `schema-change-sync`       | Schema 变更同步检查清单     |
-| `neon-db-query`            | Neon 数据库表查询           |
+**文件热点：**
 
-### 4.3 可用工具
+- `apps/api/server/modules/repair/repository.ts`
+- `apps/api/server/modules/repair/service.ts`
+- `apps/api/server/modules/repair/admin-adapter.ts`
+- `apps/api/server/modules/repair/legacy-adapter.ts`
+- `apps/type/src/business/**/schema.ts`
+- admin repairs API hooks 与 tests
+- app repair 页面与 runtime allowlist
 
-| 工具                                            | 用途                    |
-| ----------------------------------------------- | ----------------------- |
-| Chrome DevTools MCP                             | 页面级 Network 证据采集 |
-| Vitest                                          | 单元/集成测试           |
-| `apps/api/tests/http/phase7-gated-http.test.ts` | HTTP gate 测试          |
+**数据源/风险：**
 
----
+- `rpRepairOrders`、`rpRepairSettings`、`rpRepairOrderHistories` 等 schema 存在但未完全接入。
+- `saveOwnerRepair` 是写入口，必须具备受控写入、读回、回滚和 guard 恢复证据。
+- repair endpoint 已在 manifest 里出现，但 app allowlist 未必开放；manifest 登记不等于迁移完成。
 
-## 5. 执行流程
+**执行进度（2026-05-10）：**
 
-```plain
-for each 批次:
-    1. 调研数据来源（schema/现有 Repository）
-    2. 实现 Repository 层
-    3. 实现 Service 层
-    4. 实现 Adapter 层
-    5. 实现 Route 层
-    6. 编写 Vitest 测试
-    7. 采集 Chrome MCP 证据
-    8. 执行 shadow-off 演练
-    9. 验证 DB readiness（如适用）
-    10. 执行写操作演练（如适用）
-    11. 更新 endpoint 矩阵
-    12. 评审批次完成
-```
+- [x] Batch3 已启动独立 agent team 探索：ownerRepair、repairSetting/dict、旧端语义、矩阵验收各 1 个探索子代理。
+- [x] repair 只读 DB repository 首切片已完成：DB URL 存在时 `getRepairRuntime(event)` 切换到 `rpRepairOrders` / `rpRepairSettings` / `rpRepairTypes` 只读数据源。
+- [x] app shadow allowlist 小切片已完成：`listOwnerRepairs`、`queryOwnerRepair`、`listRepairSettings`、`dict.queryRepairStates` 已加入 allowlist；`saveOwnerRepair` 仍未开放。
+- [x] 写入口默认 guard 已补齐：`/app/ownerRepair.saveOwnerRepair` 与 `/callComponent/ownerRepair.appraiseRepair` 默认返回 `409 PHASE7_MUTATION_GUARDED`；仅 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 可用于受控演练。
+- [ ] Chrome MCP / browser shadow evidence 仍待补；当前不得将 repair 端点标记为 `DB_READY` 或删除候选。
+- [ ] 写入口 `saveOwnerRepair` 与 `appraiseRepair` 仍缺 controlled write、read-back、rollback 与 guard 恢复证据；未完成前继续保持 `blocked-for-execution`。
 
----
+**子代理拆分建议：**
 
-## 6. 禁止误判清单
+- 探索 A：app ownerRepair 三个端点。
+- 探索 B：repairSetting 与 dict repair states。
+- 编辑 A：repository/service DB 接入。
+- 编辑 B：admin/app adapter 与 tests。
+- 复核：写入 guard、回滚、Chrome MCP、矩阵。
 
-根据设计文档明确的禁止项：
+**验收门：**
 
-1. **不要把 `go-for-production-readonly-and-guarded-write-candidate-cutover` 误读为旧服务可删除**
-2. **不要把 `READY_CONFIGURED` 误读为 `DB_READY`**
-3. **不要把 legacy fallback 返回 200 误读为 DB/repository 迁移完成**
-4. **不要把本地 in-memory/fallback 写入演练误读为真实 Neon/生产写入完成**
-5. **不要把 canonical-only route 误算成旧 path exact covered**
-6. **不要因为某个页面的首批 Network 已通过，就推断同模块所有 detail/create/update/delete 均已完成**
-7. **不要触碰旧源目录 `D:\code\ruan-cat\01s-11comm-app`**
-8. **不要在没有删除候选清单和回滚方案前删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`**
+- Vitest 覆盖 app legacy envelope 与 admin JsonVO 双契约。
+- typecheck 通过。
+- Chrome MCP 覆盖至少一个 app repair 页面与 admin repairs 页面。
+- 写入口未完成受控演练前只能保持 `blocked-for-execution` 或 `unknown-needs-triage`。
+
+**禁止误判：**
+
+- 不要把 admin repairs list 页面 200 推断为 app repair DB 完成。
+- 不要把 InMemory 写入演练写成 Neon/生产写入完成。
 
 ---
 
-_计划创建时间：2026-05-10_
+## 7. 批次 4：fee DB 查询与报表，只读端点
+
+**目标：** 将 fee 查询与报表只读端点从 InMemory/fallback 推进到明确 DB repository 或可解释的保留状态。
+
+**范围：实际只读清单为 8 个，不写成 14 个。**
+
+| endpoint                                                 | 方法     | 当前风险                                         |
+| -------------------------------------------------------- | -------- | ------------------------------------------------ |
+| `/app/fee.listFee`                                       | GET/POST | 已在 Nitro 层承载，但需确认 DB 查询不是 InMemory |
+| `/app/fee.queryFeeDetail`                                | GET/POST | 被 property-application 复用，需 compat          |
+| `/app/feeApi/listOweFees`                                | GET/POST | 欠费查询需对接 `exHouseCharges` / `exPayments`   |
+| `/app/feeConfig.listFeeConfigs`                          | GET/POST | 配置查询需对接 `exExpenseItems`                  |
+| `/app/reportFeeMonthStatistics.queryReportFeeSummary`    | GET/POST | 报表汇总需对接 `rptExpenseSummaries`             |
+| `/app/reportFeeMonthStatistics/queryPayFeeDetail`        | GET/POST | 支付明细需对接 `rptPaymentDetails`               |
+| `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` | GET/POST | 房间维度报表需明确数据源                         |
+| `/app/dataReport.queryFeeDataReport`                     | GET/POST | 当前页面可能未接线，需调用端复核                 |
+
+**文件热点：**
+
+- `apps/api/server/modules/fee/repository.ts`
+- `apps/api/server/modules/fee/service.ts`
+- `apps/api/server/modules/fee/legacy-adapter.ts`
+- `apps/type/src/business/**/schema.ts`
+- `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts`
+- app fee/report 页面
+
+**数据源/风险：**
+
+- 费用 CRUD 已有部分 DB 能力，但查询/报表不能自动继承完成结论。
+- `fee.queryFeeDetail` 有多模块复用风险。
+- `dataReport` 页面历史上存在未接线或注释逻辑，不能只靠 endpoint 存在证明页面完成。
+
+**子代理拆分建议：**
+
+- 编辑 A：`fee.listFee`、`fee.queryFeeDetail`、`feeApi/listOweFees`。
+- 编辑 B：`feeConfig` 与三条 `reportFeeMonthStatistics*`。
+- 编辑 C：`dataReport` 调用端与数据源复核。
+- 复核：对 8 个只读端点逐项检查 DB 来源、Network 与矩阵。
+
+**执行进度（2026-05-10）：**
+
+- [x] Batch4 调度探索已完成：优先选择 `feeConfig.listFeeConfigs` 与 `reportFeeMonthStatistics.queryReportFeeSummary` 两个只读端点做最小 DB wiring。
+- [x] 编辑子代理已完成：`feeConfig.listFeeConfigs` 已接入 `exExpenseItems` 只读 DB 分支；`reportFeeMonthStatistics.queryReportFeeSummary` 已接入 `rptExpenseSummaries` 聚合，只保留缺失历史字段的兼容默认。
+- [x] `queryPayFeeDetail` 与 `dataReport` 已有 DB 分支，已补 repository 测试与本地 HTTP gate；仍缺页面/Chrome evidence，不能直接写成生产 `DB_READY`。
+- [x] 剩余 fee 只读探索已完成：`feeApi/listOweFees` 是下一步最稳候选；`fee.listFee` 与 `oweFeeCallable.listOweFeeCallable` 暂不应直接 DB wiring。
+- [x] `feeApi/listOweFees` 最小 DB 分支已完成：主表为 `exHouseCharges`，只推导欠费金额/状态/日期/分页汇总；owner/community/lateFee/oweDays 仍为兼容默认。
+- [ ] `fee.listFee`、`fee.queryFeeDetail`、`oweFeeCallable.listOweFeeCallable` 暂不推进；需要 join 来源和字段语义设计后再拆小切片。
+
+**验收门：**
+
+- 8 个端点均有 Vitest contract。
+- 至少 fee/detail 与 report/fee-summary 有 Chrome MCP Network 证据。
+- repository 明确使用 Drizzle/Neon 或矩阵保留为 `in-memory-only` / `legacy-fallback`。
+
+**禁止误判：**
+
+- 不要把 8 个只读端点写成 14 个。
+- 不要把 fee allowlist 或 Nitro adapter 存在写成 DB 完成。
+
+---
+
+## 8. 批次 5：fee guarded writes
+
+**目标：** 对三条高风险写入口建立受控演练方案；未满足条件前保持默认阻断。
+
+**范围：**
+
+| endpoint                                  | 方法 | 当前状态                          |
+| ----------------------------------------- | ---- | --------------------------------- |
+| `/app/payment.nativeQrcodePayment`        | POST | `blocked-for-execution`，默认 409 |
+| `/app/oweFeeCallable.writeOweFeeCallable` | POST | `blocked-for-execution`，默认 409 |
+| `/app/fee.saveRoomCreateFee`              | POST | `blocked-for-execution`，默认 409 |
+
+**文件热点：**
+
+- `apps/api/server/modules/fee/legacy-adapter.ts`
+- `apps/api/server/modules/fee/repository.ts`
+- `apps/api/tests/http/phase7-gated-http.test.ts`
+- app fee create / pay-qrcode / write-owe-callable 页面
+
+**数据源/风险：**
+
+- 涉及支付、催缴、费用创建，不能在生产无计划真实写入。
+- 本地 in-memory/fallback 演练只能标 `write-runtime-fallback-only`。
+- 任何开启 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 的演练都必须可回滚，并在结束后恢复关闭状态。
+
+**子代理拆分建议：**
+
+- 探索子代理：定义测试数据、业务允许范围、读回断言、回滚步骤、失败清理策略。
+- 编辑子代理：补 guard tests、受控演练脚本入口或手动步骤文档、审计字段处理。
+- 复核子代理：确认默认 409 恢复、矩阵状态、无生产真实写入误述。
+
+**验收门：**
+
+- 默认状态 HTTP gate 仍证明三条写入口返回 `409 PHASE7_MUTATION_GUARDED`。
+- 若执行受控写入，必须有写入、读回、回滚、guard 恢复四类证据。
+- 生产真实写入只有在明确授权、测试数据和回滚方案存在时才可进行；否则矩阵保持 `blocked-for-execution`。
+
+**禁止误判：**
+
+- 不要把默认阻断写成写能力完成。
+- 不要把本地 fallback 写入写成真实 Neon 或生产写入完成。
+
+---
+
+## 9. 批次 6：admin P1 业务域
+
+**目标：** 优先迁移 admin remaining 中已有 schema 基础、页面入口明确、生产 Network 可观察的 P1 业务域。
+
+**范围：**
+
+| 业务域                           | remaining 规模 | 拆分建议                                      |
+| -------------------------------- | -------------- | --------------------------------------------- |
+| `property-manage/expense-manage` | 16             | 每组 2-3 个三级路由，先 list/detail，再写入口 |
+| `property-manage/report-manage`  | 13             | 每组 2-3 个报表页面，只读优先                 |
+| `property-manage/repairs-manage` | 7              | 与 repair DB 批次联动，先 list/detail         |
+
+**文件热点：**
+
+- `apps/admin/server/api/property-manage/**`
+- `apps/admin/src/api/property-manage/**`
+- `apps/admin/src/views/property-manage/**`
+- `apps/api/server/routes/api/property-manage/**`
+- `apps/api/server/modules/**`
+- `apps/type/src/business/**/schema.ts`
+
+**数据源/风险：**
+
+- admin canonical route 与旧 path exact covered 不等价，矩阵必须保留旧路径映射。
+- create/update/delete/upload 需要独立写入策略，不得夹在 list/detail 迁移中默认完成。
+
+**子代理拆分建议：**
+
+- expense 子代理 A：2-3 个 expense 只读三级路由。
+- expense 子代理 B：2-3 个 expense 写风险路由。
+- report 子代理 C：2-3 个 report 只读路由。
+- repairs 子代理 D：2-3 个 repairs 路由。
+- 每组都配独立复核或由复核子代理按组复核。
+
+**验收门：**
+
+- 每组完成前矩阵先更新。
+- Vitest 覆盖 API hook resolver 与 apps/api contract。
+- Chrome MCP 覆盖对应 admin 页面。
+- 写入口必须有 guard、读回、回滚或明确阻断状态。
+
+**禁止误判：**
+
+- 不要因为一个 list 页面 200 就推断同域 detail/create/update/delete 完成。
+
+---
+
+## 10. 批次 7：admin P2/P3 业务域
+
+**目标：** 在 P1 收口后，按风险和 schema 准备度迁移其他 admin 业务域。
+
+**范围与建议顺序：**
+
+| 业务域                                  | remaining 规模 | 优先级 | 备注                                     |
+| --------------------------------------- | -------------- | ------ | ---------------------------------------- |
+| `property-manage/house-property-manage` | 10             | P2     | 房屋/业主 schema 需先复核                |
+| `property-manage/community-manage`      | 7              | P2     | 社区基础数据，需 DB readiness            |
+| `property-manage/patrol-manage`         | 6              | P2     | 巡检相关，可与 app inspection 后续联动   |
+| `property-manage/parking-manage`        | 4              | P2     | 停车相关，需确认 app parking 重叠        |
+| `property-manage/contract-manage`       | 25             | P2     | 含上传/分片/R2，高风险，上传保持单独评审 |
+| `setting-manage`                        | 28             | P2     | 系统/组织配置，需鉴别模板遗留与真实业务  |
+| `dev-team`                              | 24             | P3     | 平台配置/菜单/缓存，最后处理             |
+| `operation-team`                        | 13             | P3     | 运营端配置，最后处理                     |
+| `j1-dashboard`、`debug-env`             | 2              | P3     | 单独判断是否保留或迁移                   |
+
+**文件热点：**
+
+- `apps/admin/server/api/**`
+- `apps/admin/src/router/rank/rank-route-keys.ts`
+- `apps/admin/src/api/**`
+- `apps/admin/src/views/**`
+- `apps/api/server/routes/api/**`
+- `apps/type/src/business/**/schema.ts`
+
+**数据源/风险：**
+
+- contract 上传涉及文件状态、R2、分片，不能和普通 CRUD 同批结案。
+- setting/dev/operation 中可能存在模板遗留或无人调用路径，必须通过矩阵标 `unknown-needs-triage` 或 `not-candidate`，不得直接删除。
+
+**子代理拆分建议：**
+
+- 每个子代理只负责 2-3 个三级业务路由。
+- contract 上传子批次单独探索、单独编辑、单独复核。
+- P3 域先做调用端与业务有效性探索，再决定是否实施迁移。
+
+**验收门：**
+
+- 每个三级业务路由都有矩阵记录、调用端证据、测试、Chrome MCP 或明确无页面原因。
+- 无 schema 的端点先走 schema-change-sync，而不是在 API 层硬编码 mock。
+
+**禁止误判：**
+
+- 不要把无人调用、模板遗留、搜索未命中直接标为可删除。
+
+---
+
+## 11. 批次 8：其他 app legacy 业务域
+
+**目标：** 在 P0 app fallback、repair、fee 批次完成后，按生产访问概率和 schema 准备度迁移剩余 app legacy endpoint。
+
+**范围示例：**
+
+- activity、appointment、complaint、contact、coupon、inspection、item-release、maintenance、meter、notice、oa-workflow、owner、parking、purchase/resource 等。
+
+**文件热点：**
+
+- `apps/app/server/modules/**/endpoints.ts`
+- `apps/app/src/**`
+- `apps/api/server/handlers/legacy-dispatch.ts`
+- `apps/api/server/shared/runtime/runtime-endpoints.ts`
+- `apps/api/server/modules/**`
+- `apps/type/src/business/**/schema.ts`
+
+**数据源/风险：**
+
+- 约 211 个仍在 legacy fallback 兼容的大范围端点不能一次性全量重写。
+- purchase/resource 等存在 endpoint 冲突，必须先做冲突矩阵。
+- POST 不一定都是安全写，需按业务语义拆成只读 POST、受控写、真实写、高风险阻断。
+
+**子代理拆分建议：**
+
+- 按 app 模块每组 2-3 个 endpoint 或一个小模块分配。
+- 优先生产 H5 会访问、有 schema、只读或低风险的模块。
+- 高风险写模块单独批次，复用批次 5 的 guard / rollback 标准。
+
+**验收门：**
+
+- manifest、allowlist、legacy dispatch 状态与矩阵一致。
+- Chrome MCP 覆盖真实 app 页面；没有页面入口时补 contract 与 HTTP gate。
+- fallback 移除前有 shadow-off 或 rollback 证据。
+
+**禁止误判：**
+
+- 不要把 app legacy endpoint 注册进 `apps/api` 就当作 DB 完成。
+- 不要用新 mock 伪造迁移完成。
+
+---
+
+## 12. 每批完成定义
+
+一个批次只有同时满足以下条件，才允许标记完成：
+
+- 矩阵已在实施前创建或更新本批记录，实施后再次更新最终状态。
+- route / adapter / service / repository / schema / frontend resolver 的必要变更已完成；不适用项写明原因。
+- Vitest 已覆盖 contract、正常路径、空数据、错误路径、guard 或兼容响应。
+- 相关 package 的 typecheck 已通过。
+- Chrome DevTools MCP 已采集页面级 Network 证据；无法采集页面时有明确替代证据。
+- shadow-off / fallback / rollback 路径已验证或明确保留原因。
+- 生产 DB readiness 未开启 deep probe 时只能记录 `READY_CONFIGURED-only`；不得写 `DB_READY`。
+- 写入口已完成默认阻断验证；若执行写入，必须有写入、读回、回滚、guard 恢复证据。
+- 单一汇总报告已合并探索、编辑、复核、验证证据和遗留风险。
+- 复核子代理确认不存在禁止误判。
+
+---
+
+## 13. 复核检查清单
+
+复核子代理必须逐项检查：
+
+- [ ] 本批没有修改 `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md` 以外的计划范围之外文档，除非批次要求更新矩阵或汇总报告。
+- [ ] 没有删除、移动、归档、重命名或清空 `D:\code\ruan-cat\01s-11comm-app`、`apps/admin/server`、`apps/app/server`。
+- [ ] 所有端点在矩阵中都有明确 `targetStatus` 和 `dataSourceStatus`。
+- [ ] `READY_CONFIGURED` 未被写成 `DB_READY`。
+- [ ] legacy fallback 200 未被写成 DB/repository 完成。
+- [ ] app 已迁移 17 的表述没有被写成全部 DB 完成。
+- [ ] fee 查询/报表只读清单按 8 个管理；三条高风险写入口单独列入 guarded writes。
+- [ ] Vitest 命令、typecheck 命令和结果已记录。
+- [ ] Chrome MCP Network evidence 路径已记录。
+- [ ] shadow-off / fallback / rollback 证据已记录。
+- [ ] 写入演练具备测试数据、业务允许范围、读回断言、回滚步骤、失败清理和 guard 恢复。
+- [ ] 所有子代理反馈已合并到单一汇总报告，未制造无必要碎片报告。
+
+---
+
+## 14. 参考文档
+
+- `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+- `docs/superpowers/reports/2026-04-27-phase7-consolidated-report.md`
+- `docs/superpowers/reports/2026-05-10-phase7-consolidated-report.md`
+- `apps/api/tests/http/phase7-gated-http.test.ts`
+- `apps/api/server/db/readiness.ts`
+- `apps/api/server/shared/runtime/runtime-endpoints.ts`
+- `apps/api/server/handlers/legacy-dispatch.ts`
+
+---
+
+## 15. 禁止误判清单
+
+1. 不要把 `go-for-production-readonly-and-guarded-write-candidate-cutover` 误读为旧服务可删除。
+2. 不要把 `READY_CONFIGURED` 误读为 `DB_READY`。
+3. 不要把 legacy fallback 返回 200 误读为 DB/repository 迁移完成。
+4. 不要把本地 in-memory/fallback 写入演练误读为真实 Neon/生产写入完成。
+5. 不要把 canonical-only route 误算成旧 path exact covered。
+6. 不要因为某个页面的首批 Network 已通过，就推断同模块所有 detail/create/update/delete 均已完成。
+7. 不要触碰旧源目录 `D:\code\ruan-cat\01s-11comm-app`；该目录永久保留，不属于旧服务退役对象。
+8. 不要在没有删除候选清单、生产 `DB_READY`、写入口策略结论和回滚方案前，删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`。
+
+---
+
+_计划修订时间：2026-05-10_

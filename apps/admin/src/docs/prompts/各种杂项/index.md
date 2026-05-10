@@ -460,7 +460,7 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 1. 如果串行模式，有后续尾缀，那么就不要 push。为 false，git tag 由其他的的工具完成 push。
 2. 如果是单独使用 bumpp 命令来完成发版，就需要直接 push git tag。
 
-## 040 <!-- TODO: --> 部署 `apps\api` 项目到 vercel 平台
+## 040 <!-- 已完成 --> 部署 `apps\api` 项目到 vercel 平台
 
 模仿 vercel 的 11comm-app-nitro-server 项目的做法，新建一个 11comm-nitro-server 的项目，部署 apps\api 这个 nitro 接口服务。
 
@@ -470,3 +470,11 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 这是在 monorepo 项目内部署 nitro 接口，会涉及到一些误区，重点阅读 https://juejin.cn/post/7610816257119354915 文档，避免你出现部署的误区。
 
 在配置 vercel 时，你可以参考 notes-my-pull-requests 这个 vercel 项目，这个也是属于在 monorepo 内部署 nuxt/nitro 项目的，重点模仿其使用的命令。避免出现 monorepo+nitro 在 vercel 部署时出现的故障。
+
+## 041 <!-- TODO: --> 推进阶段 7 的大批量改造任务
+
+开始执行 docs\superpowers\plans\2026-05-10-phase7-batch-migration-plan.md ，我的核心目的是为了执行 docs\superpowers\specs\2026-04-25-11comm-app-monorepo-api-migration-design.md 的剩余阶段 7 的东西。
+
+严格按照 docs\superpowers\plans\2026-05-10-phase7-batch-migration-plan.md 计划来完成任务。
+
+认真落实 `docs\superpowers\reports\phase7-endpoint-migration-matrix.md` 的修改矩阵。确保迁移改造不要有任何形式的缺漏。
