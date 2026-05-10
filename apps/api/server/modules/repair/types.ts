@@ -8,6 +8,7 @@ export interface RepairItem {
 	repairName: string;
 	tel: string;
 	address: string;
+	repairObjName?: string;
 	repairType: string;
 	repairTypeName: string;
 	statusCd: string;
@@ -15,6 +16,7 @@ export interface RepairItem {
 	communityId: string;
 	createTime: string;
 	updateTime: string;
+	evaluation?: RepairEvaluation;
 }
 
 export interface RepairListQuery {
@@ -54,6 +56,23 @@ export interface RepairSettingItem {
 export interface RepairStateDictionaryItem {
 	statusCd: string;
 	name: string;
+}
+
+export interface CoreDictItem {
+	statusCd: string;
+	name: string;
+}
+
+export interface CoreDictQuery {
+	name?: string;
+	type?: string;
+	domain?: string;
+}
+
+export interface RepairEvaluation {
+	rating: number;
+	comment: string;
+	evaluateTime: string;
 }
 
 export type AdminRepairsTodoListItem = RepairsTodoListItem & {

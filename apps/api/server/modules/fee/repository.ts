@@ -4,6 +4,7 @@ import {
 	exExpenseItems,
 	exHouseCharges,
 	exPayments,
+	type ExHouseCharge,
 	insertExExpenseItemSchema,
 	rptExpenseSummaries,
 	rptPaymentDetails,
@@ -231,6 +232,27 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 					}
 				: null;
 		},
+		async listOweFees(params) {
+			const conditions = [];
+			const roomId = params.roomId || params.ownerId;
+			if (roomId && isUuid(roomId)) {
+				conditions.push(eq(exHouseCharges.houseId, roomId));
+			}
+			// ex_house_charges has no owner/community columns; legacy communityId/owner defaults stay empty.
+			// Non-UUID communityId values such as COMM_001 are intentionally not pushed into UUID columns.
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const rows = await db.select().from(exHouseCharges).where(where).orderBy(desc(exHouseCharges.createTime));
+			const data = rows.map(toOweFeeFromHouseCharge).filter((item) => item.oweAmount > 0);
+			const page = paginate(data, params.page, params.row);
+
+			return {
+				data: page.list,
+				totalAmount: data.reduce((sum, item) => sum + item.totalAmount, 0),
+				total: data.length,
+				page: params.page,
+				row: params.row,
+			};
+		},
 		async listExpenseItemSettings(params) {
 			const conditions = [];
 			if (params.code) {
@@ -291,6 +313,75 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 		},
 		async deleteExpenseItemSetting(id) {
 			return createExpenseItemDeletePolicy(id);
+		},
+		async listFeeConfigs(params) {
+			const conditions = [];
+			if (params.feeTypeCd) {
+				conditions.push(eq(exExpenseItems.expenseType, params.feeTypeCd));
+			}
+			if (params.valid !== undefined) {
+				conditions.push(eq(exExpenseItems.status, params.valid === 0 ? "disabled" : "enabled"));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const rows = await db
+				.select()
+				.from(exExpenseItems)
+				.where(where)
+				.orderBy(desc(exExpenseItems.createTime))
+				.limit(params.row)
+				.offset((params.page - 1) * params.row);
+
+			return rows.map(toFeeConfigItem);
+		},
+		async getFeeSummaryReport(params) {
+			const conditions = [];
+			if (params.communityId && isUuid(params.communityId)) {
+				conditions.push(eq(rptExpenseSummaries.communityId, params.communityId));
+			}
+			if (params.feeTypeCd) {
+				conditions.push(eq(rptExpenseSummaries.expenseType, params.feeTypeCd));
+			}
+			if (params.floorId) {
+				conditions.push(eq(rptExpenseSummaries.building, params.floorId));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const rows = await db.select().from(rptExpenseSummaries).where(where);
+			const roomKeys = new Set<string>();
+			const oweRoomKeys = new Set<string>();
+			let curReceivableFee = 0;
+			let receivedFee = 0;
+			let curOweFee = 0;
+
+			for (const row of rows) {
+				const roomKey = String(row.building || row.id || roomKeys.size);
+				const outstandingTotal = toNumber(row.outstandingTotal);
+
+				roomKeys.add(roomKey);
+				if (outstandingTotal > 0) {
+					oweRoomKeys.add(roomKey);
+				}
+				curReceivableFee += toNumber(row.receivableTotal);
+				receivedFee += toNumber(row.receivedTotal);
+				curOweFee += outstandingTotal;
+			}
+
+			return {
+				list: [
+					{
+						feeRoomCount: roomKeys.size || rows.length,
+						oweRoomCount: oweRoomKeys.size,
+						curOweFee,
+						// rpt_expense_summaries stores current totals only; historical buckets stay conservative.
+						hisOweFee: 0,
+						receivedFee,
+						curReceivableFee,
+						hisReceivedFee: 0,
+						roomCount: roomKeys.size || rows.length,
+					},
+				],
+			};
 		},
 		async getPayFeeDetailReport(params) {
 			const countResult = await db.select({ total: sql<number>`count(*)` }).from(rptPaymentDetails);
@@ -773,11 +864,32 @@ function createExpenseItemDeletePolicy(id: string): ExpenseItemSettingDeletePoli
 	};
 }
 
+function toFeeConfigItem(item: ExExpenseItem | ExpenseItemSettingRecord): FeeConfigItem {
+	return {
+		configId: item.id,
+		feeName: item.itemName || "",
+		feeTypeCd: item.expenseType || "",
+		computingFormula: toStringOrEmpty(item.formula),
+		feeFlag: toStringOrEmpty(item.paymentType),
+		isDefault: "F",
+		valid: item.status === "disabled" ? 0 : 1,
+	};
+}
+
 function toStringOrEmpty(value: unknown): string {
 	if (value === undefined || value === null) {
 		return "";
 	}
 	return String(value);
+}
+
+function toNumber(value: unknown): number {
+	const result = Number(value);
+	return Number.isFinite(result) ? result : 0;
+}
+
+function isUuid(value: string): boolean {
+	return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
 function blankToNull(value: unknown): string | null {
@@ -850,6 +962,45 @@ function toOweFee(fee: FeeItem): OweFeeItem {
 		state: fee.state,
 		createTime: fee.createTime,
 	};
+}
+
+function toOweFeeFromHouseCharge(item: ExHouseCharge): OweFeeItem {
+	const oweAmount = Math.max(toNumber(item.receivableAmount) - toNumber(item.receivedAmount), 0);
+	const billDate = toStringOrEmpty(item.billDate);
+	const dueDate = toStringOrEmpty(item.dueDate);
+	const billingPeriod = toStringOrEmpty(item.billingPeriod);
+
+	return {
+		oweFeeId: item.id,
+		feeId: item.id,
+		feeName: item.expenseItem || "",
+		roomId: item.houseId,
+		roomName: item.houseId,
+		communityId: "",
+		ownerName: "",
+		ownerTel: "",
+		oweAmount,
+		startTime: billDate || billingPeriod,
+		endTime: dueDate || billingPeriod,
+		oweDays: 0,
+		lateFee: 0,
+		totalAmount: oweAmount,
+		state: toLegacyOweState(item.status),
+		createTime: formatDateTime(item.createTime),
+	};
+}
+
+function toLegacyOweState(status: unknown): string {
+	switch (status) {
+		case "paid":
+			return "PAID";
+		case "partial":
+			return "PARTIAL_PAID";
+		case "overdue":
+			return "OVERDUE";
+		default:
+			return "UNPAID";
+	}
 }
 
 function toAdminHouseCharge(fee: FeeItem): AdminHouseChargeListItem {

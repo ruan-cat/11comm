@@ -1,4 +1,5 @@
 import { feeLegacyEndpointDefinitions } from "../../modules/fee/legacy-endpoints";
+import { floorLegacyEndpointDefinitions } from "../../modules/floor/legacy-endpoints";
 import { repairLegacyEndpointDefinitions } from "../../modules/repair/legacy-endpoints";
 import type { EndpointDefinition } from "./endpoint-registry";
 
@@ -27,6 +28,15 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/payment.nativeQrcodePayment",
 	"/app/oweFeeCallable.writeOweFeeCallable",
 	"/app/fee.saveRoomCreateFee",
+	"/app/ownerRepair.saveOwnerRepair",
+	"/callComponent/ownerRepair.appraiseRepair",
+]);
+
+const phase7RepairReadonlyAppShadowUrls = new Set([
+	"/app/ownerRepair.listOwnerRepairs",
+	"/app/ownerRepair.queryOwnerRepair",
+	"/app/repairSetting.listRepairSettings",
+	"/app/dict.queryRepairStates",
 ]);
 
 const runtimeEndpointEntries = [
@@ -40,7 +50,13 @@ const runtimeEndpointEntries = [
 		definition,
 		phase: "phase4a-repair-minimal",
 		ownerModule: "repair",
-		cutoverStatus: "not-in-app-shadow-allowlist" as const,
+		cutoverStatus: getRepairLegacyCutoverStatus(definition),
+	})),
+	...floorLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: "phase7-batch2-floor",
+		ownerModule: "floor",
+		cutoverStatus: getFloorLegacyCutoverStatus(definition),
 	})),
 ];
 
@@ -152,5 +168,27 @@ function getFeeLegacyCutoverStatus(definition: EndpointDefinition): EndpointMani
 		return "blocked-for-execution";
 	}
 
+	return "app-shadow-allowlist";
+}
+
+function getRepairLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	// /callComponent/core/list is app shadow allowlisted in Phase7 batch 1.
+	if (definition.url === "/callComponent/core/list") {
+		return "app-shadow-allowlist";
+	}
+
+	if (phase7RepairReadonlyAppShadowUrls.has(definition.url)) {
+		return "app-shadow-allowlist";
+	}
+
+	return "not-in-app-shadow-allowlist";
+}
+
+function getFloorLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	void definition;
 	return "app-shadow-allowlist";
 }

@@ -25,6 +25,14 @@ export const PHASE2_API_SHADOW_ENDPOINTS = [
   '/app/reportFeeMonthStatistics.queryReportFeeDetailRoom',
   '/app/dataReport.queryFeeDataReport',
   '/app/feeConfig.listFeeConfigs',
+  '/callComponent/core/list',
+  '/callComponent/ownerRepair.appraiseRepair',
+  '/app/floor.queryFloors',
+  '/app/floor.queryFloorDetail',
+  '/app/ownerRepair.listOwnerRepairs',
+  '/app/ownerRepair.queryOwnerRepair',
+  '/app/repairSetting.listRepairSettings',
+  '/app/dict.queryRepairStates',
 ]
 
 /** 解析当前接口运行时 */

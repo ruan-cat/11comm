@@ -30,6 +30,16 @@ export const repairLegacyEndpointDefinitions: EndpointDefinition[] = [
 		method: ["GET", "POST"],
 		handler: ({ event }) => getRepairRuntime(event).legacyAdapter.listRepairStates(),
 	},
+	{
+		url: "/callComponent/core/list",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) => getRepairRuntime(event).legacyAdapter.listCoreDict(mergeInput(query, body)),
+	},
+	{
+		url: "/callComponent/ownerRepair.appraiseRepair",
+		method: "POST",
+		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.appraiseRepair(asRecord(body)),
+	},
 ];
 
 function mergeInput(query: unknown, body: unknown): Record<string, unknown> {

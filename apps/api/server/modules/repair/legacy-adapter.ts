@@ -25,6 +25,10 @@ export function createLegacyRepairAdapter(service: RepairService) {
 			return repair ? legacySuccess({ ownerRepair: repair }, "query success") : legacyFailure("repair not found", 404);
 		},
 		async saveOwnerRepair(input: Record<string, unknown>) {
+			if (!isLegacyMutationAllowed()) {
+				return legacyMutationGuarded("ownerRepair.saveOwnerRepair");
+			}
+
 			if (!toString(input.title)) {
 				return legacyFailure("title is required", 400);
 			}
@@ -55,7 +59,46 @@ export function createLegacyRepairAdapter(service: RepairService) {
 		async listRepairStates() {
 			return legacySuccess(await service.listRepairStates(), "query success");
 		},
+		async listCoreDict(input: Record<string, unknown>) {
+			const name = toString(input.name);
+			const type = toString(input.type);
+			const domain = toString(input.domain);
+			const result = await service.listCoreDict({ name, type, domain });
+			return domain
+				? legacySuccess({ list: result, data: result }, "query success")
+				: legacySuccess(result, "query success");
+		},
+		async appraiseRepair(input: Record<string, unknown>) {
+			if (!isLegacyMutationAllowed()) {
+				return legacyMutationGuarded("callComponent/ownerRepair.appraiseRepair");
+			}
+			const repairId = toString(input.repairId);
+			if (!repairId) {
+				return legacyFailure("repairId is required", 400);
+			}
+			const context = toString(input.context);
+			if (!context) {
+				return legacyFailure("context is required", 400);
+			}
+			const result = await service.appraiseRepair({ repairId, context });
+			if (!result) {
+				return legacyFailure("repair not found", 404);
+			}
+			return legacySuccess(result, "评价成功");
+		},
 	};
+}
+
+function isLegacyMutationAllowed(): boolean {
+	return process.env.PHASE7_ALLOW_LEGACY_MUTATIONS === "1";
+}
+
+function legacyMutationGuarded(action: string) {
+	return legacyFailure(
+		`Phase7 mutation guard blocked ${action}; set PHASE7_ALLOW_LEGACY_MUTATIONS=1 only for controlled rollback evidence runs.`,
+		409,
+		{ errorCode: "PHASE7_MUTATION_GUARDED" },
+	);
 }
 
 function toNumber(value: unknown, fallback: number): number {
