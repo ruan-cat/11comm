@@ -1915,3 +1915,21 @@ Vercel production deployment 基线：
 - 不要因为某个页面的首批 Network 已通过，就推断同模块所有 detail/create/update/delete 均已完成。
 - 不要触碰旧源目录 `D:\code\ruan-cat\01s-11comm-app`；该目录永久保留，不属于旧服务退役对象。
 - 不要在没有删除候选清单和回滚方案前删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`。
+
+### 2026-05-10 后续接力补充
+
+本轮接力已经完成 Phase7 Batch1-Batch4 的一批落地提交，但阶段 7 仍未完成旧服务退役。后续 AI 会话必须先读取 `docs/superpowers/reports/phase7-endpoint-migration-matrix.md`，再读取 `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md`，不得只凭旧 consolidated report 推断状态。
+
+本轮已提交：
+
+- `26d18de2`：接入 Phase7 app legacy 只读端点迁移，覆盖 fee、floor、repair 与 app runtime allowlist；`ownerRepair.saveOwnerRepair` 默认 guard。
+- `5873a123`：补充 Phase7 legacy 迁移回归测试。
+- `828a019e`：更新 Phase7 批量迁移进度矩阵和计划。
+
+关键后续约束：
+
+- `db-read-repository-wired-with-gap` 只表示已有 DB read 分支但语义仍不完整，不能作为退役旧服务依据。
+- repair 写入口默认 `409 PHASE7_MUTATION_GUARDED` 是正确状态，不是未完成 bug。
+- fee/floor 的兼容字段缺口必须在矩阵中保留，直到补齐 join、schema 或产品接受的兼容策略。
+- 每个小批次完成后必须立即更新矩阵和计划；长任务不得等全部完成后再补进度。
+- 本次接力记忆已写入 Memorix：`#3306` Phase7 批量迁移接力进度，`#3307` Phase7 接力关键误区。

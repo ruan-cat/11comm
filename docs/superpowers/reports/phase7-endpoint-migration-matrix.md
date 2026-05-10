@@ -235,3 +235,27 @@ work-order=12
 - `in-memory-only` 行不能进入 retirement candidate。
 - 写入端点没有 `guard -> controlled write -> read-back -> rollback -> guard restored` 证据时，保持 `blocked-for-execution` 或 `unknown-needs-triage`。
 - 客户端调用差集和服务端孤儿差集一律先探索，不得作为删除依据。
+
+## 9. 2026-05-10 接力快照
+
+本矩阵已经同步 2026-05-10 本轮 Batch1-Batch4 的最新执行结果，并已通过提交 `828a019e` 纳入文档提交。其他 AI 接力时应直接以本矩阵的 `dataSourceStatus`、`targetStatus`、`retirementDecision` 和 `notes` 为准。
+
+**已完成或已推进到候选状态：**
+
+- P1 callcomponent：`/callComponent/core/list` 已注册 apps/api compat handler，仍是 `in-memory-only`，不能算 DB 完成；`ownerRepair.appraiseRepair` 保持 `blocked-for-execution`。
+- P2 floor：`/app/floor.queryFloors` 与 `/app/floor.queryFloorDetail` 已接入 `hpHouses` 聚合的 DB read repository branch，但仍为 `db-read-repository-wired-with-gap`；`floorId` 是兼容合成 ID，`COMM_001` 等非 UUID 不下推为 DB UUID filter。
+- P3 repair：list/detail/settings/dict read endpoint 已接入 `rpRepairOrders`、`rpRepairSettings`、`rpRepairTypes` 等 DB read branch；`saveOwnerRepair` 默认服务端 guard，返回 `409 PHASE7_MUTATION_GUARDED`，仅允许 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 受控旁路。
+- P4 fee read-b/read-c：`feeConfig.listFeeConfigs`、`reportFeeMonthStatistics.queryReportFeeSummary`、`reportFeeMonthStatistics/queryPayFeeDetail`、`dataReport.queryFeeDataReport` 已补 repository branch 与测试。
+- P4 fee `feeApi/listOweFees`：已从 `exHouseCharges` 推导欠费金额，但 `ownerName`、`ownerTel`、`communityId`、`lateFee`、`oweDays` 等仍是兼容默认或缺口，因此保持 `db-read-repository-wired-with-gap`。
+
+**后续必须继续推进：**
+
+1. 对所有 `schema-exists-not-wired` 行补 repository branch 和测试后，才允许改为 `db-read-repository-wired`。
+2. 对所有 `db-read-repository-wired-with-gap` 行补齐语义字段、join 或明确产品接受的兼容策略后，才允许升级状态。
+3. 对 `blocked-for-execution` 行，不得为了通过页面测试而默认开放写入口；必须先有测试数据、业务允许范围、读回、回滚、失败清理和 guard restored 证据。
+4. 每完成一个小批次，必须同步更新本矩阵、本计划和必要的综合报告，再继续下一批。
+
+**Memorix 交接记录：**
+
+- `#3306` Phase7 批量迁移接力进度。
+- `#3307` Phase7 接力关键误区。

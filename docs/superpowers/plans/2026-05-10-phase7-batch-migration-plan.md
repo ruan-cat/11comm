@@ -606,4 +606,42 @@
 
 ---
 
+## 16. 2026-05-10 接力进度快照
+
+本节用于其他 AI 会话接力。当前事实源优先级为：
+
+1. `docs/superpowers/reports/phase7-endpoint-migration-matrix.md`
+2. `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md`
+3. `docs/superpowers/reports/2026-05-10-phase7-consolidated-report.md`
+4. `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+
+**本轮已落地并提交：**
+
+- `26d18de2`：`feat(api)!`，接入 Phase7 app legacy 只读端点迁移，覆盖 fee/floor/repair 与 app runtime allowlist；`ownerRepair.saveOwnerRepair` 默认返回 `409 PHASE7_MUTATION_GUARDED`。
+- `5873a123`：`test(api)`，补充 fee/floor/repair/callcomponent legacy、repository、runtime、manifest、contract、HTTP gate 与 app runtime 测试。
+- `828a019e`：`docs(superpowers)`，更新本计划、endpoint 矩阵、综合报告和阶段 7 执行提示。
+- 以上提交尚未 push；接力前先运行 `git status --short --branch` 确认分支状态。
+
+**已验证：**
+
+- `pnpm -F @01s-11comm/api exec vitest run tests/modules/fee-db-repository.test.ts tests/legacy/fee-legacy-endpoints.test.ts tests/modules/floor-db-repository.test.ts tests/legacy/floor-legacy-endpoints.test.ts tests/modules/repair-db-repository.test.ts tests/modules/repair-runtime.test.ts tests/legacy/repair-legacy-endpoints.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts tests/http/phase7-gated-http.test.ts`
+- `pnpm -F @01s-11comm/api run typecheck`
+- `pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/runtime-base-url.test.ts`
+- `RUN_PHASE7_HTTP_TESTS=1` 的本地 `phase7-gated-http.test.ts`
+- `git diff --check`
+
+**接力优先级：**
+
+1. 先处理矩阵中 `db-read-repository-wired-with-gap` 的兼容缺口，不要把它标为完整完成。
+2. 继续推进 `schema-exists-not-wired` 的 fee read endpoint，优先补 repository branch、contract/module test、HTTP gate。
+3. 对 `blocked-for-execution` 的 mutation 只保持默认 guard 或设计受控写入演练；没有读回、回滚和 guard restored 证据前，不得开放。
+4. 继续按每批完成后立即更新矩阵和本计划，避免长任务中断后状态丢失。
+
+**已写入 Memorix：**
+
+- `#3306`：Phase7 批量迁移接力进度。
+- `#3307`：Phase7 接力关键误区。
+
+---
+
 _计划修订时间：2026-05-10_
