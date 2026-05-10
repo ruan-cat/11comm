@@ -1,3 +1,32 @@
+## v1.0.2-beta.1
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.9...v1.0.2-beta.1)
+
+### ✨ 新增功能
+
+- **api:** ⚠️ 接入 Phase7 legacy 只读端点迁移 ([26d18de2](https://github.com/ruan-cat/11comm/commit/26d18de2))
+
+### 🐞 修复缺陷
+
+- **app:** 稳定 maintenance mock 任务状态 ([288f466a](https://github.com/ruan-cat/11comm/commit/288f466a))
+
+### 📖 Documentation
+
+- **superpowers:** 完成阶段 7 分批次迁移计划与整合探索报告 ([611c5f99](https://github.com/ruan-cat/11comm/commit/611c5f99))
+- **superpowers:** 更新 Phase7 批量迁移进度矩阵 ([828a019e](https://github.com/ruan-cat/11comm/commit/828a019e))
+
+### ✅ Tests
+
+- **api:** 补充 Phase7 legacy 迁移回归覆盖 ([5873a123](https://github.com/ruan-cat/11comm/commit/5873a123))
+
+#### ⚠️ Breaking Changes
+
+- **api:** ⚠️ 接入 Phase7 legacy 只读端点迁移 ([26d18de2](https://github.com/ruan-cat/11comm/commit/26d18de2))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.1-beta.9
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.8...v1.0.1-beta.9)
