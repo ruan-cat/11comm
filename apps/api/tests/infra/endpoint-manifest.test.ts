@@ -4,8 +4,8 @@ import { expect } from "vitest";
 import { runtimeEndpointManifest } from "../../server/shared/runtime/runtime-endpoints";
 import endpointsHandler from "../../server/routes/__nitro/endpoints.get";
 
-describe("phase4 endpoint manifest", () => {
-	test("contains Phase2 fee entries and the Wave4A repair minimal slice only", () => {
+describe("phase7 endpoint manifest", () => {
+	test("contains migrated app legacy slices without widening unrelated modules", () => {
 		const urls = runtimeEndpointManifest.map((item) => item.url);
 
 		expect(urls).toContain("/app/fee.listFee");
@@ -16,6 +16,10 @@ describe("phase4 endpoint manifest", () => {
 		expect(urls).toContain("/app/ownerRepair.saveOwnerRepair");
 		expect(urls).toContain("/app/repairSetting.listRepairSettings");
 		expect(urls).toContain("/app/dict.queryRepairStates");
+		expect(urls).toContain("/callComponent/core/list");
+		expect(urls).toContain("/callComponent/ownerRepair.appraiseRepair");
+		expect(urls).toContain("/app/floor.queryFloors");
+		expect(urls).toContain("/app/floor.queryFloorDetail");
 		expect(urls).not.toContain("/app/ownerRepair.repairDispatch");
 		expect(urls).not.toContain("/app/ownerRepair.listStaffRepairs");
 		expect(urls).not.toContain("/app/resourceStore.listResourceStores");
@@ -41,6 +45,45 @@ describe("phase4 endpoint manifest", () => {
 					url: "/app/ownerRepair.listOwnerRepairs",
 					ownerModule: "repair",
 					phase: "phase4a-repair-minimal",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/ownerRepair.queryOwnerRepair",
+					ownerModule: "repair",
+					phase: "phase4a-repair-minimal",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/repairSetting.listRepairSettings",
+					ownerModule: "repair",
+					phase: "phase4a-repair-minimal",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/dict.queryRepairStates",
+					ownerModule: "repair",
+					phase: "phase4a-repair-minimal",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/ownerRepair.saveOwnerRepair",
+					ownerModule: "repair",
+					phase: "phase4a-repair-minimal",
+					cutoverStatus: "blocked-for-execution",
+				}),
+				expect.objectContaining({
+					url: "/app/floor.queryFloors",
+					method: ["GET", "POST"],
+					ownerModule: "floor",
+					phase: "phase7-batch2-floor",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/floor.queryFloorDetail",
+					method: ["GET", "POST"],
+					ownerModule: "floor",
+					phase: "phase7-batch2-floor",
+					cutoverStatus: "app-shadow-allowlist",
 				}),
 			]),
 		});

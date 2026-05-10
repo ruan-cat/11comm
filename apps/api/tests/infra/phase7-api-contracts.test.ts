@@ -87,25 +87,93 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(response).not.toHaveProperty("message");
 	});
 
-	test("manifest does not claim uncut or unavailable endpoints are cut over", () => {
+	test("floor batch2 app legacy endpoint returns the old code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/floor.queryFloors",
+			query: { page: 1, row: 5, communityId: "COMM_001" },
+		});
+
+		expect(response).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				list: expect.any(Array),
+				total: expect.any(Number),
+				page: 1,
+				pageSize: 5,
+				hasMore: true,
+			},
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+	});
+
+	test("manifest marks repair readonly DB-wired endpoints as app shadow allowlisted", () => {
 		expectManifestEntry("/app/ownerRepair.listOwnerRepairs", {
 			targetClient: "app",
 			routeKind: "app-legacy",
 			responseContract: "{ code, msg, data }",
-			cutoverStatus: "not-in-app-shadow-allowlist",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		expectManifestEntry("/app/ownerRepair.queryOwnerRepair", {
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		expectManifestEntry("/app/repairSetting.listRepairSettings", {
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			cutoverStatus: "app-shadow-allowlist",
 		});
 		expectManifestEntry("/app/dict.queryRepairStates", {
 			targetClient: "app",
 			routeKind: "app-legacy",
 			responseContract: "{ code, msg, data }",
-			cutoverStatus: "not-in-app-shadow-allowlist",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+	});
+
+	test("manifest does not claim uncut or unavailable endpoints are cut over", () => {
+		expectManifestEntry("/app/ownerRepair.saveOwnerRepair", {
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			cutoverStatus: "blocked-for-execution",
+		});
+		expectManifestEntry("/callComponent/core/list", {
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		expectManifestEntry("/callComponent/ownerRepair.appraiseRepair", {
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			cutoverStatus: "blocked-for-execution",
+		});
+		expectManifestEntry("/app/floor.queryFloors", {
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		expectManifestEntry("/app/floor.queryFloorDetail", {
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			cutoverStatus: "app-shadow-allowlist",
 		});
 
 		const urls = runtimeEndpointManifest.map((item) => item.url);
 		expect(urls).not.toContain("/api/property-manage/expense-manage/house-charge/create");
 		expect(urls).not.toContain("/api/property-manage/expense-manage/house-charge/update");
 		expect(urls).not.toContain("/api/property-manage/expense-manage/house-charge/delete");
-		expect(urls).not.toContain("/callComponent/core/list");
 	});
 
 	test("manifest marks high-risk app legacy mutation actions as blocked for execution", () => {
@@ -113,6 +181,8 @@ describe("phase7 apps-api dual client contracts", () => {
 			"/app/payment.nativeQrcodePayment",
 			"/app/oweFeeCallable.writeOweFeeCallable",
 			"/app/fee.saveRoomCreateFee",
+			"/app/ownerRepair.saveOwnerRepair",
+			"/callComponent/ownerRepair.appraiseRepair",
 		]) {
 			expectManifestEntry(url, {
 				targetClient: "app",

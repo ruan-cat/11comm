@@ -100,14 +100,14 @@ describe('runtime base url', () => {
   })
 })
 
-describe('phase6 app api shadow base url', () => {
+describe('phase7 app api shadow base url', () => {
   const legacyRuntimeEnv = {
     VITE_API_RUNTIME: 'nitro-standalone',
     VITE_SERVER_BASEURL: 'http://legacy.example.com',
     VITE_11COMM_API_BASE_URL: 'http://127.0.0.1:3102',
   }
 
-  test('allowlists only Phase6 fee payment report endpoints with legacy test coverage', () => {
+  test('allowlists migrated app legacy endpoints with registry coverage', () => {
     expect(PHASE2_API_SHADOW_ENDPOINTS).toEqual([
       '/app/fee.listFee',
       '/app/fee.queryFeeDetail',
@@ -121,13 +121,25 @@ describe('phase6 app api shadow base url', () => {
       '/app/reportFeeMonthStatistics.queryReportFeeDetailRoom',
       '/app/dataReport.queryFeeDataReport',
       '/app/feeConfig.listFeeConfigs',
+      '/callComponent/core/list',
+      '/callComponent/ownerRepair.appraiseRepair',
+      '/app/floor.queryFloors',
+      '/app/floor.queryFloorDetail',
+      '/app/ownerRepair.listOwnerRepairs',
+      '/app/ownerRepair.queryOwnerRepair',
+      '/app/repairSetting.listRepairSettings',
+      '/app/dict.queryRepairStates',
     ])
 
     expect(isPhase2ApiShadowEndpoint('/app/fee.listFee')).toBe(true)
     expect(isPhase2ApiShadowEndpoint('/app/feeConfig.listFeeConfigs')).toBe(true)
     expect(isPhase2ApiShadowEndpoint('/app/oweFeeCallable.listOweFeeCallable')).toBe(true)
-    expect(isPhase2ApiShadowEndpoint('/app/ownerRepair.listOwnerRepairs')).toBe(false)
-    expect(isPhase2ApiShadowEndpoint('/callComponent/core/list')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/ownerRepair.listOwnerRepairs')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/ownerRepair.queryOwnerRepair')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/repairSetting.listRepairSettings')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/dict.queryRepairStates')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/ownerRepair.saveOwnerRepair')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/callComponent/core/list')).toBe(true)
   })
 
   test('uses apps/api base for allowlisted app endpoint when shadow is enabled', () => {
@@ -169,10 +181,10 @@ describe('phase6 app api shadow base url', () => {
       'http://127.0.0.1:3102/app/reportFeeMonthStatistics/queryPayFeeDetail',
     )
     expect(prependRuntimeBaseUrl('/app/ownerRepair.listOwnerRepairs', shadowEnv)).toBe(
-      'http://legacy.example.com/app/ownerRepair.listOwnerRepairs',
+      'http://127.0.0.1:3102/app/ownerRepair.listOwnerRepairs',
     )
     expect(prependRuntimeBaseUrl('/callComponent/core/list', shadowEnv)).toBe(
-      'http://legacy.example.com/callComponent/core/list',
+      'http://127.0.0.1:3102/callComponent/core/list',
     )
   })
 
@@ -186,10 +198,7 @@ describe('phase6 app api shadow base url', () => {
   })
 
   test.each([
-    '/callComponent/core/list',
-    '/app/ownerRepair.listOwnerRepairs',
-    '/app/floor.queryFloors',
-    '/app/floor.queryFloorDetail',
+    '/app/ownerRepair.saveOwnerRepair',
   ])('keeps non-allowlisted %s on the legacy runtime when shadow is enabled', (endpoint) => {
     expect(
       prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
@@ -198,6 +207,20 @@ describe('phase6 app api shadow base url', () => {
         VITE_11COMM_API_SHADOW_ENABLE: 'true',
       }),
     ).toBe(`http://127.0.0.1:3101${endpoint}?communityId=COMM_001`)
+  })
+
+  test.each([
+    '/app/ownerRepair.listOwnerRepairs',
+    '/app/ownerRepair.queryOwnerRepair',
+    '/app/repairSetting.listRepairSettings',
+    '/app/dict.queryRepairStates',
+  ])('routes repair readonly %s to apps/api when shadow is enabled', (endpoint) => {
+    expect(
+      prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe(`http://127.0.0.1:3102${endpoint}?communityId=COMM_001`)
   })
 
   test('falls back to existing runtime base for non-allowlisted app endpoint when shadow is enabled', () => {
@@ -218,13 +241,13 @@ describe('phase6 app api shadow base url', () => {
     ).toBe('http://legacy.example.com/app/fee.listFee')
   })
 
-  test('keeps callComponent legacy contract on the existing runtime base', () => {
+  test('routes callComponent core/list to apps/api when shadow is enabled (Phase7 batch1)', () => {
     expect(
       prependRuntimeBaseUrl('/callComponent/core/list', {
         ...legacyRuntimeEnv,
         VITE_11COMM_API_SHADOW_ENABLE: 'true',
       }),
-    ).toBe('http://legacy.example.com/callComponent/core/list')
+    ).toBe('http://127.0.0.1:3102/callComponent/core/list')
   })
 
   test('routes production app requests through the unified standalone server', () => {
@@ -243,6 +266,15 @@ describe('phase6 app api shadow base url', () => {
     )
     expect(prependRuntimeBaseUrl('/app/floor.queryFloors', productionEnv)).toBe(
       'https://01s-11-server.ruan-cat.com/app/floor.queryFloors',
+    )
+    expect(prependRuntimeBaseUrl('/app/floor.queryFloorDetail', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/floor.queryFloorDetail',
+    )
+    expect(prependRuntimeBaseUrl('/app/ownerRepair.listOwnerRepairs', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/ownerRepair.listOwnerRepairs',
+    )
+    expect(prependRuntimeBaseUrl('/app/ownerRepair.saveOwnerRepair', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/ownerRepair.saveOwnerRepair',
     )
   })
 })

@@ -90,7 +90,7 @@ describeWhenEnabled("phase7 gated apps/api http verification", () => {
 		);
 	}, 30_000);
 
-	test("serves one admin canonical and one app legacy endpoint over real HTTP", async () => {
+	test("serves one admin canonical and app legacy endpoints over real HTTP", async () => {
 		const admin = await fetchJson(`${baseUrl}/api/property-manage/expense-manage/house-charge/list`, {
 			method: "POST",
 			headers: { "content-type": "application/json" },
@@ -121,6 +121,81 @@ describeWhenEnabled("phase7 gated apps/api http verification", () => {
 			},
 		});
 		expect(legacy.body).not.toHaveProperty("success");
+
+		const floor = await fetchJson(`${baseUrl}/app/floor.queryFloors?page=1&row=1&communityId=COMM_001`);
+
+		expect(floor.status).toBe(200);
+		expect(floor.body).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				list: expect.any(Array),
+				total: expect.any(Number),
+				page: 1,
+				pageSize: 1,
+			},
+		});
+		expect(floor.body).not.toHaveProperty("success");
+	}, 30_000);
+
+	test("serves Batch4 fee read-only report endpoints over real HTTP", async () => {
+		for (const path of [
+			"/app/feeConfig.listFeeConfigs?page=1&row=1&communityId=COMM_001",
+			"/app/reportFeeMonthStatistics.queryReportFeeSummary?page=1&row=1&communityId=COMM_001",
+			"/app/reportFeeMonthStatistics/queryPayFeeDetail?page=1&row=1&communityId=COMM_001",
+			"/app/dataReport.queryFeeDataReport?communityId=COMM_001&reportCode=FEE_REPORT",
+		]) {
+			const response = await fetchJson(`${baseUrl}${path}`);
+
+			expect(response.status).toBe(200);
+			expect(response.body).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+			});
+			expect(response.body).not.toHaveProperty("success");
+		}
+	}, 30_000);
+
+	test("serves Batch3 repair read-only legacy endpoints over real HTTP", async () => {
+		const repairs = await fetchJson(`${baseUrl}/app/ownerRepair.listOwnerRepairs?page=1&row=1&communityId=COMM_001`);
+
+		expect(repairs.status).toBe(200);
+		expect(repairs.body).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				ownerRepairs: expect.any(Array),
+				total: expect.any(Number),
+			},
+		});
+		expect(repairs.body).not.toHaveProperty("success");
+
+		const settings = await fetchJson(`${baseUrl}/app/repairSetting.listRepairSettings?page=1&row=1&publicArea=T`);
+
+		expect(settings.status).toBe(200);
+		expect(settings.body).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: expect.any(Array),
+		});
+		expect(settings.body).not.toHaveProperty("success");
+
+		const states = await fetchJson(`${baseUrl}/app/dict.queryRepairStates`);
+
+		expect(states.status).toBe(200);
+		expect(states.body).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: expect.any(Array),
+		});
+		expect(states.body.data).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					statusCd: "10001",
+				}),
+			]),
+		);
+		expect(states.body).not.toHaveProperty("success");
 	}, 30_000);
 
 	test("blocks high-risk app legacy mutation endpoints by default over real HTTP", async () => {
@@ -128,6 +203,7 @@ describeWhenEnabled("phase7 gated apps/api http verification", () => {
 			"/app/payment.nativeQrcodePayment",
 			"/app/oweFeeCallable.writeOweFeeCallable",
 			"/app/fee.saveRoomCreateFee",
+			"/app/ownerRepair.saveOwnerRepair",
 		]) {
 			const response = await fetchJson(`${baseUrl}${path}`, {
 				method: "POST",
