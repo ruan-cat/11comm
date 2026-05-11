@@ -1,3 +1,29 @@
+## v1.0.2-beta.3
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.2...v1.0.2-beta.3)
+
+### ✨ 新增功能
+
+- **api:** 接入 Phase7 巡检与车位只读端点 ([8a752fda](https://github.com/ruan-cat/11comm/commit/8a752fda))
+
+### 🐞 修复缺陷
+
+- **admin:** 修正 Phase7 页面 API 地址解析 ([3409b52a](https://github.com/ruan-cat/11comm/commit/3409b52a))
+- **admin:** 补齐账号设置返回菜单索引 ([0bdc0dad](https://github.com/ruan-cat/11comm/commit/0bdc0dad))
+
+### 📖 Documentation
+
+- **phase7:** 更新迁移接力与 Neon main 验收方案 ([cf85abbd](https://github.com/ruan-cat/11comm/commit/cf85abbd))
+
+### ✅ Tests
+
+- **api:** 补充 Phase7 巡检与车位迁移测试 ([ab9c6a55](https://github.com/ruan-cat/11comm/commit/ab9c6a55))
+- **admin:** 覆盖 Phase7 shadow 地址解析 ([dd5043dd](https://github.com/ruan-cat/11comm/commit/dd5043dd))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.2-beta.2
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.1...v1.0.2-beta.2)
