@@ -16,9 +16,12 @@
 	RoomFeeReportQuery,
 	WriteOweFeeCallableInput,
 } from "./repository";
+import type { ListCancelFeesParams, ListContracteChargesParams, ListDiscountAppliesParams } from "./types";
 import type {
 	ExpenseItemSettingMutationInput,
 	ExpenseItemSettingQuery,
+	ListDiscountSettingsParams,
+	ListDiscountTypesParams,
 	ListFeeReminderParams,
 	ListNoChargeHouseParams,
 	ListOutstandingFeesAnalysisParams,
@@ -80,6 +83,11 @@ export interface FeeService {
 		params: ListOutstandingFeesAnalysisParams,
 	) => ReturnType<FeeRepository["listOutstandingFeesAnalysis"]>;
 	listPatrolReport: (params: ListPatrolReportParams) => ReturnType<FeeRepository["listPatrolReport"]>;
+	listDiscountSettings: (params: ListDiscountSettingsParams) => ReturnType<FeeRepository["listDiscountSettings"]>;
+	listDiscountTypes: (params: ListDiscountTypesParams) => ReturnType<FeeRepository["listDiscountTypes"]>;
+	listCancelFees: (params: ListCancelFeesParams) => ReturnType<FeeRepository["listCancelFees"]>;
+	listContracteCharges: (params: ListContracteChargesParams) => ReturnType<FeeRepository["listContracteCharges"]>;
+	listDiscountApplies: (params: ListDiscountAppliesParams) => ReturnType<FeeRepository["listDiscountApplies"]>;
 }
 
 export class FeeValidationError extends Error {
@@ -154,6 +162,11 @@ export function createFeeService(repository: FeeRepository): FeeService {
 		listOutstandingFeesAnalysis: (params: ListOutstandingFeesAnalysisParams) =>
 			repository.listOutstandingFeesAnalysis(params),
 		listPatrolReport: (params: ListPatrolReportParams) => repository.listPatrolReport(params),
+		listDiscountSettings: (params: ListDiscountSettingsParams) => repository.listDiscountSettings(params),
+		listDiscountTypes: (params: ListDiscountTypesParams) => repository.listDiscountTypes(params),
+		listCancelFees: (params: ListCancelFeesParams) => repository.listCancelFees(params),
+		listContracteCharges: (params: ListContracteChargesParams) => repository.listContracteCharges(params),
+		listDiscountApplies: (params: ListDiscountAppliesParams) => repository.listDiscountApplies(params),
 	};
 }
 

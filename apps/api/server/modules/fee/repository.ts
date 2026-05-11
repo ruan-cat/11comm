@@ -1,6 +1,8 @@
 ﻿import { randomUUID } from "node:crypto";
-import { and, desc, eq, gte, like, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm";
 import {
+	exDiscountSettings,
+	exDiscountTypes,
 	exExpenseItems,
 	exHouseCharges,
 	exOverdueReminders,
@@ -12,6 +14,9 @@ import {
 	exVehicleCharges,
 	exMeterReadings,
 	exPaymentReviews,
+	exCancelFees,
+	exContractCharges,
+	exDiscountApplications,
 	type ExHouseCharge,
 	insertExExpenseItemSchema,
 	rptExpenseSummaries,
@@ -33,6 +38,8 @@ import type {
 	AdminExpenseItemSettingListItem,
 	AdminHouseChargeListItem,
 	DataReportItem,
+	DiscountSettingListItem,
+	DiscountTypeListItem,
 	ExpenseItemSettingDeletePolicy,
 	ExpenseItemSettingMutationInput,
 	ExpenseItemSettingQuery,
@@ -40,6 +47,8 @@ import type {
 	FeeDetailItem,
 	FeeItem,
 	FeeSummaryReportItem,
+	ListDiscountSettingsParams,
+	ListDiscountTypesParams,
 	OweFeeCallableItem,
 	OweFeeItem,
 	PayFeeDetailReportItem,
@@ -73,6 +82,12 @@ import type {
 	ListOutstandingFeesAnalysisParams,
 	PatrolReportListItem,
 	ListPatrolReportParams,
+	CancelFeeListItem,
+	ListCancelFeesParams,
+	ContracteChargeListItem,
+	ListContracteChargesParams,
+	DiscountApplyListItem,
+	ListDiscountAppliesParams,
 } from "./types";
 import { formatDateTime } from "../../utils/format-date";
 
@@ -136,6 +151,15 @@ export interface FeeRepository {
 		params: ListOutstandingFeesAnalysisParams,
 	) => Promise<{ list: OutstandingFeesAnalysisListItem[]; total: number }>;
 	listPatrolReport: (params: ListPatrolReportParams) => Promise<{ list: PatrolReportListItem[]; total: number }>;
+	listDiscountSettings: (
+		params: ListDiscountSettingsParams,
+	) => Promise<{ list: DiscountSettingListItem[]; total: number }>;
+	listDiscountTypes: (params: ListDiscountTypesParams) => Promise<{ list: DiscountTypeListItem[]; total: number }>;
+	listCancelFees: (params: ListCancelFeesParams) => Promise<{ list: CancelFeeListItem[]; total: number }>;
+	listContracteCharges: (
+		params: ListContracteChargesParams,
+	) => Promise<{ list: ContracteChargeListItem[]; total: number }>;
+	listDiscountApplies: (params: ListDiscountAppliesParams) => Promise<{ list: DiscountApplyListItem[]; total: number }>;
 }
 
 export interface ListHouseChargesParams {
@@ -1159,6 +1183,98 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 				})),
 			};
 		},
+		async listDiscountSettings(params: ListDiscountSettingsParams) {
+			const conditions = [];
+			if (params.applicableItem) {
+				conditions.push(like(exDiscountSettings.applicableItem, `%${params.applicableItem}%`));
+			}
+			if (params.discountType) {
+				conditions.push(eq(exDiscountSettings.discountType, params.discountType));
+			}
+			if (params.status) {
+				conditions.push(eq(exDiscountSettings.status, params.status as any));
+			}
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(exDiscountSettings)
+				.where(where);
+			const sortBy = params.sortBy || "createTime";
+			const sortOrder = params.sortOrder || "desc";
+			const sortFields = {
+				createTime: exDiscountSettings.createTime,
+				updateTime: exDiscountSettings.updateTime,
+			};
+			const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : sortFields[sortBy];
+			const rows = await db
+				.select()
+				.from(exDiscountSettings)
+				.where(where)
+				.orderBy(orderBy)
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((item) => ({
+					id: item.id,
+					discountTypeId: item.discountTypeId || "",
+					applicableItem: item.applicableItem || "",
+					discountType: item.discountType || "",
+					validityStart: item.validityStart || "",
+					validityEnd: item.validityEnd || "",
+					validityPeriod: item.validityPeriod || "",
+					conditions: item.conditions || "",
+					status: item.status || "enabled",
+					remark: item.remark || null,
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
+				})),
+			};
+		},
+		async listDiscountTypes(params: ListDiscountTypesParams) {
+			const conditions = [];
+			if (params.discountName) {
+				conditions.push(like(exDiscountTypes.discountName, `%${params.discountName}%`));
+			}
+			if (params.discountType) {
+				conditions.push(eq(exDiscountTypes.discountType, params.discountType as any));
+			}
+			if (params.status) {
+				conditions.push(eq(exDiscountTypes.status, params.status as any));
+			}
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(exDiscountTypes)
+				.where(where);
+			const sortBy = params.sortBy || "createTime";
+			const sortOrder = params.sortOrder || "desc";
+			const sortFields = {
+				createTime: exDiscountTypes.createTime,
+				updateTime: exDiscountTypes.updateTime,
+			};
+			const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : sortFields[sortBy];
+			const rows = await db
+				.select()
+				.from(exDiscountTypes)
+				.where(where)
+				.orderBy(orderBy)
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((item) => ({
+					id: item.id,
+					discountName: item.discountName || "",
+					discountType: item.discountType || "",
+					discountValue: item.discountValue || "",
+					status: item.status || "enabled",
+					remark: item.remark || null,
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
+				})),
+			};
+		},
 		async listPatrolReport(params: ListPatrolReportParams) {
 			const conditions = [];
 			if (params.name) {
@@ -1193,10 +1309,171 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 				})),
 			};
 		},
+		async listCancelFees(params: ListCancelFeesParams) {
+			const conditions = [];
+			if (params.chargeId) {
+				conditions.push(like(exCancelFees.chargeId, `%${params.chargeId}%`));
+			}
+			if (params.chargeType) {
+				conditions.push(like(exCancelFees.chargeType, `%${params.chargeType}%`));
+			}
+			if (params.employee) {
+				conditions.push(like(exCancelFees.operator, `%${params.employee}%`));
+			}
+			if (params.cancelReason) {
+				conditions.push(like(exCancelFees.cancelReason, `%${params.cancelReason}%`));
+			}
+			if (params.auditStatus) {
+				conditions.push(eq(exCancelFees.auditStatus, params.auditStatus as any));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(exCancelFees)
+				.where(where);
+
+			const sortBy = params.sortBy || "createTime";
+			const sortOrder = params.sortOrder || "desc";
+			const sortFields = {
+				createTime: exCancelFees.createTime,
+				updateTime: exCancelFees.updateTime,
+			};
+			const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+			const rows = await db
+				.select()
+				.from(exCancelFees)
+				.where(where)
+				.orderBy(orderBy)
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((item) => ({
+					id: item.id,
+					chargeId: item.chargeId || "",
+					chargeType: item.chargeType || "",
+					operator: item.operator || "",
+					cancelReason: item.cancelReason || "",
+					auditStatus: item.auditStatus || "pending",
+					remark: item.remark || "",
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
+				})),
+			};
+		},
+		async listContracteCharges(params: ListContracteChargesParams) {
+			const conditions = [];
+			if (params.contractNumber) {
+				conditions.push(like(exContractCharges.contractNumber, `%${params.contractNumber}%`));
+			}
+			if (params.expenseItem) {
+				conditions.push(like(exContractCharges.expenseItem, `%${params.expenseItem}%`));
+			}
+			if (params.status) {
+				conditions.push(eq(exContractCharges.status, params.status as any));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(exContractCharges)
+				.where(where);
+
+			const sortBy = params.sortBy || "createTime";
+			const sortOrder = params.sortOrder || "desc";
+			const sortFields = {
+				createTime: exContractCharges.createTime,
+				updateTime: exContractCharges.updateTime,
+			};
+			const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+			const rows = await db
+				.select()
+				.from(exContractCharges)
+				.where(where)
+				.orderBy(orderBy)
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((item) => ({
+					id: item.id,
+					contractId: item.contractId,
+					contractNumber: item.contractNumber || "",
+					expenseItem: item.expenseItem || "",
+					receivableAmount: item.receivableAmount || "",
+					receivedAmount: item.receivedAmount || "",
+					chargeCycle: item.chargeCycle || "",
+					status: item.status || "unpaid",
+					remark: item.remark || "",
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
+				})),
+			};
+		},
+		async listDiscountApplies(params: ListDiscountAppliesParams) {
+			const conditions = [];
+			if (params.applicant) {
+				conditions.push(like(exDiscountApplications.applicant, `%${params.applicant}%`));
+			}
+			if (params.applicationType) {
+				conditions.push(eq(exDiscountApplications.applicationType, params.applicationType));
+			}
+			if (params.auditStatus) {
+				conditions.push(eq(exDiscountApplications.auditStatus, params.auditStatus as any));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(exDiscountApplications)
+				.where(where);
+
+			const sortBy = params.sortBy || "createTime";
+			const sortOrder = params.sortOrder || "desc";
+			const sortFields = {
+				createTime: exDiscountApplications.createTime,
+				updateTime: exDiscountApplications.updateTime,
+			};
+			const orderBy = sortOrder === "desc" ? desc(sortFields[sortBy]) : asc(sortFields[sortBy]);
+
+			const rows = await db
+				.select()
+				.from(exDiscountApplications)
+				.where(where)
+				.orderBy(orderBy)
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((item) => ({
+					id: item.id,
+					discountSettingId: item.discountSettingId || "",
+					applicant: item.applicant || "",
+					applicationType: item.applicationType || "",
+					applicationReason: item.applicationReason || "",
+					applicationAmount: item.applicationAmount || "",
+					auditStatus: item.auditStatus || "pending",
+					auditor: item.auditor || "",
+					auditTime: formatDateTime(item.auditTime),
+					auditOpinion: item.auditOpinion || "",
+					remark: item.remark || "",
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
+				})),
+			};
+		},
 	} satisfies Partial<FeeRepository>);
 }
 
 interface InMemoryFeeSeed {
+	discountSettings: DiscountSettingListItem[];
+	discountTypes: DiscountTypeListItem[];
 	expenseSummaryTables: AdminExpenseSummaryTableListItem[];
 	refundReviews: AdminRefundReviewListItem[];
 	meterReadingTypes: AdminMeterReadingTypeListItem[];
@@ -1208,6 +1485,8 @@ interface InMemoryFeeSeed {
 }
 
 class InMemoryFeeRepository implements FeeRepository {
+	private readonly discountSettings: DiscountSettingListItem[];
+	private readonly discountTypes: DiscountTypeListItem[];
 	private readonly expenseSummaryTables: AdminExpenseSummaryTableListItem[];
 	private readonly refundReviews: AdminRefundReviewListItem[];
 	private readonly meterReadingTypes: AdminMeterReadingTypeListItem[];
@@ -1218,6 +1497,8 @@ class InMemoryFeeRepository implements FeeRepository {
 	private readonly expenseItemSettings: AdminExpenseItemSettingListItem[];
 
 	constructor(seed?: Partial<InMemoryFeeSeed>) {
+		this.discountSettings = structuredClone(seed?.discountSettings ?? defaultDiscountSettings);
+		this.discountTypes = structuredClone(seed?.discountTypes ?? defaultDiscountTypes);
 		this.fees = structuredClone(seed?.fees ?? defaultFees);
 		this.feeDetails = structuredClone(seed?.feeDetails ?? defaultFeeDetails);
 		this.feeConfigs = structuredClone(seed?.feeConfigs ?? defaultFeeConfigs);
@@ -1627,6 +1908,49 @@ class InMemoryFeeRepository implements FeeRepository {
 
 	async listPatrolReport(params: ListPatrolReportParams) {
 		const data: PatrolReportListItem[] = [];
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async listDiscountSettings(params: ListDiscountSettingsParams) {
+		let data = [...this.discountSettings];
+		if (params.applicableItem) {
+			data = data.filter((item) => item.applicableItem.includes(params.applicableItem || ""));
+		}
+		if (params.discountType) {
+			data = data.filter((item) => item.discountType === params.discountType);
+		}
+		if (params.status) {
+			data = data.filter((item) => item.status === params.status);
+		}
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async listDiscountTypes(params: ListDiscountTypesParams) {
+		let data = [...this.discountTypes];
+		if (params.discountName) {
+			data = data.filter((item) => item.discountName.includes(params.discountName || ""));
+		}
+		if (params.discountType) {
+			data = data.filter((item) => item.discountType === params.discountType);
+		}
+		if (params.status) {
+			data = data.filter((item) => item.status === params.status);
+		}
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async listCancelFees(params: ListCancelFeesParams) {
+		const data: CancelFeeListItem[] = [];
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async listContracteCharges(params: ListContracteChargesParams) {
+		const data: ContracteChargeListItem[] = [];
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async listDiscountApplies(params: ListDiscountAppliesParams) {
+		const data: DiscountApplyListItem[] = [];
 		return paginate(data, params.pageIndex, params.pageSize);
 	}
 }
@@ -2115,3 +2439,7 @@ const defaultExpenseItemSettings: AdminExpenseItemSettingListItem[] = [
 		remark: "phase5a default",
 	},
 ];
+
+const defaultDiscountSettings: DiscountSettingListItem[] = [];
+
+const defaultDiscountTypes: DiscountTypeListItem[] = [];

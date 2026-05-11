@@ -1,9 +1,21 @@
-import type { JsonVO, PageDTO, PaymentDetailsFormListItem } from "@01s-11comm/type";
+﻿import type { JsonVO, PageDTO, PaymentDetailsFormListItem } from "@01s-11comm/type";
 import type {
 	AdminExpenseItemSettingListItem,
 	AdminExpenseSummaryTableListItem,
 	AdminMeterReadingTypeListItem,
 	AdminRefundReviewListItem,
+	ArrearsDetailsListItem,
+	CancelFeeListItem,
+	ContracteChargeListItem,
+	DiscountApplyListItem,
+	DataStatisticsListItem,
+	DepositReportListItem,
+	DiscountSettingListItem,
+	DiscountTypeListItem,
+	FeeReminderListItem,
+	NoChargeHouseListItem,
+	OutstandingFeesAnalysisListItem,
+	PatrolReportListItem,
 	ReminderForOverduePaymentListItem,
 	ReprintVoucherListItem,
 	AdminExpenseItemSettingPage,
@@ -14,13 +26,6 @@ import type {
 	PaymentReviewListItem,
 	VehicleChargeListItem,
 	WaterAndElectricityMeterReadingListItem,
-	ArrearsDetailsListItem,
-	DataStatisticsListItem,
-	DepositReportListItem,
-	FeeReminderListItem,
-	NoChargeHouseListItem,
-	OutstandingFeesAnalysisListItem,
-	PatrolReportListItem,
 } from "./types";
 import { FeeValidationError, type FeeService } from "./service";
 import { adminSuccess } from "../../shared/runtime/response-builder";
@@ -99,7 +104,7 @@ export function createAdminFeeAdapter(service: FeeService) {
 		async createExpenseItemSetting(
 			input: ExpenseItemSettingMutationInput,
 		): Promise<JsonVO<AdminExpenseItemSettingListItem | null>> {
-			return withValidation(async () => adminSuccess(await service.createExpenseItemSetting(input), "保存成功"));
+			return withValidation(async () => adminSuccess(await service.createExpenseItemSetting(input), "淇濆瓨鎴愬姛"));
 		},
 		async updateExpenseItemSetting(
 			input: ExpenseItemSettingMutationInput,
@@ -110,7 +115,7 @@ export function createAdminFeeAdapter(service: FeeService) {
 						...input,
 						id: toTrimmedString(input.id),
 					}),
-					"保存成功",
+					"淇濆瓨鎴愬姛",
 				),
 			);
 		},
@@ -531,6 +536,155 @@ export function createAdminFeeAdapter(service: FeeService) {
 				pageIndex,
 				pageSize,
 				name: blankToUndefined(input.name),
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listDiscountSettings(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			applicableItem?: string;
+			discountType?: string;
+			status?: string;
+			sortBy?: "createTime" | "updateTime";
+			sortOrder?: "asc" | "desc";
+		}): Promise<JsonVO<PageDTO<DiscountSettingListItem>>> {
+			const pageIndex = toNumber(input.page ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listDiscountSettings({
+				pageIndex,
+				pageSize,
+				applicableItem: blankToUndefined(input.applicableItem),
+				discountType: blankToUndefined(input.discountType),
+				status: blankToUndefined(input.status),
+				sortBy: input.sortBy,
+				sortOrder: input.sortOrder,
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listDiscountTypes(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			discountName?: string;
+			discountType?: string;
+			status?: string;
+			sortBy?: "createTime" | "updateTime";
+			sortOrder?: "asc" | "desc";
+		}): Promise<JsonVO<PageDTO<DiscountTypeListItem>>> {
+			const pageIndex = toNumber(input.page ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listDiscountTypes({
+				pageIndex,
+				pageSize,
+				discountName: blankToUndefined(input.discountName),
+				discountType: blankToUndefined(input.discountType),
+				status: blankToUndefined(input.status),
+				sortBy: input.sortBy,
+				sortOrder: input.sortOrder,
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listCancelFees(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			chargeId?: string;
+			chargeType?: string;
+			employee?: string;
+			cancelReason?: string;
+			auditStatus?: string;
+			sortBy?: "createTime" | "updateTime";
+			sortOrder?: "asc" | "desc";
+		}): Promise<JsonVO<PageDTO<CancelFeeListItem>>> {
+			const pageIndex = toNumber(input.page ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listCancelFees({
+				pageIndex,
+				pageSize,
+				chargeId: blankToUndefined(input.chargeId),
+				chargeType: blankToUndefined(input.chargeType),
+				employee: blankToUndefined(input.employee),
+				cancelReason: blankToUndefined(input.cancelReason),
+				auditStatus: blankToUndefined(input.auditStatus),
+				sortBy: input.sortBy,
+				sortOrder: input.sortOrder,
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listContracteCharges(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			contractNumber?: string;
+			expenseItem?: string;
+			status?: string;
+			sortBy?: "createTime" | "updateTime";
+			sortOrder?: "asc" | "desc";
+		}): Promise<JsonVO<PageDTO<ContracteChargeListItem>>> {
+			const pageIndex = toNumber(input.page ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listContracteCharges({
+				pageIndex,
+				pageSize,
+				contractNumber: blankToUndefined(input.contractNumber),
+				expenseItem: blankToUndefined(input.expenseItem),
+				status: blankToUndefined(input.status),
+				sortBy: input.sortBy,
+				sortOrder: input.sortOrder,
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listDiscountApplies(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			applicant?: string;
+			applicationType?: string;
+			auditStatus?: string;
+			sortBy?: "createTime" | "updateTime";
+			sortOrder?: "asc" | "desc";
+		}): Promise<JsonVO<PageDTO<DiscountApplyListItem>>> {
+			const pageIndex = toNumber(input.page ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listDiscountApplies({
+				pageIndex,
+				pageSize,
+				applicant: blankToUndefined(input.applicant),
+				applicationType: blankToUndefined(input.applicationType),
+				auditStatus: blankToUndefined(input.auditStatus),
+				sortBy: input.sortBy,
+				sortOrder: input.sortOrder,
 			});
 			return adminSuccess({
 				list: result.list,
