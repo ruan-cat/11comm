@@ -452,6 +452,24 @@
 
 - 不要因为一个 list 页面 200 就推断同域 detail/create/update/delete 完成。
 
+**执行进度（2026-05-11）：**
+
+- [x] Batch6a 已完成：5 个 admin P1 expense 只读 list 端点（expense-summary-table/list、refund-review/list、meter-reading-type/list、reminder-for-overdue-payments/list、reprint-voucher/list）已完成 route/repository/adapter/types 实现并复核。
+- [x] 类型检查通过：`pnpm -F @01s-11comm/api run typecheck` 无错误。
+- [x] 测试通过：4 个测试文件 20 个测试用例全部通过（fee-db-repository、fee-legacy-endpoints、endpoint-manifest、phase7-api-contracts）。
+- [ ] 仍缺 Chrome MCP / 页面 Network 证据；当前只能标 `db-read-repository-wired`，不得写 `DB_READY`。
+- [ ] 本批未涉及写入口，未触发 guard/read-back/rollback。
+- [x] Batch6b 已完成：4 个 admin P1 expense 只读 list 端点（vehicle-charge/list、water-and-electricity-meter-reading/list、overdue-payment-information/list、payment-review/list）已完成 route/repository/adapter/types 实现并复核。
+- [x] 类型检查通过：`pnpm -F @01s-11comm/api run typecheck` 无错误。
+- [x] 测试通过：4 个测试文件 20 个测试用例全部通过（fee-db-repository、fee-legacy-endpoints、endpoint-manifest、phase7-api-contracts）。
+- [ ] 仍缺 Chrome MCP / 页面 Network 证据；当前只能标 `db-read-repository-wired`，不得写 `DB_READY`。
+- [ ] 本批未涉及写入口，未触发 guard/read-back/rollback。
+- [x] Batch7 已完成：8 个 admin P1 report/repairs 只读 list 端点（arrears-details-list/list、data-statistics/list、deposit-report/list、fee-reminder/list、no-charge-house/list、outstanding-fees-analysis/list、patrol-report/list、repairs-have-done/list）已完成 route/repository/adapter/types 实现并复核。
+- [x] 类型检查通过：`pnpm -F @01s-11comm/api run typecheck` 无错误。
+- [x] 测试通过：24 个测试文件 119 个测试用例全部通过。
+- [ ] 仍缺 Chrome MCP / 页面 Network 证据；当前只能标 `db-read-repository-wired`，不得写 `DB_READY`。
+- [ ] 本批未涉及写入口，未触发 guard/read-back/rollback。
+
 ---
 
 ## 10. 批次 7：admin P2/P3 业务域

@@ -1315,3 +1315,72 @@ RUN_PHASE7_HTTP_TESTS=1 PHASE7_API_BASE_URL=http://127.0.0.1:3198 pnpm -F @01s-1
 
 - Chrome MCP / 页面 Network 证据仍未补，矩阵只能写 `db-read-repository-wired-with-gap`。
 - 生产 `DB_READY`、旧服务退役和真实 floor 主键语义均未完成。
+
+---
+
+## 13. Phase7 Batch7 执行记录（2026-05-11）
+
+**目标**：为 admin report-manage 7 个只读报表端点（arrears-details-list/list、data-statistics/list、deposit-report/list、fee-reminder/list、no-charge-house/list、outstanding-fees-analysis/list、patrol-report/list）和 repairs-manage 1 个端点（repairs-have-done/list）添加 apps/api 路由实现。
+
+### 13.1 变更文件清单
+
+| 文件                                                                                              | 变更类型                                                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `apps/api/server/routes/api/property-manage/report-manage/arrears-details-list/list.post.ts`      | 新增 route                                                                                                                                                                           |
+| `apps/api/server/routes/api/property-manage/report-manage/data-statistics/list.post.ts`           | 新增 route                                                                                                                                                                           |
+| `apps/api/server/routes/api/property-manage/report-manage/deposit-report/list.post.ts`            | 新增 route                                                                                                                                                                           |
+| `apps/api/server/routes/api/property-manage/report-manage/fee-reminder/list.post.ts`              | 新增 route                                                                                                                                                                           |
+| `apps/api/server/routes/api/property-manage/report-manage/no-charge-house/list.post.ts`           | 新增 route                                                                                                                                                                           |
+| `apps/api/server/routes/api/property-manage/report-manage/outstanding-fees-analysis/list.post.ts` | 新增 route                                                                                                                                                                           |
+| `apps/api/server/routes/api/property-manage/report-manage/patrol-report/list.post.ts`             | 新增 route                                                                                                                                                                           |
+| `apps/api/server/routes/api/property-manage/repairs-manage/repairs-have-done/list.post.ts`        | 新增 route                                                                                                                                                                           |
+| `apps/api/server/modules/fee/repository.ts`                                                       | 新增 DbFeeRepository 7 个报表查询方法（`rptExpenseSummaries`/`rptDataStatistics`/`rptDepositReports`/`rptFeeReminders`/`rptNoChargeHouses`/`rptOutstandingFees`/`rptPatrolReports`） |
+| `apps/api/server/modules/fee/admin-adapter.ts`                                                    | 新增 7 个 admin adapter 方法                                                                                                                                                         |
+| `apps/api/server/modules/fee/service.ts`                                                          | 新增 7 个 service 方法                                                                                                                                                               |
+| `apps/api/server/modules/repair/repository.ts`                                                    | 新增 `listRepairsHaveDone` DB 查询（`rpRepairOrders` 过滤 completed 状态）                                                                                                           |
+| `apps/api/server/modules/repair/admin-adapter.ts`                                                 | 新增 `listRepairsHaveDone` adapter                                                                                                                                                   |
+| `apps/api/server/modules/repair/service.ts`                                                       | 新增 `listRepairsHaveDone` service                                                                                                                                                   |
+
+### 13.2 验证命令
+
+```log
+pnpm -F @01s-11comm/api run typecheck
+$ tsc --noEmit
+
+pnpm -F @01s-11comm/api exec vitest run
+Test Files  24 passed | 1 skipped (25)
+Tests       119 passed | 5 skipped (124)
+```
+
+### 13.3 路由模式检查
+
+**7 个 report-manage route**：均使用 `getFeeRuntime(event).adminAdapter`，继承现有 fee 模块 runtime 模式。可复用已配置的 `hasDatabaseUrl` 检测，在 DB URL 存在时自动切换到 `DbFeeRepository` 进行 Drizzle 查询。
+
+**1 个 repairs-have-done route**：使用 `getRepairRuntime(event).adminAdapter`，继承现有 repair 模块 runtime 模式。DB 查询筛选 `rpRepairOrders.status = 'completed'`。
+
+### 13.4 矩阵状态更新
+
+| batchId           | scope                                                                          | coverageKind                        | dataSourceStatus                      | targetStatus               |
+| ----------------- | ------------------------------------------------------------------------------ | ----------------------------------- | ------------------------------------- | -------------------------- |
+| P1-admin-report-a | arrears-details-list/list、data-statistics/list、deposit-report/list           | `old-path-exact-covered`            | `db-read-repository-wired`            | `candidate-after-evidence` |
+| P1-admin-report-b | expense-summary-table/list、fee-reminder/list、no-charge-house/list            | `old-path-exact-covered`            | `db-read-repository-wired`            | `candidate-after-evidence` |
+| P1-admin-report-c | outstanding-fees-analysis/list、owner-payment-details/list、patrol-report/list | `old-path-exact-covered`（partial） | `db-read-repository-wired`（partial） | `candidate-after-evidence` |
+| P1-admin-repair-b | repairs-have-done/list、return-visit/list                                      | `old-path-exact-covered`（partial） | `db-read-repository-wired`（partial） | `candidate-after-evidence` |
+
+### 13.5 遗留证据缺口
+
+| 缺口                       | 当前状态                                                                        |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| Chrome MCP Network 证据    | `pending-chrome-mcp` — 需在 admin 页面验证命中 `01s-11-server.ruan-cat.com`     |
+| 页面级 Network 证据        | route/resolver 测试已通过；仍需 Chrome MCP 页面证据证明 Network 命中统一 server |
+| owner-payment-details/list | 不属于本批范围，仍待后续批次                                                    |
+| return-visit/list          | 不属于本批范围，仍待后续批次                                                    |
+| DB readiness               | 仍为 `READY_CONFIGURED-only`；未达到 `DB_READY`                                 |
+
+### 13.6 禁止误判合规
+
+- [x] `coverageKind` 已更新为 `old-path-exact-covered`
+- [x] `dataSourceStatus` 记录为 `db-read-repository-wired`，未写成 `db-ready`
+- [x] 未触碰 `D:\code\ruan-cat\01s-11comm-app`
+- [x] 未触碰 `apps/admin/server`、`apps/app/server`
+- [x] 未触碰 `apps/type` schema（仅复用已有 `rpt*` 表定义）
