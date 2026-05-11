@@ -526,3 +526,133 @@ export interface ListPatrolReportParams {
 	pageSize: number;
 	name?: string;
 }
+
+// --- Phase7 P1: discount-setting ---
+
+export interface DiscountSettingListItem {
+	id: string;
+	discountTypeId: string;
+	applicableItem: string;
+	discountType: string;
+	validityStart: string;
+	validityEnd: string;
+	validityPeriod: string;
+	conditions: string;
+	status: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListDiscountSettingsParams {
+	pageIndex: number;
+	pageSize: number;
+	applicableItem?: string;
+	discountType?: string;
+	status?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
+}
+
+// --- Phase7 P1: discount-type ---
+
+export interface DiscountTypeListItem {
+	id: string;
+	discountName: string;
+	discountType: string;
+	discountValue: string;
+	status: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListDiscountTypesParams {
+	pageIndex: number;
+	pageSize: number;
+	discountName?: string;
+	discountType?: string;
+	status?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
+}
+
+// --- Phase7 P1 expense-manage: cancel-fee ---
+
+export interface CancelFeeListItem {
+	id: string;
+	chargeId: string;
+	chargeType: string;
+	operator: string;
+	cancelReason: string;
+	auditStatus: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListCancelFeesParams {
+	pageIndex: number;
+	pageSize: number;
+	chargeId?: string;
+	chargeType?: string;
+	employee?: string;
+	cancelReason?: string;
+	auditStatus?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
+}
+
+// --- Phase7 P1 expense-manage: contracte-charge ---
+
+export interface ContracteChargeListItem {
+	id: string;
+	contractId: string;
+	contractNumber: string;
+	expenseItem: string;
+	receivableAmount: string;
+	receivedAmount: string;
+	chargeCycle: string;
+	status: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListContracteChargesParams {
+	pageIndex: number;
+	pageSize: number;
+	contractNumber?: string;
+	expenseItem?: string;
+	status?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
+}
+
+// --- Phase7 P1 expense-manage: discount-apply ---
+
+export interface DiscountApplyListItem {
+	id: string;
+	discountSettingId: string;
+	applicant: string;
+	applicationType: string;
+	applicationReason: string;
+	applicationAmount: string;
+	auditStatus: string;
+	auditor: string;
+	auditTime: string;
+	auditOpinion: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListDiscountAppliesParams {
+	pageIndex: number;
+	pageSize: number;
+	applicant?: string;
+	applicationType?: string;
+	auditStatus?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
+}
