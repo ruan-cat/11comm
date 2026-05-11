@@ -13,19 +13,6 @@
 				]
 			}
 		],
-		"AfterTool": [
-			{
-				"matcher": "*",
-				"hooks": [
-					{
-						"name": "memorix-after-tool",
-						"type": "command",
-						"command": "memorix.cmd hook",
-						"description": "Record tool usage in memorix"
-					}
-				]
-			}
-		],
 		"AfterAgent": [
 			{
 				"matcher": "*",

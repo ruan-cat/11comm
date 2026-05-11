@@ -10,21 +10,6 @@
 				"command": "memorix.cmd hook"
 			}
 		],
-		"afterFileEdit": [
-			{
-				"command": "memorix.cmd hook"
-			}
-		],
-		"beforeShellExecution": [
-			{
-				"command": "memorix.cmd hook"
-			}
-		],
-		"afterMCPExecution": [
-			{
-				"command": "memorix.cmd hook"
-			}
-		],
 		"preCompact": [
 			{
 				"command": "memorix.cmd hook"
