@@ -75,6 +75,7 @@ getMine().then((res) => {
 		>
 			<el-menu :default-active="witchPane" class="pure-account-settings-menu">
 				<el-menu-item
+					index="back"
 					class="hover:transition-all! hover:duration-200! hover:text-base! h-[50px]!"
 					@click="router.go(-1)"
 				>
