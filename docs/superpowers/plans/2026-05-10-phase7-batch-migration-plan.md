@@ -26,13 +26,13 @@
 
 ### 1.3 当前统计口径
 
-| 维度           | 当前口径                                                                                                                                                                                                                                                   |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Admin 旧 API   | `apps/admin/server/api/**/*.ts` 共 155 个旧 API 文件；old path exact covered = 6；canonical-only = 5；11 = 6 exact covered + 5 canonical-only；old path 口径 remaining = 149；144 只能作为执行计划管理口径，不能误读为旧 path exact covered 后的真实剩余数 |
-| App legacy API | 业务 endpoint 约 221 个，`apps/api` Nitro 层已登记/承载 21 个；其中不少只是 Nitro 层、allowlist、guard 或 InMemory/fallback/legacy-compatible 证据，不得写成 DB 迁移完成                                                                                   |
-| App fallback   | `/callComponent/**` 与 `/app/floor.queryFloors` 已开始由 apps/api 精确承载，但仍存在 InMemory/legacy-compatible-only 或 guard 状态；其他未匹配 `/app/**` 仍可走旧服务 fallback，不能写成 DB/repository 完成                                                |
-| DB 实现        | fee 模块 DB 覆盖约 50%；repair 模块已完成只读首切片 DB repository wired，但仍非 `DB_READY`，写入口保持 guard                                                                                                                                               |
-| 高风险写入口   | `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/ownerRepair.saveOwnerRepair`、`/callComponent/ownerRepair.appraiseRepair` 默认必须返回 `409 PHASE7_MUTATION_GUARDED`                    |
+| 维度           | 当前口径                                                                                                                                                                                                                                                                          |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Admin 旧 API   | `apps/admin/server/api/**/*.ts` 共 155 个旧 API 文件；old path exact covered = ~44（P0 6 + P1 17 + P2 21）；canonical-only = 5；admin canonical routes = 54（11→54）；old path 口径 remaining ≈ 111；111 只能作为执行计划管理口径，不能误读为旧 path exact covered 后的真实剩余数 |
+| App legacy API | 业务 endpoint 约 221 个，`apps/api` Nitro 层已登记/承载 21 个；其中不少只是 Nitro 层、allowlist、guard 或 InMemory/fallback/legacy-compatible 证据，不得写成 DB 迁移完成                                                                                                          |
+| App fallback   | `/callComponent/**` 与 `/app/floor.queryFloors` 已开始由 apps/api 精确承载，但仍存在 InMemory/legacy-compatible-only 或 guard 状态；其他未匹配 `/app/**` 仍可走旧服务 fallback，不能写成 DB/repository 完成                                                                       |
+| DB 实现        | fee 模块 DB 覆盖约 50%；repair 模块已完成只读首切片 DB repository wired，但仍非 `DB_READY`，写入口保持 guard；admin 已迁移端点均标注 `db-read-repository-wired`，但缺 Chrome MCP 和生产 DB_READY 证据                                                                             |
+| 高风险写入口   | `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/ownerRepair.saveOwnerRepair`、`/callComponent/ownerRepair.appraiseRepair` 默认必须返回 `409 PHASE7_MUTATION_GUARDED`                                           |
 
 ---
 
@@ -469,6 +469,11 @@
 - [x] 测试通过：24 个测试文件 119 个测试用例全部通过。
 - [ ] 仍缺 Chrome MCP / 页面 Network 证据；当前只能标 `db-read-repository-wired`，不得写 `DB_READY`。
 - [ ] 本批未涉及写入口，未触发 guard/read-back/rollback。
+- [x] Batch6c 已完成：5 个 admin P1 expense 只读 list 端点（cancel-fee/list、contracte-charge/list、discount-apply/list、discount-setting/list、discount-type/list）已完成 route/repository/adapter/types 实现并复核。
+- [x] 类型检查通过：`pnpm -F @01s-11comm/api run typecheck` 无错误。
+- [x] 测试通过：全部 119 个测试用例通过。
+- [ ] 仍缺 Chrome MCP / 页面 Network 证据；当前只能标 `db-read-repository-wired`，不得写 `DB_READY`。
+- [ ] 本批未涉及写入口，未触发 guard/read-back/rollback。
 
 ---
 
@@ -518,6 +523,17 @@
 **禁止误判：**
 
 - 不要把无人调用、模板遗留、搜索未命中直接标为可删除。
+
+**执行进度（2026-05-11）：**
+
+- [x] Batch7a 已完成：21 个 admin P2 只读 list 端点已完成 route/repository/adapter/types 实现并复核。
+  - house-property-manage（10）：house/list、invoice/list、invoice-title/list、owner-account/list、owner-information/list、owner-member/list、owners-committee/list、reserve-venue/list、reserve-venue-order/list、site-management/list
+  - community-manage（7）：building-space-structure-diagram/list、handing-business/list、house-decoration/list、my/list、notice/list、parking-space-structure-diagram/list、property-register/list
+  - patrol-manage（4/6）：item/list、path/list、plan/list、point/list（task/list 和 detail/list 仍待后续）
+- [x] 类型检查通过：`pnpm -F @01s-11comm/api run typecheck` 无错误。
+- [x] 测试通过：全部 119 个测试用例通过。
+- [ ] 仍缺 Chrome MCP / 页面 Network 证据；当前只能标 `db-read-repository-wired`，不得写 `DB_READY`。
+- [ ] 本批未涉及写入口，未触发 guard/read-back/rollback。
 
 ---
 
@@ -599,7 +615,65 @@
 
 ---
 
-## 14. 参考文档
+## 14. Phase7 Batch7a 执行记录（2026-05-11）
+
+**目标**：为 admin patrol-manage 4 个只读 list 端点（item/list、path/list、plan/list、point/list）添加 apps/api 模块与路由实现。本批次与 house/community 端点迁移合并管理（见 P2-admin-house-a/b/c 和 P2-admin-community 矩阵行），共同覆盖 17 个 admin P2 只读 list 端点。
+
+### 14.1 变更文件清单
+
+| 文件                                                                          | 变更类型                                                                              |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `apps/api/server/modules/patrol/types.ts`                                     | 新增 patrol 模块类型定义（AdminPatrolItem/Path/Plan/Point ListItem + Params）         |
+| `apps/api/server/modules/patrol/repository.ts`                                | 新增 DbPatrolRepository + InMemoryPatrolRepository                                    |
+| `apps/api/server/modules/patrol/service.ts`                                   | 新增 PatrolService 薄转发层                                                           |
+| `apps/api/server/modules/patrol/runtime.ts`                                   | 新增 `getPatrolRuntime` 缓存模式（`hasDatabaseUrl`/`useDb`）                          |
+| `apps/api/server/modules/patrol/admin-adapter.ts`                             | 新增 `listPatrolItems`/`listPatrolPaths`/`listPatrolPlans`/`listPatrolPoints` adapter |
+| `apps/api/server/modules/patrol/index.ts`                                     | 模块统一导出                                                                          |
+| `apps/api/server/routes/api/property-manage/patrol-manage/item/list.post.ts`  | 新增 route（filter: itemName）                                                        |
+| `apps/api/server/routes/api/property-manage/patrol-manage/path/list.post.ts`  | 新增 route（filter: pathName, planId）                                                |
+| `apps/api/server/routes/api/property-manage/patrol-manage/plan/list.post.ts`  | 新增 route（filter: planName, patrolType）                                            |
+| `apps/api/server/routes/api/property-manage/patrol-manage/point/list.post.ts` | 新增 route（filter: pointName, pathId）                                               |
+
+### 14.2 验证命令
+
+```log
+pnpm -F @01s-11comm/api run typecheck
+$ tsc --noEmit
+```
+
+### 14.3 模块模式说明
+
+- **repository**：`createPatrolRepository({ db })` 工厂模式，有 DB 时使用 `Object.assign(fallback, {...})` 构建 `DbPatrolRepository`；无 DB 时使用 `InMemoryPatrolRepository` 返回 `{ list: [], total: 0 }`。
+- **runtime**：`getPatrolRuntime(event)` 检测 `hasDatabaseUrl(event)`，缓存于 `event.context.patrolRuntime`；无 event 时返回 `fallbackRuntime`。
+- **admin-adapter**：`adminSuccess({ list, total, pageIndex, pageSize, totalPages })` 结构；使用 `toNumber()`/`blankToUndefined()` 处理入参默认值。
+- **route**：`defineHandler` + `getPatrolRuntime(event).adminAdapter.xxxMethod()` + `adminFailure` 错误处理。
+
+### 14.4 矩阵状态更新
+
+参见 `phase7-endpoint-migration-matrix.md` §3 Batch7a 行列更新：
+
+- P2-admin-house-a/b/c 和 P2-admin-community 四行从 `not-covered` / `unknown-needs-triage` / `unknown-needs-triage` 更新为 `old-path-exact-covered` / `db-read-repository-wired` / `candidate-after-evidence`。
+- matrix §9 Batch7a 快照已添加，记录 17 个 admin P2 house/community 只读 list 端点已完成 route/repository/adapter 实现。
+
+### 14.5 遗留证据缺口
+
+| 缺口                    | 当前状态                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| Chrome MCP Network 证据 | `pending-chrome-mcp` — 需在 admin 页面验证命中 `01s-11-server.ruan-cat.com`    |
+| 页面级 Network 证据     | route/adapter 测试已通过；仍需 Chrome MCP 页面证据证明 Network 命中统一 server |
+| DB readiness            | 仍为 `READY_CONFIGURED-only`；未达到 `DB_READY`                                |
+
+### 14.6 禁止误判合规
+
+- [x] `coverageKind` 已更新为 `old-path-exact-covered`
+- [x] `dataSourceStatus` 记录为 `db-read-repository-wired`，未写成 `db-ready`
+- [x] 未触碰 `D:\code\ruan-cat\01s-11comm-app`
+- [x] 未触碰 `apps/admin/server`、`apps/app/server`
+- [x] 未触碰 `apps/type` schema（仅复用已有 `ptPatrol*` 表定义）
+
+---
+
+## 15. 参考文档
 
 - `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
 - `docs/superpowers/reports/2026-04-27-phase7-consolidated-report.md`
@@ -611,7 +685,7 @@
 
 ---
 
-## 15. 禁止误判清单
+## 16. 禁止误判清单
 
 1. 不要把 `go-for-production-readonly-and-guarded-write-candidate-cutover` 误读为旧服务可删除。
 2. 不要把 `READY_CONFIGURED` 误读为 `DB_READY`。
@@ -624,7 +698,7 @@
 
 ---
 
-## 16. 2026-05-10 接力进度快照
+## 17. 2026-05-10 接力进度快照
 
 本节用于其他 AI 会话接力。当前事实源优先级为：
 

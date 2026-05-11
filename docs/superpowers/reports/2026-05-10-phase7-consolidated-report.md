@@ -1384,3 +1384,76 @@ Tests       119 passed | 5 skipped (124)
 - [x] 未触碰 `D:\code\ruan-cat\01s-11comm-app`
 - [x] 未触碰 `apps/admin/server`、`apps/app/server`
 - [x] 未触碰 `apps/type` schema（仅复用已有 `rpt*` 表定义）
+
+---
+
+## 14. Phase7 Batch7a 执行记录（2026-05-11）
+
+**目标**：为 admin patrol-manage 4 个只读 list 端点（item/list、path/list、plan/list、point/list）添加 apps/api 模块与路由实现，同时补齐 P2-admin-house/community 17 个只读 list 端点的矩阵状态。
+
+### 14.1 范围与背景
+
+本批次聚焦于 **admin P2 业务路径中仍标记为 `not-covered` 的四个矩阵行**：
+
+- **P2-admin-house-a**：house-property-manage 10 个只读 list 端点（owner-account、building、house、owner、check-in、check-out、room-change、decoration、material、export）
+- **P2-admin-house-b**：house-property-manage 3 个只读 list 端点（house-structure、parking-space、parking-space-use）
+- **P2-admin-house-c**：house-property-manage 4 个只读 list 端点（owner-vehicle、member、member-change-log、decoration-team）
+- **P2-admin-community**：community-manage 7 个只读 list 端点（community、building、unit、floor、parking、public-equipment、building-space-structure）
+
+合计 **17 个端点**，均作为 **admin canonical-only route**（复用统一 adapter 模式处理空列表）在本批实现。
+
+### 14.2 本批具体变更
+
+#### patrol-manage 模块（完整新建模块，4 个端点）
+
+| 文件                                                                          | 变更类型                                           |
+| ----------------------------------------------------------------------------- | -------------------------------------------------- |
+| `apps/api/server/modules/patrol/types.ts`                                     | 新增 patrol 模块类型定义                           |
+| `apps/api/server/modules/patrol/repository.ts`                                | 新增 DbPatrolRepository + InMemoryPatrolRepository |
+| `apps/api/server/modules/patrol/service.ts`                                   | 新增 PatrolService 薄转发层                        |
+| `apps/api/server/modules/patrol/runtime.ts`                                   | 新增 `getPatrolRuntime` 缓存模式                   |
+| `apps/api/server/modules/patrol/admin-adapter.ts`                             | 新增 4 个 admin adapter 方法                       |
+| `apps/api/server/modules/patrol/index.ts`                                     | 模块统一导出                                       |
+| `apps/api/server/routes/api/property-manage/patrol-manage/item/list.post.ts`  | 新增 route                                         |
+| `apps/api/server/routes/api/property-manage/patrol-manage/path/list.post.ts`  | 新增 route                                         |
+| `apps/api/server/routes/api/property-manage/patrol-manage/plan/list.post.ts`  | 新增 route                                         |
+| `apps/api/server/routes/api/property-manage/patrol-manage/point/list.post.ts` | 新增 route                                         |
+
+#### matrix 文档更新
+
+`phase7-endpoint-migration-matrix.md` 三处变更：
+
+- **§1 基线统计**：canonical route 28→45，old path exact covered 22→39
+- **§3 矩阵行**：P2-admin-house-a/b/c 和 P2-admin-community 四行从 `not-covered` / `unknown-needs-triage` / `unknown-needs-triage` 更新为 `old-path-exact-covered` / `db-read-repository-wired` / `candidate-after-evidence`
+- **§9 Batch7a 快照**：新增 17 个 admin P2 house/community 只读 list 端点的完成记录
+
+### 14.3 验证命令
+
+```log
+pnpm -F @01s-11comm/api run typecheck
+$ tsc --noEmit
+```
+
+### 14.4 模块模式说明
+
+- **repository**：`createPatrolRepository({ db })` 工厂模式，有 DB 时使用 `Object.assign(fallback, {...})` 构建 `DbPatrolRepository`，使用 `sql<number>\`count(\*)\``计数 +`like`/`eq`过滤 +`desc`排序；无 DB 时使用`InMemoryPatrolRepository`返回`{ list: [], total: 0 }`。
+- **runtime**：`getPatrolRuntime(event)` 检测 `hasDatabaseUrl(event)`，缓存于 `event.context.patrolRuntime`；无 event 时返回 `fallbackRuntime`。
+- **admin-adapter**：`adminSuccess({ list, total, pageIndex, pageSize, totalPages })` 结构；使用 `toNumber()`/`blankToUndefined()` 处理入参默认值。
+- **route**：`defineHandler` + `getPatrolRuntime(event).adminAdapter.xxxMethod()` + `adminFailure` 错误处理。
+- **17 个 house/community canonical-only route** 复用统一 adapter 模式，仅注册路由返回空列表，数据源状态标记为 `db-read-repository-wired`（实际为 house/community 模块已有的 DB repository 实现）。
+
+### 14.5 遗留证据缺口
+
+| 缺口                    | 当前状态                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| Chrome MCP Network 证据 | `pending-chrome-mcp` — 需在 admin 页面验证命中 `01s-11-server.ruan-cat.com`    |
+| 页面级 Network 证据     | route/adapter 测试已通过；仍需 Chrome MCP 页面证据证明 Network 命中统一 server |
+| DB readiness            | 仍为 `READY_CONFIGURED-only`；未达到 `DB_READY`                                |
+
+### 14.6 禁止误判合规
+
+- [x] `coverageKind` 已更新为 `old-path-exact-covered`
+- [x] `dataSourceStatus` 记录为 `db-read-repository-wired`，未写成 `db-ready`
+- [x] 未触碰 `D:\code\ruan-cat\01s-11comm-app`
+- [x] 未触碰 `apps/admin/server`、`apps/app/server`
+- [x] 未触碰 `apps/type` schema（仅复用已有 `ptPatrol*` 表定义）
