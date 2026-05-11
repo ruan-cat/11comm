@@ -471,10 +471,22 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 在配置 vercel 时，你可以参考 notes-my-pull-requests 这个 vercel 项目，这个也是属于在 monorepo 内部署 nuxt/nitro 项目的，重点模仿其使用的命令。避免出现 monorepo+nitro 在 vercel 部署时出现的故障。
 
-## 041 <!-- TODO: --> 推进阶段 7 的大批量改造任务
+## 041 <!-- TODO: 正在做 --> 推进阶段 7 的大批量改造任务
 
 开始执行 docs\superpowers\plans\2026-05-10-phase7-batch-migration-plan.md ，我的核心目的是为了执行 docs\superpowers\specs\2026-04-25-11comm-app-monorepo-api-migration-design.md 的剩余阶段 7 的东西。
 
 严格按照 docs\superpowers\plans\2026-05-10-phase7-batch-migration-plan.md 计划来完成任务。
 
 认真落实 `docs\superpowers\reports\phase7-endpoint-migration-matrix.md` 的修改矩阵。确保迁移改造不要有任何形式的缺漏。
+
+---
+
+### 及时更新进度
+
+每完成一小部分，就及时更新任务进度。及时在 `docs\superpowers\reports\phase7-endpoint-migration-matrix.md` 、 `docs\superpowers\plans\2026-05-10-phase7-batch-migration-plan.md` 和 `docs\superpowers\specs\2026-04-25-11comm-app-monorepo-api-migration-design.md` 更新任务进度，避免出现意外的中断，导致进度丢失错配；
+
+及时用 memorix 更新跨 AI，跨 agent 式的通用全局记忆。每完成一小部分，就及时更新任务进度。确保下一个独立的 AI 会话，能够根据你写的 markdown 信息，和全局的 memorix 记忆，继续完成下一步的工作。确保其他 AI 在全新的上下文内，清楚如何接力接手工作。
+
+### 自主验证流程
+
+用谷歌浏览器 MCP，本地运行 app、admin、和 api 三个 monorepo 子项目子包的 dev 命令，本地运行 3 端的 dev，用谷歌浏览器 MCP，逐个访问需要验证的页面，确保前端页面能够及时使用正确的 nitro 接口信息，并完成闭环式的接口调用。确保项目成果可交付。

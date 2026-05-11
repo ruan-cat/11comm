@@ -1937,17 +1937,18 @@ Vercel production deployment 基线：
 ## Phase7 进度快照 (2026-05-11)
 
 Admin P1 迁移完成: 22 端点（expense 14 + report 7 + repair 1）
-Admin P2 部分完成: 21 端点（house 10 + community 7 + patrol 4）
-Admin canonical routes: 11 → 54
-Old path exact covered: 6 → ~44
+Admin P2 部分完成: 27 端点（house 10 + community 7 + patrol 6 + parking 4）
+Admin canonical routes: 11 → 60
+Old path exact covered: 6 → ~50
 
 **本期新建模块：**
 
 - `house-property-manage`（10 端点）
 - `community-manage`（7 端点）
-- `patrol-manage`（4/6 端点）
+- `patrol-manage`（6/6 端点）
+- `parking-manage`（4 端点）
 
-**本期 commits（5 个，未推送）：**
+**前序已记录 commits（本次 Codex 接力前已存在；本次变更仍在工作树未提交）：**
 
 - `47ecb60f` 接入 Phase7 admin P1 只读端点批量迁移，新增 17 个 canonical route
 - `ea3d83d0` 更新 Phase7 迁移矩阵、计划和综合报告至 Batch 6a/b/c 完成状态
@@ -1955,16 +1956,227 @@ Old path exact covered: 6 → ~44
 - `09f86e0e` 接入 Phase7 admin P2 house-property-manage 与 community-manage 模块
 - `429f5392` 补全 house-property-manage 路由并新增 patrol-manage 模块
 
-**全局待补证据（ALL pending）：**
+**全局待补证据（partial evidence collected; still not complete）：**
 
-- Chrome MCP / 页面 Network 证据
+- Chrome MCP / 页面 Network 证据：2026-05-11 已补 P2-admin-patrol 6 个页面与 P2-admin-parking 4 个页面的本地 dev 证据；其它已覆盖端点与生产页面证据仍待补
 - 生产 DB_READY（仍为 READY_CONFIGURED-only）
 - shadow-off/fallback 演练
 
 **P1 仍阻塞（4 端点）：** owner-payment-details/list、repair-report-form/list、repair-reports-summary-table/list、statement-expenses/list
 
-**P2 剩余（约 50+ 端点）：** patrol(task/detail)、parking、contract、setting、dev-team、operation-team
+**P2 剩余（数量需下一轮重新扫描）：** contract、setting、dev-team、operation-team 等
 
 **App legacy 剩余（约 150 端点）：** 19 个模块待处理
 
 详见 `docs/superpowers/reports/phase7-endpoint-migration-matrix.md` 和 `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md`
+
+### 2026-05-11 Codex 接力完成
+
+当前 Codex 会话已根据矩阵和计划继续接力，Memorix 记录为 `#4137`、`#4138`、`#4140`、`#4141`、`#4143`、`#4144`。本轮已完成：
+
+- `property-manage/patrol-manage/task/list` 与 `detail/list`：补齐 Batch7a 之后 patrol-manage 剩余 2 个 P2 端点，patrol-manage 达到 6/6 old path exact covered。
+- `property-manage/parking-manage/carport-apply/list`、`carport-info/list`、`owner-vehicle/list`、`parking-lot/list`：完成 parking-manage P2 首批 4 个只读 list 迁移。
+
+本轮验证证据：
+
+- `pnpm -F @01s-11comm/api exec vitest run tests/modules/parking-db-repository.test.ts tests/admin/parking-admin-endpoints.test.ts tests/admin/patrol-admin-endpoints.test.ts tests/modules/patrol-db-repository.test.ts tests/infra/phase7-api-contracts.test.ts --reporter verbose` 通过（5 files / 17 tests）。
+- `pnpm -F @01s-11comm/api exec vitest run --reporter verbose` 通过（28 files / 129 tests passed，1 file / 5 tests skipped；gated HTTP 为既有条件跳过）。
+- `pnpm -F @01s-11comm/api run typecheck` 通过。
+- 2026-05-11 补充验证：`RUN_PHASE7_HTTP_TESTS=1 PHASE7_API_BASE_URL=http://127.0.0.1:3102 pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts --reporter verbose` 通过（1 file / 5 tests）。本地手工 HTTP smoke 确认 Patrol/Parking 本批接口 200，`/app/floor.queryFloors` legacy 200，`/app/ownerRepair.saveOwnerRepair` 默认 409 guard。
+- 2026-05-11 修正 admin 页面接入缺口：`apps/admin/src/api/property-manage/patrol-manage/**` 与 `parking-manage/**` 已显式使用 `resolveAdminApiRequestUrl`，并补 `pnpm -F @01s-11comm/admin exec vitest run src/api/property-manage/patrol-manage/tests/phase7-shadow-resolver.test.ts src/api/property-manage/parking-manage/tests/phase7-shadow-resolver.test.ts src/utils/http/tests/api-base-url.test.ts --reporter verbose`（3 files / 39 tests）。
+- 2026-05-11 Chrome MCP 本地页面证据：`apps/admin` 运行在 `8080`，通过 `/api-shadow` 指向 `http://127.0.0.1:3102`；实际 Patrol 6 个页面与 Parking 4 个页面均请求 `/api-shadow/api/property-manage/{patrol-manage,parking-manage}/*/list` 并返回 200，响应头 `x-api-phase: phase3-infra`。代表响应保存于 `.tmp/phase7-chrome-page-patrol-task.network-response.network-response` 与 `.tmp/phase7-chrome-page-parking-lot.network-response.network-response`。
+- 2026-05-11 本地环境未配置 DB env，`GET http://127.0.0.1:3102/__nitro/ready` 返回 503；该结果不能写作 `DB_READY`。
+
+已知保留缺口：
+
+- `parking-manage/carport-apply/list` 的 licensePlate/carBrand/phoneNumber 依赖车辆/业主关系不足，当前只能保留字段缺口说明。
+- `parking-manage/parking-lot/list` 的 parkingSpaceType 使用兼容默认，不能写成完整语义迁移。
+- 本轮仅完成只读 list 端点；车场开闸类 app endpoint 与所有写入口仍需隔离评审。
+
+本轮仍不处理旧服务删除，不解除 `no-go-for-retirement`。P2-admin-patrol 与 P2-admin-parking 虽已补本地 Chrome MCP 页面 Network，但生产 `DB_READY`、shadow-off/fallback 演练以及其它已覆盖端点的页面证据仍未完成；缺证据时只能维持 `candidate-after-evidence` 或 `keep-source`，不得写入 `delete-candidate`。
+
+### 2026-05-11 二次接力状态与下轮入口
+
+本节是 Phase7 后续会话的总设计级接力说明。若下一个 AI 只读取本设计文档，也必须得到与矩阵一致的结论：**Phase7 当前仍未完成，不允许旧服务退役，不允许删除旧服务目录**。
+
+当前状态：
+
+- `apps/api` 已具备 Phase7 多批次只读迁移基础，admin canonical routes 当前约 60 个，old path exact covered 约 50 个。
+- `apps/admin/server/api` 仍保留约 155 个旧 API 文件；这些旧文件是迁移来源、fallback 与回滚参考，不能因为局部新路由存在而删除。
+- app legacy 仍约 150 个 endpoint 未迁移/未复核；`/app/**`、`/callComponent/**` 仍必须按 allowlist 与 compat handler 渐进推进。
+- Admin P1 仍有 4 个阻塞端点：`owner-payment-details/list`、`repair-report-form/list`、`repair-reports-summary-table/list`、`statement-expenses/list`。
+- Admin P2 仍需继续拆分 contract-manage、setting-manage、dev-team、operation-team；已完成的 house/community/patrol/parking 不能代表 P2 收口。
+
+本轮二次接力补充证据：
+
+- 本地 `apps/api` dev 运行在 `http://127.0.0.1:3102`，`/__nitro/health` 200，代表 Phase7 HTTP gate、Patrol/Parking list 端点与部分 app legacy smoke 通过。
+- 本地 `apps/admin` dev 运行在 `http://127.0.0.1:8080`，通过 `/api-shadow` 指向 `apps/api`。
+- Patrol/Parking 的 admin API hooks 已修正为使用 `resolveAdminApiRequestUrl(..., import.meta.env)`，避免页面仍绕回旧本地路径。
+- Chrome MCP 已确认真实页面组件发出 Patrol 6 个页面与 Parking 4 个页面的 `/api-shadow/api/property-manage/.../list` 请求，均返回 200，响应头包含 `x-api-phase: phase3-infra`。
+- 本地未配置 DB env，`/__nitro/ready` 返回 503；这只能说明当前环境没有 DB readiness 证据，不能写作 `DB_READY`。
+- `apps/api` typecheck、full vitest、HTTP gated vitest、`build:node` 均通过；`apps/admin` resolver 相关 vitest 与 `typecheck` 通过。
+
+本轮记录到 Memorix：
+
+- `#4148`：Phase7 audit and local verification，记录本地 dev、API 测试、Chrome MCP、admin resolver 修复与仍不可退役的结论。
+- `#4149`：Phase7 remains partial not retired，作为后续 agent 检索 `phase7/current-status` 时的稳定状态记忆。
+- `#4150`：Phase7 handoff docs updated，记录本节与矩阵二次接力段落已写入。
+- `#4151`：Phase7 recurring handoff gotchas，记录页面 Network、DB ready、Windows UTF-8 输出、admin shadow resolver 等易错点。
+
+下轮接力执行顺序：
+
+1. 先读取 `docs/superpowers/reports/phase7-endpoint-migration-matrix.md` 的 §9，确认最新 `dataSourceStatus`、`targetStatus`、`retirementDecision` 和 Memorix 编号。
+2. 再读取 `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md` 的最新执行计划，确认上一轮是否已追加新批次。
+3. 用 Memorix 搜索 `phase7/current-status`、`Phase7 remains partial not retired`、`#4148`、`#4149`、`#4150`、`#4151`，不要只依赖压缩上下文。
+4. 重新扫描 `apps/admin/server/api/**/*.ts`、`apps/api/server/routes/api/**/*.ts`、`apps/app/server/modules/**/endpoints.ts`；若数量变化，先同步矩阵再实施。
+5. 优先攻克 P1 4 个阻塞端点；若数据库字段/JSONB 语义不足，必须保留 `blocked` 或 `unknown-needs-triage`，不能用空数组或 mock 伪造 DB-ready。
+6. P2 后续按三级业务路径拆小批次，每个子代理只负责 2-3 个业务路径，并在每个小批次后更新矩阵、计划、设计文档和 Memorix。
+7. 每次页面证据必须使用浏览器 Network 或 Chrome MCP 证明真实组件请求命中 `apps/api`；在控制台手动 `fetch` 只能作为辅助 HTTP 证据。
+8. 生产或真实 DB readiness 必须在受控环境配置 DB env 后，开启 `RUN_PHASE7_DB_READINESS_CHECK=1`，以 `/__nitro/ready` 返回 `DB_READY` 为准。
+
+继续禁止：
+
+- 禁止把本地页面 200、HTTP smoke 200、unit test 通过或 route 存在单独作为 `delete-candidate` 依据。
+- 禁止把 `READY_CONFIGURED-only`、本地 `/__nitro/ready` 503、legacy fallback 200 或写入口 409 guard 误读为失败或完成。
+- 禁止通过批量脚本改写大量接口路径；继续使用小批次、业务路径、resolver/proxy/adapter/allowlist 推进。
+- 禁止新增 JWT、Token、Bearer、Authorization、Neon Auth 或任何 Nitro 鉴权逻辑。
+- 禁止直接从 `"h3"` 导入 H3 helper；新增/目标态 Nitro 代码必须从 `"nitro/h3"` 导入。
+- 禁止删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`、`D:\code\ruan-cat\01s-11comm-app`。
+
+### Phase7 Neon main 分支 DB_READY 与写入完整性验收流程
+
+本流程用于解决“本地缺 DB env，无法完成 DB-backed ready 验收”的缺口。当前项目决策是：Phase7 真实数据库验收 **不使用 Neon 测试分支，不使用测试分支连接串**，直接在 Neon main 分支上完成受控读写验证。因此，本流程不能按普通集成测试处理，必须按“主分支哨兵数据闭环验收”执行。
+
+官方依据与项目约束：
+
+- Neon 分支能力适合隔离测试，但本项目当前明确不使用测试分支；后续不得把本流程改写成默认测试分支方案。
+- Neon 连接串必须通过环境变量注入，文档与报告只能记录变量名、host 脱敏摘要、数据库名和连接类型，禁止写入真实连接串。
+- `apps/api` 现有数据库 URL 读取顺序包含 `comm_admin_11__DATABASE_URL`、`NITRO_DATABASE_URL`、`DATABASE_URL`、`POSTGRES_URL` 和 `runtimeConfig.databaseUrl`。
+- `RUN_PHASE7_DB_READINESS_CHECK=1` 是 deep readiness probe 的唯一开启开关；只有 `/__nitro/ready` 返回 `DB_READY`，才能写作 DB readiness 完成。
+- `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 只能在写入演练窗口临时开启；默认关闭时写入口返回 `409 PHASE7_MUTATION_GUARDED` 是正确安全状态。
+
+#### 适用范围
+
+本流程只适用于必须证明真实 Neon main 分支可用的 Phase7 验收：
+
+- 只读 endpoint 从真实 Neon main 查询数据。
+- 写入口需要证明 guard、受控写入、读回、回滚、残留检查和 guard 恢复。
+- 旧服务退役候选需要补 `dbReadinessEvidence` 或 `writeReadRollbackEvidence`。
+
+本流程不适用于：
+
+- 批量压测、长期自动化 CI、并发破坏性测试。
+- 未具备明确回滚路径的支付、缴费、开闸、真实维修流转、真实业主资料修改。
+- 任何需要直接修改真实业务对象且无法恢复原状态的 endpoint。
+
+#### 哨兵数据隔离规则
+
+所有写入 main 分支的数据必须带唯一、可检索、可清理的 `PHASE7_E2E_*` 标记。
+
+每次演练生成一个 `phase7RunId`：
+
+```text
+PHASE7_E2E_YYYYMMDD_HHMMSS_<domain>_<endpoint>
+```
+
+标记字段优先级：
+
+1. 业务上允许的 `remark`、`description`、`context`、`title`、`name` 等文本字段。
+2. 专用测试手机号、测试编号、外部单号等可检索字段。
+3. 如果 endpoint 没有任何可承载标记的字段，必须先记录为 `blocked-for-execution`，不得强行写入不可追踪数据。
+
+禁止事项：
+
+- 禁止修改真实缴费、真实支付、真实开门、真实维修流转状态作为测试对象。
+- 禁止使用普通业务名称、真实手机号、真实房屋/业主关系作为测试数据。
+- 禁止只依赖人工记忆清理数据；必须能按 `phase7RunId` 查询残留。
+
+#### 环境准备
+
+执行前必须准备并记录以下环境，不得记录真实密钥或完整连接串：
+
+```text
+comm_admin_11__DATABASE_URL=<Neon main connection string, redacted>
+RUN_PHASE7_DB_READINESS_CHECK=1
+PHASE7_ALLOW_LEGACY_MUTATIONS=<默认不设置；仅写入窗口设置为 1>
+```
+
+如果运行在本地 `apps/api` dev：
+
+- 先确认连接串指向 Neon main，而不是本地、mock、测试分支或过期预览环境。
+- 连接串 host 只记录脱敏形式，例如 `ep-***.neon.tech` 或 `ep-***-pooler.***.neon.tech`。
+- 若使用 pooled connection，应记录为 `pooled-main`；若使用 direct connection，应记录为 `direct-main`，但不写真实 URL。
+
+#### 固定验收顺序
+
+每个需要 main 分支证据的 endpoint 按以下顺序执行：
+
+1. **服务存活**：请求 `/__nitro/health`，记录状态码与响应摘要。
+2. **DB deep readiness**：在 `RUN_PHASE7_DB_READINESS_CHECK=1` 下请求 `/__nitro/ready`，必须返回 `code=DB_READY`。若返回 `READY_CONFIGURED`、`READY_CONFIGURED-only` 或 503，本轮不能补 `DB_READY`。
+3. **只读基线**：调用目标只读 endpoint 或与写入口相关的查询 endpoint，记录写入前数量、目标对象不存在或原始状态。
+4. **默认 guard**：在未设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 时调用写入口，必须返回 `409 PHASE7_MUTATION_GUARDED`。
+5. **开启写入窗口**：临时设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1`，重启或刷新运行环境，使 `apps/api` 明确进入受控写入窗口。
+6. **controlled write**：使用含 `phase7RunId` 的 payload 调用写入口，记录 request payload 的脱敏摘要和 response。
+7. **read-back**：通过 Nitro 读接口优先读回；如读接口缺失，可用受控 DB 查询按 `phase7RunId` 查回。必须断言写入字段、状态和关联关系符合预期。
+8. **rollback / cleanup**：执行业务级回滚、删除测试记录或恢复写入前状态。回滚方式必须可复跑。
+9. **residual check**：按 `phase7RunId` 再查一次，证明无残留，或证明状态已恢复。
+10. **guard restored**：关闭 `PHASE7_ALLOW_LEGACY_MUTATIONS`，再次调用写入口，确认重新返回 `409 PHASE7_MUTATION_GUARDED`。
+
+#### 写入证据模板
+
+矩阵中的 `writeReadRollbackEvidence` 必须能追溯到以下字段。没有完整字段，不得升级 endpoint 状态：
+
+```text
+endpoint:
+phase7RunId:
+databaseTarget: Neon main
+connectionEvidence: env name + redacted host + pooled/direct
+healthEvidence:
+readyEvidence:
+baselineEvidence:
+guardBefore:
+writeWindow:
+writeRequest:
+writeResponse:
+readBackMethod:
+readBackResult:
+rollbackMethod:
+rollbackResult:
+residualCheck:
+guardAfter:
+operator:
+timestamp:
+artifactPath:
+```
+
+证据可以写入矩阵 notes、计划执行记录或单一汇总报告，但必须同步回 `docs/superpowers/reports/phase7-endpoint-migration-matrix.md` 的对应行。
+
+#### 状态升级规则
+
+- `/__nitro/ready` 返回 `DB_READY` 后，只能证明数据库连接、required tables 和 migration probe 通过；不能自动证明某个业务 endpoint 已完成。
+- 只读 endpoint 还需要真实 HTTP/页面 Network 证据，才能从 `db-read-repository-wired` 进入更高候选状态。
+- 写入口只有在 `guardBefore`、`writeResponse`、`readBackResult`、`rollbackResult`、`residualCheck`、`guardAfter` 全部齐全时，才能补 `writeReadRollbackEvidence`。
+- 即使某个 endpoint 完成 main 分支写入闭环，也不能单独触发旧服务删除；仍需 caller evidence、browser evidence、fallback evidence 和独立复核。
+
+#### 失败处理
+
+任一步失败时，必须立即停止同批次后续写入：
+
+1. 先按 `phase7RunId` 查找是否有残留数据。
+2. 尽最大可能执行 cleanup 或状态恢复。
+3. 关闭 `PHASE7_ALLOW_LEGACY_MUTATIONS` 并重新证明 guard 恢复。
+4. 在矩阵中保持 `blocked-for-execution`、`unknown-needs-triage` 或 `keep-source`。
+5. 记录失败 endpoint、失败步骤、response 摘要、残留主键和清理结果。
+
+失败状态下禁止：
+
+- 禁止把部分写入成功写成完整验收。
+- 禁止把清理失败的 endpoint 升级为候选。
+- 禁止继续在同一批次执行其它写入口。
+
+#### 与计划文档和矩阵的关系
+
+- 本节是 Phase7 main 分支 DB 验收的总设计事实来源。
+- `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md` 只保留执行引用和批次级清单，避免重复维护流程细节。
+- `docs/superpowers/reports/phase7-endpoint-migration-matrix.md` 记录每个 endpoint 的最终证据状态；没有写入闭环证据时，`writeReadRollbackEvidence` 保持 `pending` 或 `not-applicable`。
+- 本决策已写入 Memorix：`#4152` Phase7 uses Neon main verification。后续会话应检索 `phase7/neon-main-db-verification`，不要重新假设使用 Neon 测试分支。
