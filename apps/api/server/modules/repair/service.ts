@@ -1,4 +1,11 @@
-import type { CoreDictItem, CoreDictQuery, CreateRepairInput, RepairListQuery } from "./types";
+import type {
+	CoreDictItem,
+	CoreDictQuery,
+	CreateRepairInput,
+	ListRepairsHaveDoneParams,
+	RepairListQuery,
+	RepairsHaveDoneDbItem,
+} from "./types";
 import type { RepairRepository } from "./repository";
 
 export interface RepairService {
@@ -9,6 +16,7 @@ export interface RepairService {
 	listRepairStates: RepairRepository["listRepairStates"];
 	listCoreDict: (params: CoreDictQuery) => Promise<CoreDictItem[]>;
 	appraiseRepair: (params: { repairId: string; context: string }) => Promise<{ success: boolean } | undefined>;
+	listRepairsHaveDone: (params: ListRepairsHaveDoneParams) => Promise<{ list: RepairsHaveDoneDbItem[]; total: number }>;
 }
 
 export function createRepairService(repository: RepairRepository): RepairService {
@@ -23,5 +31,6 @@ export function createRepairService(repository: RepairRepository): RepairService
 			const repair = await repository.appraiseOwnerRepair(params);
 			return repair ? { success: true } : undefined;
 		},
+		listRepairsHaveDone: (params) => repository.listRepairsHaveDone(params),
 	};
 }

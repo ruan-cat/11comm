@@ -1,10 +1,13 @@
-import type {
+﻿import type {
 	DataReportQuery,
 	FeeConfigQuery,
 	FeeDetailQuery,
 	FeeRepository,
 	LegacyFeeQuery,
+	ListExpenseSummaryTablesParams,
 	ListHouseChargesParams,
+	ListMeterReadingTypesParams,
+	ListRefundReviewsParams,
 	NativePaymentInput,
 	OweFeeCallableQuery,
 	OweFeeQuery,
@@ -13,7 +16,21 @@ import type {
 	RoomFeeReportQuery,
 	WriteOweFeeCallableInput,
 } from "./repository";
-import type { ExpenseItemSettingMutationInput, ExpenseItemSettingQuery } from "./types";
+import type {
+	ExpenseItemSettingMutationInput,
+	ExpenseItemSettingQuery,
+	ListFeeReminderParams,
+	ListNoChargeHouseParams,
+	ListOutstandingFeesAnalysisParams,
+	ListOverduePaymentInformationParams,
+	ListPatrolReportParams,
+	ListPaymentReviewsParams,
+	ListVehicleChargesParams,
+	ListWaterAndElectricityMeterReadingsParams,
+	ListArrearsDetailsListParams,
+	ListDataStatisticsParams,
+	ListDepositReportParams,
+} from "./types";
 
 export interface FeeService {
 	listAdminHouseCharges: FeeRepository["listHouseCharges"];
@@ -39,6 +56,30 @@ export interface FeeService {
 	getPayFeeDetailReport: (params: PayFeeDetailQuery) => ReturnType<FeeRepository["getPayFeeDetailReport"]>;
 	getRoomFeeReport: (params: RoomFeeReportQuery) => ReturnType<FeeRepository["getRoomFeeReport"]>;
 	getDataReport: (params: DataReportQuery) => ReturnType<FeeRepository["getDataReport"]>;
+	listReminderForOverduePayments: FeeRepository["listReminderForOverduePayments"];
+	listReprintVouchers: FeeRepository["listReprintVouchers"];
+	listExpenseSummaryTables: (
+		params: ListExpenseSummaryTablesParams,
+	) => ReturnType<FeeRepository["listExpenseSummaryTables"]>;
+	listRefundReviews: (params: ListRefundReviewsParams) => ReturnType<FeeRepository["listRefundReviews"]>;
+	listMeterReadingTypes: (params: ListMeterReadingTypesParams) => ReturnType<FeeRepository["listMeterReadingTypes"]>;
+	listOverduePaymentInformation: (
+		params: ListOverduePaymentInformationParams,
+	) => ReturnType<FeeRepository["listOverduePaymentInformation"]>;
+	listVehicleCharges: (params: ListVehicleChargesParams) => ReturnType<FeeRepository["listVehicleCharges"]>;
+	listWaterAndElectricityMeterReadings: (
+		params: ListWaterAndElectricityMeterReadingsParams,
+	) => ReturnType<FeeRepository["listWaterAndElectricityMeterReadings"]>;
+	listPaymentReviews: (params: ListPaymentReviewsParams) => ReturnType<FeeRepository["listPaymentReviews"]>;
+	listArrearsDetailsList: (params: ListArrearsDetailsListParams) => ReturnType<FeeRepository["listArrearsDetailsList"]>;
+	listDataStatistics: (params: ListDataStatisticsParams) => ReturnType<FeeRepository["listDataStatistics"]>;
+	listDepositReport: (params: ListDepositReportParams) => ReturnType<FeeRepository["listDepositReport"]>;
+	listFeeReminder: (params: ListFeeReminderParams) => ReturnType<FeeRepository["listFeeReminder"]>;
+	listNoChargeHouse: (params: ListNoChargeHouseParams) => ReturnType<FeeRepository["listNoChargeHouse"]>;
+	listOutstandingFeesAnalysis: (
+		params: ListOutstandingFeesAnalysisParams,
+	) => ReturnType<FeeRepository["listOutstandingFeesAnalysis"]>;
+	listPatrolReport: (params: ListPatrolReportParams) => ReturnType<FeeRepository["listPatrolReport"]>;
 }
 
 export class FeeValidationError extends Error {
@@ -94,6 +135,25 @@ export function createFeeService(repository: FeeRepository): FeeService {
 		getPayFeeDetailReport: (params) => repository.getPayFeeDetailReport(params),
 		getRoomFeeReport: (params) => repository.getRoomFeeReport(params),
 		getDataReport: (params) => repository.getDataReport(params),
+		listReminderForOverduePayments: (params) => repository.listReminderForOverduePayments(params),
+		listReprintVouchers: (params) => repository.listReprintVouchers(params),
+		listExpenseSummaryTables: (params: ListExpenseSummaryTablesParams) => repository.listExpenseSummaryTables(params),
+		listRefundReviews: (params: ListRefundReviewsParams) => repository.listRefundReviews(params),
+		listMeterReadingTypes: (params: ListMeterReadingTypesParams) => repository.listMeterReadingTypes(params),
+		listOverduePaymentInformation: (params: ListOverduePaymentInformationParams) =>
+			repository.listOverduePaymentInformation(params),
+		listVehicleCharges: (params: ListVehicleChargesParams) => repository.listVehicleCharges(params),
+		listWaterAndElectricityMeterReadings: (params: ListWaterAndElectricityMeterReadingsParams) =>
+			repository.listWaterAndElectricityMeterReadings(params),
+		listPaymentReviews: (params: ListPaymentReviewsParams) => repository.listPaymentReviews(params),
+		listArrearsDetailsList: (params: ListArrearsDetailsListParams) => repository.listArrearsDetailsList(params),
+		listDataStatistics: (params: ListDataStatisticsParams) => repository.listDataStatistics(params),
+		listDepositReport: (params: ListDepositReportParams) => repository.listDepositReport(params),
+		listFeeReminder: (params: ListFeeReminderParams) => repository.listFeeReminder(params),
+		listNoChargeHouse: (params: ListNoChargeHouseParams) => repository.listNoChargeHouse(params),
+		listOutstandingFeesAnalysis: (params: ListOutstandingFeesAnalysisParams) =>
+			repository.listOutstandingFeesAnalysis(params),
+		listPatrolReport: (params: ListPatrolReportParams) => repository.listPatrolReport(params),
 	};
 }
 

@@ -1,13 +1,17 @@
 import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import type {
 	AdminRepairIssueListItem,
+	AdminRepairsHaveDoneItem,
 	AdminRepairsSettingListItem,
 	AdminRepairsTodoListItem,
+	ListRepairsHaveDoneParams,
 	RepairItem,
 	RepairSettingItem,
+	RepairsHaveDoneDbItem,
 } from "./types";
 import type { RepairService } from "./service";
 import { adminSuccess } from "../../shared/runtime/response-builder";
+import { formatDateTime } from "../../utils/format-date";
 
 export function createAdminRepairAdapter(service: RepairService) {
 	return {
@@ -43,6 +47,34 @@ export function createAdminRepairAdapter(service: RepairService) {
 				publicArea: blankToUndefined(input.publicArea),
 			});
 			return adminSuccess(toPageResult(list.map(toRepairsSettingItem), list.length, pageIndex, pageSize));
+		},
+		async listRepairsHaveDone(input: {
+			pageIndex?: number;
+			pageSize?: number;
+			workOrderNumber?: string;
+			reporter?: string;
+			repairPhone?: string;
+			repairType?: string;
+			maintenanceType?: string;
+			repairStatus?: string;
+			sortBy?: string;
+			sortOrder?: string;
+		}): Promise<JsonVO<PageDTO<AdminRepairsHaveDoneItem>>> {
+			const pageIdx = toNumber(input.pageIndex ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 10);
+			const result = await service.listRepairsHaveDone({
+				pageIndex: pageIdx,
+				pageSize,
+				workOrderNumber: blankToUndefined(input.workOrderNumber),
+				reporter: blankToUndefined(input.reporter),
+				repairPhone: blankToUndefined(input.repairPhone),
+				repairType: blankToUndefined(input.repairType),
+				maintenanceType: blankToUndefined(input.maintenanceType),
+				repairStatus: blankToUndefined(input.repairStatus),
+				sortBy: input.sortBy,
+				sortOrder: input.sortOrder,
+			} as ListRepairsHaveDoneParams);
+			return adminSuccess(toPageResult(result.list.map(toRepairsHaveDoneItem), result.total, pageIdx, pageSize));
 		},
 		async listIssues(input: {
 			page?: number;
@@ -130,6 +162,23 @@ function toIssueItem(item: RepairItem): AdminRepairIssueListItem {
 		createTime: item.createTime,
 		updateTime: item.updateTime,
 		remark: item.context,
+	};
+}
+
+function toRepairsHaveDoneItem(item: RepairsHaveDoneDbItem): AdminRepairsHaveDoneItem {
+	return {
+		id: item.id,
+		workOrderNumber: item.workOrderNumber,
+		location: item.repairLocation || "",
+		repairType: item.repairType || "",
+		maintenanceType: item.maintenanceType || "",
+		reporter: item.reporterName || "",
+		contactInfo: item.contactPhone || "",
+		appointmentTime: item.appointmentTime ? formatDateTime(item.appointmentTime) : "",
+		status: item.status || "completed",
+		remark: item.remark || "",
+		createTime: item.createTime ? formatDateTime(item.createTime) : "",
+		updateTime: item.updateTime ? formatDateTime(item.updateTime) : "",
 	};
 }
 

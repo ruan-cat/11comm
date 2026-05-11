@@ -209,3 +209,320 @@ export interface ExpenseItemSettingDeletePolicy {
 }
 
 export type AdminExpenseItemSettingPage = PageDTO<AdminExpenseItemSettingListItem>;
+
+// --- Phase7 Batch 6a: 只读极简列表类型 ---
+
+export interface ReminderForOverduePaymentListItem {
+	id: string;
+	name: string;
+	status: string;
+	remark: string;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ReprintVoucherListItem {
+	id: string;
+	name: string;
+	status: string;
+	remark: string;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ReminderForOverduePaymentsQuery {
+	page: number;
+	pageSize: number;
+	name?: string;
+}
+
+export interface ReprintVouchersQuery {
+	page: number;
+	pageSize: number;
+	name?: string;
+}
+
+// --- Phase7 Batch 6a: expense-summary-table ---
+
+export interface AdminExpenseSummaryTableListItem {
+	id: string;
+	time: string;
+	expenseItemId: string;
+	expenseItemName: string;
+	receivableAmount: string;
+	actualAmount: string;
+	status: string;
+	remark: string;
+	createTime: string;
+	updateTime: string;
+}
+
+// --- Phase7 Batch 6a: refund-review ---
+
+export interface AdminRefundReviewListItem {
+	id: string;
+	chargeId: string;
+	chargeType: string;
+	refundReason: string;
+	refundAmount: string;
+	applyTime: string;
+	applicant: string;
+	status: string;
+	reviewer: string;
+	reviewTime: string;
+	reviewOpinion: string;
+	remark: string;
+	createTime: string;
+	updateTime: string;
+}
+
+// --- Phase7 Batch 6a: meter-reading-type ---
+
+export interface AdminMeterReadingTypeListItem {
+	id: string;
+	typeName: string;
+	typeCode: string;
+	unitPrice: string;
+	billingMethod: string;
+	status: string;
+	remark: string;
+	createTime: string;
+	updateTime: string;
+}
+
+// --- Phase7 Batch 6b: vehicle-charge ---
+
+export interface VehicleChargeListItem {
+	id: string;
+	name: string;
+	status: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListVehicleChargesParams {
+	pageIndex: number;
+	pageSize: number;
+	ownerName?: string;
+	status?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
+}
+
+// --- Phase7 Batch 6b: water-and-electricity-meter-reading ---
+
+export interface WaterAndElectricityMeterReadingListItem {
+	meterId: string;
+	meterType: string;
+	objectName: string;
+	lastReading: string;
+	currentReading: string;
+	lastReadingTime: string;
+	currentReadingTime: string;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListWaterAndElectricityMeterReadingsParams {
+	pageIndex: number;
+	pageSize: number;
+	meterId?: string;
+	meterType?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
+}
+
+// --- Phase7 Batch 6b: overdue-payment-information ---
+
+export interface OverduePaymentInformationListItem {
+	id: string;
+	chargeObject: string;
+	ownerName: string;
+	phoneNumber: string;
+	startTime: string;
+	endTime: string;
+	totalAmount: string;
+	status: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListOverduePaymentInformationParams {
+	pageIndex: number;
+	pageSize: number;
+	chargeObject?: string;
+	ownerName?: string;
+	phoneNumber?: string;
+	startTime?: string;
+	endTime?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
+}
+
+// --- Phase7 Batch 6b: payment-review ---
+
+export interface PaymentReviewListItem {
+	id: string;
+	paymentId: string;
+	reviewer: string;
+	reviewOpinion?: string | null;
+	reviewResult: string;
+	reviewTime: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListPaymentReviewsParams {
+	pageIndex: number;
+	pageSize: number;
+	reviewer?: string;
+	reviewResult?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
+}
+
+// --- Phase7 P1: report-manage ---
+
+export interface ArrearsDetailsListItem {
+	id: string;
+	building: string;
+	expenseItem: string;
+	outstandingTotal: string;
+	periodStart: string;
+	periodEnd: string;
+	owner: string;
+	ownerPhone: string;
+	area: string;
+	arrearsDuration: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListArrearsDetailsListParams {
+	pageIndex: number;
+	pageSize: number;
+	name?: string;
+	status?: string;
+}
+
+export interface DataStatisticsListItem {
+	id: string;
+	name: string;
+	status: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListDataStatisticsParams {
+	pageIndex: number;
+	pageSize: number;
+	name?: string;
+	status?: string;
+}
+
+export interface DepositReportListItem {
+	id: string;
+	name: string;
+	status: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListDepositReportParams {
+	pageIndex: number;
+	pageSize: number;
+	name?: string;
+	status?: string;
+}
+
+// --- Phase7 P1 report-manage: fee-reminder ---
+
+export interface FeeReminderListItem {
+	id: string;
+	name: string;
+	status: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListFeeReminderParams {
+	pageIndex: number;
+	pageSize: number;
+	name?: string;
+	status?: string;
+}
+
+// --- Phase7 P1 report-manage: no-charge-house ---
+
+export interface NoChargeHouseListItem {
+	id: string;
+	houseNumberContractName: string;
+	ownerName: string;
+	community: string;
+	building: string;
+	unit: string;
+	ownerPhone: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListNoChargeHouseParams {
+	pageIndex: number;
+	pageSize: number;
+	name?: string;
+}
+
+// --- Phase7 P1 report-manage: outstanding-fees-analysis ---
+
+export interface OutstandingFeesAnalysisListItem {
+	id: string;
+	feeItem: string;
+	totalUncollectedAmount: string;
+	latestReceivableMonth: string;
+	statisticsTime: string;
+	unit: string;
+	houseNumberContractName: string;
+	ownerName: string;
+	ownerPhone: string;
+	currentUncollectedAmount: string;
+	historicalUncollectedAmount: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListOutstandingFeesAnalysisParams {
+	pageIndex: number;
+	pageSize: number;
+	name?: string;
+}
+
+// --- Phase7 P1 report-manage: patrol-report ---
+
+export interface PatrolReportListItem {
+	id: string;
+	patrolName: string;
+	patrolLevel: string;
+	patrolType: string;
+	status: string;
+	abnormalCount: number;
+	community: string;
+	responsiblePerson: string;
+	remark?: string | null;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListPatrolReportParams {
+	pageIndex: number;
+	pageSize: number;
+	name?: string;
+}

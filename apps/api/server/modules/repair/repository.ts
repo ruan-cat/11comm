@@ -1,15 +1,17 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, like, sql } from "drizzle-orm";
 import { rpRepairOrders, rpRepairSettings, rpRepairTypes } from "@01s-11comm/type";
 import type { DbType } from "../../db";
 import { formatDateTime } from "../../utils/format-date";
 import type {
 	CoreDictItem,
 	CreateRepairInput,
+	ListRepairsHaveDoneParams,
 	RepairItem,
 	RepairListQuery,
 	RepairListResult,
 	RepairSettingItem,
 	RepairStateDictionaryItem,
+	RepairsHaveDoneDbItem,
 } from "./types";
 
 export interface RepairRepository {
@@ -20,6 +22,7 @@ export interface RepairRepository {
 	listRepairStates: () => Promise<RepairStateDictionaryItem[]>;
 	listCoreDict: (params: { name?: string; type?: string; domain?: string }) => Promise<CoreDictItem[]>;
 	appraiseOwnerRepair: (params: { repairId: string; context: string }) => Promise<RepairItem | undefined>;
+	listRepairsHaveDone: (params: ListRepairsHaveDoneParams) => Promise<{ list: RepairsHaveDoneDbItem[]; total: number }>;
 }
 
 interface InMemoryRepairSeed {
@@ -119,6 +122,73 @@ export function createDbRepairRepository(db: DbType): RepairRepository {
 				return mapRepairStatesToCoreDict();
 			}
 			return fallback.listCoreDict(params);
+		},
+		async listRepairsHaveDone(params) {
+			const conditions = [];
+
+			conditions.push(eq(rpRepairOrders.status, "completed" as any));
+
+			if (params.workOrderNumber) {
+				conditions.push(like(rpRepairOrders.workOrderNumber, `%${params.workOrderNumber}%`));
+			}
+
+			if (params.reporter) {
+				conditions.push(like(rpRepairOrders.reporterName, `%${params.reporter}%`));
+			}
+
+			if (params.repairPhone) {
+				conditions.push(like(rpRepairOrders.contactPhone, `%${params.repairPhone}%`));
+			}
+
+			if (params.repairType) {
+				conditions.push(eq(rpRepairOrders.repairType, params.repairType));
+			}
+
+			if (params.maintenanceType) {
+				conditions.push(eq(rpRepairOrders.maintenanceType, params.maintenanceType));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(rpRepairOrders)
+				.where(where);
+
+			const sortFieldMap: Record<string, any> = {
+				createTime: rpRepairOrders.createTime,
+				updateTime: rpRepairOrders.updateTime,
+			};
+			const sortBy = params.sortBy || "createTime";
+			const sortOrder = params.sortOrder || "desc";
+			const orderByColumn = sortFieldMap[sortBy] || rpRepairOrders.createTime;
+			const orderByClause = sortOrder === "desc" ? desc(orderByColumn) : asc(orderByColumn);
+
+			const rows = await db
+				.select({
+					id: rpRepairOrders.id,
+					workOrderNumber: rpRepairOrders.workOrderNumber,
+					repairType: rpRepairOrders.repairType,
+					maintenanceType: rpRepairOrders.maintenanceType,
+					reporterName: rpRepairOrders.reporterName,
+					contactPhone: rpRepairOrders.contactPhone,
+					repairLocation: rpRepairOrders.repairLocation,
+					appointmentTime: rpRepairOrders.appointmentTime,
+					status: rpRepairOrders.status,
+					remark: rpRepairOrders.remark,
+					createTime: rpRepairOrders.createTime,
+					updateTime: rpRepairOrders.updateTime,
+				})
+				.from(rpRepairOrders)
+				.where(where)
+				.orderBy(orderByClause)
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				list: rows,
+				total: Number(countResult[0]?.total || 0),
+			};
 		},
 	} satisfies Partial<RepairRepository>);
 }
@@ -375,6 +445,12 @@ class InMemoryRepairRepository implements RepairRepository {
 			],
 		};
 		return structuredClone(domain ? dictData[domain] || [] : []);
+	}
+
+	async listRepairsHaveDone(
+		_params: ListRepairsHaveDoneParams,
+	): Promise<{ list: RepairsHaveDoneDbItem[]; total: number }> {
+		return { list: [], total: 0 };
 	}
 
 	async appraiseOwnerRepair(params: { repairId: string; context: string }): Promise<RepairItem | undefined> {

@@ -1,4 +1,9 @@
-import type { IssuesListItem, RepairsSettingListItem, RepairsTodoListItem } from "@01s-11comm/type";
+import type {
+	IssuesListItem,
+	RepairsHaveDoneListItem,
+	RepairsSettingListItem,
+	RepairsTodoListItem,
+} from "@01s-11comm/type";
 
 export interface RepairItem {
 	repairId: string;
@@ -94,4 +99,37 @@ export type AdminRepairIssueListItem = IssuesListItem & {
 	workOrderNumber: string;
 	repairStatus: string;
 	statusName: string;
+};
+
+export interface ListRepairsHaveDoneParams {
+	pageIndex: number;
+	pageSize: number;
+	workOrderNumber?: string;
+	reporter?: string;
+	repairPhone?: string;
+	repairType?: string;
+	maintenanceType?: string;
+	repairStatus?: string;
+	sortBy?: string;
+	sortOrder?: string;
+}
+
+export interface RepairsHaveDoneDbItem {
+	id: string;
+	workOrderNumber: string;
+	repairType: string | null;
+	maintenanceType: string | null;
+	reporterName: string | null;
+	contactPhone: string | null;
+	repairLocation: string | null;
+	appointmentTime: Date | null;
+	status: string | null;
+	remark: string | null;
+	createTime: Date | null;
+	updateTime: Date | null;
+}
+
+export type AdminRepairsHaveDoneItem = RepairsHaveDoneListItem & {
+	createTime?: string;
+	updateTime?: string;
 };
