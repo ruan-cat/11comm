@@ -1,3 +1,32 @@
+## v1.0.2-beta.2
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.1...v1.0.2-beta.2)
+
+### ✨ 新增功能
+
+- **api:** ⚠️ 接入 Phase7 admin P1 只读端点批量迁移，新增 17 个 canonical route ([47ecb60f](https://github.com/ruan-cat/11comm/commit/47ecb60f))
+- **api:** ⚠️ 接入 Phase7 expense-manage 剩余 5 个 P1 端点 ([81c3c9fa](https://github.com/ruan-cat/11comm/commit/81c3c9fa))
+- **api:** ⚠️ 接入 Phase7 admin P2 house-property-manage 与 community-manage 模块 ([09f86e0e](https://github.com/ruan-cat/11comm/commit/09f86e0e))
+- **api:** ⚠️ 补全 house-property-manage 路由并新增 patrol-manage 模块 ([429f5392](https://github.com/ruan-cat/11comm/commit/429f5392))
+
+### 📖 Documentation
+
+- **superpowers:** 记录 Phase7 接力进度 ([fce573c2](https://github.com/ruan-cat/11comm/commit/fce573c2))
+- **superpowers:** 更新 Phase7 迁移矩阵、计划和综合报告至 Batch 6a/b/c 完成状态 ([ea3d83d0](https://github.com/ruan-cat/11comm/commit/ea3d83d0))
+- **superpowers:** 更新 Phase7 接力进度至 Batch 7a 完成状态 ([13e0cbd6](https://github.com/ruan-cat/11comm/commit/13e0cbd6))
+- **superpowers:** 最终更新 Phase7 计划、设计和接力快照 ([e89f2c49](https://github.com/ruan-cat/11comm/commit/e89f2c49))
+
+#### ⚠️ Breaking Changes
+
+- **api:** ⚠️ 接入 Phase7 admin P1 只读端点批量迁移，新增 17 个 canonical route ([47ecb60f](https://github.com/ruan-cat/11comm/commit/47ecb60f))
+- **api:** ⚠️ 接入 Phase7 expense-manage 剩余 5 个 P1 端点 ([81c3c9fa](https://github.com/ruan-cat/11comm/commit/81c3c9fa))
+- **api:** ⚠️ 接入 Phase7 admin P2 house-property-manage 与 community-manage 模块 ([09f86e0e](https://github.com/ruan-cat/11comm/commit/09f86e0e))
+- **api:** ⚠️ 补全 house-property-manage 路由并新增 patrol-manage 模块 ([429f5392](https://github.com/ruan-cat/11comm/commit/429f5392))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.2-beta.1
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.1-beta.9...v1.0.2-beta.1)
