@@ -1,0 +1,424 @@
+import { and, desc, eq, like, or, sql } from "drizzle-orm";
+import {
+	dtCacheConfigs,
+	dtConfigs,
+	dtDictionaries,
+	dtDictionaryItems,
+	dtConfigTypes,
+	dtMenuCatalogs,
+	dtMenuGroups,
+	dtMenuItems,
+} from "@01s-11comm/type";
+import type { DbType } from "../../db";
+import { formatDateTime } from "../../utils/format-date";
+import type {
+	AdminConfigCenterListItem,
+	AdminDictionaryItemListItem,
+	AdminDictionaryListItem,
+	AdminDictionaryTypeListItem,
+	AdminMenuCatalogListItem,
+	AdminMenuGroupListItem,
+	AdminMenuItemListItem,
+	AdminRefreshCacheListItem,
+	ListConfigCenterParams,
+	ListDictionaryItemParams,
+	ListDictionaryParams,
+	ListDictionaryTypeParams,
+	ListMenuCatalogParams,
+	ListMenuGroupParams,
+	ListMenuItemParams,
+	ListRefreshCacheParams,
+} from "./types";
+
+export interface DevRepository {
+	listRefreshCache: (params: ListRefreshCacheParams) => Promise<{ list: AdminRefreshCacheListItem[]; total: number }>;
+	listConfigCenter: (params: ListConfigCenterParams) => Promise<{ list: AdminConfigCenterListItem[]; total: number }>;
+	listDictionary: (params: ListDictionaryParams) => Promise<{ list: AdminDictionaryListItem[]; total: number }>;
+	listDictionaryItem: (
+		params: ListDictionaryItemParams,
+	) => Promise<{ list: AdminDictionaryItemListItem[]; total: number }>;
+	listDictionaryType: (
+		params: ListDictionaryTypeParams,
+	) => Promise<{ list: AdminDictionaryTypeListItem[]; total: number }>;
+	listMenuCatalog: (params: ListMenuCatalogParams) => Promise<{ list: AdminMenuCatalogListItem[]; total: number }>;
+	listMenuGroup: (params: ListMenuGroupParams) => Promise<{ list: AdminMenuGroupListItem[]; total: number }>;
+	listMenuItem: (params: ListMenuItemParams) => Promise<{ list: AdminMenuItemListItem[]; total: number }>;
+}
+
+export function createDevRepository(options: { db?: DbType } = {}): DevRepository {
+	return options.db ? createDbDevRepository(options.db) : createInMemoryDevRepository();
+}
+
+export function createDbDevRepository(db: DbType): DevRepository {
+	const fallback = createInMemoryDevRepository();
+
+	return Object.assign(fallback, {
+		async listRefreshCache(
+			params: ListRefreshCacheParams,
+		): Promise<{ list: AdminRefreshCacheListItem[]; total: number }> {
+			const conditions = [];
+			const keyword = params.cacheKey || params.cacheName || params.cacheCode;
+
+			if (params.cacheId) {
+				conditions.push(eq(dtCacheConfigs.id, params.cacheId));
+			}
+			if (keyword) {
+				conditions.push(
+					or(
+						like(dtCacheConfigs.cacheCode, `%${keyword}%`),
+						like(dtCacheConfigs.cacheName, `%${keyword}%`),
+						like(dtCacheConfigs.cacheKey, `%${keyword}%`),
+					),
+				);
+			}
+			if (params.cacheType) {
+				conditions.push(eq(dtCacheConfigs.cacheType, params.cacheType));
+			}
+			if (params.refreshPolicy) {
+				conditions.push(eq(dtCacheConfigs.refreshStrategy, params.refreshPolicy));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(dtCacheConfigs)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(dtCacheConfigs)
+				.where(where)
+				.orderBy(desc(dtCacheConfigs.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((row) => ({
+					cacheId: row.id,
+					cacheCode: row.cacheCode,
+					cacheName: row.cacheName,
+					cacheKey: row.cacheKey,
+					cacheType: row.cacheType ?? "",
+					cacheGroup: row.cacheGroup ?? "",
+					expireTime: row.expireTime ?? 0,
+					description: row.description ?? "",
+					refreshPolicy: row.refreshStrategy ?? "",
+					status: row.status ?? "enabled",
+					createTime: formatDateTime(row.createTime),
+					updateTime: formatDateTime(row.updateTime),
+				})),
+			};
+		},
+
+		async listConfigCenter(
+			params: ListConfigCenterParams,
+		): Promise<{ list: AdminConfigCenterListItem[]; total: number }> {
+			const conditions = [];
+			if (params.configName) {
+				conditions.push(like(dtConfigs.configName, `%${params.configName}%`));
+			}
+			if (params.configKey) {
+				conditions.push(like(dtConfigs.configKey, `%${params.configKey}%`));
+			}
+			if (params.configType) {
+				conditions.push(eq(dtConfigs.configType, params.configType));
+			}
+			if (params.status) {
+				conditions.push(eq(dtConfigs.status, params.status as "enabled" | "disabled"));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(dtConfigs)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(dtConfigs)
+				.where(where)
+				.orderBy(desc(dtConfigs.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((row) => ({
+					id: row.id,
+					configName: row.configName,
+					configType: row.configType,
+					configKey: row.configKey,
+					configValue: row.configValue,
+					defaultValue: row.defaultValue,
+					configDescription: row.configDescription,
+					status: row.status,
+					sortOrder: row.sortOrder,
+					remark: row.remark,
+					createTime: formatDateTime(row.createTime),
+					updateTime: formatDateTime(row.updateTime),
+					createdBy: row.createdBy,
+					updatedBy: row.updatedBy,
+				})),
+			};
+		},
+
+		async listDictionary(params: ListDictionaryParams): Promise<{ list: AdminDictionaryListItem[]; total: number }> {
+			const conditions = [];
+			if (params.dictionaryName) {
+				conditions.push(like(dtDictionaries.dictionaryName, `%${params.dictionaryName}%`));
+			}
+			if (params.dictionaryCode) {
+				conditions.push(like(dtDictionaries.dictionaryCode, `%${params.dictionaryCode}%`));
+			}
+			if (params.dictionaryType) {
+				conditions.push(eq(dtDictionaries.dictionaryType, params.dictionaryType));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(dtDictionaries)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(dtDictionaries)
+				.where(where)
+				.orderBy(desc(dtDictionaries.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((row) => ({
+					id: row.id,
+					dictionaryName: row.dictionaryName,
+					dictionaryCode: row.dictionaryCode,
+					dictionaryType: row.dictionaryType,
+					dictionaryDescription: row.dictionaryDescription,
+					remark: row.remark,
+					createTime: formatDateTime(row.createTime),
+					updateTime: formatDateTime(row.updateTime),
+				})),
+			};
+		},
+
+		async listDictionaryItem(
+			params: ListDictionaryItemParams,
+		): Promise<{ list: AdminDictionaryItemListItem[]; total: number }> {
+			const conditions = [];
+			if (params.dictionaryId) {
+				conditions.push(eq(dtDictionaryItems.dictionaryId, params.dictionaryId as any));
+			}
+			if (params.itemName) {
+				conditions.push(like(dtDictionaryItems.itemLabel, `%${params.itemName}%`));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(dtDictionaryItems)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(dtDictionaryItems)
+				.where(where)
+				.orderBy(desc(dtDictionaryItems.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((row) => ({
+					id: row.id,
+					dictionaryId: row.dictionaryId,
+					itemName: row.itemLabel,
+					itemCode: row.itemValue,
+					itemValue: row.itemValue,
+					sortOrder: row.sortOrder,
+					remark: null,
+					createTime: formatDateTime(row.createTime),
+					updateTime: formatDateTime(row.updateTime),
+				})),
+			};
+		},
+
+		async listDictionaryType(
+			params: ListDictionaryTypeParams,
+		): Promise<{ list: AdminDictionaryTypeListItem[]; total: number }> {
+			const conditions = [];
+			if (params.typeName) {
+				conditions.push(like(dtConfigTypes.typeName, `%${params.typeName}%`));
+			}
+			if (params.typeCode) {
+				conditions.push(like(dtConfigTypes.typeCode, `%${params.typeCode}%`));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(dtConfigTypes)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(dtConfigTypes)
+				.where(where)
+				.orderBy(desc(dtConfigTypes.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((row) => ({
+					id: row.id,
+					typeName: row.typeName,
+					typeCode: row.typeCode,
+					typeDescription: row.typeDescription,
+					remark: null,
+					createTime: formatDateTime(row.createTime),
+					updateTime: formatDateTime(row.updateTime),
+				})),
+			};
+		},
+
+		async listMenuCatalog(params: ListMenuCatalogParams): Promise<{ list: AdminMenuCatalogListItem[]; total: number }> {
+			const conditions = [];
+			if (params.name) {
+				conditions.push(like(dtMenuCatalogs.catalogName, `%${params.name}%`));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(dtMenuCatalogs)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(dtMenuCatalogs)
+				.where(where)
+				.orderBy(desc(dtMenuCatalogs.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((row) => ({
+					gid: row.groupId ?? "",
+					groupType: "system",
+					icon: row.catalogIcon ?? "",
+					label: row.catalogName,
+					name: row.catalogName,
+					seq: String(row.sortOrder ?? 0),
+					storeType: "property",
+					typeText: "",
+					storeTypeText: "",
+					createTime: formatDateTime(row.createTime),
+					updateTime: formatDateTime(row.updateTime),
+				})),
+			};
+		},
+
+		async listMenuGroup(params: ListMenuGroupParams): Promise<{ list: AdminMenuGroupListItem[]; total: number }> {
+			const conditions = [];
+			if (params.groupName) {
+				conditions.push(like(dtMenuGroups.groupName, `%${params.groupName}%`));
+			}
+			if (params.groupCode) {
+				conditions.push(like(dtMenuGroups.groupCode, `%${params.groupCode}%`));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(dtMenuGroups)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(dtMenuGroups)
+				.where(where)
+				.orderBy(desc(dtMenuGroups.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((row) => ({
+					id: row.id,
+					groupName: row.groupName,
+					groupCode: row.groupCode,
+					groupDescription: null,
+					sortOrder: row.sortOrder,
+					createTime: formatDateTime(row.createTime),
+					updateTime: formatDateTime(row.updateTime),
+				})),
+			};
+		},
+
+		async listMenuItem(params: ListMenuItemParams): Promise<{ list: AdminMenuItemListItem[]; total: number }> {
+			const conditions = [];
+			if (params.catalogId) {
+				conditions.push(eq(dtMenuItems.catalogId, params.catalogId as any));
+			}
+			if (params.menuName) {
+				conditions.push(like(dtMenuItems.menuName, `%${params.menuName}%`));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(dtMenuItems)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(dtMenuItems)
+				.where(where)
+				.orderBy(desc(dtMenuItems.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((row) => ({
+					id: row.id,
+					catalogId: row.catalogId,
+					menuName: row.menuName,
+					menuCode: null,
+					menuPath: row.path,
+					menuIcon: row.menuIcon,
+					sortOrder: row.sortOrder,
+					createTime: formatDateTime(row.createTime),
+					updateTime: formatDateTime(row.updateTime),
+				})),
+			};
+		},
+	}) satisfies Partial<DevRepository>;
+}
+
+class InMemoryDevRepository implements DevRepository {
+	async listRefreshCache(): Promise<{ list: AdminRefreshCacheListItem[]; total: number }> {
+		return { list: [], total: 0 };
+	}
+	async listConfigCenter(): Promise<{ list: AdminConfigCenterListItem[]; total: number }> {
+		return { list: [], total: 0 };
+	}
+	async listDictionary(): Promise<{ list: AdminDictionaryListItem[]; total: number }> {
+		return { list: [], total: 0 };
+	}
+	async listDictionaryItem(): Promise<{ list: AdminDictionaryItemListItem[]; total: number }> {
+		return { list: [], total: 0 };
+	}
+	async listDictionaryType(): Promise<{ list: AdminDictionaryTypeListItem[]; total: number }> {
+		return { list: [], total: 0 };
+	}
+	async listMenuCatalog(): Promise<{ list: AdminMenuCatalogListItem[]; total: number }> {
+		return { list: [], total: 0 };
+	}
+	async listMenuGroup(): Promise<{ list: AdminMenuGroupListItem[]; total: number }> {
+		return { list: [], total: 0 };
+	}
+	async listMenuItem(): Promise<{ list: AdminMenuItemListItem[]; total: number }> {
+		return { list: [], total: 0 };
+	}
+}
+
+export function createInMemoryDevRepository(): DevRepository {
+	return new InMemoryDevRepository();
+}
