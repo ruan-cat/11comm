@@ -698,7 +698,7 @@ $ tsc --noEmit
 
 ---
 
-## 17. 2026-05-10 接力进度快照
+## 17. 2026-05-11 接力进度快照
 
 本节用于其他 AI 会话接力。当前事实源优先级为：
 
@@ -707,33 +707,69 @@ $ tsc --noEmit
 3. `docs/superpowers/reports/2026-05-10-phase7-consolidated-report.md`
 4. `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
 
-**本轮已落地并提交：**
+**本轮已落地并提交（2026-05-11 轮次，共 5 个，均未推送）：**
 
-- `26d18de2`：`feat(api)!`，接入 Phase7 app legacy 只读端点迁移，覆盖 fee/floor/repair 与 app runtime allowlist；`ownerRepair.saveOwnerRepair` 默认返回 `409 PHASE7_MUTATION_GUARDED`。
-- `5873a123`：`test(api)`，补充 fee/floor/repair/callcomponent legacy、repository、runtime、manifest、contract、HTTP gate 与 app runtime 测试。
-- `828a019e`：`docs(superpowers)`，更新本计划、endpoint 矩阵、综合报告和阶段 7 执行提示。
-- 以上提交尚未 push；接力前先运行 `git status --short --branch` 确认分支状态。
+| Commit     | 说明                                                                | Batch           |
+| ---------- | ------------------------------------------------------------------- | --------------- |
+| `429f5392` | 补全 house-property-manage 路由并新增 patrol-manage 模块            | P2 Batch7a      |
+| `09f86e0e` | 接入 Phase7 admin P2 house-property-manage 与 community-manage 模块 | P2 Batch7a      |
+| `81c3c9fa` | 接入 Phase7 expense-manage 剩余 5 个 P1 端点                        | P1 Batch6c      |
+| `ea3d83d0` | 更新 Phase7 迁移矩阵、计划和综合报告至 Batch 6a/b/c 完成状态        | docs            |
+| `47ecb60f` | 接入 Phase7 admin P1 只读端点批量迁移，新增 17 个 canonical route   | P1 Batch6a/6b/7 |
+
+**本轮完成统计：**
+
+| 维度                     | 当前值                                                      |
+| ------------------------ | ----------------------------------------------------------- |
+| Admin canonical routes   | 11 → 54（新增 43）                                          |
+| Old path exact covered   | 6 → ~44                                                     |
+| Admin P1 完成            | 22 端点（expense 14 + report 7 + repair 1）                 |
+| Admin P2 完成            | 21 端点（house 10 + community 7 + patrol 4）                |
+| 新建模块                 | house-property-manage、community-manage、patrol-manage      |
+| 新增模块目录             | 3 个（在 `apps/api/server/routes/api/property-manage/` 下） |
+| 全局 Chrome MCP 证据     | ALL pending                                                 |
+| 生产 DB_READY            | ALL still `READY_CONFIGURED-only`                           |
+| shadow-off/fallback 演练 | ALL pending                                                 |
 
 **已验证：**
 
-- `pnpm -F @01s-11comm/api exec vitest run tests/modules/fee-db-repository.test.ts tests/legacy/fee-legacy-endpoints.test.ts tests/modules/floor-db-repository.test.ts tests/legacy/floor-legacy-endpoints.test.ts tests/modules/repair-db-repository.test.ts tests/modules/repair-runtime.test.ts tests/legacy/repair-legacy-endpoints.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts tests/http/phase7-gated-http.test.ts`
-- `pnpm -F @01s-11comm/api run typecheck`
-- `pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/runtime-base-url.test.ts`
-- `RUN_PHASE7_HTTP_TESTS=1` 的本地 `phase7-gated-http.test.ts`
-- `git diff --check`
+- `pnpm -F @01s-11comm/api run typecheck` — 已通过（多轮验证）
+- `pnpm -F @01s-11comm/api exec vitest run --reporter verbose` — 119 个测试用例全部通过（最终轮次）
+- 每个模块独立 typecheck 和测试均已通过
 
 **接力优先级：**
 
-1. 先处理矩阵中 `db-read-repository-wired-with-gap` 的兼容缺口，不要把它标为完整完成。
-2. 继续推进 `schema-exists-not-wired` 的 fee read endpoint，优先补 repository branch、contract/module test、HTTP gate。
-3. 对 `blocked-for-execution` 的 mutation 只保持默认 guard 或设计受控写入演练；没有读回、回滚和 guard restored 证据前，不得开放。
-4. 继续按每批完成后立即更新矩阵和本计划，避免长任务中断后状态丢失。
+### 下一步继续推进
 
-**已写入 Memorix：**
+1. **Admin P1 困难端点（4）：** `owner-payment-details/list`（rptOwnerPaymentDetails 表字段不足）、`repair-report-form/list`（rptRepairReports 聚合表）、`repair-reports-summary-table/list`（rptRepairSummaries JSONB）、`statement-expenses/list`（rptStatementExpenses JSONB）。这些需要先补 schema/聚合表或明确数据来源，不能简单复用已有 pattern。
 
-- `#3306`：Phase7 批量迁移接力进度。
-- `#3307`：Phase7 接力关键误区。
+2. **Admin P2 剩余（约 50+ 端点）：**
+   - patrol-manage：`task/list`（LEFT JOIN）和 `detail/list`（复杂 JOIN）
+   - parking-manage：4 个端点
+   - contract-manage：7 单表 + 6 JOIN + 5 upload（upload 保持单独评审）
+   - setting-manage：约 28 端点
+   - dev-team：约 24 端点
+   - operation-team：约 13 端点
+
+3. **App legacy 剩余（约 150 端点）：** 按模块分组处理，从已有 schema 的只读模块开始。
+
+4. **全局证据补全：** 所有已覆盖端点缺乏 Chrome MCP 页面 Network 证据、生产 DB_READY 证据和 shadow-off/fallback 演练。这些是 `candidate-after-evidence` 的前置条件，需尽早安排。
+
+### 关键约束
+
+- 所有已覆盖端点当前仅标注 `db-read-repository-wired`，在补齐 Chrome MCP / DB_READY / shadow-off 证据前不得升格
+- P2-admin-patrol 的 task/list（LEFT JOIN）和 detail/list（复杂 JOIN）不适用简单 list 模式，需要独立评审
+- 不要因为本会话新增了 21 个 P2 端点就认为 P2 接近完成，仍有 50+ 端点待处理
+- admin P1 仍有 4 个困难端点阻塞，expense/manage/report/repair P1 不能算全部完成
+
+**已写入 Memorix 和本次新增记录：**
+
+| ID                  | 内容                                                                                                               |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `#3306`             | Phase7 批量迁移接力进度（历史）                                                                                    |
+| `#3307`             | Phase7 接力关键误区（历史）                                                                                        |
+| `(2026-05-11 新增)` | 本会话通过 mcp**memorix**memorix_store 新增：Phase7 2026-05-11 会话完成，包含完成统计、commits、剩余工作和接力建议 |
 
 ---
 
-_计划修订时间：2026-05-10_
+_计划修订时间：2026-05-11_

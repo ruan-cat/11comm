@@ -1933,3 +1933,38 @@ Vercel production deployment 基线：
 - fee/floor 的兼容字段缺口必须在矩阵中保留，直到补齐 join、schema 或产品接受的兼容策略。
 - 每个小批次完成后必须立即更新矩阵和计划；长任务不得等全部完成后再补进度。
 - 本次接力记忆已写入 Memorix：`#3306` Phase7 批量迁移接力进度，`#3307` Phase7 接力关键误区。
+
+## Phase7 进度快照 (2026-05-11)
+
+Admin P1 迁移完成: 22 端点（expense 14 + report 7 + repair 1）
+Admin P2 部分完成: 21 端点（house 10 + community 7 + patrol 4）
+Admin canonical routes: 11 → 54
+Old path exact covered: 6 → ~44
+
+**本期新建模块：**
+
+- `house-property-manage`（10 端点）
+- `community-manage`（7 端点）
+- `patrol-manage`（4/6 端点）
+
+**本期 commits（5 个，未推送）：**
+
+- `47ecb60f` 接入 Phase7 admin P1 只读端点批量迁移，新增 17 个 canonical route
+- `ea3d83d0` 更新 Phase7 迁移矩阵、计划和综合报告至 Batch 6a/b/c 完成状态
+- `81c3c9fa` 接入 Phase7 expense-manage 剩余 5 个 P1 端点
+- `09f86e0e` 接入 Phase7 admin P2 house-property-manage 与 community-manage 模块
+- `429f5392` 补全 house-property-manage 路由并新增 patrol-manage 模块
+
+**全局待补证据（ALL pending）：**
+
+- Chrome MCP / 页面 Network 证据
+- 生产 DB_READY（仍为 READY_CONFIGURED-only）
+- shadow-off/fallback 演练
+
+**P1 仍阻塞（4 端点）：** owner-payment-details/list、repair-report-form/list、repair-reports-summary-table/list、statement-expenses/list
+
+**P2 剩余（约 50+ 端点）：** patrol(task/detail)、parking、contract、setting、dev-team、operation-team
+
+**App legacy 剩余（约 150 端点）：** 19 个模块待处理
+
+详见 `docs/superpowers/reports/phase7-endpoint-migration-matrix.md` 和 `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md`
