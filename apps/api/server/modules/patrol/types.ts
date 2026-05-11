@@ -1,5 +1,7 @@
 /** 巡检管理模块 - 类型定义 */
 
+import type { PatrolDetailListItem, PatrolTaskListItem } from "@01s-11comm/type";
+
 // --- PatrolItem / ptPatrolItems ---
 
 export interface AdminPatrolItemListItem {
@@ -79,4 +81,33 @@ export interface ListPatrolPointsParams {
 	pageSize: number;
 	pointName?: string;
 	pathId?: string;
+}
+
+// --- PatrolTask / ptPatrolTasks ---
+
+export type AdminPatrolTaskListItem = PatrolTaskListItem;
+
+export interface ListPatrolTasksParams {
+	pageIndex: number;
+	pageSize: number;
+	taskCode?: string;
+	taskName?: string;
+	patrolStatus?: string;
+	patrolMethod?: string;
+	currentPatrolPerson?: string;
+	sortBy?: "createTime" | "updateTime" | "plannedStartTime";
+	sortOrder?: "asc" | "desc";
+}
+
+// --- PatrolDetail / ptPatrolTaskDetails ---
+
+export type AdminPatrolDetailListItem = PatrolDetailListItem;
+
+export interface ListPatrolDetailsParams {
+	pageIndex: number;
+	pageSize: number;
+	taskStatus?: string;
+	patrolMethod?: string;
+	sortBy?: "createTime" | "updateTime";
+	sortOrder?: "asc" | "desc";
 }

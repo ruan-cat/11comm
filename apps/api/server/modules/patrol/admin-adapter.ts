@@ -2,10 +2,12 @@ import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { adminSuccess } from "../../shared/runtime/response-builder";
 import type { PatrolService } from "./service";
 import type {
+	AdminPatrolDetailListItem,
 	AdminPatrolItemListItem,
 	AdminPatrolPathListItem,
 	AdminPatrolPlanListItem,
 	AdminPatrolPointListItem,
+	AdminPatrolTaskListItem,
 } from "./types";
 
 export function createAdminPatrolAdapter(service: PatrolService) {
@@ -94,6 +96,72 @@ export function createAdminPatrolAdapter(service: PatrolService) {
 				pageSize,
 				pointName: blankToUndefined(input.pointName),
 				pathId: blankToUndefined(input.pathId),
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+
+		// ---- task/list ----
+		async listPatrolTasks(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			taskCode?: string;
+			taskName?: string;
+			patrolStatus?: string;
+			status?: string;
+			patrolMethod?: string;
+			executor?: string;
+			currentPatrolPerson?: string;
+			sortBy?: "createTime" | "updateTime" | "plannedStartTime";
+			sortOrder?: "asc" | "desc";
+		}): Promise<JsonVO<PageDTO<AdminPatrolTaskListItem>>> {
+			const pageIndex = toNumber(input.pageIndex ?? input.page ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listPatrolTasks({
+				pageIndex,
+				pageSize,
+				taskCode: blankToUndefined(input.taskCode),
+				taskName: blankToUndefined(input.taskName),
+				patrolStatus: blankToUndefined(input.patrolStatus ?? input.status),
+				patrolMethod: blankToUndefined(input.patrolMethod),
+				currentPatrolPerson: blankToUndefined(input.currentPatrolPerson ?? input.executor),
+				sortBy: input.sortBy,
+				sortOrder: input.sortOrder,
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+
+		// ---- detail/list ----
+		async listPatrolDetails(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			taskStatus?: string;
+			patrolMethod?: string;
+			sortBy?: "createTime" | "updateTime";
+			sortOrder?: "asc" | "desc";
+		}): Promise<JsonVO<PageDTO<AdminPatrolDetailListItem>>> {
+			const pageIndex = toNumber(input.pageIndex ?? input.page ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listPatrolDetails({
+				pageIndex,
+				pageSize,
+				taskStatus: blankToUndefined(input.taskStatus),
+				patrolMethod: blankToUndefined(input.patrolMethod),
+				sortBy: input.sortBy,
+				sortOrder: input.sortOrder,
 			});
 			return adminSuccess({
 				list: result.list,
