@@ -1953,6 +1953,15 @@ Vercel production deployment 基线：
 - 2026-05-11 的 Patrol/Parking 本地 Chrome MCP 页面 Network 证据仍有效，但只覆盖对应页面切片，不能外推到全量 P2。
 - 2026-05-12 的 contract、setting、operation-team、dev-team 批量 list 迁移保留为历史迁移事实；缺 Chrome MCP、生产 `DB_READY`、shadow-off/fallback 证据时只能保持候选状态。
 - 生产 readiness 当前仍只能视为 `READY_CONFIGURED-only`。只有 `RUN_PHASE7_DB_READINESS_CHECK=1` 且 `/__nitro/ready` 返回 `DB_READY`，才能写 `DB_READY`。
+- 2026-05-14 交接已写入 Memorix：`#4220` Phase7 handoff docs synced，`#4221` Phase7 handoff gotchas。上一小批 resolver 记忆为 `#4217`，未完成证据边界决策为 `#4218`。
+
+2026-05-14 交接快照：
+
+- 本轮只做三份 Phase7 文档与 Memorix 的接力进度保全，不新增业务代码迁移。
+- 已完成且可交接的新增事实是 6 个 hook-level resolver + tests：`setting-manage/system-manage/change-password/list`、`setting-manage/system-manage/community-configuration/list`、`setting-manage/system-manage/register-protocol/list`、`dev-team/config-manage/type/list`、`dev-team/config-manage/item/list`、`dev-team/config-manage/center/list`；目标 Vitest 4 files / 18 tests passed，admin typecheck 通过，相关范围 `git diff --check` 通过。
+- 这些证据只说明 hook 层 `resolveAdminApiRequestUrl` 覆盖 shadow disabled、shadow proxy、direct apps/api base，不能写成 Chrome MCP `browserEvidence`、Neon main `DB_READY` 或真实页面 shadow-off/fallback。
+- 当前工作区混有前序 `report-manage` / `fee` staged 变更与本轮 resolver 变更；后续 AI 必须先运行 `git status --short`，再按本设计、矩阵和批量计划接力，禁止 stage/unstage/revert 非明确范围。
+- 下一小批建议先补 `setting-manage/system-manage/system-config/list`、`setting-manage/system-manage/initialize-cell/list`、`dev-team/config-manage/dictionary/list`，完成后立即同步矩阵、计划、设计文档和 Memorix。
 
 下一个 AI 如何接力：
 
