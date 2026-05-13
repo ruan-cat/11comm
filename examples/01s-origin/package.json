@@ -57,5 +57,10 @@
 		"vite-plugin-vue-devtools": "^8.1.2",
 		"vitest": "^3.2.4",
 		"vue-tsc": "^3.2.8"
+	},
+	"author": {
+		"name": "ruan-cat",
+		"email": "1219043956@qq.com",
+		"url": "https://github.com/ruan-cat"
 	}
 }
