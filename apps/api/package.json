@@ -35,5 +35,10 @@
 		"@types/node": "^24.12.3",
 		"typescript": "^5.9.3",
 		"vitest": "^3.2.4"
+	},
+	"author": {
+		"name": "ruan-cat",
+		"email": "1219043956@qq.com",
+		"url": "https://github.com/ruan-cat"
 	}
 }

@@ -2,7 +2,11 @@
 	"name": "@01s-11comm/root",
 	"private": true,
 	"version": "1.0.2-beta.3",
-	"author": "01s",
+	"author": {
+		"name": "ruan-cat",
+		"email": "1219043956@qq.com",
+		"url": "https://github.com/ruan-cat"
+	},
 	"license": "ISC",
 	"description": "01s-11comm智慧社区 monorepo根目录",
 	"main": "index.js",

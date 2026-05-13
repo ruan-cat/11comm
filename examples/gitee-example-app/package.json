@@ -2,5 +2,10 @@
 	"dependencies": {
 		"file-saver": "^2.0.5",
 		"vue-jsonp": "^2.1.0"
+	},
+	"author": {
+		"name": "ruan-cat",
+		"email": "1219043956@qq.com",
+		"url": "https://github.com/ruan-cat"
 	}
 }
