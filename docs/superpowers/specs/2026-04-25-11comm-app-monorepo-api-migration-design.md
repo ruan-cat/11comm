@@ -1,4 +1,4 @@
-<!-- 状态：Phase1 快照迁入已完成；Phase2 已完成 `apps/api` 最小 Nitro 影子服务与 fee/payment/report 首批纵切样板；Phase3/Phase4 已推进到独立 Nitro API 与首批业务迁移验证；Phase5 已完成 expenseManage 首波：houseCharge list/detail 只读联调、expenseItemSetting list/detail/create/update/delete-policy、admin hook/page 影子联调、Chrome MCP 与真实 Neon 验证；当前可开启 Phase6 切流准备，但不得把 houseCharge create/update/delete 视为已完成能力。Memorix canonical history retention gate 已拆分释放为 released-for-phase2-progress / pass-with-permanent-source-retention；旧源目录 D:\code\ruan-cat\01s-11comm-app 永久禁止删除、移动、归档、重命名或清空。 -->
+<!-- 状态：Phase7 仍是 partial migration / no-go-for-retirement。当前 working tree 扫描口径为 apps/api server routes = 109，apps/admin/server/api legacy files = 155，exact legacy path 未覆盖约 51；P1 四个 report-manage 端点已 staged 接线但未验收，前端 resolver、Chrome MCP、Neon main DB_READY、shadow-off/fallback 与写入回滚证据仍未闭环。旧源目录 D:\code\ruan-cat\01s-11comm-app、apps/admin/server、apps/app/server 在解除 no-go 前永久禁止删除、移动、归档、重命名或清空。 -->
 
 # 2026-04-25 11comm App 迁入 Monorepo 与唯一 Nitro API 设计
 
@@ -23,7 +23,7 @@
 8. Phase2 的范围是“最小可运行 `apps/api` 影子服务 + fee/payment/report 首批纵切样板”；它不是只搭建无业务接口的纯基础设施空壳，也不是 repair/resource/parking 等多个模块并行迁移规划。
 9. 纯基础设施壳层加固、CI、部署、完整运行时配置和接入策略归入阶段 3；repair/resource/parking 等多模块扩张归入阶段 4。
 
-## 当前阶段状态与 Phase3 启动准则
+## 历史阶段状态与 Phase3 启动准则
 
 Phase1 快照迁入已经完成，Phase2 也已经完成并通过最新 dev HEAD 验收。当前 `apps/api` 已具备独立 Nitro 影子服务边界，包含独立 package、独立启动/测试/类型检查/构建入口、健康检查和 root route；首批业务纵切只覆盖 fee/payment/report，不把其他业务域伪装为已完成能力。
 
@@ -1934,114 +1934,33 @@ Vercel production deployment 基线：
 - 每个小批次完成后必须立即更新矩阵和计划；长任务不得等全部完成后再补进度。
 - 本次接力记忆已写入 Memorix：`#3306` Phase7 批量迁移接力进度，`#3307` Phase7 接力关键误区。
 
-## Phase7 进度快照 (2026-05-11)
+## Phase7 当前接力摘要 (2026-05-13)
 
-Admin P1 迁移完成: 22 端点（expense 14 + report 7 + repair 1）
-Admin P2 部分完成: 27 端点（house 10 + community 7 + patrol 6 + parking 4）
-Admin canonical routes: 11 → 60
-Old path exact covered: 6 → ~50
+本节替代此前 2026-05-11 / 2026-05-12 的详细进度流水账。旧快照中的 Patrol/Parking 页面验证、批量 list 迁移、Memorix 编号和测试命令保留为历史事实，但不得继续覆盖当前口径。
 
-**本期新建模块：**
+当前工作树口径：
 
-- `house-property-manage`（10 端点）
-- `community-manage`（7 端点）
-- `patrol-manage`（6/6 端点）
-- `parking-manage`（4 端点）
+- `apps/api/server/routes/api/**/*.ts` 当前扫描 109 个 server route。
+- `apps/admin/server/api/**/*.ts` 当前扫描 155 个 legacy file。
+- exact legacy path 未覆盖约 51。
+- P1 四个 `property-manage/report-manage` 端点在 staged working tree 中已接线但未验收：`owner-payment-details/list`、`repair-report-form/list`、`repair-reports-summary-table/list`、`statement-expenses/list`。
+- 前端调用端仍未全量切流。当前扫描到已迁移模块中仍有大量硬编码 `/api/**` 调用，代表性路径包括 `report-manage` 的 P1 四端点、`dev-team/config-manage`、`setting-manage/system-manage`、`operation-team/system-manage`、`expense-manage` 和 `community-manage`；补齐 `resolveAdminApiRequestUrl` 前，Chrome MCP 页面验证不能代表这些端点命中独立 `apps/api`。
 
-**前序已记录 commits（本次 Codex 接力前已存在；本次变更仍在工作树未提交）：**
+当前状态边界：
 
-- `47ecb60f` 接入 Phase7 admin P1 只读端点批量迁移，新增 17 个 canonical route
-- `ea3d83d0` 更新 Phase7 迁移矩阵、计划和综合报告至 Batch 6a/b/c 完成状态
-- `81c3c9fa` 接入 Phase7 expense-manage 剩余 5 个 P1 端点
-- `09f86e0e` 接入 Phase7 admin P2 house-property-manage 与 community-manage 模块
-- `429f5392` 补全 house-property-manage 路由并新增 patrol-manage 模块
+- P1 四端点只能记录为 `old-path-exact-covered (working-tree-staged)`、`db-read-repository-wired-with-gap`、`unknown-needs-triage`、`keep-source`。
+- 不能把这 4 个端点写成 `DB_READY`、完成、可删除或旧服务可退役。
+- 2026-05-11 的 Patrol/Parking 本地 Chrome MCP 页面 Network 证据仍有效，但只覆盖对应页面切片，不能外推到全量 P2。
+- 2026-05-12 的 contract、setting、operation-team、dev-team 批量 list 迁移保留为历史迁移事实；缺 Chrome MCP、生产 `DB_READY`、shadow-off/fallback 证据时只能保持候选状态。
+- 生产 readiness 当前仍只能视为 `READY_CONFIGURED-only`。只有 `RUN_PHASE7_DB_READINESS_CHECK=1` 且 `/__nitro/ready` 返回 `DB_READY`，才能写 `DB_READY`。
 
-**全局待补证据（partial evidence collected; still not complete）：**
+下一个 AI 如何接力：
 
-- Chrome MCP / 页面 Network 证据：2026-05-11 已补 P2-admin-patrol 6 个页面与 P2-admin-parking 4 个页面的本地 dev 证据；其它已覆盖端点与生产页面证据仍待补
-- 生产 DB_READY（仍为 READY_CONFIGURED-only）
-- shadow-off/fallback 演练
-
-**P1 仍阻塞（4 端点）：** owner-payment-details/list、repair-report-form/list、repair-reports-summary-table/list、statement-expenses/list
-
-**P2 剩余（数量需下一轮重新扫描）：** contract、setting、dev-team、operation-team 等
-
-**App legacy 剩余（约 150 端点）：** 19 个模块待处理
-
-详见 `docs/superpowers/reports/phase7-endpoint-migration-matrix.md` 和 `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md`
-
-### 2026-05-11 Codex 接力完成
-
-当前 Codex 会话已根据矩阵和计划继续接力，Memorix 记录为 `#4137`、`#4138`、`#4140`、`#4141`、`#4143`、`#4144`。本轮已完成：
-
-- `property-manage/patrol-manage/task/list` 与 `detail/list`：补齐 Batch7a 之后 patrol-manage 剩余 2 个 P2 端点，patrol-manage 达到 6/6 old path exact covered。
-- `property-manage/parking-manage/carport-apply/list`、`carport-info/list`、`owner-vehicle/list`、`parking-lot/list`：完成 parking-manage P2 首批 4 个只读 list 迁移。
-
-本轮验证证据：
-
-- `pnpm -F @01s-11comm/api exec vitest run tests/modules/parking-db-repository.test.ts tests/admin/parking-admin-endpoints.test.ts tests/admin/patrol-admin-endpoints.test.ts tests/modules/patrol-db-repository.test.ts tests/infra/phase7-api-contracts.test.ts --reporter verbose` 通过（5 files / 17 tests）。
-- `pnpm -F @01s-11comm/api exec vitest run --reporter verbose` 通过（28 files / 129 tests passed，1 file / 5 tests skipped；gated HTTP 为既有条件跳过）。
-- `pnpm -F @01s-11comm/api run typecheck` 通过。
-- 2026-05-11 补充验证：`RUN_PHASE7_HTTP_TESTS=1 PHASE7_API_BASE_URL=http://127.0.0.1:3102 pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts --reporter verbose` 通过（1 file / 5 tests）。本地手工 HTTP smoke 确认 Patrol/Parking 本批接口 200，`/app/floor.queryFloors` legacy 200，`/app/ownerRepair.saveOwnerRepair` 默认 409 guard。
-- 2026-05-11 修正 admin 页面接入缺口：`apps/admin/src/api/property-manage/patrol-manage/**` 与 `parking-manage/**` 已显式使用 `resolveAdminApiRequestUrl`，并补 `pnpm -F @01s-11comm/admin exec vitest run src/api/property-manage/patrol-manage/tests/phase7-shadow-resolver.test.ts src/api/property-manage/parking-manage/tests/phase7-shadow-resolver.test.ts src/utils/http/tests/api-base-url.test.ts --reporter verbose`（3 files / 39 tests）。
-- 2026-05-11 Chrome MCP 本地页面证据：`apps/admin` 运行在 `8080`，通过 `/api-shadow` 指向 `http://127.0.0.1:3102`；实际 Patrol 6 个页面与 Parking 4 个页面均请求 `/api-shadow/api/property-manage/{patrol-manage,parking-manage}/*/list` 并返回 200，响应头 `x-api-phase: phase3-infra`。代表响应保存于 `.tmp/phase7-chrome-page-patrol-task.network-response.network-response` 与 `.tmp/phase7-chrome-page-parking-lot.network-response.network-response`。
-- 2026-05-11 本地环境未配置 DB env，`GET http://127.0.0.1:3102/__nitro/ready` 返回 503；该结果不能写作 `DB_READY`。
-
-已知保留缺口：
-
-- `parking-manage/carport-apply/list` 的 licensePlate/carBrand/phoneNumber 依赖车辆/业主关系不足，当前只能保留字段缺口说明。
-- `parking-manage/parking-lot/list` 的 parkingSpaceType 使用兼容默认，不能写成完整语义迁移。
-- 本轮仅完成只读 list 端点；车场开闸类 app endpoint 与所有写入口仍需隔离评审。
-
-本轮仍不处理旧服务删除，不解除 `no-go-for-retirement`。P2-admin-patrol 与 P2-admin-parking 虽已补本地 Chrome MCP 页面 Network，但生产 `DB_READY`、shadow-off/fallback 演练以及其它已覆盖端点的页面证据仍未完成；缺证据时只能维持 `candidate-after-evidence` 或 `keep-source`，不得写入 `delete-candidate`。
-
-### 2026-05-11 二次接力状态与下轮入口
-
-本节是 Phase7 后续会话的总设计级接力说明。若下一个 AI 只读取本设计文档，也必须得到与矩阵一致的结论：**Phase7 当前仍未完成，不允许旧服务退役，不允许删除旧服务目录**。
-
-当前状态：
-
-- `apps/api` 已具备 Phase7 多批次只读迁移基础，admin canonical routes 当前约 60 个，old path exact covered 约 50 个。
-- `apps/admin/server/api` 仍保留约 155 个旧 API 文件；这些旧文件是迁移来源、fallback 与回滚参考，不能因为局部新路由存在而删除。
-- app legacy 仍约 150 个 endpoint 未迁移/未复核；`/app/**`、`/callComponent/**` 仍必须按 allowlist 与 compat handler 渐进推进。
-- Admin P1 仍有 4 个阻塞端点：`owner-payment-details/list`、`repair-report-form/list`、`repair-reports-summary-table/list`、`statement-expenses/list`。
-- Admin P2 仍需继续拆分 contract-manage、setting-manage、dev-team、operation-team；已完成的 house/community/patrol/parking 不能代表 P2 收口。
-
-本轮二次接力补充证据：
-
-- 本地 `apps/api` dev 运行在 `http://127.0.0.1:3102`，`/__nitro/health` 200，代表 Phase7 HTTP gate、Patrol/Parking list 端点与部分 app legacy smoke 通过。
-- 本地 `apps/admin` dev 运行在 `http://127.0.0.1:8080`，通过 `/api-shadow` 指向 `apps/api`。
-- Patrol/Parking 的 admin API hooks 已修正为使用 `resolveAdminApiRequestUrl(..., import.meta.env)`，避免页面仍绕回旧本地路径。
-- Chrome MCP 已确认真实页面组件发出 Patrol 6 个页面与 Parking 4 个页面的 `/api-shadow/api/property-manage/.../list` 请求，均返回 200，响应头包含 `x-api-phase: phase3-infra`。
-- 本地未配置 DB env，`/__nitro/ready` 返回 503；这只能说明当前环境没有 DB readiness 证据，不能写作 `DB_READY`。
-- `apps/api` typecheck、full vitest、HTTP gated vitest、`build:node` 均通过；`apps/admin` resolver 相关 vitest 与 `typecheck` 通过。
-
-本轮记录到 Memorix：
-
-- `#4148`：Phase7 audit and local verification，记录本地 dev、API 测试、Chrome MCP、admin resolver 修复与仍不可退役的结论。
-- `#4149`：Phase7 remains partial not retired，作为后续 agent 检索 `phase7/current-status` 时的稳定状态记忆。
-- `#4150`：Phase7 handoff docs updated，记录本节与矩阵二次接力段落已写入。
-- `#4151`：Phase7 recurring handoff gotchas，记录页面 Network、DB ready、Windows UTF-8 输出、admin shadow resolver 等易错点。
-
-下轮接力执行顺序：
-
-1. 先读取 `docs/superpowers/reports/phase7-endpoint-migration-matrix.md` 的 §9，确认最新 `dataSourceStatus`、`targetStatus`、`retirementDecision` 和 Memorix 编号。
-2. 再读取 `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md` 的最新执行计划，确认上一轮是否已追加新批次。
-3. 用 Memorix 搜索 `phase7/current-status`、`Phase7 remains partial not retired`、`#4148`、`#4149`、`#4150`、`#4151`，不要只依赖压缩上下文。
-4. 重新扫描 `apps/admin/server/api/**/*.ts`、`apps/api/server/routes/api/**/*.ts`、`apps/app/server/modules/**/endpoints.ts`；若数量变化，先同步矩阵再实施。
-5. 优先攻克 P1 4 个阻塞端点；若数据库字段/JSONB 语义不足，必须保留 `blocked` 或 `unknown-needs-triage`，不能用空数组或 mock 伪造 DB-ready。
-6. P2 后续按三级业务路径拆小批次，每个子代理只负责 2-3 个业务路径，并在每个小批次后更新矩阵、计划、设计文档和 Memorix。
-7. 每次页面证据必须使用浏览器 Network 或 Chrome MCP 证明真实组件请求命中 `apps/api`；在控制台手动 `fetch` 只能作为辅助 HTTP 证据。
-8. 生产或真实 DB readiness 必须在受控环境配置 DB env 后，开启 `RUN_PHASE7_DB_READINESS_CHECK=1`，以 `/__nitro/ready` 返回 `DB_READY` 为准。
-
-继续禁止：
-
-- 禁止把本地页面 200、HTTP smoke 200、unit test 通过或 route 存在单独作为 `delete-candidate` 依据。
-- 禁止把 `READY_CONFIGURED-only`、本地 `/__nitro/ready` 503、legacy fallback 200 或写入口 409 guard 误读为失败或完成。
-- 禁止通过批量脚本改写大量接口路径；继续使用小批次、业务路径、resolver/proxy/adapter/allowlist 推进。
-- 禁止新增 JWT、Token、Bearer、Authorization、Neon Auth 或任何 Nitro 鉴权逻辑。
-- 禁止直接从 `"h3"` 导入 H3 helper；新增/目标态 Nitro 代码必须从 `"nitro/h3"` 导入。
-- 禁止删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`、`D:\code\ruan-cat\01s-11comm-app`。
+1. 先补 P1 四端点字段映射、过滤条件、JSONB 解析/聚合语义与 tests。
+2. 再补前端 API hooks 使用 `resolveAdminApiRequestUrl`，优先覆盖 `report-manage` P1 四端点以及 2026-05-12 新增批量 list 端点，避免页面绕回旧 admin server。
+3. 再跑 Chrome MCP 页面验证，只把真实页面组件发出的 Network 请求作为 `browserEvidence`。
+4. 再按下方 Neon main 验收流程跑 `PHASE7_E2E_*` 写入-回读-清理或只读 DB 验收；用户已明确不要 Neon 测试分支。
+5. 最后才评估旧服务退役；评估前不得删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`、`D:\code\ruan-cat\01s-11comm-app`。
 
 ### Phase7 Neon main 分支 DB_READY 与写入完整性验收流程
 
@@ -2180,3 +2099,11 @@ artifactPath:
 - `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md` 只保留执行引用和批次级清单，避免重复维护流程细节。
 - `docs/superpowers/reports/phase7-endpoint-migration-matrix.md` 记录每个 endpoint 的最终证据状态；没有写入闭环证据时，`writeReadRollbackEvidence` 保持 `pending` 或 `not-applicable`。
 - 本决策已写入 Memorix：`#4152` Phase7 uses Neon main verification。后续会话应检索 `phase7/neon-main-db-verification`，不要重新假设使用 Neon 测试分支。
+
+### 2026-05-12 批量迁移记录的当前解释
+
+2026-05-12 的批量迁移记录保留为历史事实：contract-manage、setting-manage、operation-team、dev-team 曾新增多组 list 端点，并采用 `types.ts` → `repository.ts` → `service.ts` → `runtime.ts` → `admin-adapter.ts` → `index.ts` 的模块模式。
+
+但该记录不再作为当前完成口径。当前事实必须重新按 working tree 扫描：`apps/api` server routes = 109，`apps/admin/server/api` legacy files = 155，exact legacy path 未覆盖约 51。缺少 Chrome MCP 页面级 Network、生产 `DB_READY`、shadow-off/fallback 与必要写入回滚证据时，任何端点都不能升级为完成、可删除或旧服务可退役。
+
+后续接力仍按本节上方“Phase7 当前接力摘要”执行：先处理 P1 四个 staged-but-unverified report-manage 端点，再补前端 hooks、Chrome MCP、Neon main `PHASE7_E2E_*` 验收，最后评估旧服务退役。

@@ -26,13 +26,14 @@
 
 ### 1.3 当前统计口径
 
-| 维度           | 当前口径                                                                                                                                                                                                                                                                          |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Admin 旧 API   | `apps/admin/server/api/**/*.ts` 共 155 个旧 API 文件；old path exact covered = ~50（P0 6 + P1 17 + P2 27）；canonical-only = 5；admin canonical routes = 60（11→60）；old path 口径 remaining ≈ 105；105 只能作为执行计划管理口径，不能误读为旧 path exact covered 后的真实剩余数 |
-| App legacy API | 业务 endpoint 约 221 个，`apps/api` Nitro 层已登记/承载 21 个；其中不少只是 Nitro 层、allowlist、guard 或 InMemory/fallback/legacy-compatible 证据，不得写成 DB 迁移完成                                                                                                          |
-| App fallback   | `/callComponent/**` 与 `/app/floor.queryFloors` 已开始由 apps/api 精确承载，但仍存在 InMemory/legacy-compatible-only 或 guard 状态；其他未匹配 `/app/**` 仍可走旧服务 fallback，不能写成 DB/repository 完成                                                                       |
-| DB 实现        | fee 模块 DB 覆盖约 50%；repair 模块已完成只读首切片 DB repository wired，但仍非 `DB_READY`，写入口保持 guard；admin 已迁移端点均标注 `db-read-repository-wired`，但缺 Chrome MCP 和生产 DB_READY 证据                                                                             |
-| 高风险写入口   | `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/ownerRepair.saveOwnerRepair`、`/callComponent/ownerRepair.appraiseRepair` 默认必须返回 `409 PHASE7_MUTATION_GUARDED`                                           |
+| 维度           | 当前口径                                                                                                                                                                                                                                                                                                                     |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Admin 旧 API   | 当前 working tree 口径：`apps/admin/server/api/**/*.ts` 共 155 个旧 API 文件；`apps/api/server/routes/api/**/*.ts` 共 109 个 server route；exact legacy path 未覆盖约 51。P1 四个 `report-manage` 端点已在 staged working tree 接线但未验收，不能写成完成或旧服务可退役                                                      |
+| Admin 前端切流 | 已迁移模块仍有大量 `apps/admin/src/api/**/*.ts` 调用硬编码 `/api/**`，代表性覆盖 `report-manage` P1 四端点、`dev-team/config-manage`、`setting-manage/system-manage`、`operation-team/system-manage`、`expense-manage`、`community-manage`。补齐 `resolveAdminApiRequestUrl` 前，route 存在不能写成页面已切到独立 `apps/api` |
+| App legacy API | 业务 endpoint 约 221 个，`apps/api` Nitro 层已登记/承载 21 个；其中不少只是 Nitro 层、allowlist、guard 或 InMemory/fallback/legacy-compatible 证据，不得写成 DB 迁移完成                                                                                                                                                     |
+| App fallback   | `/callComponent/**` 与 `/app/floor.queryFloors` 已开始由 apps/api 精确承载，但仍存在 InMemory/legacy-compatible-only 或 guard 状态；其他未匹配 `/app/**` 仍可走旧服务 fallback，不能写成 DB/repository 完成                                                                                                                  |
+| DB 实现        | fee 模块 DB 覆盖约 50%；repair 模块已完成只读首切片 DB repository wired，但仍非 `DB_READY`，写入口保持 guard；admin 已迁移端点均标注 `db-read-repository-wired`，但缺 Chrome MCP 和生产 DB_READY 证据                                                                                                                        |
+| 高风险写入口   | `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee`、`/app/ownerRepair.saveOwnerRepair`、`/callComponent/ownerRepair.appraiseRepair` 默认必须返回 `409 PHASE7_MUTATION_GUARDED`                                                                                      |
 
 ---
 
@@ -120,7 +121,7 @@
 
 **数据源/风险：**
 
-- admin 旧 API 必须区分数字口径：`apps/admin/server/api/**/*.ts` 共 155；当前 old path exact covered ≈ 50；canonical-only = 5；admin canonical routes = 60；old path 口径 remaining ≈ 105；remaining 只能作为执行计划管理口径，不能误读为旧 path exact covered 后的真实剩余数。
+- admin 旧 API 必须区分数字口径：当前 working tree 中 `apps/admin/server/api/**/*.ts` 共 155，`apps/api/server/routes/api/**/*.ts` 共 109，exact legacy path 未覆盖约 51。109 个 route 不能直接等同 109 个可退役旧 path；canonical-only、staged-but-unverified、fallback/guard 路由都必须逐项标注。
 - 矩阵字段必须用 `coverageKind` 区分 exact covered 与 canonical-only：旧 path 精确覆盖填 `old-path-exact-covered`，仅 canonical route 覆盖填 `canonical-only`，未覆盖填 `not-covered`。
 - app 已迁移 17 只能说明 Nitro 层登记或承载，不代表 DB 完成。
 - legacy fallback 返回 200 不能升级为 `candidate-after-evidence`。
@@ -474,6 +475,8 @@
 - [x] 测试通过：全部 119 个测试用例通过。
 - [ ] 仍缺 Chrome MCP / 页面 Network 证据；当前只能标 `db-read-repository-wired`，不得写 `DB_READY`。
 - [ ] 本批未涉及写入口，未触发 guard/read-back/rollback。
+- [ ] 当前 staged working tree 已接线但未验收的 P1 report-manage 端点：`owner-payment-details/list`、`repair-report-form/list`、`repair-reports-summary-table/list`、`statement-expenses/list`。计划状态只能写 `old-path-exact-covered (working-tree-staged)`、`db-read-repository-wired-with-gap`、`unknown-needs-triage`、`keep-source`；不得写 `DB_READY`、完成、可删除或旧服务可退役。
+- [ ] 下一轮优先补上述 4 端点的字段映射、过滤条件、JSONB 解析/聚合语义和 Vitest；随后补 admin API hooks 的 `resolveAdminApiRequestUrl` 使用，优先覆盖 P1 四端点和 2026-05-12 新增批量 list 端点；再做 Chrome MCP 页面验证、Neon main `PHASE7_E2E_*` 写入-回读-清理或只读 DB 验收，最后才评估旧服务退役。
 
 ---
 
@@ -702,102 +705,34 @@ $ tsc --noEmit
 
 ---
 
-## 17. 2026-05-11 接力进度快照
+## 17. 当前接力摘要（2026-05-13）
 
-本节用于其他 AI 会话接力。当前事实源优先级为：
+本节替代此前 2026-05-11 / 2026-05-12 的详细进度流水账。旧快照保留为历史事实，但当前计划口径必须以本节、§1.3 和矩阵文档为准。
+
+### 17.0 当前事实源
 
 1. `docs/superpowers/reports/phase7-endpoint-migration-matrix.md`
 2. `docs/superpowers/plans/2026-05-10-phase7-batch-migration-plan.md`
-3. `docs/superpowers/reports/2026-05-10-phase7-consolidated-report.md`
-4. `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+3. `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
 
-### 17.0 当前 Codex 接力完成
+当前 working tree 口径：`apps/api/server/routes/api/**/*.ts` 为 109 个 server route；`apps/admin/server/api/**/*.ts` 为 155 个 legacy file；exact legacy path 未覆盖约 51。生产 readiness 仍只能写 `READY_CONFIGURED-only`，直到 `RUN_PHASE7_DB_READINESS_CHECK=1` 且 `/__nitro/ready` 返回 `DB_READY`。
 
-当前 Codex 会话已启动新的后台 agent team，并通过 Memorix 写入 `#4137`、`#4138`、`#4140`、`#4141`、`#4143`、`#4144`。本轮已完成两个边界清晰、互不共享业务模块的小批次：
+### 17.1 历史事实压缩
 
-- [x] **P2 patrol 收口**：已实现 `property-manage/patrol-manage/task/list` 与 `property-manage/patrol-manage/detail/list`，继续沿用既有 `apps/api/server/modules/patrol/**` 模式；`task/list` 按 LEFT JOIN 处理，`detail/list` 按复杂 JOIN 独立复核。
-- [x] **P2 parking 首批**：已实现 `property-manage/parking-manage/carport-apply/list`、`carport-info/list`、`owner-vehicle/list`、`parking-lot/list`，新增 `apps/api/server/modules/parking/**`；字段或表关系不足处已标注缺口，不伪造 `db-ready`。
+- 2026-05-11 的 Patrol/Parking 本地 Chrome MCP 页面证据仍有效，但只覆盖对应页面切片，不能外推到全量 P2。
+- 2026-05-12 的 contract、setting、operation-team、dev-team 批量 list 迁移保留为历史迁移事实；但缺 Chrome MCP 页面级 Network、生产 `DB_READY`、shadow-off/fallback 证据时，只能保持 `candidate-after-evidence` / `keep-source`。
+- 旧 Memorix 编号 `#3306`、`#3307`、`#4137`-`#4152` 可作为历史检索线索；若当前会话无 Memorix MCP，必须重新扫描当前 working tree，不得凭旧编号推断最新状态。
 
-共享进度文档由主代理统一更新，编辑子代理只负责各自模块代码与测试，避免并行覆盖同一 Markdown 文件。每个小批次完成后必须立即回填本计划、矩阵和设计文档接力快照。
+### 17.2 下一个 AI 如何接力
 
-**前序已记录 commits（本次 Codex 接力前已存在；本次变更仍在工作树未提交）：**
+1. 先处理 P1 四个 staged-but-unverified report-manage 端点：`owner-payment-details/list`、`repair-report-form/list`、`repair-reports-summary-table/list`、`statement-expenses/list`。
+2. 对这 4 个端点补字段映射、过滤条件、JSONB 解析/聚合语义和 Vitest。当前状态只能写 `old-path-exact-covered (working-tree-staged)`、`db-read-repository-wired-with-gap`、`unknown-needs-triage`、`keep-source`。
+3. 再补前端 API hooks 使用 `resolveAdminApiRequestUrl`，确保页面请求可通过 `/api-shadow` 或直连 `apps/api`；当前代表性缺口包括 `report-manage` P1 四端点、`dev-team/config-manage`、`setting-manage/system-manage`、`operation-team/system-manage`、`expense-manage`、`community-manage`。
+4. 再跑 Chrome MCP 页面验证；只有真实页面组件发出的 Network 请求才能补 `browserEvidence`。
+5. 再按 Neon main 方案跑 `PHASE7_E2E_*` 写入-回读-清理或只读 DB 验收。用户已明确不要 Neon 测试分支。
+6. 最后才进入旧服务退役候选评估；评估前不得删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`、`D:\code\ruan-cat\01s-11comm-app`。
 
-| Commit     | 说明                                                                | Batch           |
-| ---------- | ------------------------------------------------------------------- | --------------- |
-| `429f5392` | 补全 house-property-manage 路由并新增 patrol-manage 模块            | P2 Batch7a      |
-| `09f86e0e` | 接入 Phase7 admin P2 house-property-manage 与 community-manage 模块 | P2 Batch7a      |
-| `81c3c9fa` | 接入 Phase7 expense-manage 剩余 5 个 P1 端点                        | P1 Batch6c      |
-| `ea3d83d0` | 更新 Phase7 迁移矩阵、计划和综合报告至 Batch 6a/b/c 完成状态        | docs            |
-| `47ecb60f` | 接入 Phase7 admin P1 只读端点批量迁移，新增 17 个 canonical route   | P1 Batch6a/6b/7 |
-
-**本轮完成统计：**
-
-| 维度                     | 当前值                                                                                                                                  |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Admin canonical routes   | 11 → 60（新增 49）                                                                                                                      |
-| Old path exact covered   | 6 → ~50                                                                                                                                 |
-| Admin P1 完成            | 22 端点（expense 14 + report 7 + repair 1）                                                                                             |
-| Admin P2 完成            | 27 端点（house 10 + community 7 + patrol 6 + parking 4）                                                                                |
-| 新建/补齐 route 目录     | house-property-manage、community-manage、patrol-manage、parking-manage                                                                  |
-| 本轮新增服务模块         | `apps/api/server/modules/parking/**`；扩展 `apps/api/server/modules/patrol/**`                                                          |
-| 全局 Chrome MCP 证据     | partial: 2026-05-11 已补 P2-admin-patrol 6 个页面与 P2-admin-parking 4 个页面的本地 dev Network；其它已覆盖端点与生产页面证据仍 pending |
-| 生产 DB_READY            | ALL still `READY_CONFIGURED-only`                                                                                                       |
-| shadow-off/fallback 演练 | ALL pending                                                                                                                             |
-
-**已验证：**
-
-- `pnpm -F @01s-11comm/api run typecheck` — 已通过（多轮验证）
-- `pnpm -F @01s-11comm/api exec vitest run --reporter verbose` — 本轮最终全量 API vitest 已通过：28 files / 129 tests passed，1 file / 5 tests skipped（gated HTTP 既有跳过条件）
-- `pnpm -F @01s-11comm/api exec vitest run tests/modules/parking-db-repository.test.ts tests/admin/parking-admin-endpoints.test.ts tests/admin/patrol-admin-endpoints.test.ts tests/modules/patrol-db-repository.test.ts tests/infra/phase7-api-contracts.test.ts --reporter verbose` — 本轮目标验证已通过：5 files / 17 tests
-- `RUN_PHASE7_HTTP_TESTS=1 PHASE7_API_BASE_URL=http://127.0.0.1:3102 pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts --reporter verbose` — 2026-05-11 本地 dev HTTP 已通过：1 file / 5 tests；同时手工 smoke 确认 Patrol/Parking 6 个本批代表接口 200、`/app/floor.queryFloors` legacy 200、`/app/ownerRepair.saveOwnerRepair` 默认 409 guard。
-- `pnpm -F @01s-11comm/admin exec vitest run src/api/property-manage/patrol-manage/tests/phase7-shadow-resolver.test.ts src/api/property-manage/parking-manage/tests/phase7-shadow-resolver.test.ts src/utils/http/tests/api-base-url.test.ts --reporter verbose` — 2026-05-11 已通过：3 files / 39 tests，覆盖 shadow disabled、`/api-shadow` proxy、direct apps/api 三种 URL 解析。
-- Chrome MCP 本地页面证据（2026-05-11）：`apps/admin` 以 `VITE_11COMM_API_SHADOW_ENABLE=true`、`VITE_11COMM_API_USE_PROXY=true`、`VITE_11COMM_API_BASE_URL=http://127.0.0.1:3102` 运行在 `8080`，实际 Patrol 6 个页面与 Parking 4 个页面均请求 `/api-shadow/api/property-manage/{patrol-manage,parking-manage}/*/list` 并返回 200，响应头 `x-api-phase: phase3-infra`。代表证据文件：`.tmp/phase7-chrome-page-patrol-task.network-response.network-response`、`.tmp/phase7-chrome-page-parking-lot.network-response.network-response`。
-- 2026-05-11 本地环境无 DB env，`GET http://127.0.0.1:3102/__nitro/ready` 返回 503；该结果只证明无 DB 配置下接口 contract、fallback 与 guard 可用，不能作为 `DB_READY`。
-
-**接力优先级：**
-
-### 下一步继续推进
-
-1. **Admin P1 困难端点（4）：** `owner-payment-details/list`（rptOwnerPaymentDetails 表字段不足）、`repair-report-form/list`（rptRepairReports 聚合表）、`repair-reports-summary-table/list`（rptRepairSummaries JSONB）、`statement-expenses/list`（rptStatementExpenses JSONB）。这些需要先补 schema/聚合表或明确数据来源，不能简单复用已有 pattern。
-
-2. **Admin P2 剩余（数量需下一轮重新扫描）：**
-   - contract-manage：7 单表 + 6 JOIN + 5 upload（upload 保持单独评审）
-   - setting-manage：约 28 端点
-   - dev-team：约 24 端点
-   - operation-team：约 13 端点
-
-3. **App legacy 剩余（约 150 端点）：** 按模块分组处理，从已有 schema 的只读模块开始。
-
-4. **全局证据补全：** P2-admin-patrol 与 P2-admin-parking 已补本地 Chrome MCP 页面 Network 证据；其它已覆盖端点仍缺页面 Network 证据，生产 DB_READY 证据和 shadow-off/fallback 演练仍全部待补。这些是 `candidate-after-evidence` 进一步升格的前置条件，需尽早安排。
-
-5. **Neon main 分支 DB 验收：** 本项目当前决策是不使用 Neon 测试分支、不使用测试分支连接串；Phase7 DB-backed ready 与写入完整性验收按总设计文档 `Phase7 Neon main 分支 DB_READY 与写入完整性验收流程` 执行。所有写入演练必须使用 `PHASE7_E2E_*` 哨兵数据，完成 `guardBefore -> controlled write -> read-back -> rollback/cleanup -> residualCheck -> guardAfter`，并把证据回填矩阵。
-
-### 关键约束
-
-- 已覆盖端点当前仅能保持 `candidate-after-evidence` 或 `keep-source`；P2-admin-patrol / P2-admin-parking 虽已有本地 Chrome MCP 页面证据，但生产 DB_READY 与 shadow-off/fallback 仍未完成，不得升格为 `delete-candidate`
-- P2-admin-parking 已完成首批只读 list，但仍有字段缺口和 app 车场开闸高风险隔离要求，不能据此开放写入或删除旧源
-- 不要因为本轮累计覆盖 27 个 P2 端点就认为 P2 接近完成，contract、setting、dev-team、operation-team 等仍待处理
-- admin P1 仍有 4 个困难端点阻塞，expense/manage/report/repair P1 不能算全部完成
-- Neon main 分支写入验收不是普通自动化测试；必须记录脱敏连接证据、`phase7RunId`、写入前基线、写入响应、读回、回滚/清理、残留检查和 guard 恢复，缺任一项都不得补 `writeReadRollbackEvidence`
-
-**已写入 Memorix 和本次新增记录：**
-
-| ID      | 内容                                                                                              |
-| ------- | ------------------------------------------------------------------------------------------------- |
-| `#3306` | Phase7 批量迁移接力进度（历史）                                                                   |
-| `#3307` | Phase7 接力关键误区（历史）                                                                       |
-| `#4137` | Phase7 2026-05-11 Codex 接力启动                                                                  |
-| `#4138` | Phase7 接力文档已记录本轮范围                                                                     |
-| `#4140` | Phase7 patrol parking batch completed                                                             |
-| `#4141` | Phase7 docs synchronized for patrol parking                                                       |
-| `#4143` | Phase7 parking DB repository test added                                                           |
-| `#4144` | Phase7 patrol parking batch final pass                                                            |
-| `#4145` | Phase7 audit checkpoint after static and unit tests                                               |
-| `#4146` | Phase7 local dev HTTP verification                                                                |
-| `#4147` | Patrol Parking hooks now use shadow resolver                                                      |
-| `#4152` | Phase7 uses Neon main verification；确认 DB 验收直接使用 Neon main 分支和 `PHASE7_E2E_*` 哨兵数据 |
-
-### 17.1 Neon main 分支验收接力口径（2026-05-11）
+### 17.3 Neon main 分支验收接力口径
 
 本节只记录执行计划口径，完整流程以 `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md` 的 `Phase7 Neon main 分支 DB_READY 与写入完整性验收流程` 为准。
 
@@ -812,4 +747,4 @@ $ tsc --noEmit
 
 ---
 
-_计划修订时间：2026-05-11_
+_计划修订时间：2026-05-13_
