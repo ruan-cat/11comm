@@ -4,10 +4,11 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { ConfigItemListItem, ConfigItemQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
-const API_URL = "/api/dev-team/config-manage/item/list";
+const API_URL = resolveAdminApiRequestUrl("/api/dev-team/config-manage/item/list", import.meta.env);
 
 /** 查询键前缀 */
 const QUERY_KEY_PREFIX = "configItem";
