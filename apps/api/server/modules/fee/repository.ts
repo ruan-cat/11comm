@@ -1633,11 +1633,24 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 		},
 		async listStatementExpenses(params: ListStatementExpensesParams) {
 			const conditions = [];
+			const snapshotFilters = [
+				["community", params.community],
+				["houseContractName", params.houseContractName],
+				["ownerName", params.ownerName],
+				["expenseItem", params.expenseItem],
+				["expenseStatus", params.expenseStatus],
+				["paymentMethod", params.paymentMethod],
+			] as const;
 			if (params.expenseType) {
 				conditions.push(like(rptStatementExpenses.reportType, `%${params.expenseType}%`));
 			}
 			if (params.billingPeriod) {
 				conditions.push(like(rptStatementExpenses.reportPeriod, `%${params.billingPeriod}%`));
+			}
+			for (const [field, value] of snapshotFilters) {
+				if (value) {
+					conditions.push(sql`${rptStatementExpenses.dataSnapshot}->>${field} like ${`%${value}%`}`);
+				}
 			}
 
 			const where = conditions.length > 0 ? and(...conditions) : undefined;
