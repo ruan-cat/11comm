@@ -656,3 +656,142 @@ export interface ListDiscountAppliesParams {
 	sortBy?: "createTime" | "updateTime";
 	sortOrder?: "asc" | "desc";
 }
+
+// --- Phase7 P1 困难端点: owner-payment-details ---
+
+export interface OwnerPaymentDetailsListItem {
+	id: string;
+	community: string;
+	houseNumberContractName: string;
+	ownerName: string;
+	ownerPhone: string;
+	feeCategory: string;
+	feeItem: string;
+	year: string;
+	january: string;
+	february: string;
+	march: string;
+	april: string;
+	may: string;
+	june: string;
+	july: string;
+	august: string;
+	september: string;
+	october: string;
+	november: string;
+	december: string;
+	total: string;
+	receivable: string;
+	prepaid: string;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListOwnerPaymentDetailsParams {
+	pageIndex: number;
+	pageSize: number;
+	houseNumberContractName?: string;
+	ownerName?: string;
+	ownerPhone?: string;
+	feeCategory?: string;
+	feeItem?: string;
+	community?: string;
+	year?: string;
+}
+
+// --- Phase7 P1 困难端点: repair-report-form ---
+
+export interface RepairReportFormListItem {
+	id: string;
+	community: string;
+	repairOrderNumber: string;
+	repairType: string;
+	urgencyLevel: string;
+	reporter: string;
+	reporterPhone: string;
+	repairAddress: string;
+	reportTime: string;
+	handler: string;
+	processor: string;
+	feeStatus: string;
+	repairStatus: string;
+}
+
+export interface ListRepairReportFormParams {
+	pageIndex: number;
+	pageSize: number;
+	repairType?: string;
+	repairStatus?: string;
+	urgencyLevel?: string;
+	reporter?: string;
+	reporterPhone?: string;
+	community?: string;
+	reportTimeStart?: string;
+	reportTimeEnd?: string;
+	feeStatus?: string;
+}
+
+// --- Phase7 P1 困难端点: repair-reports-summary-table ---
+
+export interface RepairReportsSummaryTableListItem {
+	id: string;
+	community: string;
+	repairType: string;
+	repairCount: number;
+	processingCount: number;
+	completedCount: number;
+	unfinishedCount: number;
+	pendingRevisitCount: number;
+	dissatisfiedCount: number;
+	emergencyCount: number;
+	statisticsTime: string;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListRepairReportsSummaryTableParams {
+	pageIndex: number;
+	pageSize: number;
+	repairType?: string;
+	repairStatus?: string;
+	urgencyLevel?: string;
+	community?: string;
+	statisticsStartTime?: string;
+	statisticsEndTime?: string;
+}
+
+// --- Phase7 P1 困难端点: statement-expenses ---
+
+export interface StatementExpensesListItem {
+	id: string;
+	community: string;
+	houseContractName: string;
+	ownerName: string;
+	expenseType: string;
+	expenseItem: string;
+	expenseStatus: string;
+	paymentMethod: string;
+	receivableAmount: number;
+	receivedAmount: number;
+	unpaidAmount: number;
+	billingPeriod: string;
+	startDate: string;
+	endDate: string;
+	billingArea: number;
+	parkingSpace: string;
+	createTime: string;
+	updateTime: string;
+}
+
+export interface ListStatementExpensesParams {
+	pageIndex: number;
+	pageSize: number;
+	community?: string;
+	houseContractName?: string;
+	ownerName?: string;
+	expenseType?: string;
+	expenseItem?: string;
+	expenseStatus?: string;
+	paymentMethod?: string;
+	billingPeriod?: string;
+}

@@ -16,7 +16,15 @@
 	RoomFeeReportQuery,
 	WriteOweFeeCallableInput,
 } from "./repository";
-import type { ListCancelFeesParams, ListContracteChargesParams, ListDiscountAppliesParams } from "./types";
+import type {
+	ListCancelFeesParams,
+	ListContracteChargesParams,
+	ListDiscountAppliesParams,
+	ListOwnerPaymentDetailsParams,
+	ListRepairReportFormParams,
+	ListRepairReportsSummaryTableParams,
+	ListStatementExpensesParams,
+} from "./types";
 import type {
 	ExpenseItemSettingMutationInput,
 	ExpenseItemSettingQuery,
@@ -88,6 +96,14 @@ export interface FeeService {
 	listCancelFees: (params: ListCancelFeesParams) => ReturnType<FeeRepository["listCancelFees"]>;
 	listContracteCharges: (params: ListContracteChargesParams) => ReturnType<FeeRepository["listContracteCharges"]>;
 	listDiscountApplies: (params: ListDiscountAppliesParams) => ReturnType<FeeRepository["listDiscountApplies"]>;
+	listOwnerPaymentDetails: (
+		params: ListOwnerPaymentDetailsParams,
+	) => ReturnType<FeeRepository["listOwnerPaymentDetails"]>;
+	listRepairReportForm: (params: ListRepairReportFormParams) => ReturnType<FeeRepository["listRepairReportForm"]>;
+	listRepairReportsSummaryTable: (
+		params: ListRepairReportsSummaryTableParams,
+	) => ReturnType<FeeRepository["listRepairReportsSummaryTable"]>;
+	listStatementExpenses: (params: ListStatementExpensesParams) => ReturnType<FeeRepository["listStatementExpenses"]>;
 }
 
 export class FeeValidationError extends Error {
@@ -167,6 +183,11 @@ export function createFeeService(repository: FeeRepository): FeeService {
 		listCancelFees: (params: ListCancelFeesParams) => repository.listCancelFees(params),
 		listContracteCharges: (params: ListContracteChargesParams) => repository.listContracteCharges(params),
 		listDiscountApplies: (params: ListDiscountAppliesParams) => repository.listDiscountApplies(params),
+		listOwnerPaymentDetails: (params: ListOwnerPaymentDetailsParams) => repository.listOwnerPaymentDetails(params),
+		listRepairReportForm: (params: ListRepairReportFormParams) => repository.listRepairReportForm(params),
+		listRepairReportsSummaryTable: (params: ListRepairReportsSummaryTableParams) =>
+			repository.listRepairReportsSummaryTable(params),
+		listStatementExpenses: (params: ListStatementExpensesParams) => repository.listStatementExpenses(params),
 	};
 }
 

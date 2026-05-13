@@ -27,6 +27,10 @@ import {
 	rptOutstandingFees,
 	rptPatrolReports,
 	rptPaymentDetails,
+	rptOwnerPaymentDetails,
+	rptRepairReports,
+	rptRepairSummaries,
+	rptStatementExpenses,
 	updateExExpenseItemSchema,
 	type ExExpenseItem,
 	type NewExExpenseItem,
@@ -88,6 +92,14 @@ import type {
 	ListContracteChargesParams,
 	DiscountApplyListItem,
 	ListDiscountAppliesParams,
+	OwnerPaymentDetailsListItem,
+	ListOwnerPaymentDetailsParams,
+	RepairReportFormListItem,
+	ListRepairReportFormParams,
+	RepairReportsSummaryTableListItem,
+	ListRepairReportsSummaryTableParams,
+	StatementExpensesListItem,
+	ListStatementExpensesParams,
 } from "./types";
 import { formatDateTime } from "../../utils/format-date";
 
@@ -160,6 +172,18 @@ export interface FeeRepository {
 		params: ListContracteChargesParams,
 	) => Promise<{ list: ContracteChargeListItem[]; total: number }>;
 	listDiscountApplies: (params: ListDiscountAppliesParams) => Promise<{ list: DiscountApplyListItem[]; total: number }>;
+	listOwnerPaymentDetails: (
+		params: ListOwnerPaymentDetailsParams,
+	) => Promise<{ list: OwnerPaymentDetailsListItem[]; total: number }>;
+	listRepairReportForm: (
+		params: ListRepairReportFormParams,
+	) => Promise<{ list: RepairReportFormListItem[]; total: number }>;
+	listRepairReportsSummaryTable: (
+		params: ListRepairReportsSummaryTableParams,
+	) => Promise<{ list: RepairReportsSummaryTableListItem[]; total: number }>;
+	listStatementExpenses: (
+		params: ListStatementExpensesParams,
+	) => Promise<{ list: StatementExpensesListItem[]; total: number }>;
 }
 
 export interface ListHouseChargesParams {
@@ -1468,6 +1492,196 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 				})),
 			};
 		},
+		async listOwnerPaymentDetails(params: ListOwnerPaymentDetailsParams) {
+			const conditions = [];
+			if (params.houseNumberContractName) {
+				conditions.push(like(rptOwnerPaymentDetails.ownerName, `%${params.houseNumberContractName}%`));
+			}
+			if (params.ownerName) {
+				conditions.push(like(rptOwnerPaymentDetails.ownerName, `%${params.ownerName}%`));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(rptOwnerPaymentDetails)
+				.where(where);
+
+			const rows = await db
+				.select()
+				.from(rptOwnerPaymentDetails)
+				.where(where)
+				.orderBy(desc(rptOwnerPaymentDetails.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((item) => ({
+					id: item.id,
+					community: "",
+					houseNumberContractName: item.ownerName || "",
+					ownerName: item.ownerName || "",
+					ownerPhone: "",
+					feeCategory: "",
+					feeItem: "",
+					year: params.year || new Date().getFullYear().toString(),
+					january: "",
+					february: "",
+					march: "",
+					april: "",
+					may: "",
+					june: "",
+					july: "",
+					august: "",
+					september: "",
+					october: "",
+					november: "",
+					december: "",
+					total: item.totalPaid || "0",
+					receivable: item.totalReceivable || "0",
+					prepaid: "0",
+					createTime: formatDateTime(item.createTime),
+					updateTime: formatDateTime(item.updateTime),
+				})),
+			};
+		},
+		async listRepairReportForm(params: ListRepairReportFormParams) {
+			const conditions = [];
+			if (params.repairType) {
+				conditions.push(like(rptRepairReports.remark, `%${params.repairType}%`));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(rptRepairReports)
+				.where(where);
+
+			const rows = await db
+				.select()
+				.from(rptRepairReports)
+				.where(where)
+				.orderBy(desc(rptRepairReports.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((item) => ({
+					id: item.id,
+					community: "",
+					repairOrderNumber: item.id,
+					repairType: "",
+					urgencyLevel: "",
+					reporter: "",
+					reporterPhone: "",
+					repairAddress: "",
+					reportTime: formatDateTime(item.createTime),
+					handler: "",
+					processor: "",
+					feeStatus: item.completedCount && item.completedCount > 0 ? "已收费" : "未收费",
+					repairStatus: item.pendingCount && item.pendingCount > 0 ? "待处理" : "已完成",
+				})),
+			};
+		},
+		async listRepairReportsSummaryTable(params: ListRepairReportsSummaryTableParams) {
+			const conditions = [];
+			if (params.repairType) {
+				conditions.push(like(rptRepairSummaries.remark, `%${params.repairType}%`));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(rptRepairSummaries)
+				.where(where);
+
+			const rows = await db
+				.select()
+				.from(rptRepairSummaries)
+				.where(where)
+				.orderBy(desc(rptRepairSummaries.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((item) => {
+					const typeDistribution = item.repairTypeDistribution as Record<string, number> | null;
+					const workload = item.workerWorkload as Record<string, number> | null;
+					const totalRepairs = typeDistribution ? Object.values(typeDistribution).reduce((a, b) => a + b, 0) : 0;
+					const completedCount = workload ? Object.values(workload).reduce((a, b) => a + b, 0) : 0;
+
+					return {
+						id: item.id,
+						community: "",
+						repairType: typeDistribution ? Object.keys(typeDistribution).join(", ") : "",
+						repairCount: totalRepairs,
+						processingCount: 0,
+						completedCount,
+						unfinishedCount: Math.max(totalRepairs - completedCount, 0),
+						pendingRevisitCount: 0,
+						dissatisfiedCount: 0,
+						emergencyCount: 0,
+						statisticsTime: formatDateTime(item.createTime),
+						createTime: formatDateTime(item.createTime),
+						updateTime: formatDateTime(item.updateTime),
+					};
+				}),
+			};
+		},
+		async listStatementExpenses(params: ListStatementExpensesParams) {
+			const conditions = [];
+			if (params.expenseType) {
+				conditions.push(like(rptStatementExpenses.reportType, `%${params.expenseType}%`));
+			}
+			if (params.billingPeriod) {
+				conditions.push(like(rptStatementExpenses.reportPeriod, `%${params.billingPeriod}%`));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(rptStatementExpenses)
+				.where(where);
+
+			const rows = await db
+				.select()
+				.from(rptStatementExpenses)
+				.where(where)
+				.orderBy(desc(rptStatementExpenses.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map((item) => {
+					const snapshot = item.dataSnapshot as Record<string, unknown> | null;
+
+					return {
+						id: item.id,
+						community: String(snapshot?.community || ""),
+						houseContractName: String(snapshot?.houseContractName || ""),
+						ownerName: String(snapshot?.ownerName || ""),
+						expenseType: item.reportType || "",
+						expenseItem: String(snapshot?.expenseItem || ""),
+						expenseStatus: String(snapshot?.expenseStatus || "unpaid"),
+						paymentMethod: String(snapshot?.paymentMethod || ""),
+						receivableAmount: Number(snapshot?.receivableAmount || 0),
+						receivedAmount: Number(snapshot?.receivedAmount || 0),
+						unpaidAmount: Number(snapshot?.unpaidAmount || 0),
+						billingPeriod: item.reportPeriod || "",
+						startDate: String(snapshot?.startDate || ""),
+						endDate: String(snapshot?.endDate || ""),
+						billingArea: Number(snapshot?.billingArea || 0),
+						parkingSpace: String(snapshot?.parkingSpace || ""),
+						createTime: formatDateTime(item.createTime),
+						updateTime: formatDateTime(item.updateTime),
+					};
+				}),
+			};
+		},
 	} satisfies Partial<FeeRepository>);
 }
 
@@ -1951,6 +2165,26 @@ class InMemoryFeeRepository implements FeeRepository {
 
 	async listDiscountApplies(params: ListDiscountAppliesParams) {
 		const data: DiscountApplyListItem[] = [];
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async listOwnerPaymentDetails(params: ListOwnerPaymentDetailsParams) {
+		const data: OwnerPaymentDetailsListItem[] = [];
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async listRepairReportForm(params: ListRepairReportFormParams) {
+		const data: RepairReportFormListItem[] = [];
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async listRepairReportsSummaryTable(params: ListRepairReportsSummaryTableParams) {
+		const data: RepairReportsSummaryTableListItem[] = [];
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
+	async listStatementExpenses(params: ListStatementExpensesParams) {
+		const data: StatementExpensesListItem[] = [];
 		return paginate(data, params.pageIndex, params.pageSize);
 	}
 }

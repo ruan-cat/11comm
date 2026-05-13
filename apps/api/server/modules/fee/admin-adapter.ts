@@ -26,6 +26,10 @@ import type {
 	PaymentReviewListItem,
 	VehicleChargeListItem,
 	WaterAndElectricityMeterReadingListItem,
+	OwnerPaymentDetailsListItem,
+	RepairReportFormListItem,
+	RepairReportsSummaryTableListItem,
+	StatementExpensesListItem,
 } from "./types";
 import { FeeValidationError, type FeeService } from "./service";
 import { adminSuccess } from "../../shared/runtime/response-builder";
@@ -685,6 +689,142 @@ export function createAdminFeeAdapter(service: FeeService) {
 				auditStatus: blankToUndefined(input.auditStatus),
 				sortBy: input.sortBy,
 				sortOrder: input.sortOrder,
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listOwnerPaymentDetails(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			houseNumberContractName?: string;
+			ownerName?: string;
+			ownerPhone?: string;
+			feeCategory?: string;
+			feeItem?: string;
+			community?: string;
+			year?: string;
+		}): Promise<JsonVO<PageDTO<OwnerPaymentDetailsListItem>>> {
+			const pageIndex = toNumber(input.page ?? input.pageIndex ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listOwnerPaymentDetails({
+				pageIndex,
+				pageSize,
+				houseNumberContractName: blankToUndefined(input.houseNumberContractName),
+				ownerName: blankToUndefined(input.ownerName),
+				ownerPhone: blankToUndefined(input.ownerPhone),
+				feeCategory: blankToUndefined(input.feeCategory),
+				feeItem: blankToUndefined(input.feeItem),
+				community: blankToUndefined(input.community),
+				year: blankToUndefined(input.year),
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listRepairReportForm(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			repairType?: string;
+			repairStatus?: string;
+			urgencyLevel?: string;
+			reporter?: string;
+			reporterPhone?: string;
+			community?: string;
+			reportTimeStart?: string;
+			reportTimeEnd?: string;
+			feeStatus?: string;
+		}): Promise<JsonVO<PageDTO<RepairReportFormListItem>>> {
+			const pageIndex = toNumber(input.page ?? input.pageIndex ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listRepairReportForm({
+				pageIndex,
+				pageSize,
+				repairType: blankToUndefined(input.repairType),
+				repairStatus: blankToUndefined(input.repairStatus),
+				urgencyLevel: blankToUndefined(input.urgencyLevel),
+				reporter: blankToUndefined(input.reporter),
+				reporterPhone: blankToUndefined(input.reporterPhone),
+				community: blankToUndefined(input.community),
+				reportTimeStart: blankToUndefined(input.reportTimeStart),
+				reportTimeEnd: blankToUndefined(input.reportTimeEnd),
+				feeStatus: blankToUndefined(input.feeStatus),
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listRepairReportsSummaryTable(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			repairType?: string;
+			repairStatus?: string;
+			urgencyLevel?: string;
+			community?: string;
+			statisticsStartTime?: string;
+			statisticsEndTime?: string;
+		}): Promise<JsonVO<PageDTO<RepairReportsSummaryTableListItem>>> {
+			const pageIndex = toNumber(input.page ?? input.pageIndex ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listRepairReportsSummaryTable({
+				pageIndex,
+				pageSize,
+				repairType: blankToUndefined(input.repairType),
+				repairStatus: blankToUndefined(input.repairStatus),
+				urgencyLevel: blankToUndefined(input.urgencyLevel),
+				community: blankToUndefined(input.community),
+				statisticsStartTime: blankToUndefined(input.statisticsStartTime),
+				statisticsEndTime: blankToUndefined(input.statisticsEndTime),
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listStatementExpenses(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			community?: string;
+			houseContractName?: string;
+			ownerName?: string;
+			expenseType?: string;
+			expenseItem?: string;
+			expenseStatus?: string;
+			paymentMethod?: string;
+			billingPeriod?: string;
+		}): Promise<JsonVO<PageDTO<StatementExpensesListItem>>> {
+			const pageIndex = toNumber(input.page ?? input.pageIndex ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listStatementExpenses({
+				pageIndex,
+				pageSize,
+				community: blankToUndefined(input.community),
+				houseContractName: blankToUndefined(input.houseContractName),
+				ownerName: blankToUndefined(input.ownerName),
+				expenseType: blankToUndefined(input.expenseType),
+				expenseItem: blankToUndefined(input.expenseItem),
+				expenseStatus: blankToUndefined(input.expenseStatus),
+				paymentMethod: blankToUndefined(input.paymentMethod),
+				billingPeriod: blankToUndefined(input.billingPeriod),
 			});
 			return adminSuccess({
 				list: result.list,
