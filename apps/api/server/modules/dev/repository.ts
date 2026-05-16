@@ -405,6 +405,219 @@ export function createDbDevRepository(db: DbType): DevRepository {
 				})),
 			};
 		},
+		async createConfigCenter(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(dtConfigs)
+				.values({
+					configName: String(data.configName || ""),
+					configKey: String(data.configKey || ""),
+					configType: data.configType ? String(data.configType) : null,
+					configValue: data.configValue ? String(data.configValue) : null,
+					defaultValue: data.defaultValue ? String(data.defaultValue) : null,
+					configDescription: data.configDescription ? String(data.configDescription) : null,
+					sortOrder: data.sortOrder ? Number(data.sortOrder) : 0,
+					status: (data.status as "enabled" | "disabled") || "enabled",
+					remark: data.remark ? String(data.remark) : null,
+					createdBy: data.createdBy ? String(data.createdBy) : null,
+				})
+				.returning();
+			return row ?? null;
+		},
+
+		async getConfigCenterDetail(id: string): Promise<Record<string, unknown> | null> {
+			const [row] = await db.select().from(dtConfigs).where(eq(dtConfigs.id, id)).limit(1);
+			if (!row) return null;
+			return {
+				id: row.id,
+				configName: row.configName,
+				configType: row.configType,
+				configKey: row.configKey,
+				configValue: row.configValue,
+				defaultValue: row.defaultValue,
+				configDescription: row.configDescription,
+				status: row.status,
+				sortOrder: row.sortOrder,
+				remark: row.remark,
+				createdBy: row.createdBy,
+				updatedBy: row.updatedBy,
+				createTime: formatDateTime(row.createTime),
+				updateTime: formatDateTime(row.updateTime),
+			};
+		},
+
+		async updateConfigCenter(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.configName !== undefined) updates.configName = String(data.configName);
+			if (data.configType !== undefined) updates.configType = data.configType ? String(data.configType) : null;
+			if (data.configKey !== undefined) updates.configKey = String(data.configKey);
+			if (data.configValue !== undefined) updates.configValue = data.configValue ? String(data.configValue) : null;
+			if (data.defaultValue !== undefined) updates.defaultValue = data.defaultValue ? String(data.defaultValue) : null;
+			if (data.configDescription !== undefined)
+				updates.configDescription = data.configDescription ? String(data.configDescription) : null;
+			if (data.sortOrder !== undefined) updates.sortOrder = Number(data.sortOrder);
+			if (data.status !== undefined) updates.status = data.status;
+			if (data.remark !== undefined) updates.remark = data.remark ? String(data.remark) : null;
+			if (data.updatedBy !== undefined) updates.updatedBy = data.updatedBy ? String(data.updatedBy) : null;
+			const [row] = await db.update(dtConfigs).set(updates).where(eq(dtConfigs.id, id)).returning();
+			return row ?? null;
+		},
+
+		async deleteConfigCenter(id: string): Promise<boolean> {
+			const result = await db.delete(dtConfigs).where(eq(dtConfigs.id, id)).returning({ id: dtConfigs.id });
+			return result.length > 0;
+		},
+
+		async createDictionary(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(dtDictionaries)
+				.values({
+					dictionaryName: String(data.dictionaryName || ""),
+					dictionaryCode: String(data.dictionaryCode || ""),
+					dictionaryType: data.dictionaryType ? String(data.dictionaryType) : null,
+					dictionaryDescription: data.dictionaryDescription ? String(data.dictionaryDescription) : null,
+					remark: data.remark ? String(data.remark) : null,
+				})
+				.returning();
+			return row ?? null;
+		},
+
+		async getDictionaryDetail(id: string): Promise<Record<string, unknown> | null> {
+			const [row] = await db.select().from(dtDictionaries).where(eq(dtDictionaries.id, id)).limit(1);
+			if (!row) return null;
+			return {
+				id: row.id,
+				dictionaryName: row.dictionaryName,
+				dictionaryCode: row.dictionaryCode,
+				dictionaryType: row.dictionaryType,
+				dictionaryDescription: row.dictionaryDescription,
+				remark: row.remark,
+				createTime: formatDateTime(row.createTime),
+				updateTime: formatDateTime(row.updateTime),
+			};
+		},
+
+		async updateDictionary(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.dictionaryName !== undefined) updates.dictionaryName = String(data.dictionaryName);
+			if (data.dictionaryCode !== undefined) updates.dictionaryCode = String(data.dictionaryCode);
+			if (data.dictionaryType !== undefined)
+				updates.dictionaryType = data.dictionaryType ? String(data.dictionaryType) : null;
+			if (data.dictionaryDescription !== undefined)
+				updates.dictionaryDescription = data.dictionaryDescription ? String(data.dictionaryDescription) : null;
+			if (data.remark !== undefined) updates.remark = data.remark ? String(data.remark) : null;
+			const [row] = await db.update(dtDictionaries).set(updates).where(eq(dtDictionaries.id, id)).returning();
+			return row ?? null;
+		},
+
+		async deleteDictionary(id: string): Promise<boolean> {
+			const result = await db
+				.delete(dtDictionaries)
+				.where(eq(dtDictionaries.id, id))
+				.returning({ id: dtDictionaries.id });
+			return result.length > 0;
+		},
+
+		async createDictionaryItem(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(dtDictionaryItems)
+				.values({
+					dictionaryId: String(data.dictionaryId || ""),
+					itemLabel: String(data.itemName || data.itemLabel || ""),
+					itemValue: String(data.itemCode || data.itemValue || ""),
+					sortOrder: data.sortOrder ? Number(data.sortOrder) : 0,
+					isDefault: data.isDefault === true,
+				})
+				.returning();
+			return row ?? null;
+		},
+
+		async getDictionaryItemDetail(id: string): Promise<Record<string, unknown> | null> {
+			const [row] = await db.select().from(dtDictionaryItems).where(eq(dtDictionaryItems.id, id)).limit(1);
+			if (!row) return null;
+			return {
+				id: row.id,
+				dictionaryId: row.dictionaryId,
+				itemName: row.itemLabel,
+				itemCode: row.itemValue,
+				itemValue: row.itemValue,
+				sortOrder: row.sortOrder,
+				isDefault: row.isDefault,
+				createTime: formatDateTime(row.createTime),
+				updateTime: formatDateTime(row.updateTime),
+			};
+		},
+
+		async updateDictionaryItem(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.dictionaryId !== undefined) updates.dictionaryId = String(data.dictionaryId);
+			if (data.itemName !== undefined || data.itemLabel !== undefined)
+				updates.itemLabel = String(data.itemName || data.itemLabel);
+			if (data.itemCode !== undefined || data.itemValue !== undefined)
+				updates.itemValue = String(data.itemCode || data.itemValue);
+			if (data.sortOrder !== undefined) updates.sortOrder = Number(data.sortOrder);
+			if (data.isDefault !== undefined) updates.isDefault = data.isDefault === true;
+			const [row] = await db.update(dtDictionaryItems).set(updates).where(eq(dtDictionaryItems.id, id)).returning();
+			return row ?? null;
+		},
+
+		async deleteDictionaryItem(id: string): Promise<boolean> {
+			const result = await db
+				.delete(dtDictionaryItems)
+				.where(eq(dtDictionaryItems.id, id))
+				.returning({ id: dtDictionaryItems.id });
+			return result.length > 0;
+		},
+
+		async createDictionaryType(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(dtConfigTypes)
+				.values({
+					typeName: String(data.typeName || ""),
+					typeCode: String(data.typeCode || ""),
+					typeDescription: data.typeDescription ? String(data.typeDescription) : null,
+					sortOrder: data.sortOrder ? Number(data.sortOrder) : 0,
+				})
+				.returning();
+			return row ?? null;
+		},
+
+		async getDictionaryTypeDetail(id: string): Promise<Record<string, unknown> | null> {
+			const [row] = await db.select().from(dtConfigTypes).where(eq(dtConfigTypes.id, id)).limit(1);
+			if (!row) return null;
+			return {
+				id: row.id,
+				typeName: row.typeName,
+				typeCode: row.typeCode,
+				typeDescription: row.typeDescription,
+				sortOrder: row.sortOrder,
+				createTime: formatDateTime(row.createTime),
+				updateTime: formatDateTime(row.updateTime),
+			};
+		},
+
+		async updateDictionaryType(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.typeName !== undefined) updates.typeName = String(data.typeName);
+			if (data.typeCode !== undefined) updates.typeCode = String(data.typeCode);
+			if (data.typeDescription !== undefined)
+				updates.typeDescription = data.typeDescription ? String(data.typeDescription) : null;
+			if (data.sortOrder !== undefined) updates.sortOrder = Number(data.sortOrder);
+			const [row] = await db.update(dtConfigTypes).set(updates).where(eq(dtConfigTypes.id, id)).returning();
+			return row ?? null;
+		},
+
+		async deleteDictionaryType(id: string): Promise<boolean> {
+			const result = await db.delete(dtConfigTypes).where(eq(dtConfigTypes.id, id)).returning({ id: dtConfigTypes.id });
+			return result.length > 0;
+		},
 	}) satisfies Partial<DevRepository>;
 }
 
