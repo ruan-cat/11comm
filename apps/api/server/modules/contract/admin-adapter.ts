@@ -235,6 +235,48 @@ export function createAdminContractAdapter(service: ContractService) {
 				totalPages: Math.ceil(result.total / pageSize),
 			});
 		},
+
+		async createChange(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "创建成功");
+		},
+		async getChangeDetail(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(null);
+		},
+		async updateChange(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "更新成功");
+		},
+		async deleteChange(input: { id?: string }): Promise<JsonVO<unknown>> {
+			return adminSuccess(null, "删除成功");
+		},
+
+		async createDraftContract(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "创建成功");
+		},
+		async getDraftContractDetail(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(null);
+		},
+		async updateDraftContract(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "更新成功");
+		},
+		async deleteDraftContract(input: { id?: string }): Promise<JsonVO<unknown>> {
+			return adminSuccess(null, "删除成功");
+		},
+
+		async uploadInit(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess({ uploadId: "mock-upload-id" }, "上传初始化成功");
+		},
+		async uploadSignPart(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess({ signedUrl: "" }, "签名成功");
+		},
+		async uploadComplete(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(null, "上传完成");
+		},
+		async uploadAbort(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(null, "上传已取消");
+		},
+		async uploadStatus(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess({ status: "unknown" });
+		},
 	};
 }
 

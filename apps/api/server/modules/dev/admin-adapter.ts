@@ -221,6 +221,94 @@ export function createAdminDevAdapter(service: DevService) {
 				totalPages: Math.ceil(result.total / pageSize),
 			});
 		},
+
+		async createConfigCenter(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			const result = await service.createConfigCenter(input);
+			return adminSuccess(result, "创建成功");
+		},
+		async getConfigCenterDetail(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = blankToUndefined(input.id);
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			const result = await service.getConfigCenterDetail(id);
+			if (!result) return { success: false, code: 404, message: "配置中心不存在", data: null };
+			return adminSuccess(result);
+		},
+		async updateConfigCenter(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			const result = await service.updateConfigCenter(input);
+			return adminSuccess(result, "更新成功");
+		},
+		async deleteConfigCenter(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = blankToUndefined(input.id);
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteConfigCenter(id);
+			return adminSuccess(null, "删除成功");
+		},
+
+		async createDictionary(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			const result = await service.createDictionary(input);
+			return adminSuccess(result, "创建成功");
+		},
+		async getDictionaryDetail(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = blankToUndefined(input.id);
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			const result = await service.getDictionaryDetail(id);
+			if (!result) return { success: false, code: 404, message: "字典不存在", data: null };
+			return adminSuccess(result);
+		},
+		async updateDictionary(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			const result = await service.updateDictionary(input);
+			return adminSuccess(result, "更新成功");
+		},
+		async deleteDictionary(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = blankToUndefined(input.id);
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteDictionary(id);
+			return adminSuccess(null, "删除成功");
+		},
+
+		async createDictionaryItem(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			const result = await service.createDictionaryItem(input);
+			return adminSuccess(result, "创建成功");
+		},
+		async getDictionaryItemDetail(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = blankToUndefined(input.id);
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			const result = await service.getDictionaryItemDetail(id);
+			if (!result) return { success: false, code: 404, message: "字典项不存在", data: null };
+			return adminSuccess(result);
+		},
+		async updateDictionaryItem(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			const result = await service.updateDictionaryItem(input);
+			return adminSuccess(result, "更新成功");
+		},
+		async deleteDictionaryItem(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = blankToUndefined(input.id);
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteDictionaryItem(id);
+			return adminSuccess(null, "删除成功");
+		},
+
+		async createDictionaryType(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			const result = await service.createDictionaryType(input);
+			return adminSuccess(result, "创建成功");
+		},
+		async getDictionaryTypeDetail(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = blankToUndefined(input.id);
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			const result = await service.getDictionaryTypeDetail(id);
+			if (!result) return { success: false, code: 404, message: "字典类型不存在", data: null };
+			return adminSuccess(result);
+		},
+		async updateDictionaryType(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			const result = await service.updateDictionaryType(input);
+			return adminSuccess(result, "更新成功");
+		},
+		async deleteDictionaryType(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = blankToUndefined(input.id);
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteDictionaryType(id);
+			return adminSuccess(null, "删除成功");
+		},
 	};
 }
 

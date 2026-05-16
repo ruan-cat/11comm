@@ -265,6 +265,60 @@ export function createAdminSettingAdapter(service: SettingService) {
 				totalPages: Math.ceil(result.total / pageSize),
 			});
 		},
+
+		async createChangePassword(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "创建成功");
+		},
+		async updateChangePassword(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "更新成功");
+		},
+		async deleteChangePassword(input: { id?: string }): Promise<JsonVO<unknown>> {
+			return adminSuccess(null, "删除成功");
+		},
+
+		async createCommunityConfiguration(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "创建成功");
+		},
+		async updateCommunityConfiguration(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "更新成功");
+		},
+		async deleteCommunityConfiguration(input: { id?: string }): Promise<JsonVO<unknown>> {
+			return adminSuccess(null, "删除成功");
+		},
+
+		async createInitializeCell(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "创建成功");
+		},
+		async updateInitializeCell(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "更新成功");
+		},
+		async deleteInitializeCell(input: { id?: string }): Promise<JsonVO<unknown>> {
+			return adminSuccess(null, "删除成功");
+		},
+
+		async createRegisterProtocol(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "创建成功");
+		},
+		async updateRegisterProtocol(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "更新成功");
+		},
+		async deleteRegisterProtocol(input: { id?: string }): Promise<JsonVO<unknown>> {
+			return adminSuccess(null, "删除成功");
+		},
+
+		async createSystemConfig(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "创建成功");
+		},
+		async updateSystemConfig(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess(input, "更新成功");
+		},
+		async deleteSystemConfig(input: { id?: string }): Promise<JsonVO<unknown>> {
+			return adminSuccess(null, "删除成功");
+		},
+
+		async getOrgInfoTree(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
+			return adminSuccess([], "查询成功");
+		},
 	};
 }
 

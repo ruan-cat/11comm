@@ -43,6 +43,22 @@ export interface DevRepository {
 	listMenuCatalog: (params: ListMenuCatalogParams) => Promise<{ list: AdminMenuCatalogListItem[]; total: number }>;
 	listMenuGroup: (params: ListMenuGroupParams) => Promise<{ list: AdminMenuGroupListItem[]; total: number }>;
 	listMenuItem: (params: ListMenuItemParams) => Promise<{ list: AdminMenuItemListItem[]; total: number }>;
+	createConfigCenter: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	getConfigCenterDetail: (id: string) => Promise<Record<string, unknown> | null>;
+	updateConfigCenter: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteConfigCenter: (id: string) => Promise<boolean>;
+	createDictionary: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	getDictionaryDetail: (id: string) => Promise<Record<string, unknown> | null>;
+	updateDictionary: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteDictionary: (id: string) => Promise<boolean>;
+	createDictionaryItem: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	getDictionaryItemDetail: (id: string) => Promise<Record<string, unknown> | null>;
+	updateDictionaryItem: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteDictionaryItem: (id: string) => Promise<boolean>;
+	createDictionaryType: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	getDictionaryTypeDetail: (id: string) => Promise<Record<string, unknown> | null>;
+	updateDictionaryType: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteDictionaryType: (id: string) => Promise<boolean>;
 }
 
 export function createDevRepository(options: { db?: DbType } = {}): DevRepository {
@@ -416,6 +432,54 @@ class InMemoryDevRepository implements DevRepository {
 	}
 	async listMenuItem(): Promise<{ list: AdminMenuItemListItem[]; total: number }> {
 		return { list: [], total: 0 };
+	}
+	async createConfigCenter(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async getConfigCenterDetail(): Promise<Record<string, unknown> | null> {
+		return null;
+	}
+	async updateConfigCenter(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteConfigCenter(): Promise<boolean> {
+		return true;
+	}
+	async createDictionary(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async getDictionaryDetail(): Promise<Record<string, unknown> | null> {
+		return null;
+	}
+	async updateDictionary(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteDictionary(): Promise<boolean> {
+		return true;
+	}
+	async createDictionaryItem(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async getDictionaryItemDetail(): Promise<Record<string, unknown> | null> {
+		return null;
+	}
+	async updateDictionaryItem(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteDictionaryItem(): Promise<boolean> {
+		return true;
+	}
+	async createDictionaryType(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async getDictionaryTypeDetail(): Promise<Record<string, unknown> | null> {
+		return null;
+	}
+	async updateDictionaryType(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteDictionaryType(): Promise<boolean> {
+		return true;
 	}
 }
 
