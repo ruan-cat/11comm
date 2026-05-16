@@ -496,7 +496,8 @@
 - [x] 2026-05-16 Chrome MCP 页面级 Network 验证完成：44/44 端点全部通过 `/api-shadow` 代理返回 HTTP 200 + `x-api-phase: phase3-infra` + `success: true`。覆盖 community-manage(7)、house-property-manage(10)、contract-manage(12)、repairs-manage(4)、dev-team(4)、setting-manage/organize-manage(7)。证据文件保存于 `.tmp/phase7-dev-browser/2026-05-16-final-batch-page-network-verification.log`。仍不能写成生产 `DB_READY` 或旧服务可退役。
 - [x] 2026-05-16 API shadow 代理批量验证完成：42 个端点中 39 个通过 `/api-shadow` 代理返回 200 + `x-api-phase: phase3-infra`；3 个 repairs-manage 端点（return-visit、phone-report-repairs、mandatory-return-issue）返回 404，原因是 `apps/api` 中尚未实现对应路由（属于后续批次工作，不影响 hook resolver 迁移正确性）。
 - [x] 2026-05-16 补齐 3 个 repairs-manage 路由实现：`return-visit/list.post.ts`、`phone-report-repairs/list.post.ts`、`mandatory-return-issue/list.post.ts`，复用 repair 模块 `getRepairRuntime` + `service.listOwnerRepairs`；api typecheck 通过；42/42 端点全部返回 200 + `x-api-phase: phase3-infra`。
-- [ ] 下一轮继续处理：`report-manage/expense-summary-table` 路径冲突最终决策、shadow-off/fallback 页面演练，最后才评估旧服务退役。
+- [ ] 下一轮继续处理：`report-manage/expense-summary-table` 路径冲突最终决策，最后才评估旧服务退役。
+- [x] 2026-05-16 shadow-off/fallback 页面演练通过：本地 dev 环境 `VITE_11COMM_API_SHADOW_ENABLE` 未设置（默认关闭），44/44 端点通过 admin 自身 `/api/...` 路径返回 200，证明回退路径完全可用。
 - [x] 2026-05-16 Neon main DB_READY 验收通过：本地 `apps/api` 配置 `DATABASE_URL` + `RUN_PHASE7_DB_READINESS_CHECK=1` 后，`GET /__nitro/ready` 返回 `{"ready":true,"code":"DB_READY"}`。6 个必需表全部存在（cm_communities、ex_expense_items、ex_house_charges、hp_houses、rpt_expense_summaries、rpt_payment_details），Drizzle 迁移 2/2 已应用。
 
 ---
