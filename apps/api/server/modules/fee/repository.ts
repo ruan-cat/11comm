@@ -1538,9 +1538,9 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 					october: "",
 					november: "",
 					december: "",
-					total: item.totalPaid || "0",
+					total: item.totalOutstanding || "0",
 					receivable: item.totalReceivable || "0",
-					prepaid: "0",
+					prepaid: item.totalPaid || "0",
 					createTime: formatDateTime(item.createTime),
 					updateTime: formatDateTime(item.updateTime),
 				})),
@@ -1550,6 +1550,12 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 			const conditions = [];
 			if (params.repairType) {
 				conditions.push(like(rptRepairReports.remark, `%${params.repairType}%`));
+			}
+			if (params.reportTimeStart) {
+				conditions.push(gte(rptRepairReports.createTime, params.reportTimeStart as any));
+			}
+			if (params.reportTimeEnd) {
+				conditions.push(lte(rptRepairReports.createTime, params.reportTimeEnd as any));
 			}
 
 			const where = conditions.length > 0 ? and(...conditions) : undefined;
@@ -1572,7 +1578,7 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 					id: item.id,
 					community: "",
 					repairOrderNumber: item.id,
-					repairType: "",
+					repairType: item.remark || "",
 					urgencyLevel: "",
 					reporter: "",
 					reporterPhone: "",
@@ -1589,6 +1595,12 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 			const conditions = [];
 			if (params.repairType) {
 				conditions.push(like(rptRepairSummaries.remark, `%${params.repairType}%`));
+			}
+			if (params.statisticsStartTime) {
+				conditions.push(gte(rptRepairSummaries.createTime, params.statisticsStartTime as any));
+			}
+			if (params.statisticsEndTime) {
+				conditions.push(lte(rptRepairSummaries.createTime, params.statisticsEndTime as any));
 			}
 
 			const where = conditions.length > 0 ? and(...conditions) : undefined;
