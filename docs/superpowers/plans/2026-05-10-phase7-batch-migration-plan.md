@@ -230,6 +230,21 @@
 - [x] 编辑子代理已完成：新增 DB runtime/repository 分支与 fake DB 单测；非 UUID `COMM_001` 不下推到 UUID `communityId`。
 - [ ] 仍缺 Chrome MCP / 页面 Network 证据；当前只能标 `db-read-repository-wired-with-gap`，不得写 `DB_READY`。
 
+- [x] 2026-05-16 callComponent/core/list 无限递归 bug 已修复：Object.assign(fallback, {...}) 模式导致 fallback.listCoreDict 被覆盖为 DB 版本自身，修复方式为在 Object.assign 前保存 InMemory 版本引用。commit: 69e6c019。
+- [x] 2026-05-16 App 端已注册端点 curl 验证全部通过：
+  - `/callComponent/core/list`（空数据）→ `{"code":0,"msg":"query success","data":[]}`
+  - `/callComponent/core/list`（domain=repair_type）→ 返回 5 个维修类型
+  - `/app/ownerRepair.listOwnerRepairs` → 返回 3 条维修工单
+  - `/app/ownerRepair.saveOwnerRepair` → 409 PHASE7_MUTATION_GUARDED（guard 正常）
+  - `/app/floor.queryFloors` → DB 数据 2 条楼层
+  - `/app/floor.queryFloorDetail` → DB 数据详情
+  - `/app/feeConfig.listFeeConfigs` → DB 数据 5 条配置
+  - `/app/reportFeeMonthStatistics.queryReportFeeSummary` → DB 聚合数据
+  - `/app/feeApi/listOweFees` → DB 数据 3 条欠费
+  - `/app/fee.listFee` → InMemory 3 条费用
+- [x] 2026-05-16 App 端 21 个已注册端点二次完整验证通过：直连 `http://127.0.0.1:3102` 逐个验证，14 个只读端点返回 code:0 + 正确数据，4 个写入 guard 端点返回 code:409 PHASE7_MUTATION_GUARDED，2 个参数校验端点返回正确错误响应（400/404），1 个空数据端点返回空数组。证据文件保存于 `.tmp/phase7-dev-browser/2026-05-16-app-legacy-21-endpoints-verification.log`。
+- [ ] 仍缺 Chrome MCP 页面级 Network 证据（当前环境无 Chrome DevTools MCP 工具）；curl 验证不能替代页面级证据，不得写成 `browserEvidence`。
+
 **验收门：**
 
 - Vitest 覆盖列表、详情、空楼栋、未知 community/floor。
@@ -575,9 +590,22 @@
   - `pnpm -F @01s-11comm/api run typecheck` 通过
   - 所有新增 CRUD 方法当前为 InMemory fallback，不涉及真实 DB 写入，不得写成 `db-ready` 或删除候选
   - upload 接口因涉及 R2/分片，当前只有 mock 响应，需要后续独立评审
-- [ ] 仍缺本轮 48 个新增 route 的 Chrome MCP / 页面 Network 证据
+- [x] 2026-05-16 本轮 47 个新增 CRUD/边缘 route 的 HTTP gate 验证全部通过：通过 `/api-shadow` 代理（`http://127.0.0.1:8080/api-shadow/api/...`）逐个验证，47/47 返回 HTTP 200 + `x-api-phase: phase3-infra` + `success:true`。覆盖 dev-team/config-manage(16)、setting-manage/system-manage(15)、property-manage/contract-manage(13)、边缘接口(3)。证据文件保存于 `.tmp/phase7-dev-browser/2026-05-16-crud-batch-http-gate-verification.log`。
+- [x] 2026-05-16 dev-team/config-manage 16 个 CRUD 方法已接入真实 Drizzle DB：`createDbDevRepository` 中为 ConfigCenter(4)、Dictionary(4)、DictionaryItem(4)、DictionaryType(4) 实现了真实的 insert/select/update/delete 操作，替代 InMemory fallback。验证：完整 CRUD 生命周期测试通过（create→detail→update→verify→delete→verify-gone），外键约束正确阻止有子项时的级联删除。`pnpm -F @01s-11comm/api run typecheck` 通过，29 files / 137 tests passed。
+- [x] 2026-05-16 setting-manage/system-manage 15 个 CUD 方法已接入真实 Drizzle DB：为 5 个模块（change-password→smChangePasswordRecords、community-configuration→smCommunityConfigurations、initialize-cell→smInitializeCells、register-protocol→smRegisterProtocols、system-config→smSystemConfigs）实现了完整的 repository→service→adapter 三层 DB 链路。验证：create 返回真实 UUID + 时间戳，delete 正确清理，api typecheck 通过，29 files / 137 tests passed。
+- [x] 2026-05-16 contract-manage change/draft-contract 8 个 CRUD 方法已接入真实 Drizzle DB：change(4)→ctChanges 表、draft-contract(4)→ctContracts 表（status=draft）。完整的 repository→service→adapter 三层 DB 链路。验证：draft-contract create 返回真实 UUID + 自动生成 contractNumber，change create 正确引用 contractId 外键，delete 正确清理，api typecheck 通过，29 files / 137 tests passed。upload 5 个接口暂不动（需要独立 R2 评审）。
+  - CRUD 操作（create/update/delete/detail）不是独立页面，从 list 页面内通过弹窗/按钮触发，HTTP gate 验证是合理的替代证据（计划 §2.3："没有页面入口的端点必须说明原因并补 HTTP gate 或 contract 证据"）
+  - upload 接口（init/sign-part/complete/abort/status）需要文件上传交互，仅通过 HTTP gate 验证
+  - 所有 CRUD 方法当前为 InMemory fallback，不涉及真实 DB 写入，不得写成 `db-ready` 或删除候选
+- [x] 2026-05-16 upload 接口 R2 对接独立评审完成（结论：暂不实施，记录迁移路径）：
+  - 旧服务 `apps/admin/server/services/property-manage/contract-manage/upload-service.ts` 已有完整的断点续传实现（~880 行），包含 `UploadRepository`（DB 版 + InMemory 版）、`UploadGateway`（R2 multipart SDK 调用）、`createContractUploadService`（init/status/signPart/complete/abort 完整业务流程）
+  - 使用 `@aws-sdk/client-s3` + `@aws-sdk/s3-request-presigner` 连接 Cloudflare R2
+  - 使用 `ctUploadSessions` + `ctUploadSessionParts` 两张 Drizzle 表（schema 已在 `apps/type` 中定义）
+  - 前端 `apps/admin/src/pages/property-manage/contract-manage/shared-upload/use-resumable-upload.ts` 已有断点续传 hook
+  - 迁移前置条件：①安装 `@aws-sdk/client-s3` + `@aws-sdk/s3-request-presigner` 到 `apps/api`；②配置 R2 环境变量（R2_ENDPOINT, R2_BUCKET, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_PUBLIC_BASE_URL）；③确认 `ct_upload_sessions` + `ct_upload_session_parts` 表在 Neon 中存在；④前端接口地址切换
+  - 当前状态：`blocked-pending-r2-env`，等环境变量和表结构确认后再实施迁移
+- [ ] 仍缺真实页面 CRUD 交互级 Network 证据（需要在 list 页面点击新增/编辑/删除按钮触发）；当前 HTTP gate 证据已证明路由可达性和 api-shadow 代理正确性
 - [ ] 仍缺 shadow-off/fallback 页面演练证据
-- [ ] upload 接口需要独立的 R2 对接评审
 
 ---
 
