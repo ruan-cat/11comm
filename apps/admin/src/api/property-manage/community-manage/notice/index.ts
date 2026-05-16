@@ -1,5 +1,9 @@
 import { useListQuery } from "@/composables/use-list-query";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = resolveAdminApiRequestUrl("/api/property-manage/community-manage/notice/list", import.meta.env);
 
 /**
  * @description 小区公示列表查询 Hook
@@ -8,7 +12,7 @@ import type { CommunityNoticeListItem, CommunityNoticeQueryParams } from "@01s-1
 export function useCommunityNoticeListQuery(initialParams: Partial<CommunityNoticeQueryParams>) {
 	return useListQuery<CommunityNoticeListItem, CommunityNoticeQueryParams>({
 		queryKeyPrefix: "community-notice-list",
-		apiUrl: "/api/property-manage/community-manage/notice/list",
+		apiUrl: API_URL,
 		initialParams,
 	});
 }

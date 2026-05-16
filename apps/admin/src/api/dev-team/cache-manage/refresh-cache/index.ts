@@ -4,7 +4,11 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { RefreshCacheListItem, RefreshCacheQueryParams } from "@01s-11comm/type";
+
+/** API 路径 */
+const API_URL = resolveAdminApiRequestUrl("/api/dev-team/cache-manage/refresh-cache/list", import.meta.env);
 
 /**
  * 获取缓存刷新列表数据
@@ -15,7 +19,7 @@ import type { RefreshCacheListItem, RefreshCacheQueryParams } from "@01s-11comm/
 export function useRefreshCacheListQuery(initialParams: Partial<RefreshCacheQueryParams>) {
 	return useListQuery<RefreshCacheListItem, RefreshCacheQueryParams>({
 		queryKeyPrefix: "devTeam:cacheManage:refreshCache:list",
-		apiUrl: "/api/dev-team/cache-manage/refresh-cache/list",
+		apiUrl: API_URL,
 		initialParams,
 	});
 }

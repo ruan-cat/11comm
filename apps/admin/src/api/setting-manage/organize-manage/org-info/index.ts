@@ -4,14 +4,15 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { Employee, EmployeeListQuery, OrganizationTreeNode, JsonVO } from "@01s-11comm/type";
 import { useQuery } from "@tanstack/vue-query";
 import { http } from "@/utils/http";
 
 /** 员工列表 API 路径 */
-const LIST_API_URL = "/api/setting-manage/organize-manage/org-info/list";
+const LIST_API_URL = resolveAdminApiRequestUrl("/api/setting-manage/organize-manage/org-info/list", import.meta.env);
 /** 组织树 API 路径 */
-const TREE_API_URL = "/api/setting-manage/organize-manage/org-info/tree";
+const TREE_API_URL = resolveAdminApiRequestUrl("/api/setting-manage/organize-manage/org-info/tree", import.meta.env);
 
 /** 查询键前缀 */
 const QUERY_KEY_PREFIX = "orgInfo";

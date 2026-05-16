@@ -4,10 +4,14 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { DataPermission, DataPermissionListQuery } from "@01s-11comm/type";
 
 /** 数据权限列表 API 路径 */
-const LIST_API_URL = "/api/setting-manage/organize-manage/data-permission/list";
+const LIST_API_URL = resolveAdminApiRequestUrl(
+	"/api/setting-manage/organize-manage/data-permission/list",
+	import.meta.env,
+);
 
 /** 查询键前缀 */
 const QUERY_KEY_PREFIX = "dataPermission";

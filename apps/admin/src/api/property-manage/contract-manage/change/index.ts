@@ -5,6 +5,7 @@
 
 import { useListQuery } from "@/composables/use-list-query";
 import { http } from "@/utils/http";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type {
 	ChangeCreatePayload,
 	ChangeDeletePayload,
@@ -16,15 +17,15 @@ import type {
 } from "@01s-11comm/type";
 
 /** API 璺緞 */
-const LIST_API_URL = "/api/property-manage/contract-manage/change/list";
+const LIST_API_URL = resolveAdminApiRequestUrl("/api/property-manage/contract-manage/change/list", import.meta.env);
 /** 详情接口路径 */
-const DETAIL_API_URL = "/api/property-manage/contract-manage/change/detail";
+const DETAIL_API_URL = resolveAdminApiRequestUrl("/api/property-manage/contract-manage/change/detail", import.meta.env);
 /** 创建接口路径 */
-const CREATE_API_URL = "/api/property-manage/contract-manage/change/create";
+const CREATE_API_URL = resolveAdminApiRequestUrl("/api/property-manage/contract-manage/change/create", import.meta.env);
 /** 更新接口路径 */
-const UPDATE_API_URL = "/api/property-manage/contract-manage/change/update";
+const UPDATE_API_URL = resolveAdminApiRequestUrl("/api/property-manage/contract-manage/change/update", import.meta.env);
 /** 删除接口路径 */
-const DELETE_API_URL = "/api/property-manage/contract-manage/change/delete";
+const DELETE_API_URL = resolveAdminApiRequestUrl("/api/property-manage/contract-manage/change/delete", import.meta.env);
 
 /** 鏌ヨ閿墠缂€ */
 const QUERY_KEY_PREFIX = "change";

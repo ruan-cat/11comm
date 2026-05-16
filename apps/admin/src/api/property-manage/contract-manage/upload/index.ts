@@ -1,4 +1,5 @@
 import { http } from "@/utils/http";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 
 export type UploadBizType = "draft_contract" | "change";
 
@@ -61,7 +62,7 @@ export interface UploadAbortPayload {
 	sessionId: string;
 }
 
-const BASE_URL = "/api/property-manage/contract-manage/upload";
+const BASE_URL = resolveAdminApiRequestUrl("/api/property-manage/contract-manage/upload", import.meta.env);
 
 export function uploadInit(payload: UploadInitPayload) {
 	return http.post<UploadInitResult, UploadInitPayload>(`${BASE_URL}/init`, { data: payload });
