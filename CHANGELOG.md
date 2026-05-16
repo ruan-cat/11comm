@@ -1,3 +1,39 @@
+## v1.0.2-beta.4
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.3...v1.0.2-beta.4)
+
+### ✨ 新增功能
+
+- **api:** Phase7 批量迁移 admin 接口至独立 Nitro API server ([6b7c9264](https://github.com/ruan-cat/11comm/commit/6b7c9264))
+- **api:** 接入 Phase7 报表管理 P1 只读端点 ([b819a760](https://github.com/ruan-cat/11comm/commit/b819a760))
+- **admin:** Operation-team 全模块接入 shadow resolver ([2b59b02d](https://github.com/ruan-cat/11comm/commit/2b59b02d))
+- **admin:** Expense-manage 全模块接入 shadow resolver ([3fb19700](https://github.com/ruan-cat/11comm/commit/3fb19700))
+- **admin:** Setting-manage 与 dev-team 接入 shadow resolver ([eff30705](https://github.com/ruan-cat/11comm/commit/eff30705))
+
+### 🐞 修复缺陷
+
+- **api:** 补齐报表 P1 端点过滤验收 ([6fb9cd2a](https://github.com/ruan-cat/11comm/commit/6fb9cd2a))
+- **admin:** 接入报表列表 shadow resolver ([8881ab74](https://github.com/ruan-cat/11comm/commit/8881ab74))
+- **admin:** 接入系统设置列表 shadow resolver ([774a730c](https://github.com/ruan-cat/11comm/commit/774a730c))
+- **admin:** 接入开发配置列表 shadow resolver ([1889e243](https://github.com/ruan-cat/11comm/commit/1889e243))
+- **admin:** 修正物业管理公司页面误用 property-company hook ([7afb0e53](https://github.com/ruan-cat/11comm/commit/7afb0e53))
+- **api:** 修正 report-manage P1 端点字段映射与过滤条件 ([87d2cd37](https://github.com/ruan-cat/11comm/commit/87d2cd37))
+
+### 📖 Documentation
+
+- **phase7:** 重写阶段 7 矩阵与接力计划口径 ([e3b377fa](https://github.com/ruan-cat/11comm/commit/e3b377fa))
+- **phase7:** 同步接力进度快照 ([ee212e25](https://github.com/ruan-cat/11comm/commit/ee212e25))
+- **phase7:** 更新迁移计划进度与端点矩阵 ([3e527718](https://github.com/ruan-cat/11comm/commit/3e527718))
+
+### 🔧 更新配置
+
+- **memorix:** 移除高频噪音 hooks 配置，仅保留会话生命周期事件 ([9bacce29](https://github.com/ruan-cat/11comm/commit/9bacce29))
+- 统一添加 package.json 的 author 字段 ([a05b1cf6](https://github.com/ruan-cat/11comm/commit/a05b1cf6))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.2-beta.3
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.2...v1.0.2-beta.3)
