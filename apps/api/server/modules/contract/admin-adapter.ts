@@ -237,28 +237,46 @@ export function createAdminContractAdapter(service: ContractService) {
 		},
 
 		async createChange(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "创建成功");
+			const result = await service.createChange(input);
+			return adminSuccess(result, "创建成功");
 		},
 		async getChangeDetail(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(null);
+			const id = input.id ? String(input.id) : undefined;
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			const result = await service.getChangeDetail(id);
+			if (!result) return { success: false, code: 404, message: "变更记录不存在", data: null };
+			return adminSuccess(result);
 		},
 		async updateChange(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "更新成功");
+			const result = await service.updateChange(input);
+			return adminSuccess(result, "更新成功");
 		},
 		async deleteChange(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = input.id;
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteChange(id);
 			return adminSuccess(null, "删除成功");
 		},
 
 		async createDraftContract(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "创建成功");
+			const result = await service.createDraftContract(input);
+			return adminSuccess(result, "创建成功");
 		},
 		async getDraftContractDetail(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(null);
+			const id = input.id ? String(input.id) : undefined;
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			const result = await service.getDraftContractDetail(id);
+			if (!result) return { success: false, code: 404, message: "草稿合同不存在", data: null };
+			return adminSuccess(result);
 		},
 		async updateDraftContract(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "更新成功");
+			const result = await service.updateDraftContract(input);
+			return adminSuccess(result, "更新成功");
 		},
 		async deleteDraftContract(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = input.id;
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteDraftContract(id);
 			return adminSuccess(null, "删除成功");
 		},
 

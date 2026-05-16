@@ -56,6 +56,16 @@ export interface ContractRepository {
 	listSecondParty: (params: ListSecondPartyParams) => Promise<{ list: AdminSecondPartyListItem[]; total: number }>;
 	listTemplate: (params: ListTemplateParams) => Promise<{ list: AdminTemplateListItem[]; total: number }>;
 	listContractType: (params: ListContractTypeParams) => Promise<{ list: AdminContractTypeListItem[]; total: number }>;
+	// change CRUD
+	createChange: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	getChangeDetail: (id: string) => Promise<Record<string, unknown> | null>;
+	updateChange: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteChange: (id: string) => Promise<boolean>;
+	// draft-contract CRUD
+	createDraftContract: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	getDraftContractDetail: (id: string) => Promise<Record<string, unknown> | null>;
+	updateDraftContract: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteDraftContract: (id: string) => Promise<boolean>;
 }
 
 export function createContractRepository(options: { db?: DbType } = {}): ContractRepository {
@@ -609,6 +619,152 @@ export function createDbContractRepository(db: DbType): ContractRepository {
 				})),
 			};
 		},
+		// change CRUD
+		async createChange(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(ctChanges)
+				.values({
+					contractId: String(data.contractId || ""),
+					changeType: data.changeType ? String(data.changeType) : null,
+					changeReason: data.changeReason ? String(data.changeReason) : null,
+					changeContent: data.changeContent ? String(data.changeContent) : null,
+					changeDate: data.changeDate ? String(data.changeDate) : null,
+					changer: data.changer ? String(data.changer) : null,
+					description: data.description ? String(data.description) : null,
+					beforeChange: data.beforeChange ? String(data.beforeChange) : null,
+					afterChange: data.afterChange ? String(data.afterChange) : null,
+					remark: data.remark ? String(data.remark) : null,
+				})
+				.returning();
+			return row ?? null;
+		},
+		async getChangeDetail(id: string): Promise<Record<string, unknown> | null> {
+			const [row] = await db.select().from(ctChanges).where(eq(ctChanges.id, id)).limit(1);
+			if (!row) return null;
+			return {
+				id: row.id,
+				contractId: row.contractId,
+				changeType: row.changeType,
+				changeReason: row.changeReason,
+				changeContent: row.changeContent,
+				changeDate: row.changeDate,
+				changer: row.changer,
+				description: row.description,
+				beforeChange: row.beforeChange,
+				afterChange: row.afterChange,
+				changeTime: row.changeTime ? formatDateTime(row.changeTime) : null,
+				approvalStatus: row.approvalStatus,
+				approver: row.approver,
+				approvalTime: row.approvalTime ? formatDateTime(row.approvalTime) : null,
+				remark: row.remark,
+				createTime: formatDateTime(row.createTime),
+				updateTime: formatDateTime(row.updateTime),
+			};
+		},
+		async updateChange(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.changeType !== undefined) updates.changeType = data.changeType ? String(data.changeType) : null;
+			if (data.changeReason !== undefined) updates.changeReason = data.changeReason ? String(data.changeReason) : null;
+			if (data.changeContent !== undefined)
+				updates.changeContent = data.changeContent ? String(data.changeContent) : null;
+			if (data.changeDate !== undefined) updates.changeDate = data.changeDate ? String(data.changeDate) : null;
+			if (data.changer !== undefined) updates.changer = data.changer ? String(data.changer) : null;
+			if (data.description !== undefined) updates.description = data.description ? String(data.description) : null;
+			if (data.beforeChange !== undefined) updates.beforeChange = data.beforeChange ? String(data.beforeChange) : null;
+			if (data.afterChange !== undefined) updates.afterChange = data.afterChange ? String(data.afterChange) : null;
+			if (data.approvalStatus !== undefined) updates.approvalStatus = data.approvalStatus;
+			if (data.approver !== undefined) updates.approver = data.approver ? String(data.approver) : null;
+			if (data.remark !== undefined) updates.remark = data.remark ? String(data.remark) : null;
+			const [row] = await db.update(ctChanges).set(updates).where(eq(ctChanges.id, id)).returning();
+			return row ?? null;
+		},
+		async deleteChange(id: string): Promise<boolean> {
+			const result = await db.delete(ctChanges).where(eq(ctChanges.id, id)).returning({ id: ctChanges.id });
+			return result.length > 0;
+		},
+
+		// draft-contract CRUD
+		async createDraftContract(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(ctContracts)
+				.values({
+					contractName: String(data.contractName || ""),
+					contractNumber: String(data.contractNumber || `DRAFT-${Date.now()}`),
+					contractType: data.contractType ? String(data.contractType) : null,
+					amount: data.amount ? String(data.amount) : null,
+					partyA: data.partyA ? String(data.partyA) : null,
+					partyAContact: data.partyAContact ? String(data.partyAContact) : null,
+					partyAPhone: data.partyAPhone ? String(data.partyAPhone) : null,
+					partyB: data.partyB ? String(data.partyB) : null,
+					partyBContact: data.partyBContact ? String(data.partyBContact) : null,
+					partyBPhone: data.partyBPhone ? String(data.partyBPhone) : null,
+					handler: data.handler ? String(data.handler) : null,
+					handlerPhone: data.handlerPhone ? String(data.handlerPhone) : null,
+					description: data.description ? String(data.description) : null,
+					status: "draft",
+					remark: data.remark ? String(data.remark) : null,
+				})
+				.returning();
+			return row ?? null;
+		},
+		async getDraftContractDetail(id: string): Promise<Record<string, unknown> | null> {
+			const [row] = await db.select().from(ctContracts).where(eq(ctContracts.id, id)).limit(1);
+			if (!row) return null;
+			return {
+				id: row.id,
+				contractName: row.contractName,
+				contractNumber: row.contractNumber,
+				contractType: row.contractType,
+				amount: row.amount,
+				firstPartyId: row.firstPartyId,
+				secondPartyId: row.secondPartyId,
+				startTime: row.startTime ? formatDateTime(row.startTime) : null,
+				endTime: row.endTime ? formatDateTime(row.endTime) : null,
+				signDate: row.signDate,
+				partyA: row.partyA,
+				partyAContact: row.partyAContact,
+				partyAPhone: row.partyAPhone,
+				partyB: row.partyB,
+				partyBContact: row.partyBContact,
+				partyBPhone: row.partyBPhone,
+				handler: row.handler,
+				handlerPhone: row.handlerPhone,
+				description: row.description,
+				status: row.status,
+				remark: row.remark,
+				createTime: formatDateTime(row.createTime),
+				updateTime: formatDateTime(row.updateTime),
+			};
+		},
+		async updateDraftContract(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.contractName !== undefined) updates.contractName = String(data.contractName);
+			if (data.contractNumber !== undefined) updates.contractNumber = String(data.contractNumber);
+			if (data.contractType !== undefined) updates.contractType = data.contractType ? String(data.contractType) : null;
+			if (data.amount !== undefined) updates.amount = data.amount ? String(data.amount) : null;
+			if (data.partyA !== undefined) updates.partyA = data.partyA ? String(data.partyA) : null;
+			if (data.partyAContact !== undefined)
+				updates.partyAContact = data.partyAContact ? String(data.partyAContact) : null;
+			if (data.partyAPhone !== undefined) updates.partyAPhone = data.partyAPhone ? String(data.partyAPhone) : null;
+			if (data.partyB !== undefined) updates.partyB = data.partyB ? String(data.partyB) : null;
+			if (data.partyBContact !== undefined)
+				updates.partyBContact = data.partyBContact ? String(data.partyBContact) : null;
+			if (data.partyBPhone !== undefined) updates.partyBPhone = data.partyBPhone ? String(data.partyBPhone) : null;
+			if (data.handler !== undefined) updates.handler = data.handler ? String(data.handler) : null;
+			if (data.handlerPhone !== undefined) updates.handlerPhone = data.handlerPhone ? String(data.handlerPhone) : null;
+			if (data.description !== undefined) updates.description = data.description ? String(data.description) : null;
+			if (data.remark !== undefined) updates.remark = data.remark ? String(data.remark) : null;
+			const [row] = await db.update(ctContracts).set(updates).where(eq(ctContracts.id, id)).returning();
+			return row ?? null;
+		},
+		async deleteDraftContract(id: string): Promise<boolean> {
+			const result = await db.delete(ctContracts).where(eq(ctContracts.id, id)).returning({ id: ctContracts.id });
+			return result.length > 0;
+		},
 	}) satisfies Partial<ContractRepository>;
 }
 
@@ -648,6 +804,32 @@ class InMemoryContractRepository implements ContractRepository {
 	}
 	async listContractType(): Promise<{ list: AdminContractTypeListItem[]; total: number }> {
 		return { list: [], total: 0 };
+	}
+	// change CRUD fallbacks
+	async createChange(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async getChangeDetail(): Promise<Record<string, unknown> | null> {
+		return null;
+	}
+	async updateChange(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteChange(): Promise<boolean> {
+		return true;
+	}
+	// draft-contract CRUD fallbacks
+	async createDraftContract(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async getDraftContractDetail(): Promise<Record<string, unknown> | null> {
+		return null;
+	}
+	async updateDraftContract(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteDraftContract(): Promise<boolean> {
+		return true;
 	}
 }
 
