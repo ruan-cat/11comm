@@ -73,6 +73,22 @@ export interface SettingRepository {
 		params: ListRegisterProtocolParams,
 	) => Promise<{ list: AdminRegisterProtocolListItem[]; total: number }>;
 	listSystemConfig: (params: ListSystemConfigParams) => Promise<{ list: AdminSystemConfigListItem[]; total: number }>;
+	// system-manage CUD
+	createChangePassword: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	updateChangePassword: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteChangePassword: (id: string) => Promise<boolean>;
+	createCommunityConfiguration: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	updateCommunityConfiguration: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteCommunityConfiguration: (id: string) => Promise<boolean>;
+	createInitializeCell: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	updateInitializeCell: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteInitializeCell: (id: string) => Promise<boolean>;
+	createRegisterProtocol: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	updateRegisterProtocol: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteRegisterProtocol: (id: string) => Promise<boolean>;
+	createSystemConfig: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	updateSystemConfig: (data: Record<string, unknown>) => Promise<Record<string, unknown> | null>;
+	deleteSystemConfig: (id: string) => Promise<boolean>;
 }
 
 export function createSettingRepository(options: { db?: DbType } = {}): SettingRepository {
@@ -629,6 +645,201 @@ export function createDbSettingRepository(db: DbType): SettingRepository {
 				})),
 			};
 		},
+		// system-manage CUD: change-password
+		async createChangePassword(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(smChangePasswordRecords)
+				.values({
+					username: String(data.username || ""),
+					realName: data.realName ? String(data.realName) : null,
+					department: data.department ? String(data.department) : null,
+					changeTime: data.changeTime ? String(data.changeTime) : null,
+					changeIp: data.changeIp ? String(data.changeIp) : null,
+					changeType: data.changeType ? String(data.changeType) : null,
+					operator: data.operator ? String(data.operator) : null,
+					status: data.status ? String(data.status) : null,
+					remark: data.remark ? String(data.remark) : null,
+				})
+				.returning();
+			return row ?? null;
+		},
+		async updateChangePassword(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.username !== undefined) updates.username = String(data.username);
+			if (data.realName !== undefined) updates.realName = data.realName ? String(data.realName) : null;
+			if (data.department !== undefined) updates.department = data.department ? String(data.department) : null;
+			if (data.changeType !== undefined) updates.changeType = data.changeType ? String(data.changeType) : null;
+			if (data.status !== undefined) updates.status = data.status ? String(data.status) : null;
+			if (data.remark !== undefined) updates.remark = data.remark ? String(data.remark) : null;
+			const [row] = await db
+				.update(smChangePasswordRecords)
+				.set(updates)
+				.where(eq(smChangePasswordRecords.id, id))
+				.returning();
+			return row ?? null;
+		},
+		async deleteChangePassword(id: string): Promise<boolean> {
+			const result = await db
+				.delete(smChangePasswordRecords)
+				.where(eq(smChangePasswordRecords.id, id))
+				.returning({ id: smChangePasswordRecords.id });
+			return result.length > 0;
+		},
+
+		// system-manage CUD: community-configuration
+		async createCommunityConfiguration(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(smCommunityConfigurations)
+				.values({
+					csId: String(data.csId || ""),
+					communityId: String(data.communityId || ""),
+					communityName: String(data.communityName || ""),
+					settingName: String(data.settingName || ""),
+					settingValue: data.settingValue ? String(data.settingValue) : null,
+					settingType: String(data.settingType || ""),
+					statusCd: String(data.statusCd || "1"),
+					remark: data.remark ? String(data.remark) : null,
+					operator: data.operator ? String(data.operator) : null,
+				})
+				.returning();
+			return row ?? null;
+		},
+		async updateCommunityConfiguration(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.communityName !== undefined) updates.communityName = String(data.communityName);
+			if (data.settingName !== undefined) updates.settingName = String(data.settingName);
+			if (data.settingValue !== undefined) updates.settingValue = data.settingValue ? String(data.settingValue) : null;
+			if (data.settingType !== undefined) updates.settingType = String(data.settingType);
+			if (data.statusCd !== undefined) updates.statusCd = String(data.statusCd);
+			if (data.remark !== undefined) updates.remark = data.remark ? String(data.remark) : null;
+			if (data.operator !== undefined) updates.operator = data.operator ? String(data.operator) : null;
+			const [row] = await db
+				.update(smCommunityConfigurations)
+				.set(updates)
+				.where(eq(smCommunityConfigurations.id, id))
+				.returning();
+			return row ?? null;
+		},
+		async deleteCommunityConfiguration(id: string): Promise<boolean> {
+			const result = await db
+				.delete(smCommunityConfigurations)
+				.where(eq(smCommunityConfigurations.id, id))
+				.returning({ id: smCommunityConfigurations.id });
+			return result.length > 0;
+		},
+
+		// system-manage CUD: initialize-cell
+		async createInitializeCell(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(smInitializeCells)
+				.values({
+					initItem: String(data.initItem || ""),
+					initStatus: data.initStatus ? String(data.initStatus) : undefined,
+					configParams: data.configParams ?? undefined,
+				})
+				.returning();
+			return row ?? null;
+		},
+		async updateInitializeCell(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.initItem !== undefined) updates.initItem = data.initItem ? String(data.initItem) : null;
+			if (data.initStatus !== undefined) updates.initStatus = data.initStatus ? String(data.initStatus) : null;
+			if (data.configParams !== undefined) updates.configParams = data.configParams;
+			const [row] = await db.update(smInitializeCells).set(updates).where(eq(smInitializeCells.id, id)).returning();
+			return row ?? null;
+		},
+		async deleteInitializeCell(id: string): Promise<boolean> {
+			const result = await db
+				.delete(smInitializeCells)
+				.where(eq(smInitializeCells.id, id))
+				.returning({ id: smInitializeCells.id });
+			return result.length > 0;
+		},
+
+		// system-manage CUD: register-protocol
+		async createRegisterProtocol(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(smRegisterProtocols)
+				.values({
+					protocolType: data.protocolType ? String(data.protocolType) : null,
+					protocolTitle: String(data.protocolTitle || data.title || ""),
+					protocolContent: data.protocolContent
+						? String(data.protocolContent)
+						: data.content
+							? String(data.content)
+							: null,
+					version: data.version ? String(data.version) : null,
+					status: (data.status as "enabled" | "disabled") || "enabled",
+				})
+				.returning();
+			return row ?? null;
+		},
+		async updateRegisterProtocol(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.protocolType !== undefined) updates.protocolType = data.protocolType ? String(data.protocolType) : null;
+			if (data.protocolTitle !== undefined || data.title !== undefined)
+				updates.protocolTitle = String(data.protocolTitle || data.title);
+			if (data.protocolContent !== undefined || data.content !== undefined)
+				updates.protocolContent = data.protocolContent
+					? String(data.protocolContent)
+					: data.content
+						? String(data.content)
+						: null;
+			if (data.version !== undefined) updates.version = data.version ? String(data.version) : null;
+			if (data.status !== undefined) updates.status = data.status;
+			const [row] = await db.update(smRegisterProtocols).set(updates).where(eq(smRegisterProtocols.id, id)).returning();
+			return row ?? null;
+		},
+		async deleteRegisterProtocol(id: string): Promise<boolean> {
+			const result = await db
+				.delete(smRegisterProtocols)
+				.where(eq(smRegisterProtocols.id, id))
+				.returning({ id: smRegisterProtocols.id });
+			return result.length > 0;
+		},
+
+		// system-manage CUD: system-config
+		async createSystemConfig(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const [row] = await db
+				.insert(smSystemConfigs)
+				.values({
+					configKey: String(data.configKey || ""),
+					configValue: data.configValue ? String(data.configValue) : null,
+					configType: data.configType ? String(data.configType) : null,
+					configDescription: data.configDescription ? String(data.configDescription) : null,
+					status: (data.status as "enabled" | "disabled") || "enabled",
+				})
+				.returning();
+			return row ?? null;
+		},
+		async updateSystemConfig(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const id = String(data.id || "");
+			if (!id) return null;
+			const updates: Record<string, unknown> = {};
+			if (data.configKey !== undefined) updates.configKey = String(data.configKey);
+			if (data.configValue !== undefined) updates.configValue = data.configValue ? String(data.configValue) : null;
+			if (data.configType !== undefined) updates.configType = data.configType ? String(data.configType) : null;
+			if (data.configDescription !== undefined)
+				updates.configDescription = data.configDescription ? String(data.configDescription) : null;
+			if (data.status !== undefined) updates.status = data.status;
+			const [row] = await db.update(smSystemConfigs).set(updates).where(eq(smSystemConfigs.id, id)).returning();
+			return row ?? null;
+		},
+		async deleteSystemConfig(id: string): Promise<boolean> {
+			const result = await db
+				.delete(smSystemConfigs)
+				.where(eq(smSystemConfigs.id, id))
+				.returning({ id: smSystemConfigs.id });
+			return result.length > 0;
+		},
 	}) satisfies Partial<SettingRepository>;
 }
 
@@ -668,6 +879,52 @@ class InMemorySettingRepository implements SettingRepository {
 	}
 	async listSystemConfig(): Promise<{ list: AdminSystemConfigListItem[]; total: number }> {
 		return { list: [], total: 0 };
+	}
+	// CUD fallbacks
+	async createChangePassword(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async updateChangePassword(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteChangePassword(): Promise<boolean> {
+		return true;
+	}
+	async createCommunityConfiguration(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async updateCommunityConfiguration(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteCommunityConfiguration(): Promise<boolean> {
+		return true;
+	}
+	async createInitializeCell(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async updateInitializeCell(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteInitializeCell(): Promise<boolean> {
+		return true;
+	}
+	async createRegisterProtocol(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async updateRegisterProtocol(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteRegisterProtocol(): Promise<boolean> {
+		return true;
+	}
+	async createSystemConfig(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { id: "mock-id", ...data };
+	}
+	async updateSystemConfig(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+		return { ...data };
+	}
+	async deleteSystemConfig(): Promise<boolean> {
+		return true;
 	}
 }
 

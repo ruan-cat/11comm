@@ -267,52 +267,77 @@ export function createAdminSettingAdapter(service: SettingService) {
 		},
 
 		async createChangePassword(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "创建成功");
+			const result = await service.createChangePassword(input);
+			return adminSuccess(result, "创建成功");
 		},
 		async updateChangePassword(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "更新成功");
+			const result = await service.updateChangePassword(input);
+			return adminSuccess(result, "更新成功");
 		},
 		async deleteChangePassword(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = input.id;
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteChangePassword(id);
 			return adminSuccess(null, "删除成功");
 		},
 
 		async createCommunityConfiguration(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "创建成功");
+			const result = await service.createCommunityConfiguration(input);
+			return adminSuccess(result, "创建成功");
 		},
 		async updateCommunityConfiguration(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "更新成功");
+			const result = await service.updateCommunityConfiguration(input);
+			return adminSuccess(result, "更新成功");
 		},
 		async deleteCommunityConfiguration(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = input.id;
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteCommunityConfiguration(id);
 			return adminSuccess(null, "删除成功");
 		},
 
 		async createInitializeCell(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "创建成功");
+			const result = await service.createInitializeCell(input);
+			return adminSuccess(result, "创建成功");
 		},
 		async updateInitializeCell(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "更新成功");
+			const result = await service.updateInitializeCell(input);
+			return adminSuccess(result, "更新成功");
 		},
 		async deleteInitializeCell(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = input.id;
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteInitializeCell(id);
 			return adminSuccess(null, "删除成功");
 		},
 
 		async createRegisterProtocol(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "创建成功");
+			const result = await service.createRegisterProtocol(input);
+			return adminSuccess(result, "创建成功");
 		},
 		async updateRegisterProtocol(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "更新成功");
+			const result = await service.updateRegisterProtocol(input);
+			return adminSuccess(result, "更新成功");
 		},
 		async deleteRegisterProtocol(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = input.id;
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteRegisterProtocol(id);
 			return adminSuccess(null, "删除成功");
 		},
 
 		async createSystemConfig(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "创建成功");
+			const result = await service.createSystemConfig(input);
+			return adminSuccess(result, "创建成功");
 		},
 		async updateSystemConfig(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(input, "更新成功");
+			const result = await service.updateSystemConfig(input);
+			return adminSuccess(result, "更新成功");
 		},
 		async deleteSystemConfig(input: { id?: string }): Promise<JsonVO<unknown>> {
+			const id = input.id;
+			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
+			await service.deleteSystemConfig(id);
 			return adminSuccess(null, "删除成功");
 		},
 
