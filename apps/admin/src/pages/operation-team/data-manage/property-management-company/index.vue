@@ -22,7 +22,7 @@ import type {
 	PropertyCompanyQueryParams,
 	PropertyManagementCompanyFormVO,
 } from "@01s-11comm/type";
-import { usePropertyCompanyListQuery } from "@/api/operation-team/data-manage/property-company";
+import { usePropertyManagementCompanyListQuery } from "@/api/operation-team/data-manage/property-management-company";
 import { type PropertyManagementCompanyFormProps, defaultForm } from "./components/form";
 import PropertyManagementCompanyForm from "./components/form.vue";
 
@@ -45,7 +45,7 @@ const {
 	handlePageSizeChange,
 	handleCurrentPageChange,
 	pureTableProps,
-} = usePropertyCompanyListQuery(plusSearchDefaultValues);
+} = usePropertyManagementCompanyListQuery(plusSearchDefaultValues);
 
 const companyTypeLabelMap = {
 	state_owned: "operation-team_data-manage.property-management-company.options.companyTypes.stateOwned",
