@@ -3,10 +3,11 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { MerchantInfo, MerchantInfoListQuery } from "@01s-11comm/type";
 
 /** API 路径 */
-const API_URL = "/api/operation-team/merchant-manage/merchant-info/list";
+const API_URL = resolveAdminApiRequestUrl("/api/operation-team/merchant-manage/merchant-info/list", import.meta.env);
 
 /** 查询键前缀 */
 const QUERY_KEY_PREFIX = "merchantInfo";

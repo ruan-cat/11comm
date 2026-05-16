@@ -4,7 +4,10 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-11comm/type";
+
+const API_URL = resolveAdminApiRequestUrl("/api/operation-team/data-manage/property-company/list", import.meta.env);
 
 /**
  * 获取物业公司列表数据
@@ -15,7 +18,7 @@ import type { PropertyCompanyListItem, PropertyCompanyQueryParams } from "@01s-1
 export function usePropertyCompanyListQuery(initialParams: Partial<PropertyCompanyQueryParams>) {
 	return useListQuery<PropertyCompanyListItem, PropertyCompanyQueryParams>({
 		queryKeyPrefix: "operationTeam:dataManage:propertyCompany:list",
-		apiUrl: "/api/operation-team/data-manage/property-company/list",
+		apiUrl: API_URL,
 		initialParams,
 	});
 }
