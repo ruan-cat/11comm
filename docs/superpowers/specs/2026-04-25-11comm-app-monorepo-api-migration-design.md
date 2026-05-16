@@ -1,4 +1,4 @@
-<!-- 状态：Phase7 仍是 partial migration / no-go-for-retirement。当前 working tree 扫描口径为 apps/api server routes = 109，apps/admin/server/api legacy files = 155，exact legacy path 未覆盖约 51；P1 四个 report-manage 端点已 staged 接线但未验收，前端 resolver、Chrome MCP、Neon main DB_READY、shadow-off/fallback 与写入回滚证据仍未闭环。旧源目录 D:\code\ruan-cat\01s-11comm-app、apps/admin/server、apps/app/server 在解除 no-go 前永久禁止删除、移动、归档、重命名或清空。 -->
+<!-- 状态：Phase7 仍是 partial migration / no-go-for-retirement。当前 working tree 扫描口径为 apps/api server routes = 109，apps/admin/server/api legacy files = 155，exact legacy path 未覆盖约 51；P1 四个 report-manage 端点已 staged 接线，并已补本地语义 Vitest 与 Chrome MCP /api-shadow 页面 Network；Neon main DB_READY、真实库样本复核、shadow-off/fallback 与写入回滚证据仍未闭环。旧源目录 D:\code\ruan-cat\01s-11comm-app、apps/admin/server、apps/app/server 在解除 no-go 前永久禁止删除、移动、归档、重命名或清空。 -->
 
 # 2026-04-25 11comm App 迁入 Monorepo 与唯一 Nitro API 设计
 
@@ -1943,12 +1943,12 @@ Vercel production deployment 基线：
 - `apps/api/server/routes/api/**/*.ts` 当前扫描 109 个 server route。
 - `apps/admin/server/api/**/*.ts` 当前扫描 155 个 legacy file。
 - exact legacy path 未覆盖约 51。
-- P1 四个 `property-manage/report-manage` 端点在 staged working tree 中已接线但未验收：`owner-payment-details/list`、`repair-report-form/list`、`repair-reports-summary-table/list`、`statement-expenses/list`。
-- 前端调用端仍未全量切流。当前扫描到已迁移模块中仍有大量硬编码 `/api/**` 调用，代表性路径包括 `report-manage` 的 P1 四端点、`dev-team/config-manage`、`setting-manage/system-manage`、`operation-team/system-manage`、`expense-manage` 和 `community-manage`；补齐 `resolveAdminApiRequestUrl` 前，Chrome MCP 页面验证不能代表这些端点命中独立 `apps/api`。
+- P1 四个 `property-manage/report-manage` 端点在 staged working tree 中已接线，并已补本地语义 Vitest 与 Chrome MCP `/api-shadow` 页面 Network：`owner-payment-details/list`、`repair-report-form/list`、`repair-reports-summary-table/list`、`statement-expenses/list`。
+- 前端调用端仍未全量切流。`report-manage` P1 四端点、`dev-team/config-manage` 中的 type/item/center/dictionary、`setting-manage/system-manage` 中的 change-password/community-configuration/register-protocol/system-config/initialize-cell、`operation-team` 13 个 list hook，以及 `expense-manage` Slice A/B/C/D/E 的 cancel-fee/contracte-charge/discount-apply/discount-setting/discount-type/expense-summary-table/meter-reading-type/overdue-payment-information/payment-review/refund-review/reminder-for-overdue-payments/reprint-voucher/vehicle-charge/water-and-electricity-meter-reading 已补 `resolveAdminApiRequestUrl` hook-level resolver；Chrome MCP 页面级 Network 已追加覆盖 operation-team 12 个实际页面入口并确认 `/api-shadow` 200、`x-api-phase=phase3-infra`，且已覆盖本轮新增 8 个 `expense-manage` 页面并确认 `/api-shadow` 200、`x-api-phase=phase3-infra`、`success=true`。`operation-team/data-manage/property-company/list` 无独立页面入口，仍只算 hook-level evidence。代表性剩余硬编码 `/api/**` 调用不再包括 operation-team 或 expense-manage，仍包括 `community-manage`、`dev-team/menu-manage` / `cache-manage` 等。补齐 `resolveAdminApiRequestUrl` 前，Chrome MCP 页面验证不能代表这些端点命中独立 `apps/api`。
 
 当前状态边界：
 
-- P1 四端点只能记录为 `old-path-exact-covered (working-tree-staged)`、`db-read-repository-wired-with-gap`、`unknown-needs-triage`、`keep-source`。
+- P1 四端点仍只能记录为 `old-path-exact-covered (working-tree-staged)`、`db-read-repository-wired-with-gap`、`unknown-needs-triage`、`keep-source`。
 - 不能把这 4 个端点写成 `DB_READY`、完成、可删除或旧服务可退役。
 - 2026-05-11 的 Patrol/Parking 本地 Chrome MCP 页面 Network 证据仍有效，但只覆盖对应页面切片，不能外推到全量 P2。
 - 2026-05-12 的 contract、setting、operation-team、dev-team 批量 list 迁移保留为历史迁移事实；缺 Chrome MCP、生产 `DB_READY`、shadow-off/fallback 证据时只能保持候选状态。
@@ -1961,14 +1961,33 @@ Vercel production deployment 基线：
 - 已完成且可交接的新增事实是 6 个 hook-level resolver + tests：`setting-manage/system-manage/change-password/list`、`setting-manage/system-manage/community-configuration/list`、`setting-manage/system-manage/register-protocol/list`、`dev-team/config-manage/type/list`、`dev-team/config-manage/item/list`、`dev-team/config-manage/center/list`；目标 Vitest 4 files / 18 tests passed，admin typecheck 通过，相关范围 `git diff --check` 通过。
 - 这些证据只说明 hook 层 `resolveAdminApiRequestUrl` 覆盖 shadow disabled、shadow proxy、direct apps/api base，不能写成 Chrome MCP `browserEvidence`、Neon main `DB_READY` 或真实页面 shadow-off/fallback。
 - 当前工作区混有前序 `report-manage` / `fee` staged 变更与本轮 resolver 变更；后续 AI 必须先运行 `git status --short`，再按本设计、矩阵和批量计划接力，禁止 stage/unstage/revert 非明确范围。
-- 下一小批建议先补 `setting-manage/system-manage/system-config/list`、`setting-manage/system-manage/initialize-cell/list`、`dev-team/config-manage/dictionary/list`，完成后立即同步矩阵、计划、设计文档和 Memorix。
+- 当时下一小批建议为 `setting-manage/system-manage/system-config/list`、`setting-manage/system-manage/initialize-cell/list`、`dev-team/config-manage/dictionary/list`；该建议已在 2026-05-16 接力快照中落实。
+
+2026-05-16 接力快照：
+
+- 本轮完成 3 个 hook-level resolver + tests：`setting-manage/system-manage/system-config/list`、`setting-manage/system-manage/initialize-cell/list`、`dev-team/config-manage/dictionary/list`。
+- 主控复验命令通过：`pnpm --filter @01s-11comm/admin exec vitest run src/api/setting-manage/system-manage/system-config/tests/index.test.ts src/api/setting-manage/system-manage/initialize-cell/tests/index.test.ts src/api/dev-team/config-manage/tests/phase7-shadow-resolver.test.ts`，结果 3 files / 18 tests passed。
+- 三端 dev smoke 已补：`apps/api` 3102、`apps/app` 3000、`apps/admin` 8080 同时启动；Node `fetch` 从 admin `/api-shadow` 代理和直连 `http://127.0.0.1:3102/api/...` 访问本轮三条 list endpoint，均返回 200、`x-api-phase=phase3-infra`、`success=true`。
+- Chrome DevTools MCP 页面级 Network 已补：`http://localhost:8080/#/setting-manage/system-manage/system-config` 发出 `POST /api-shadow/api/setting-manage/system-manage/system-config/list`，`http://localhost:8080/#/setting-manage/system-manage/initialize-cell` 发出 `POST /api-shadow/api/setting-manage/system-manage/initialize-cell/list`，`http://localhost:8080/#/dev-team/config-manage/dictionary` 发出 `POST /api-shadow/api/dev-team/config-manage/dictionary/list`；三条请求均返回 200、`x-api-phase=phase3-infra`、`success=true`。
+- 本轮 `browserEvidence` 先覆盖上述 3 个 setting/dev list 页面和 endpoint；不能写成 Neon main `DB_READY`、真实页面 shadow-off/fallback 或旧服务可退役。
+- P1 `report-manage` 四端点已补本地语义验收与最小 repository 修正：`owner-payment-details/list` 覆盖 owner 聚合字段映射和 gap 字段边界；`statement-expenses/list` 覆盖 `dataSnapshot` 文本过滤与映射；`repair-report-form/list` 覆盖 `remark -> repairType` 与 `createTime` 范围过滤；`repair-reports-summary-table/list` 覆盖 JSONB 聚合解析、`unfinishedCount=max` 与 `createTime` 范围过滤。目标 api Vitest 1 file / 8 tests passed，api typecheck passed。
+- P1 `report-manage` 四端点 Chrome DevTools MCP 页面级 Network 已补：`owner-payment-details`、`statement-expenses`、`repair-report-form`、`repair-reports-summary-table` 四个页面均经 `/api-shadow` 命中 `apps/api` 并返回 200、`x-api-phase=phase3-infra`、`success=true`。本地 `GET http://127.0.0.1:3102/__nitro/ready` 返回 503，Neon main readiness 仍待补。
+- `operation-team/data-manage` 3 个、`operation-team/system-manage` Core 3 个、`expense-manage` Slice A/B 6 个 hook-level resolver + tests 已补，覆盖 shadow disabled、shadow proxy、direct apps/api base；主控统一复验 `pnpm --filter @01s-11comm/admin exec vitest run src/api/operation-team/data-manage/tests/phase7-shadow-resolver.test.ts src/api/operation-team/system-manage/tests/phase7-shadow-resolver-core.test.ts src/api/property-manage/expense-manage/tests/phase7-shadow-resolver-slice-a.test.ts src/api/property-manage/expense-manage/tests/phase7-shadow-resolver-slice-b.test.ts`，4 files / 36 tests passed。该证据只覆盖 hook 层，不得写成页面级 `browserEvidence`、生产 `DB_READY`、真实页面 shadow-off/fallback 或旧服务可退役。
+- Chrome MCP 页面级 Network 追加完成：本地 `api` 3102、`admin` 8080、`app` 3000 已启动；admin 11 个实际页面入口经 `/api-shadow` 命中对应 `apps/api` list 端点并返回 200、`x-api-phase=phase3-infra`，admin 控制台无 error。覆盖页面：`operation-team/data-manage/community-information`、`operation-team/data-manage/property-management-company`、`operation-team/system-manage/change-password`、`operation-team/system-manage/system-config`、`operation-team/system-manage/register-protocol`、`expense-manage/cancel-fee`、`expense-manage/contracte-charge`、`expense-manage/discount-apply`、`expense-manage/discount-setting`、`expense-manage/discount-type`、`expense-manage/expense-summary-table`；证据文件在 `.tmp/phase7-dev-browser/*.network-*`。`operation-team/data-manage/property-company/list` 无独立页面入口，仍只算 hook-level evidence。
+- 本轮修正 `apps/admin/src/pages/operation-team/data-manage/property-management-company/index.vue`：从误用 `usePropertyCompanyListQuery` 改为 `usePropertyManagementCompanyListQuery`，Chrome MCP 已确认该页面请求为 `/api-shadow/api/operation-team/data-manage/property-management-company/list`。
+- 2026-05-16 追加完成 `operation-team` 剩余 7 个 hook-level resolver + tests：`system-manage/community-configuration/list`、`system-manage/initialize-cell/list`、`merchant-manage/merchant-info/list`、`merchant-manage/merchant-admin/list`、`report-configuration/report-info/list`、`report-configuration/report-group/list`、`report-configuration/report-component/list`。主控统一复验 operation-team 5 个 test files / 39 tests passed；admin typecheck 通过；只读复核确认 `apps/admin/src/api/operation-team` 已无硬编码 operation-team list API_URL。
+- Chrome MCP 页面级 Network 追加完成上述 7 个 operation-team 页面，均经 `/api-shadow/api/operation-team/**/list` 返回 200、`x-api-phase=phase3-infra`、`success=true`，admin 控制台无 error；证据文件在 `.tmp/phase7-dev-browser/operation-team-*-list.network-*`。
+- 2026-05-16 继续完成 `expense-manage` Slice C/D/E 8 个 hook-level resolver + tests：`meter-reading-type/list`、`overdue-payment-information/list`、`payment-review/list`、`refund-review/list`、`reminder-for-overdue-payments/list`、`reprint-voucher/list`、`vehicle-charge/list`、`water-and-electricity-meter-reading/list`。三个编辑子代理均先写红灯测试再改 hook；主控统一复验 expense-manage A-E 5 files / 42 tests passed；`pnpm --filter @01s-11comm/admin run typecheck` 通过；目标硬编码扫描返回 `NO_HARDCODED_TARGET_EXPENSE_SLICE_CDE`；复核子代理确认 8 个页面均引用对应 hook，未误处理 operation-team 或 `report-manage/expense-summary-table`。
+- Chrome MCP 页面级 Network 追加完成本轮 8 个 expense-manage 页面：`meter-reading-type`、`overdue-payment-information`、`payment-review`、`refund-review`、`reminder-for-overdue-payments`、`reprint-voucher`、`vehicle-charge`、`water-and-electricity-meter-reading` 均经 `/api-shadow/api/property-manage/expense-manage/**/list` 返回 200、`x-api-phase=phase3-infra`、`success=true`，admin 控制台无 error；证据文件在 `.tmp/phase7-dev-browser/expense-*-list.network-*`。
+- 本轮 Memorix 已更新：`#4260` Phase7 P1 report-manage semantic validation，`#4263` Windows admin shadow env gotcha，`#4267` operation-team/data-manage + expense-manage Slice A resolver，`#4273` operation-team/system-manage Core + expense-manage Slice B resolver，`#4276` Chrome MCP 页面证据与 property-management-company 页面 hook 修正，`#4277` 本轮浏览器验收收尾与 dev 服务接力状态，`#4282` Phase7 operation-team resolver completion，`#4289` Phase7 expense CDE resolvers completed，`#4290` Phase7 expense CDE session summary。
+- 下一轮建议继续处理 Neon main `DB_READY`、真实库样本复核、shadow-off/fallback 页面演练；前端 resolver 剩余缺口不再包含 `operation-team` 或 `expense-manage`，后续重点转向 `community-manage`、`dev-team/menu-manage` / `cache-manage`，以及 `report-manage/expense-summary-table` 路径冲突等仍未闭环项。
 
 下一个 AI 如何接力：
 
-1. 先补 P1 四端点字段映射、过滤条件、JSONB 解析/聚合语义与 tests。
-2. 再补前端 API hooks 使用 `resolveAdminApiRequestUrl`，优先覆盖 `report-manage` P1 四端点以及 2026-05-12 新增批量 list 端点，避免页面绕回旧 admin server。
-3. 再跑 Chrome MCP 页面验证，只把真实页面组件发出的 Network 请求作为 `browserEvidence`。
-4. 再按下方 Neon main 验收流程跑 `PHASE7_E2E_*` 写入-回读-清理或只读 DB 验收；用户已明确不要 Neon 测试分支。
+1. P1 四端点字段映射、过滤条件、JSONB 解析/聚合语义与 tests 已补，后续只需围绕真实库样本和 Neon main readiness 复核。
+2. 再补前端 API hooks 使用 `resolveAdminApiRequestUrl`，继续覆盖 `community-manage`、`dev-team/menu-manage` / `cache-manage` 等剩余 resolver 缺口，避免页面绕回旧 admin server；已完成的 `report-manage` P1 四端点、2026-05-12 新增批量 list 端点、2026-05-16 三个 resolver、`operation-team` 13 个 list hook 和 `expense-manage` Slice A/B/C/D/E 十四端点不再重复处理。`report-manage/expense-summary-table` 仍按 report-manage / expense-manage 路径冲突单独处理。
+3. P1 report-manage 四端点 Chrome MCP 页面验证已补；后续新增 endpoint 仍只把真实页面组件发出的 Network 请求作为 `browserEvidence`。
+4. 再按下方 Neon main 验收流程跑 `PHASE7_E2E_*` 写入-回读-清理或只读 DB 验收；本地 `__nitro/ready` 503，用户已明确不要 Neon 测试分支。
 5. 最后才评估旧服务退役；评估前不得删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server`、`D:\code\ruan-cat\01s-11comm-app`。
 
 ### Phase7 Neon main 分支 DB_READY 与写入完整性验收流程
@@ -2115,4 +2134,4 @@ artifactPath:
 
 但该记录不再作为当前完成口径。当前事实必须重新按 working tree 扫描：`apps/api` server routes = 109，`apps/admin/server/api` legacy files = 155，exact legacy path 未覆盖约 51。缺少 Chrome MCP 页面级 Network、生产 `DB_READY`、shadow-off/fallback 与必要写入回滚证据时，任何端点都不能升级为完成、可删除或旧服务可退役。
 
-后续接力仍按本节上方“Phase7 当前接力摘要”执行：先处理 P1 四个 staged-but-unverified report-manage 端点，再补前端 hooks、Chrome MCP、Neon main `PHASE7_E2E_*` 验收，最后评估旧服务退役。
+后续接力仍按本节上方“Phase7 当前接力摘要”执行：P1 四个 report-manage 端点已补本地语义和 Chrome MCP 页面 Network；下一步继续 Neon main `DB_READY` / 真实库样本 / shadow-off/fallback 验收，再补剩余前端 hooks，最后评估旧服务退役。
