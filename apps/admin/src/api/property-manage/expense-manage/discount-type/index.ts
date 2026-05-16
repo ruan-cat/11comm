@@ -4,10 +4,11 @@
  */
 
 import { useListQuery } from "@/composables/use-list-query";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { DiscountTypeListItem, DiscountTypeQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
-const API_URL = "/api/property-manage/expense-manage/discount-type/list";
+const API_URL = resolveAdminApiRequestUrl("/api/property-manage/expense-manage/discount-type/list", import.meta.env);
 
 /** 查询键前缀 */
 const QUERY_KEY_PREFIX = "discountType";
