@@ -39,6 +39,13 @@ const CONFIG_MANAGE_MODULES = [
 		importModule: () => import("../center"),
 		useQuery: (mod) => (mod as typeof import("../center")).useConfigCenterListQuery({}),
 	},
+	{
+		name: "dictionary",
+		queryKeyPrefix: "dictionary",
+		apiUrl: "/api/dev-team/config-manage/dictionary/list",
+		importModule: () => import("../dictionary"),
+		useQuery: (mod) => (mod as typeof import("../dictionary")).useDictionaryListQuery({}),
+	},
 ] satisfies ConfigManageModuleConfig[];
 
 async function importConfigManageModule(moduleConfig: ConfigManageModuleConfig, env: Record<string, string>) {
