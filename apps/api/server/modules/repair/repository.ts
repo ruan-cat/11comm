@@ -41,6 +41,7 @@ export function createInMemoryRepairRepository(seed?: Partial<InMemoryRepairSeed
 
 export function createDbRepairRepository(db: DbType): RepairRepository {
 	const fallback = createInMemoryRepairRepository();
+	const inMemoryListCoreDict = fallback.listCoreDict.bind(fallback);
 
 	return Object.assign(fallback, {
 		async listOwnerRepairs(params) {
@@ -121,7 +122,7 @@ export function createDbRepairRepository(db: DbType): RepairRepository {
 			if (params.domain === "repair_status") {
 				return mapRepairStatesToCoreDict();
 			}
-			return fallback.listCoreDict(params);
+			return inMemoryListCoreDict(params);
 		},
 		async listRepairsHaveDone(params) {
 			const conditions = [];
