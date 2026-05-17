@@ -1,3 +1,37 @@
+## v1.0.2-beta.5
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.4...v1.0.2-beta.5)
+
+### ✨ 新增功能
+
+- **admin:** ⚠️ 完成全部 admin 前端 hook resolver 迁移至 resolveAdminApiRequestUrl ([a80ade31](https://github.com/ruan-cat/11comm/commit/a80ade31))
+- **api:** 补齐 repairs-manage 3 个缺失路由实现 ([1b5a076b](https://github.com/ruan-cat/11comm/commit/1b5a076b))
+- **api:** 补齐 admin 48 个未覆盖旧路径的 CRUD route 实现 ([770fd33c](https://github.com/ruan-cat/11comm/commit/770fd33c))
+- **api:** Dev-team/config-manage 16 个 CRUD 方法接入真实 Drizzle DB ([c804084f](https://github.com/ruan-cat/11comm/commit/c804084f))
+- **api:** Setting-manage/system-manage 15 个 CUD 方法接入真实 Drizzle DB ([2e63a94a](https://github.com/ruan-cat/11comm/commit/2e63a94a))
+- **api:** Contract-manage change/draft-contract 8 个 CRUD 方法接入真实 Drizzle DB ([1c62c1eb](https://github.com/ruan-cat/11comm/commit/1c62c1eb))
+
+### 🐞 修复缺陷
+
+- **api:** 修复 callComponent/core/list 无限递归 bug ([69e6c019](https://github.com/ruan-cat/11comm/commit/69e6c019))
+
+### 📖 Documentation
+
+- **phase7:** 更新批量迁移计划进度与接力摘要 ([a4479a1c](https://github.com/ruan-cat/11comm/commit/a4479a1c))
+- **phase7:** 记录 Chrome MCP 页面 Network 验证 44/44 通过 ([058a9680](https://github.com/ruan-cat/11comm/commit/058a9680))
+- **phase7:** 记录 Neon main DB_READY 验收通过 ([0a68f7d7](https://github.com/ruan-cat/11comm/commit/0a68f7d7))
+- **phase7:** 记录 shadow-off/fallback 演练 44/44 通过 ([b3c94e2f](https://github.com/ruan-cat/11comm/commit/b3c94e2f))
+- **phase7:** 更新矩阵和计划进度，记录 48 个 CRUD route 覆盖完成 ([f9d0fe6d](https://github.com/ruan-cat/11comm/commit/f9d0fe6d))
+- **phase7:** 记录 39 个 CRUD/CUD DB 实现、HTTP gate 验证和 Upload R2 评审结论 ([1969bbac](https://github.com/ruan-cat/11comm/commit/1969bbac))
+
+#### ⚠️ Breaking Changes
+
+- **admin:** ⚠️ 完成全部 admin 前端 hook resolver 迁移至 resolveAdminApiRequestUrl ([a80ade31](https://github.com/ruan-cat/11comm/commit/a80ade31))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.2-beta.4
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.3...v1.0.2-beta.4)
