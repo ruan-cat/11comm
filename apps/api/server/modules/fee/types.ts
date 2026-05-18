@@ -257,6 +257,40 @@ export interface AdminExpenseSummaryTableListItem {
 	updateTime: string;
 }
 
+export interface AdminReportExpenseSummaryTableListItem {
+	id: string;
+	community: string;
+	houseNumberContractName: string;
+	ownerName: string;
+	ownerPhone: string;
+	feeItem: string;
+	totalHouseholds: string;
+	chargedHouseholds: string;
+	arrearsHouseholds: string;
+	arrears: string;
+	actualPayment: string;
+	currentReceivable: string;
+	currentActualReceipt: string;
+	householdChargeRate: string;
+	chargeRate: string;
+	clearanceRate: string;
+	statisticsTime: string;
+	createTime: string;
+	updateTime: string;
+	remark?: string;
+}
+
+export interface ListReportExpenseSummaryTablesParams {
+	pageIndex: number;
+	pageSize: number;
+	houseNumberContractName?: string;
+	ownerName?: string;
+	ownerPhone?: string;
+	time?: string;
+	expenseItemName?: string;
+	status?: string;
+}
+
 // --- Phase7 Batch 6a: refund-review ---
 
 export interface AdminRefundReviewListItem {

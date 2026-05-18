@@ -7,7 +7,7 @@ export * from "./schema";
 export * from "./arrears-details-list";
 export * from "./data-statistics";
 export * from "./deposit-report";
-// Note: expense-summary-table 在 expense-manage 中定义
+export * from "./expense-summary-table";
 export * from "./fee-reminder";
 export * from "./no-charge-house";
 export * from "./outstanding-fees-analysis";

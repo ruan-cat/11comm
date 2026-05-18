@@ -36,6 +36,7 @@ import type {
 	ListOverduePaymentInformationParams,
 	ListPatrolReportParams,
 	ListPaymentReviewsParams,
+	ListReportExpenseSummaryTablesParams,
 	ListVehicleChargesParams,
 	ListWaterAndElectricityMeterReadingsParams,
 	ListArrearsDetailsListParams,
@@ -72,6 +73,9 @@ export interface FeeService {
 	listExpenseSummaryTables: (
 		params: ListExpenseSummaryTablesParams,
 	) => ReturnType<FeeRepository["listExpenseSummaryTables"]>;
+	listReportExpenseSummaryTables: (
+		params: ListReportExpenseSummaryTablesParams,
+	) => ReturnType<FeeRepository["listReportExpenseSummaryTables"]>;
 	listRefundReviews: (params: ListRefundReviewsParams) => ReturnType<FeeRepository["listRefundReviews"]>;
 	listMeterReadingTypes: (params: ListMeterReadingTypesParams) => ReturnType<FeeRepository["listMeterReadingTypes"]>;
 	listOverduePaymentInformation: (
@@ -162,6 +166,8 @@ export function createFeeService(repository: FeeRepository): FeeService {
 		listReminderForOverduePayments: (params) => repository.listReminderForOverduePayments(params),
 		listReprintVouchers: (params) => repository.listReprintVouchers(params),
 		listExpenseSummaryTables: (params: ListExpenseSummaryTablesParams) => repository.listExpenseSummaryTables(params),
+		listReportExpenseSummaryTables: (params: ListReportExpenseSummaryTablesParams) =>
+			repository.listReportExpenseSummaryTables(params),
 		listRefundReviews: (params: ListRefundReviewsParams) => repository.listRefundReviews(params),
 		listMeterReadingTypes: (params: ListMeterReadingTypesParams) => repository.listMeterReadingTypes(params),
 		listOverduePaymentInformation: (params: ListOverduePaymentInformationParams) =>

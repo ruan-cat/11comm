@@ -2,6 +2,7 @@
 import type {
 	AdminExpenseItemSettingListItem,
 	AdminExpenseSummaryTableListItem,
+	AdminReportExpenseSummaryTableListItem,
 	AdminMeterReadingTypeListItem,
 	AdminRefundReviewListItem,
 	ArrearsDetailsListItem,
@@ -215,6 +216,37 @@ export function createAdminFeeAdapter(service: FeeService) {
 				pageSize,
 				time: blankToUndefined(input.time),
 				expenseItemId: blankToUndefined(input.expenseItemId),
+				expenseItemName: blankToUndefined(input.expenseItemName),
+				status: blankToUndefined(input.status),
+			});
+			return adminSuccess({
+				list: result.list,
+				total: result.total,
+				pageIndex,
+				pageSize,
+				totalPages: Math.ceil(result.total / pageSize),
+			});
+		},
+		async listReportExpenseSummaryTables(input: {
+			page?: number;
+			pageIndex?: number;
+			pageSize?: number;
+			houseNumberContractName?: string;
+			ownerName?: string;
+			ownerPhone?: string;
+			time?: string;
+			expenseItemName?: string;
+			status?: string;
+		}): Promise<JsonVO<PageDTO<AdminReportExpenseSummaryTableListItem>>> {
+			const pageIndex = toNumber(input.page ?? 1, 1);
+			const pageSize = toNumber(input.pageSize, 20);
+			const result = await service.listReportExpenseSummaryTables({
+				pageIndex,
+				pageSize,
+				houseNumberContractName: blankToUndefined(input.houseNumberContractName),
+				ownerName: blankToUndefined(input.ownerName),
+				ownerPhone: blankToUndefined(input.ownerPhone),
+				time: blankToUndefined(input.time),
 				expenseItemName: blankToUndefined(input.expenseItemName),
 				status: blankToUndefined(input.status),
 			});

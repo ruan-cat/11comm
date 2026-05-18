@@ -16,8 +16,8 @@ import { useI18nConfig } from "@/composables/use-i18n-config";
 import BuildChart from "./components/build.vue";
 import PaymentChart from "./components/payment.vue";
 import {
-	type ExpenseSummaryTableListItem,
-	type ExpenseSummaryTableQueryParams,
+	type ReportExpenseSummaryTableListItem,
+	type ReportExpenseSummaryTableQueryParams,
 	expenseItemNameOptions,
 } from "@01s-11comm/type";
 import { useExpenseSummaryTableListQuery } from "@/api/property-manage/report-manage/expense-summary-table";
@@ -145,14 +145,39 @@ const columns = computed<TableColumnList>(() => [
 ]);
 
 /** 表格操作栏组件配置 */
+const reportTableColumnProps = [
+	undefined,
+	"community",
+	"houseNumberContractName",
+	"ownerName",
+	"ownerPhone",
+	"feeItem",
+	"totalHouseholds",
+	"chargedHouseholds",
+	"arrearsHouseholds",
+	"arrears",
+	"actualPayment",
+	"currentReceivable",
+	"currentActualReceipt",
+	"householdChargeRate",
+	"chargeRate",
+	"clearanceRate",
+	"statisticsTime",
+] as const;
+
 const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	title: transformI18n($t("property-manage_report-manage.expense-summary-table.pageTitle")),
-	columns: columns.value,
+	columns: columns.value.map((column, index) => {
+		const prop = reportTableColumnProps[index];
+		return prop ? { ...column, prop } : column;
+	}),
 }));
 
-const plusSearchModelRef: FieldValues & Partial<ExpenseSummaryTableQueryParams> = {
+const plusSearchModelRef: FieldValues & Partial<ReportExpenseSummaryTableQueryParams> = {
+	houseNumberContractName: "",
+	ownerName: "",
+	ownerPhone: "",
 	time: "",
-	expenseItemId: "",
 	expenseItemName: "",
 };
 const plusSearchDefaultValues = cloneDeep(plusSearchModelRef);

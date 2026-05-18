@@ -57,6 +57,7 @@ import type {
 	OweFeeItem,
 	PayFeeDetailReportItem,
 	AdminExpenseSummaryTableListItem,
+	AdminReportExpenseSummaryTableListItem,
 	AdminMeterReadingTypeListItem,
 	VehicleChargeListItem,
 	WaterAndElectricityMeterReadingListItem,
@@ -86,6 +87,7 @@ import type {
 	ListOutstandingFeesAnalysisParams,
 	PatrolReportListItem,
 	ListPatrolReportParams,
+	ListReportExpenseSummaryTablesParams,
 	CancelFeeListItem,
 	ListCancelFeesParams,
 	ContracteChargeListItem,
@@ -136,6 +138,9 @@ export interface FeeRepository {
 	listExpenseSummaryTables: (
 		params: ListExpenseSummaryTablesParams,
 	) => Promise<{ list: AdminExpenseSummaryTableListItem[]; total: number }>;
+	listReportExpenseSummaryTables: (
+		params: ListReportExpenseSummaryTablesParams,
+	) => Promise<{ list: AdminReportExpenseSummaryTableListItem[]; total: number }>;
 	listRefundReviews: (params: ListRefundReviewsParams) => Promise<{ list: AdminRefundReviewListItem[]; total: number }>;
 	listMeterReadingTypes: (
 		params: ListMeterReadingTypesParams,
@@ -649,6 +654,46 @@ export function createDbFeeRepository(db: DbType): FeeRepository {
 						updateTime: formatDateTime(item.updateTime),
 					};
 				}),
+			};
+		},
+		async listReportExpenseSummaryTables(params) {
+			const conditions = [];
+			if (params.time) {
+				conditions.push(sql`CAST(${rptExpenseSummaries.periodStart} AS text) LIKE ${`%${params.time}%`}`);
+			}
+			if (params.houseNumberContractName) {
+				conditions.push(like(rptExpenseSummaries.building, `%${params.houseNumberContractName}%`));
+			}
+			if (params.expenseItemName) {
+				conditions.push(
+					sql`(${rptExpenseSummaries.expenseItem} LIKE ${`%${params.expenseItemName}%`} OR ${
+						rptExpenseSummaries.expenseType
+					} LIKE ${`%${params.expenseItemName}%`})`,
+				);
+			}
+			if (params.status === "enabled") {
+				conditions.push(sql`CAST(${rptExpenseSummaries.receivableTotal} AS numeric) > 0`);
+			}
+			if (params.status === "disabled") {
+				conditions.push(sql`COALESCE(CAST(${rptExpenseSummaries.receivableTotal} AS numeric), 0) <= 0`);
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(rptExpenseSummaries)
+				.where(where);
+			const rows = await db
+				.select()
+				.from(rptExpenseSummaries)
+				.where(where)
+				.orderBy(desc(rptExpenseSummaries.createTime))
+				.limit(params.pageSize)
+				.offset((params.pageIndex - 1) * params.pageSize);
+
+			return {
+				total: Number(countResult[0]?.total || 0),
+				list: rows.map(toReportExpenseSummaryTableItem),
 			};
 		},
 		async listRefundReviews(params) {
@@ -2080,6 +2125,11 @@ class InMemoryFeeRepository implements FeeRepository {
 		return paginate(data, params.pageIndex, params.pageSize);
 	}
 
+	async listReportExpenseSummaryTables(params: ListReportExpenseSummaryTablesParams) {
+		const data: AdminReportExpenseSummaryTableListItem[] = [];
+		return paginate(data, params.pageIndex, params.pageSize);
+	}
+
 	async listRefundReviews(params: ListRefundReviewsParams) {
 		let data = [...this.refundReviews];
 		if (params.applicant) {
@@ -2508,6 +2558,57 @@ function toAdminHouseCharge(fee: FeeItem): AdminHouseChargeListItem {
 		createTime: fee.createTime,
 		updateTime: fee.updateTime,
 	};
+}
+
+function toReportExpenseSummaryTableItem(item: {
+	id: string;
+	communityId?: string | null;
+	periodStart?: string | Date | null;
+	periodEnd?: string | Date | null;
+	expenseType?: string | null;
+	receivableTotal?: string | number | null;
+	receivedTotal?: string | number | null;
+	outstandingTotal?: string | number | null;
+	building?: string | null;
+	expenseItem?: string | null;
+	remark?: string | null;
+	createTime?: Date | string | number | null;
+	updateTime?: Date | string | number | null;
+}): AdminReportExpenseSummaryTableListItem {
+	const receivableTotal = toNumber(item.receivableTotal);
+	const receivedTotal = toNumber(item.receivedTotal);
+	const outstandingTotal = toNumber(item.outstandingTotal);
+	const chargeRate = formatPercentage(receivedTotal, receivableTotal);
+
+	return {
+		id: item.id,
+		community: toStringOrEmpty(item.communityId),
+		houseNumberContractName: toStringOrEmpty(item.building),
+		ownerName: "",
+		ownerPhone: "",
+		feeItem: toStringOrEmpty(item.expenseItem || item.expenseType),
+		totalHouseholds: "",
+		chargedHouseholds: "",
+		arrearsHouseholds: "",
+		arrears: toStringOrEmpty(item.outstandingTotal || "0"),
+		actualPayment: toStringOrEmpty(item.receivedTotal || "0"),
+		currentReceivable: toStringOrEmpty(item.receivableTotal || "0"),
+		currentActualReceipt: toStringOrEmpty(item.receivedTotal || "0"),
+		householdChargeRate: "",
+		chargeRate,
+		clearanceRate: outstandingTotal <= 0 ? "100%" : chargeRate,
+		statisticsTime: toStringOrEmpty(item.periodStart),
+		remark: item.remark || "",
+		createTime: formatDateTime(item.createTime),
+		updateTime: formatDateTime(item.updateTime),
+	};
+}
+
+function formatPercentage(numerator: number, denominator: number): string {
+	if (denominator <= 0) {
+		return "0%";
+	}
+	return `${((numerator / denominator) * 100).toFixed(2)}%`;
 }
 
 export function toPaymentDetailsFormItem(item: PayFeeDetailReportItem): PaymentDetailsFormListItem {
