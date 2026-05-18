@@ -24,7 +24,7 @@
 		"report": "pnpm build",
 		"preview": "pnpm vite:preview",
 		"preview:build": "pnpm build && pnpm preview",
-		"vite:dev": "NODE_OPTIONS=--max-old-space-size=4096 vite --mode development --configLoader runner",
+		"vite:dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 VITE_DISABLE_AUTOGENERATION_IMPORT_FILE=true vite --mode development --configLoader runner",
 		"vite:build:prod": "NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
 		"vite:build:prod:cloudflare": "NITRO_PRESET=cloudflare_module NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
 		"vite:build:prod:github": "NITRO_PRESET=github_pages NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",

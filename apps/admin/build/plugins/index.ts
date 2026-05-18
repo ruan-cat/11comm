@@ -60,6 +60,7 @@ export function getPluginsList(
 	env: ImportMetaEnv,
 ): PluginOption[] {
 	const lifecycle = process.env.npm_lifecycle_event;
+	const enableAutogenerationImportFile = process.env.VITE_DISABLE_AUTOGENERATION_IMPORT_FILE !== "true";
 
 	const VITE_IS_REVERSE_PROXY = env.VITE_IS_REVERSE_PROXY;
 	function IS_REVERSE_PROXY() {
@@ -152,7 +153,7 @@ export function getPluginsList(
 		AutoImport,
 
 		// 自动导入插件
-		AutogenerationImportFile,
+		enableAutogenerationImportFile ? AutogenerationImportFile : null,
 
 		// 自动导入vue组件的插件
 		Components,
