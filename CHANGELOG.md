@@ -1,3 +1,34 @@
+## v1.0.2-beta.6
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.5...v1.0.2-beta.6)
+
+### ✨ 新增功能
+
+- **report-manage:** ⚠️ 接入费用汇总表独立 Nitro 链路 ([614e8f07](https://github.com/ruan-cat/11comm/commit/614e8f07))
+- **api:** 补齐阶段 7 admin 列表运行时清单 ([6696f3f1](https://github.com/ruan-cat/11comm/commit/6696f3f1))
+
+### 📖 Documentation
+
+- **phase7:** 同步费用汇总表迁移进度 ([04a8e56c](https://github.com/ruan-cat/11comm/commit/04a8e56c))
+- **phase7:** 记录 admin 列表迁移接力状态 ([6bf1dbc2](https://github.com/ruan-cat/11comm/commit/6bf1dbc2))
+
+### ✅ Tests
+
+- **report-manage:** 覆盖费用汇总表迁移链路 ([121f7c00](https://github.com/ruan-cat/11comm/commit/121f7c00))
+- **api:** 覆盖阶段 7 admin 列表护栏 ([f722833a](https://github.com/ruan-cat/11comm/commit/f722833a))
+
+### 🔧 更新配置
+
+- **admin:** 修复 Windows 开发服务启动 ([9c2a62c0](https://github.com/ruan-cat/11comm/commit/9c2a62c0))
+
+#### ⚠️ Breaking Changes
+
+- **report-manage:** ⚠️ 接入费用汇总表独立 Nitro 链路 ([614e8f07](https://github.com/ruan-cat/11comm/commit/614e8f07))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.2-beta.5
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.4...v1.0.2-beta.5)
