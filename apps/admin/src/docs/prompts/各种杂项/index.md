@@ -471,19 +471,19 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 在配置 vercel 时，你可以参考 notes-my-pull-requests 这个 vercel 项目，这个也是属于在 monorepo 内部署 nuxt/nitro 项目的，重点模仿其使用的命令。避免出现 monorepo+nitro 在 vercel 部署时出现的故障。
 
-## 041 <!-- TODO: 正在做 --> 推进阶段 7 的大批量改造任务
+## 041 <!-- 该阶段内容被拆分，移交给其他任务来完成，任务存储和进度格式被改造调整 --> 推进阶段 7 的大批量改造任务
 
-开始执行 docs\superpowers\plans\2026-05-10-phase7-batch-migration-plan.md ，我的核心目的是为了执行 docs\superpowers\specs\2026-04-25-11comm-app-monorepo-api-migration-design.md 的剩余阶段 7 的东西。
+开始执行 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/tasks.md`，我的核心目的是继续完成阶段 7 的剩余迁移任务。旧 Superpowers 任务载体已迁入 `docs/superpowers/phase7-openspec-migration-index.md`，后续不得再把旧矩阵、旧批次计划或旧总设计当作执行源。
 
-严格按照 docs\superpowers\plans\2026-05-10-phase7-batch-migration-plan.md 计划来完成任务。
+严格按照 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/` 下的 OpenSpec 任务体系来完成任务。
 
-认真落实 `docs\superpowers\reports\phase7-endpoint-migration-matrix.md` 的修改矩阵。确保迁移改造不要有任何形式的缺漏。
+认真落实 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/specs/phase7-evidence-model/spec.md` 的证据模型和 `tasks.md` 的任务清单。确保迁移改造不要有任何形式的缺漏。
 
 ---
 
 ### 及时更新进度
 
-每完成一小部分，就及时更新任务进度。及时在 `docs\superpowers\reports\phase7-endpoint-migration-matrix.md` 、 `docs\superpowers\plans\2026-05-10-phase7-batch-migration-plan.md` 和 `docs\superpowers\specs\2026-04-25-11comm-app-monorepo-api-migration-design.md` 更新任务进度，避免出现意外的中断，导致进度丢失错配；
+每完成一小部分，就及时更新任务进度。及时在 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/tasks.md`、`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` 和 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` 更新任务进度、验证证据和风险发现，避免出现意外的中断，导致进度丢失错配；
 
 及时用 memorix 更新跨 AI，跨 agent 式的通用全局记忆。每完成一小部分，就及时更新任务进度。确保下一个独立的 AI 会话，能够根据你写的 markdown 信息，和全局的 memorix 记忆，继续完成下一步的工作。确保其他 AI 在全新的上下文内，清楚如何接力接手工作。
 
@@ -501,3 +501,25 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
    - 检查复核子代理成员。专门用于检查完成效果，检查是否按照文档或者是用户的要求完成任务。如果没有完成、完成缺漏、完成质量差。就通知主代理，去新建新的`编辑子代理成员`来继续完成修改，直到完成。
 4. 如果你仍旧在处理同一个任务，请你在现成的 agent team 子代理团队内继续新建、新增 agent team 成员。
 5. 及时关闭掉已经完成任务的 agent team 子代理成员。优雅的关闭掉子代理成员。
+
+## 042 <!-- TODO: --> 重构任务执行与存储模式，便于实现长任务连续执行
+
+按照全局技能 do-long-task 的要求，我准备大规模重构以下三个旧任务载体。
+
+- 旧 Phase7 endpoint 状态矩阵。
+- 旧 Phase7 batch 执行计划。
+- 旧 monorepo API 迁移总设计。
+
+我不想继续长期维护这三个文件了，我想转换任务进度的文件存储体系，从基于 superpower 的这几个文件，改造成基于 `do-long-task` 技能的要求。
+
+1. 首先，我需要你结合 openspec，先改造成完整的 openspec 任务体系文件。
+2. 严格按照 openspec 的任务体系文件来组织规划。
+3. 确保新的 openspec 任务，还能够继续更近清楚阶段 7 的东西。
+4. 确保后续执行 openspec 任务时，还能够认真执行 memorix。
+5. 最后全面删除这三个文件，这三个文件太大，太臃肿了。
+
+我没想到这一系列任务非常复杂，因此任务记录，拆分，长期维护的体系，也应该及时换成 openspec 体系，这个更加适合长期任务。
+
+这是一个容易产生遗漏遗忘，缺省的错误。很容易出现记忆丢失。你应该认真阅读这三个文件，结合 memorix，查看这几个任务体系文件承载的历史。
+
+我们的本质是改造任务执行与记录的载体，从基于 superpower 的三个 markdown 文件，改造成基于 openspec 的一系列文件。
