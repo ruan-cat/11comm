@@ -53,7 +53,8 @@ Phase6 只处理接入、切流、回退和验收证据，不退役旧服务。
 
 **文件：**
 
-- 只读：`docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+- 只读：`docs/superpowers/phase7-openspec-migration-index.md`（旧 app monorepo API 迁移总设计稳定索引）
+- 只读：`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`（canonical OpenSpec change）
 - 只读：`docs/superpowers/plans/2026-04-26-11comm-app-monorepo-api-migration-phase5.md`
 - 只读：`apps/admin/src/utils/http/api-base-url.ts`
 - 只读：`apps/admin/vite.config.ts`
@@ -506,7 +507,8 @@ Test-Path "D:\code\ruan-cat\01s-11comm-app"
 **文件：**
 
 - 修改：`docs/superpowers/reports/2026-04-27-phase6-api-cutover-record.md`
-- 只读：`docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+- 只读：`docs/superpowers/phase7-openspec-migration-index.md`（旧 app monorepo API 迁移总设计稳定索引）
+- 只读：`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`（canonical OpenSpec change）
 - 验证：`git status --short`
 
 - [x] **步骤 1：运行最终验证组合**
@@ -546,7 +548,7 @@ pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/runtime-base-url
 
 ```powershell
 git status --short
-git diff -- docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md docs/superpowers/plans/2026-04-27-11comm-app-monorepo-api-migration-phase6.md
+git diff -- docs/superpowers/phase7-openspec-migration-index.md openspec/changes/migrate-superpowers-docs-to-openspec-longtask docs/superpowers/plans/2026-04-27-11comm-app-monorepo-api-migration-phase6.md
 ```
 
 预期：

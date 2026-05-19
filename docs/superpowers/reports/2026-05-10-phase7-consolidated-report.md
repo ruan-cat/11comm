@@ -1138,7 +1138,7 @@ _探索团队：phase7-exploration（4 个并行探索子代理）_
 | `apps/api/tests/legacy/floor-legacy-endpoints.test.ts`              | 新增 14 个 Vitest 测试覆盖 list/detail GET/POST                                                                                        |
 | `apps/api/tests/infra/endpoint-manifest.test.ts`                    | 更新 manifest 断言                                                                                                                     |
 | `apps/api/tests/infra/phase7-api-contracts.test.ts`                 | 新增 floor 两个 entry 的 app-shadow-allowlist + dispatch envelope 断言                                                                 |
-| `docs/superpowers/reports/phase7-endpoint-migration-matrix.md`      | App apps/api legacy manifest 从 19 改 21；P2-floor 行更新 coverageKind=dataSourceStatus=targetStatus                                   |
+| `docs/superpowers/phase7-openspec-migration-index.md`               | 旧 endpoint 矩阵已迁移到 OpenSpec 入口；本节保留 App apps/api legacy manifest 从 19 改 21 与 P2-floor 行状态更新的历史说明             |
 | `docs/superpowers/reports/2026-05-10-phase7-consolidated-report.md` | 更新 Batch2 执行摘要                                                                                                                   |
 
 ### 9.2 测试命令
@@ -1193,7 +1193,7 @@ pnpm -F @01s-11comm/api run typecheck
 
 ### 10.2 下一步验收边界
 
-- 已更新 `phase7-endpoint-migration-matrix.md` 中 repair 只读行的 `dataSourceStatus=db-read-repository-wired`；`saveOwnerRepair` 仍保持 `blocked-for-execution` / `in-memory-only`，默认服务端 guard 已补齐，但未声明写入 DB 完成。
+- 旧 endpoint 矩阵中 repair 只读行曾记录 `dataSourceStatus=db-read-repository-wired`；`saveOwnerRepair` 仍保持 `blocked-for-execution` / `in-memory-only`，默认服务端 guard 已补齐，但未声明写入 DB 完成。旧矩阵现已迁入 `docs/superpowers/phase7-openspec-migration-index.md` 指向的 OpenSpec 入口。
 - 字段映射覆盖 `rpRepairOrders.id -> repairId`、工单号、报修人、电话、位置、类型、状态与时间格式；`communityId` 在当前 schema 无字段，只能兼容默认 `COMM_001`，不作为强过滤保证。
 - 状态码兼容已补齐：DB enum `pending/processing/completed/cancelled/paused` 对外映射为旧 app `statusCd` 数字码 `10001/10003/10004/10005/10006` 与中文状态名；`params.statusCd` 同时兼容旧数字码和 DB enum 入参。
 - `listRepairSettings` 已修正为以 `rpRepairSettings` 为主，`rpRepairTypes` 只补名称或在 settings 为空时作为兼容 fallback；缺失语义字段使用兼容默认值，不代表完整语义迁移。
@@ -1421,7 +1421,7 @@ Tests       119 passed | 5 skipped (124)
 
 #### matrix 文档更新
 
-`phase7-endpoint-migration-matrix.md` 三处变更：
+旧 endpoint 矩阵三处变更已迁入 `docs/superpowers/phase7-openspec-migration-index.md` 指向的 OpenSpec 入口：
 
 - **§1 基线统计**：canonical route 28→45，old path exact covered 22→39
 - **§3 矩阵行**：P2-admin-house-a/b/c 和 P2-admin-community 四行从 `not-covered` / `unknown-needs-triage` / `unknown-needs-triage` 更新为 `old-path-exact-covered` / `db-read-repository-wired` / `candidate-after-evidence`

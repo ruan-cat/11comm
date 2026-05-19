@@ -16,7 +16,7 @@
 
 允许范围：
 
-- 读取 `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`。
+- 读取 `docs/superpowers/phase7-openspec-migration-index.md`（旧 app monorepo API 迁移总设计稳定索引）与 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`（canonical OpenSpec change）。
 - 读取 `docs/superpowers/plans/2026-04-25-11comm-app-monorepo-api-migration-phase4.md` 与 Phase4 汇总报告。
 - 读取 `apps/admin/src/router/rank/rank-route-keys.ts`。
 - 读取 `apps/admin/server/api/**`、`apps/admin/src/api/**`、`apps/admin/src/pages/**`，作为后台旧接口和页面消费证据。
@@ -69,7 +69,8 @@ Wave 5A 通过条件：
 
 ### 只读证据文件
 
-- `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+- `docs/superpowers/phase7-openspec-migration-index.md`（旧 app monorepo API 迁移总设计稳定索引）
+- `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`（canonical OpenSpec change）
 - `docs/superpowers/plans/2026-04-25-11comm-app-monorepo-api-migration-phase4.md`
 - `docs/superpowers/reports/2026-04-25-phase4-consolidated-report.md`
 - `docs/superpowers/reports/2026-04-26-app-response-format-unification-research.md`

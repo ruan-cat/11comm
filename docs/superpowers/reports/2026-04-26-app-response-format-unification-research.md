@@ -70,8 +70,8 @@
 
 ### 设计文档证据
 
-- `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md:391-392` 明确 app adapter 必须保留 `/app/**` legacy 路径、GET/POST 兼容、旧字段名和旧响应结构；admin adapter 必须返回 `JsonVO/PageDTO`。
-- `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md:431-455` 明确 `apps/api/server/modules/{domain}` 不是照搬 app/admin，而是一套 service/repository 加两套 adapter。
+- 旧 app monorepo API 迁移总设计已迁移至稳定索引 `docs/superpowers/phase7-openspec-migration-index.md`，canonical OpenSpec change 为 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`；原设计中明确 app adapter 必须保留 `/app/**` legacy 路径、GET/POST 兼容、旧字段名和旧响应结构；admin adapter 必须返回 `JsonVO/PageDTO`。
+- 旧 app monorepo API 迁移总设计已迁移至稳定索引 `docs/superpowers/phase7-openspec-migration-index.md`，canonical OpenSpec change 为 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`；原设计中明确 `apps/api/server/modules/{domain}` 不是照搬 app/admin，而是一套 service/repository 加两套 adapter。
 
 ### app 前端消费证据
 

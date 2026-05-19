@@ -110,7 +110,8 @@ Wave 4A 首批运行时只覆盖这些业务路径：
 
 **Files:**
 
-- Read: `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+- Read: `docs/superpowers/phase7-openspec-migration-index.md`（旧 app monorepo API 迁移总设计稳定索引）
+- Read: `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`（canonical OpenSpec change）
 - Read: `docs/superpowers/specs/2026-04-25-11comm-admin-app-support-feature-expansion-design.md`
 - Read: `docs/superpowers/plans/2026-04-25-11comm-app-monorepo-api-migration-phase3.md`
 - Read: `apps/admin/src/router/rank/rank-route-keys.ts`

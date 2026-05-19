@@ -1,6 +1,6 @@
 <!-- TODO: 长任务 未开始
 
-	先完成 docs\superpowers\specs\2026-04-25-11comm-app-monorepo-api-migration-design.md
+	先完成旧 app monorepo API 迁移总设计；该设计已迁移至稳定索引 docs\superpowers\phase7-openspec-migration-index.md，canonical OpenSpec change 为 openspec\changes\migrate-superpowers-docs-to-openspec-longtask\
  -->
 
 # 2026-04-25 11comm Admin 支撑 App 的功能扩张总规格
@@ -9,7 +9,7 @@
 
 本文档是 `01s-11comm-app` 迁入 `01s-11comm` 后，admin 后台为了真正支撑 app 业务所需补齐的长期功能规格。
 
-它和 `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md` 是同一轮迁移设计的上下游关系：
+它和旧 app monorepo API 迁移总设计是同一轮迁移设计的上下游关系；旧总设计已迁移至稳定索引 `docs/superpowers/phase7-openspec-migration-index.md`，canonical OpenSpec change 为 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`：
 
 - 迁移设计文档回答“app 如何迁入 monorepo、唯一 Nitro API 放在哪里、哪些事情先不要做”。
 - 本文档回答“迁入以后，admin 还缺哪些后台管理能力，未来应该按什么业务域逐步补齐”。

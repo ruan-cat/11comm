@@ -113,7 +113,8 @@ Phase3 禁止范围如下：
 
 **Files:**
 
-- Read: `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+- Read: `docs/superpowers/phase7-openspec-migration-index.md`（旧 app monorepo API 迁移总设计稳定索引）
+- Read: `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`（canonical OpenSpec change）
 - Read: `docs/superpowers/plans/2026-04-25-11comm-app-monorepo-api-migration-phase1.md`
 - Read: `docs/superpowers/plans/2026-04-25-11comm-app-monorepo-api-migration-phase2.md`
 - Read: `docs/superpowers/reports/2026-04-26-phase2-consolidated-report.md`

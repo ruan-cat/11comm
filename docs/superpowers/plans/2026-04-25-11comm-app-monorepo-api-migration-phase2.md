@@ -141,7 +141,8 @@ Phase2 不负责：
 
 ### Phase2 Read-Only References
 
-- `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+- `docs/superpowers/phase7-openspec-migration-index.md`（旧 app monorepo API 迁移总设计稳定索引）
+- `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`（canonical OpenSpec change）
 - `docs/superpowers/plans/2026-04-25-11comm-app-monorepo-api-migration-phase1.md`
 - `apps/app/src/api/fee.ts`
 - `apps/app/server/modules/fee/endpoints.ts`
@@ -176,7 +177,8 @@ Phase2 不负责：
 
 **Files:**
 
-- Read: `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md`
+- Read: `docs/superpowers/phase7-openspec-migration-index.md`（旧 app monorepo API 迁移总设计稳定索引）
+- Read: `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`（canonical OpenSpec change）
 - Read: `docs/superpowers/plans/2026-04-25-11comm-app-monorepo-api-migration-phase1.md`
 - Read: `pnpm-workspace.yaml`
 - Read: `turbo.json`

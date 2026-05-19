@@ -171,7 +171,8 @@ Codex 二次复核补充：
 Read:
 
 ```powershell
-Get-Content -Raw -Encoding UTF8 docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md
+Get-Content -Raw -Encoding UTF8 docs/superpowers/phase7-openspec-migration-index.md
+Get-ChildItem openspec/changes/migrate-superpowers-docs-to-openspec-longtask
 ```
 
 Expected:

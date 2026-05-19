@@ -4,7 +4,7 @@
 
 本报告是 Phase2 唯一汇总报告，按用户本轮要求合并 `docs/superpowers/reports` 下 8 份新增临时报告后形成。合并目标是保留可验收结论、验证证据和风险记录，移除重复的探索、编辑、复核碎片报告。
 
-Phase2 对应 `docs/superpowers/specs/2026-04-25-11comm-app-monorepo-api-migration-design.md` 中的范围：最小可运行 `apps/api` Nitro 影子服务，加上 fee/payment/report 首批纵切样板。Phase2 不是纯基础设施空壳，也不是 repair/resource/parking 等多模块并行迁移。CI workflow 修复属于 Phase2 到 Phase3 的交接验收补强。
+Phase2 对应旧 app monorepo API 迁移总设计中的范围；旧总设计已迁移至稳定索引 `docs/superpowers/phase7-openspec-migration-index.md`，canonical OpenSpec change 为 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`：最小可运行 `apps/api` Nitro 影子服务，加上 fee/payment/report 首批纵切样板。Phase2 不是纯基础设施空壳，也不是 repair/resource/parking 等多模块并行迁移。CI workflow 修复属于 Phase2 到 Phase3 的交接验收补强。
 
 ## 阶段 2 完成结论
 
