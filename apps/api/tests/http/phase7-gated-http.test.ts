@@ -5,6 +5,93 @@ const apiBaseUrl = process.env.PHASE7_API_BASE_URL;
 const runHttpTests = process.env.RUN_PHASE7_HTTP_TESTS === "1" && Boolean(apiBaseUrl);
 const describeWhenEnabled = runHttpTests ? describe : describe.skip;
 
+const operationTeamAdminListEndpoints = [
+	"/api/operation-team/data-manage/community-information/list",
+	"/api/operation-team/data-manage/property-company/list",
+	"/api/operation-team/data-manage/property-management-company/list",
+	"/api/operation-team/system-manage/change-password/list",
+	"/api/operation-team/system-manage/system-config/list",
+	"/api/operation-team/system-manage/register-protocol/list",
+	"/api/operation-team/system-manage/community-configuration/list",
+	"/api/operation-team/system-manage/initialize-cell/list",
+	"/api/operation-team/merchant-manage/merchant-info/list",
+	"/api/operation-team/merchant-manage/merchant-admin/list",
+	"/api/operation-team/report-configuration/report-info/list",
+	"/api/operation-team/report-configuration/report-group/list",
+	"/api/operation-team/report-configuration/report-component/list",
+] as const;
+
+const expenseManageAdminListEndpoints = [
+	"/api/property-manage/expense-manage/cancel-fee/list",
+	"/api/property-manage/expense-manage/contracte-charge/list",
+	"/api/property-manage/expense-manage/discount-apply/list",
+	"/api/property-manage/expense-manage/discount-setting/list",
+	"/api/property-manage/expense-manage/discount-type/list",
+	"/api/property-manage/expense-manage/expense-summary-table/list",
+	"/api/property-manage/expense-manage/meter-reading-type/list",
+	"/api/property-manage/expense-manage/overdue-payment-information/list",
+	"/api/property-manage/expense-manage/payment-review/list",
+	"/api/property-manage/expense-manage/refund-review/list",
+	"/api/property-manage/expense-manage/reminder-for-overdue-payments/list",
+	"/api/property-manage/expense-manage/reprint-voucher/list",
+	"/api/property-manage/expense-manage/vehicle-charge/list",
+	"/api/property-manage/expense-manage/water-and-electricity-meter-reading/list",
+] as const;
+
+const reportManageAdminListEndpoints = [
+	"/api/property-manage/report-manage/arrears-details-list/list",
+	"/api/property-manage/report-manage/data-statistics/list",
+	"/api/property-manage/report-manage/deposit-report/list",
+	"/api/property-manage/report-manage/expense-summary-table/list",
+	"/api/property-manage/report-manage/fee-reminder/list",
+	"/api/property-manage/report-manage/no-charge-house/list",
+	"/api/property-manage/report-manage/outstanding-fees-analysis/list",
+	"/api/property-manage/report-manage/owner-payment-details/list",
+	"/api/property-manage/report-manage/patrol-report/list",
+	"/api/property-manage/report-manage/repair-report-form/list",
+	"/api/property-manage/report-manage/repair-reports-summary-table/list",
+	"/api/property-manage/report-manage/statement-expenses/list",
+] as const;
+
+const patrolAdminListEndpoints = [
+	"/api/property-manage/patrol-manage/detail/list",
+	"/api/property-manage/patrol-manage/item/list",
+	"/api/property-manage/patrol-manage/path/list",
+	"/api/property-manage/patrol-manage/plan/list",
+	"/api/property-manage/patrol-manage/point/list",
+	"/api/property-manage/patrol-manage/task/list",
+] as const;
+
+const parkingAdminListEndpoints = [
+	"/api/property-manage/parking-manage/carport-apply/list",
+	"/api/property-manage/parking-manage/carport-info/list",
+	"/api/property-manage/parking-manage/owner-vehicle/list",
+	"/api/property-manage/parking-manage/parking-lot/list",
+] as const;
+
+const communityManageAdminListEndpoints = [
+	"/api/property-manage/community-manage/building-space-structure-diagram/list",
+	"/api/property-manage/community-manage/handing-business/list",
+	"/api/property-manage/community-manage/house-decoration/list",
+	"/api/property-manage/community-manage/my/list",
+	"/api/property-manage/community-manage/notice/list",
+	"/api/property-manage/community-manage/parking-space-structure-diagram/list",
+	"/api/property-manage/community-manage/property-register/list",
+] as const;
+
+const housePropertyManageAdminListEndpoints = [
+	"/api/property-manage/house-property-manage/house/list",
+	"/api/property-manage/house-property-manage/invoice/list",
+	"/api/property-manage/house-property-manage/invoice-title/list",
+	"/api/property-manage/house-property-manage/owner-account/list",
+	"/api/property-manage/house-property-manage/owner-information/list",
+	"/api/property-manage/house-property-manage/owner-member/list",
+	"/api/property-manage/house-property-manage/owners-committee/list",
+	"/api/property-manage/house-property-manage/reserve-venue/list",
+	"/api/property-manage/house-property-manage/reserve-venue-order/list",
+	"/api/property-manage/house-property-manage/site-management/list",
+] as const;
+
 describeWhenEnabled("phase7 gated apps/api http verification", () => {
 	const baseUrl = apiBaseUrl as string;
 
@@ -196,6 +283,168 @@ describeWhenEnabled("phase7 gated apps/api http verification", () => {
 			]),
 		);
 		expect(states.body).not.toHaveProperty("success");
+	}, 30_000);
+
+	test("serves all admin expense-manage canonical list endpoints over real HTTP", async () => {
+		for (const path of expenseManageAdminListEndpoints) {
+			const response = await fetchJson(`${baseUrl}${path}`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ pageIndex: 1, pageSize: 10 }),
+			});
+
+			expect(response.status).toBe(200);
+			expect(response.body).toMatchObject({
+				success: true,
+				code: 200,
+				message: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+				},
+			});
+			expect(response.body).not.toHaveProperty("msg");
+		}
+	}, 30_000);
+
+	test("serves all admin report-manage canonical list endpoints over real HTTP", async () => {
+		for (const path of reportManageAdminListEndpoints) {
+			const response = await fetchJson(`${baseUrl}${path}`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ pageIndex: 1, pageSize: 10 }),
+			});
+
+			expect(response.status).toBe(200);
+			expect(response.body).toMatchObject({
+				success: true,
+				code: 200,
+				message: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+				},
+			});
+			expect(response.body).not.toHaveProperty("msg");
+		}
+	}, 30_000);
+
+	test("serves all admin repair canonical list endpoints over real HTTP", async () => {
+		for (const path of [
+			"/api/property-manage/repairs-manage/repairs-todo/list",
+			"/api/property-manage/repairs-manage/repairs-setting/list",
+			"/api/property-manage/repairs-manage/issues/list",
+			"/api/property-manage/repairs-manage/repairs-have-done/list",
+			"/api/property-manage/repairs-manage/return-visit/list",
+			"/api/property-manage/repairs-manage/phone-report-repairs/list",
+			"/api/property-manage/repairs-manage/mandatory-return-issue/list",
+		]) {
+			const response = await fetchJson(`${baseUrl}${path}`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ pageIndex: 1, pageSize: 10 }),
+			});
+
+			expect(response.status).toBe(200);
+			expect(response.body).toMatchObject({
+				success: true,
+				code: 200,
+				message: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+				},
+			});
+			expect(response.body).not.toHaveProperty("msg");
+		}
+	}, 30_000);
+
+	test("serves all admin operation-team canonical list endpoints over real HTTP", async () => {
+		for (const path of operationTeamAdminListEndpoints) {
+			const response = await fetchJson(`${baseUrl}${path}`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ pageIndex: 1, pageSize: 10 }),
+			});
+
+			expect(response.status).toBe(200);
+			expect(response.body).toMatchObject({
+				success: true,
+				code: 200,
+				message: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+				},
+			});
+			expect(response.body).not.toHaveProperty("msg");
+		}
+	}, 30_000);
+
+	test("serves all admin patrol and parking canonical list endpoints over real HTTP", async () => {
+		for (const path of [...patrolAdminListEndpoints, ...parkingAdminListEndpoints]) {
+			const response = await fetchJson(`${baseUrl}${path}`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ pageIndex: 1, pageSize: 10 }),
+			});
+
+			expect(response.status).toBe(200);
+			expect(response.body).toMatchObject({
+				success: true,
+				code: 200,
+				message: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+				},
+			});
+			expect(response.body).not.toHaveProperty("msg");
+		}
+	}, 30_000);
+
+	test("serves all admin community-manage canonical list endpoints over real HTTP", async () => {
+		for (const path of communityManageAdminListEndpoints) {
+			const response = await fetchJson(`${baseUrl}${path}`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ pageIndex: 1, pageSize: 10 }),
+			});
+
+			expect(response.status).toBe(200);
+			expect(response.body).toMatchObject({
+				success: true,
+				code: 200,
+				message: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+				},
+			});
+			expect(response.body).not.toHaveProperty("msg");
+		}
+	}, 30_000);
+
+	test("serves all admin house-property-manage canonical list endpoints over real HTTP", async () => {
+		for (const path of housePropertyManageAdminListEndpoints) {
+			const response = await fetchJson(`${baseUrl}${path}`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify({ pageIndex: 1, pageSize: 10 }),
+			});
+
+			expect(response.status).toBe(200);
+			expect(response.body).toMatchObject({
+				success: true,
+				code: 200,
+				message: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+				},
+			});
+			expect(response.body).not.toHaveProperty("msg");
+		}
 	}, 30_000);
 
 	test("blocks high-risk app legacy mutation endpoints by default over real HTTP", async () => {

@@ -3,8 +3,12 @@ import { describe, expect, test, vi } from "vitest";
 import { getRepairRuntime } from "../../server/modules/repair/runtime";
 
 import issuesListHandler from "../../server/routes/api/property-manage/repairs-manage/issues/list.post";
+import mandatoryReturnIssueListHandler from "../../server/routes/api/property-manage/repairs-manage/mandatory-return-issue/list.post";
+import phoneReportRepairsListHandler from "../../server/routes/api/property-manage/repairs-manage/phone-report-repairs/list.post";
+import repairsHaveDoneListHandler from "../../server/routes/api/property-manage/repairs-manage/repairs-have-done/list.post";
 import repairsSettingListHandler from "../../server/routes/api/property-manage/repairs-manage/repairs-setting/list.post";
 import repairsTodoListHandler from "../../server/routes/api/property-manage/repairs-manage/repairs-todo/list.post";
+import returnVisitListHandler from "../../server/routes/api/property-manage/repairs-manage/return-visit/list.post";
 
 vi.mock("nitro/h3", async (importOriginal) => {
 	const actual = await importOriginal<typeof import("nitro/h3")>();
@@ -48,10 +52,18 @@ describe("repair admin read-only adapters wave4a", () => {
 		const todo = await repairsTodoListHandler({ context: {} } as any);
 		const settings = await repairsSettingListHandler({ context: {} } as any);
 		const issues = await issuesListHandler({ context: {} } as any);
+		const haveDone = await repairsHaveDoneListHandler({ context: {} } as any);
+		const returnVisit = await returnVisitListHandler({ context: {} } as any);
+		const phoneReport = await phoneReportRepairsListHandler({ context: {} } as any);
+		const mandatoryReturnIssue = await mandatoryReturnIssueListHandler({ context: {} } as any);
 
 		expect(todo).toMatchObject({ success: true, code: 200, data: { list: expect.any(Array) } });
 		expect(settings).toMatchObject({ success: true, code: 200, data: { list: expect.any(Array) } });
 		expect(issues).toMatchObject({ success: true, code: 200, data: { list: expect.any(Array) } });
-		expect(mockedReadBody).toHaveBeenCalledTimes(3);
+		expect(haveDone).toMatchObject({ success: true, code: 200, data: { list: expect.any(Array) } });
+		expect(returnVisit).toMatchObject({ success: true, code: 200, data: { list: expect.any(Array) } });
+		expect(phoneReport).toMatchObject({ success: true, code: 200, data: { list: expect.any(Array) } });
+		expect(mandatoryReturnIssue).toMatchObject({ success: true, code: 200, data: { list: expect.any(Array) } });
+		expect(mockedReadBody).toHaveBeenCalledTimes(7);
 	});
 });
