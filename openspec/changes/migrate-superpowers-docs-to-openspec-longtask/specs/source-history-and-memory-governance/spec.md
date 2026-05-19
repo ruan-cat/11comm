@@ -1,0 +1,99 @@
+## ADDED Requirements
+
+### Requirement: 来源承接与临时审计退场
+
+三份旧 Superpowers 文档、它们的 git 历史和 Memorix 接力记录必须有明确 OpenSpec canonical 落点。OpenSpec MUST 将长期信息承接到 `design.md`、`tasks.md`、`agent-findings.md`、`agent-progress.md` 与相关 `specs/**/spec.md`；临时来源覆盖审计完成后不得作为长期任务源、持续维护矩阵或后续执行入口。
+
+#### Scenario: 逐段核对旧文档
+
+- **WHEN** 后续代理准备判断旧文档是否可删除
+- **THEN** 必须先核对 `design.md`、`tasks.md`、`agent-findings.md`、`agent-progress.md` 和相关 specs 中目标架构、Phase1-7、P0-P8、矩阵字段、当前接力、Memorix、Neon main、no-go 是否都有 OpenSpec 落点
+
+#### Scenario: 发现未迁移章节
+
+- **WHEN** 旧文档章节无法在 OpenSpec specs、`design.md`、`tasks.md`、`agent-progress.md` 或 `agent-findings.md` 中找到落点
+- **THEN** 旧文档不得删除，必须先补充 OpenSpec 工件或明确记录不迁移原因
+
+### Requirement: Git 历史溯源
+
+OpenSpec 必须记录三份旧文档的关键 git 历史，包括创建提交、重大重写、Neon main 规则引入、Chrome MCP/DB_READY 证据记录、当前接力更新和用户恢复后的重新审计结论。关键状态不得只保留为无来源的当前口径。 本 requirement MUST 作为后续执行、来源追溯和旧文档删除评审的强制约束。
+
+#### Scenario: 追溯状态来源
+
+- **WHEN** 后续代理看到 endpoint 数字、batch 状态、DB_READY 结论或 no-go 结论
+- **THEN** 必须能在 `agent-findings.md`、`design.md` 或 git history 表中找到对应提交、日期或旧文档来源
+
+#### Scenario: 历史提交与当前状态冲突
+
+- **WHEN** git 历史中的旧结论与当前 working tree 或恢复后的旧文档不一致
+- **THEN** 必须把旧结论标记为 dated snapshot，并以 fresh scan 和当前 OpenSpec 任务状态为准
+
+### Requirement: Memorix 接力索引
+
+Phase7 后续会话必须先搜索 Memorix，并在 OpenSpec 中保留关键观察编号作为检索线索。缺少 Memorix MCP 时必须记录为环境缺口，不能推断项目没有历史记录。 本 requirement MUST 作为后续执行、来源追溯和旧文档删除评审的强制约束。
+
+#### Scenario: 会话开始
+
+- **WHEN** 后续代理开始 Phase7、OpenSpec、Nitro 合并、Neon readiness 或旧文档清理任务
+- **THEN** 必须执行项目范围 Memorix 搜索，并把 relevant obs 编号或搜索失败原因写入 `agent-progress.md` 或 `agent-findings.md`
+
+#### Scenario: 状态修改完成
+
+- **WHEN** 后续代理修改了 OpenSpec 状态、证据结论、任务 checkbox 或架构决策
+- **THEN** 必须写入 Memorix，记录变更摘要、文件、验证命令和剩余风险
+
+### Requirement: 当前事实与历史事实分离
+
+OpenSpec 必须区分 current handoff baseline、historical snapshot、local evidence、production evidence 和 git-derived fact。历史页面 200、local `DB_READY`、hook tests、CDP fallback 或旧批次完成记录不得自动升级为当前生产完成或旧服务退役证据。 本 requirement MUST 作为后续执行、来源追溯和旧文档删除评审的强制约束。
+
+#### Scenario: 复用旧证据
+
+- **WHEN** 后续代理引用 2026-05-04、2026-05-16、2026-05-18 或 2026-05-19 的历史证据
+- **THEN** 必须写清楚证据环境、工具、artifactPath、适用 endpoint 和剩余缺口，不得跨端、跨环境或跨证据层级升级状态
+
+#### Scenario: 当前执行前
+
+- **WHEN** 后续代理要继续实现或验证 endpoint
+- **THEN** 必须 fresh scan 当前 working tree 与调用端，不能只根据旧三文档或 Memorix 数字执行
+
+### Requirement: 文档、skills 与 AI 记忆治理
+
+旧总设计 Phase1.1 中的文档迁移治理仍有效：Markdown 价值分类、重复文档处理、skills 与 AI 记忆文档、敏感信息检查、字符集和文本完整性保护、迁移后索引、动态 mock 文档同步必须作为来源迁移规则保留。 本 requirement MUST 作为后续执行、来源追溯和旧文档删除评审的强制约束。
+
+#### Scenario: 迁移或删除历史文档
+
+- **WHEN** 后续代理准备迁移、归档或删除历史 Markdown
+- **THEN** 必须先判断该文档是执行源、历史证据、AI 记忆、skill 说明、敏感信息风险还是可压缩重复文档，并在 OpenSpec 或稳定索引中保留必要入口
+
+#### Scenario: 处理字符集和敏感信息
+
+- **WHEN** 后续代理改写旧文档、索引或 OpenSpec 迁移文件
+- **THEN** 必须保护中文内容、路径、代码块和表格完整性，并避免把真实 Neon 连接串、密钥、R2 凭据或生产敏感值写入文档
+
+### Requirement: 旧 app 项目身份与记忆保全
+
+旧 app 源目录 `D:\code\ruan-cat\01s-11comm-app`、旧项目身份和相关 Memorix 线索必须作为只读历史来源长期保留。OpenSpec 文档迁移不得让后续代理误以为旧 app 历史已经可以丢弃。 本 requirement MUST 作为后续执行、来源追溯和旧文档删除评审的强制约束。
+
+#### Scenario: 核对 app legacy 行为
+
+- **WHEN** 后续代理需要核对旧 app endpoint、mock 数据、H5 调用或历史设计
+- **THEN** 可以只读引用旧 app 源目录和 Memorix 线索，但不得移动、清空、归档或删除旧 app 项目
+
+#### Scenario: 解释 app legacy 迁移状态
+
+- **WHEN** 后续代理描述 app legacy stream
+- **THEN** 必须把旧 app 源目录、monorepo `apps/app`、独立 `apps/api` legacy adapter 和 app H5 browser evidence 分开记录
+
+### Requirement: 证据 artifact 索引
+
+旧计划和旧矩阵中出现的关键证据 artifact 路径必须进入 OpenSpec canonical 发现记录、设计说明或任务上下文，尤其是 Chrome MCP、HTTP gate、shadow-off/fallback、App repair H5、CRUD gate 和 `.tmp/phase7-agent-reports`。 本 requirement MUST 作为后续执行、来源追溯和旧文档删除评审的强制约束。
+
+#### Scenario: 引用旧 artifact
+
+- **WHEN** 后续代理引用 `.tmp/phase7-dev-browser/**` 或 `.tmp/phase7-agent-reports/**` 的历史证据
+- **THEN** 必须在 `agent-findings.md` 或对应任务/进度记录中说明该 artifact 是 local、production、Chrome MCP、CDP fallback、HTTP gate、hook test 还是 reviewer report
+
+#### Scenario: artifact 缺失或过期
+
+- **WHEN** 旧 artifact 不存在、不可读或与当前代码状态不匹配
+- **THEN** 对应证据必须降级为 historical pointer，并安排重新采集或在 `agent-findings.md` 记录阻断
