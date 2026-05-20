@@ -38,6 +38,20 @@ Chrome DevTools MCP 必须作为 Phase7 页面级浏览器证据的主采集工�
 - **WHEN** Chrome DevTools MCP transport 断开或不可用，只能用 Chrome CDP fallback、shell fetch 或其它方式采集
 - **THEN** 必须在 `agent-findings.md` 标记为 fallback evidence；该证据不得写成 Chrome MCP 完成，除非后续重新用 MCP 重采
 
+#### Scenario: 使用 Google Chrome CDP fallback
+
+- **WHEN** 因 Chrome DevTools MCP transport 断开而使用 Google Chrome CDP fallback 采集页面 Network
+- **THEN** 必须在 evidence 中标注 `tool=CDP fallback` 或等价说明；如后续要求 MCP 工具级证据，必须重采，不能把 fallback 证据改写成 MCP 完成
+
+### Requirement: Windows 本地 dev 环境 gotcha
+
+Windows 本地 admin dev 验证 MUST 保留 2026-05-18 的环境 gotcha：`apps/admin` dev 可能需要 `cross-env` 设置 `NODE_OPTIONS`，并通过 `VITE_DISABLE_AUTOGENERATION_IMPORT_FILE=true` 禁用会在 Windows `fs.watch` null fileName 场景下崩溃的 `vite-plugin-autogeneration-import-file`。后续启动三端本地 dev 失败时，必须先核对该环境约束和当前 package script，而不是把页面证据缺失误判为 API 迁移失败。
+
+#### Scenario: 本地 admin dev 启动失败
+
+- **WHEN** Phase7 本地 admin H5 验证在 Windows 上因 Vite watcher 或 autogeneration plugin 报错失败
+- **THEN** 必须检查 `vite:dev` 是否仍使用 `cross-env` 和 `VITE_DISABLE_AUTOGENERATION_IMPORT_FILE=true`，并把结果记录到 `agent-findings.md`
+
 ### Requirement: 本地三 dev 验收要求
 
 本地验收必须明确区分三个 dev 服务：`apps/api` 独立 Nitro dev、`apps/admin` dev 和 `apps/app` H5 dev。admin 本地页面必须证明页面请求经预期 resolver 或 `/api-shadow` 命中本地 `apps/api`；app 本地 H5 必须证明 `/app/**` 或 `/callComponent/**` 请求命中本地 `apps/api`；API 本地 dev 必须证明 health/ready 和目标 endpoint 可达。本地 dev 证据只代表 local evidence，不代表 production evidence。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。

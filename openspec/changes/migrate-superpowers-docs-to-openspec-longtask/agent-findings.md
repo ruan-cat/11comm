@@ -34,7 +34,7 @@
 
 - 2026-05-19 初版 OpenSpec 迁移过度聚焦 Phase7 证据门禁，未充分呈现“admin/app 两套旧 Nitro API 合并到独立 `apps/api`”的上层主线；已补 `unified-nitro-api-consolidation` spec、设计四流模型和索引说明。
 - 2026-05-19 二次复核发现 `tasks.md` 仍错误表现为 43/43 已完成，只覆盖文档载体迁移，没有承接旧计划 P0-P8 的后续 Nitro 合并任务；已重写为长期 backlog。
-- 旧三文档已由用户手动恢复。删除它们不再是当前自动执行步骤，必须等 OpenSpec 完整承接未来任务、引用扫描通过且用户确认后再做。
+- 旧三文档曾由用户手动恢复用于核对；2026-05-20 已在完成核心语义转写、引用扫描和 OpenSpec 入口收敛后删除。删除只代表文档载体退场，不代表 `apps/admin/server`、`apps/app/server` 或旧 app 源目录退役。
 - 旧矩阵存在冲突口径：同一文件既写 admin old path exact coverage 155/155，又在末尾风险中残留“未覆盖 exact legacy path 约 51 个”的旧说法。后续必须 fresh scan 后更新事实，不得直接照抄旧数字。
 - 后续接力必须同时看 admin legacy stream、app legacy stream、unified `apps/api` runtime stream、retirement gate stream。
 - 生产 `DB_READY` 仍未闭环。
@@ -51,6 +51,20 @@
 - 2026-05-19 扩展 `tasks.md` 时确认 app remaining modules 不能继续压缩为模块桶；`apps/app/server/modules/**/endpoints.ts` 中的 activity、contact、notice、oa-workflow、profile、staff、test、video 等模块此前在压缩清单里体现不足，已改为显式 URL 级待归类任务。
 - 2026-05-19 再次补全 `tasks.md` 时确认：endpoint 行本身仍不足以支撑旧服务安全退役，还必须有 spec-to-task traceability、统一 `apps/api` runtime 对账、批次调度纪律、admin/app 调用端差集、Vitest/HTTP gate、Neon schema/DB_READY、写入闭环和三端双环境证据矩阵。已新增 §1A、§1B、§1C、§2A、§3A、§4B、§4C，并扩展 §5。
 - 2026-05-19 任务载体边界再次确认：`agent-progress.md` 不应记录未执行的 Nitro 迁移任务，只能写 checkpoint 和验证结果；本轮补任务源时只在 `tasks.md` 增加 future backlog。
+- 2026-05-20 用户纠正迁移目标：当前缺口不是“引用没替换”或“旧文件没删除”，而是必须把旧三份大文档的核心长文本内容转写成 OpenSpec format。后续验收应按语义覆盖判断，而不是按旧路径扫描是否为空判断。
+- 2026-05-20 已新增 `legacy-superpowers-content-transcription` spec，用于约束旧总设计、旧 endpoint 矩阵和旧 batch 计划的核心内容转写完成定义；它是删除旧三文档前的语义覆盖闸门。
+- 2026-05-20 三名只读审计子代理共同指出：旧总设计仍需 Phase1/1.1 细则、Phase2/3 边界、CI/workflow、runtime governance；旧矩阵仍需默认值、ledger 字段、admin 小片事实、app fallback 红线、Windows/CDP gotcha；旧计划仍需 Agent Team 产出、Batch0 fresh scan gate、Batch0-8 具体映射、batch done definition、复核清单和 Neon main checklist。上述缺口已转写进对应 specs，但删除旧文件前仍需 final strict validate 与引用扫描。
+- 2026-05-20 删除前语义覆盖复核结论：旧总设计落入 `legacy-superpowers-content-transcription`、`unified-nitro-api-consolidation`、`source-history-and-memory-governance`、`vitest-and-runtime-verification`、`db-readiness-and-write-verification` 和 `retirement-gate-and-archive`；旧矩阵落入 `phase7-evidence-model`、`admin-api-cutover`、`app-legacy-cutover` 和浏览器/进度/发现记录；旧计划落入 `agent-team-batch-execution`、`tasks.md` 和 Neon main/write verification 规则。
+- 2026-05-20 当前重要负清单：`report-manage/expense-summary-table/list`、P1 `report-manage` 剩余 7 页、App repair 三个只读端点已有本地页面 Network 或等价本地 evidence，不应重复作为本地页面待补；但这些证据仍不能写成 production DB_READY、真实库样本、shadow-off/fallback、写入闭环或旧服务可退役。
+- 2026-05-20 历史 Batch7a 与 2026-05-19 admin 小片 manifest/HTTP gate 都只能作为 local/runtime/contract evidence；不能自动代表生产 DB_READY、真实库样本、shadow-off/fallback 或退役候选。
+- 2026-05-20 工作区纪律：旧矩阵曾记录工作区混有 staged/前序变更，后续任何批次必须先 `git status --short`，不得 stage/unstage/revert 非本轮范围。
+- 2026-05-20 编辑子代理 D 复核发现：当前旧三文档转写记录已经覆盖主要语义，但仍需要一个明确的二次复核框架来防止“章节级漏转写”。已补入 `legacy-superpowers-content-transcription` 闸门和 `tasks.md` 任务块；后续探索/复核成员必须按旧总设计、旧 endpoint 状态矩阵、旧 batch 执行计划逐文档、逐章节、逐落点核对，未映射章节只能记为待收敛风险，不能写成已完成迁移。
+- 2026-05-20 编辑子代理 D 明确边界：旧文件名可以继续出现在稳定索引、design 或 findings 中作为 historical source/provenance，但不能作为执行入口、任务源链接或长期维护对象。若后续发现旧文件名被用于“去读旧文档继续执行”，必须记录为引用治理缺口并改回 OpenSpec canonical。
+- 2026-05-20 本轮二次复核框架只修改 OpenSpec 文档和接力记录，没有恢复三份旧文档，没有删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server` 或 `D:\code\ruan-cat\01s-11comm-app`；不得把本轮文档闸门收敛误读为 runtime 旧服务可退役。
+- 2026-05-20 复核成员 E 判定旧语义仍缺口后，编辑子代理 F 已补强：旧总设计 Phase5 `L0-L4` 和 `houseCharge` 只作为历史 CRUD 分级/样板，Phase6 是 `VITE_11COMM_API_SHADOW_ENABLE`、`VITE_11COMM_API_USE_PROXY`、模块 allowlist 或等价配置驱动的受控切流与 fallback/shadow-off 复验，不是旧服务退役；动态 mock 增量同步只能记录 mock/fallback/local evidence；Batch7a 只能作为 historical local/runtime/contract evidence；retirement ledger 未落 endpoint 行不得升级退役候选；admin 收费/缴费证据不得推导 app 缴费 legacy 完成。本轮没有修改运行时代码。
+- 2026-05-20 复核成员 G 对 F 的补强结果给出通过结论：Phase5 `L0-L4`/`houseCharge`、Phase6 shadow/proxy/fallback 顺序、动态 mock 增量同步、Batch7a 历史证据、retirement ledger 物化维护、admin/app 缴费双端边界均已有 canonical 落点；旧文件名仍只作为 provenance，`agent-progress.md` 和本文件未承载任务树。本结论只证明旧三文档语义转写补强完成，不证明 runtime 迁移、生产 `DB_READY`、真实库样本、shadow-off/fallback 或旧服务退役完成。
+- 2026-05-20 第三轮 agent team 反向审计记录：H、I、J 均判定 PASS，无必须补写缺口；K 的本轮改动只处理建议级缺口，补强旧总设计 Phase4+ 示例边界（`repair/resource/parking`、`charge-machine/open-door`、`machine-record` 等）、单一汇总报告约 3500 行以内的软约束、do-long-task checkpoint 接力术语和 Batch0-8 到当前 backlog 的搜索索引。该 PASS 与 K 的补强只证明 OpenSpec 文档口径更完整，不代表 runtime 迁移、生产 `DB_READY`、真实库样本、shadow-off/fallback 或旧服务退役完成。
+- 2026-05-20 本轮 F 会话没有暴露 `mcp__memorix__*` 工具，无法执行项目范围 Memorix 搜索或写入；这是会话环境缺口，不代表项目没有历史记忆。后续主代理具备 Memorix MCP 时需补写本轮摘要。
 - OpenSpec delta parser 要求每个 requirement 正文包含英文 `MUST` 或 `SHALL`。specs 保留中文正文，并在正文中保留 `MUST` 以满足 CLI；不得把 OpenSpec 结构关键字翻成中文。
 - PowerShell `Set-Content -Encoding UTF8` 会写入 UTF-8 BOM 和 CRLF，曾导致 OpenSpec 无法解析 specs delta。已改用无 BOM UTF-8 + LF 写回；后续修改 specs 后需检查 `openspec validate`。
 
@@ -113,13 +127,13 @@
 
 - 三份旧文档曾被 prompt、历史计划、汇总报告和设计文档交叉引用。
 - 2026-05-19：已提供稳定迁移索引 `docs/superpowers/phase7-openspec-migration-index.md`。
-- 2026-05-19：删除后外部完整路径扫描无输出；外部历史文档和 prompt 的旧文件名宽匹配也无输出。
-- 当前 OpenSpec change 内仍保留旧完整路径，用于说明迁移来源、删除对象和历史发现；这不是外部死链。
+- 2026-05-20：删除后三份旧文件本体不再存在；旧文件名扫描只剩 `docs/superpowers/phase7-openspec-migration-index.md` 和 OpenSpec `design.md` 的迁移来源说明。
+- 当前 OpenSpec change 与稳定索引内仍保留旧文件名，用于说明迁移来源、删除对象和历史发现；这不是外部死链，也不是执行入口。
 - `proposal.md`、`design.md`、`tasks.md` 与本文件已改为指向 OpenSpec canonical，不再把旧三文档或临时来源覆盖审计文件当作执行源。
 
 ## Deletion Notes
 
-- 旧 endpoint 状态矩阵、旧 Phase7 batch 计划和旧 monorepo API 迁移总设计曾在前一轮被删除，但用户已手动恢复。
+- 旧 endpoint 状态矩阵、旧 Phase7 batch 计划和旧 monorepo API 迁移总设计曾在前一轮被删除后由用户恢复；本轮按用户要求完成核心内容转写后再次删除。
 - `docs/superpowers/phase7-openspec-migration-index.md` 是后续文档侧稳定入口。
 - 后续执行入口必须是 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/tasks.md`。
 - 本次没有修改运行时代码、数据库 schema、部署配置或 package dependency。

@@ -23,6 +23,25 @@ App legacy cutover 必须被视为统一 `apps/api` 合并中的 app legacy/mock
 - **WHEN** endpoint 在 manifest 中存在，但实际请求仍依赖旧 app Nitro fallback 或兼容 mock
 - **THEN** 不能标记 DB 完成，必须保留 legacy-fallback 或 candidate-after-evidence 状态
 
+### Requirement: App fallback 当前红线
+
+OpenSpec MUST 保留当前 app legacy fallback 红线：`/callComponent/core/list` 已可有 in-memory compat handler 但不是 DB-ready；`/callComponent/ownerRepair.appraiseRepair` 默认 guarded；floor 两端点若使用 legacy-compatible handler 或合成 ID，仍是 in-memory/with-gap；repair 三个只读端点已有本地 App H5 页面证据但仍缺生产、真实库样本和 fallback；`/app/repairSetting.listRepairSettings` 仍缺 App H5 页面证据；`/app/ownerRepair.saveOwnerRepair` 只能作为默认 guard 证据，不能写成真实写入完成。
+
+#### Scenario: 复用 App repair 本地 H5 证据
+
+- **WHEN** 引用 `/app/ownerRepair.listOwnerRepairs`、`/app/dict.queryRepairStates` 或 `/app/ownerRepair.queryOwnerRepair` 的本地 App H5 Network 证据
+- **THEN** 只能升级 local app browser evidence，仍需 production DB_READY、真实库样本、shadow-off/fallback 和独立复核
+
+#### Scenario: 处理 repairSetting
+
+- **WHEN** 后续代理处理 `/app/repairSetting.listRepairSettings`
+- **THEN** 必须补 App H5 页面证据或明确无页面入口原因，不能因其它 repair 只读 endpoint 已有证据而跳过
+
+#### Scenario: 处理 ownerRepair 保存
+
+- **WHEN** `/app/ownerRepair.saveOwnerRepair` 被调用或验证
+- **THEN** 默认只能证明 guard 返回受保护响应；没有受控写入窗口、read-back、rollback、residual check 和 guard-after 时不能升级写能力
+
 ### Requirement: App Nitro 迁移实现规范
 
 App legacy endpoint 迁入统一 `apps/api` 时，必须按独立 Nitro 项目实现，而不是把旧 mock 或旧 `apps/app/server` handler 原样搬运为完成状态。目标实现必须使用 Nitro v3 / H3 处理器、`nitro/h3` 导入、无鉴权、显式 adapter/service/repository 分层、可追踪 runtime manifest、可回退 legacy fallback 记录和 app H5 调用端切流证据。任何从旧 app mock、in-memory store、兼容默认值或旧项目 `D:\code\ruan-cat\01s-11comm-app` 迁入的逻辑，只有在数据源、契约、调用端和 fallback 行为均有证据时才可升级。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
@@ -92,6 +111,20 @@ Fee/report legacy 迁移必须区分 8 个只读查询、3 个高风险写入口
 
 - **WHEN** `/app/fee.listFee`、`/app/fee.queryFeeDetail` 或 `/app/oweFeeCallable.listOweFeeCallable` 的 join 来源和字段语义未明确
 - **THEN** 必须先补设计和数据源复核，不得直接做不可信 DB wiring
+
+### Requirement: Admin 收费缴费与 App 缴费 legacy 双端边界
+
+Admin 收费/缴费证据与 App 缴费 legacy 证据 MUST 分开判断。`property-manage/expense-manage/**`、`property-manage/report-manage/**`、`house-charge`、`payment-review` 等 admin canonical/list/CRUD 证据不能推导 `/app/fee/**`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable` 或 `/app/fee.saveRoomCreateFee` 已完成；App 缴费 legacy 必须独立保留旧路径、旧 envelope、移动端调用端、guard/fallback、数据源 gap 和写入闭环。
+
+#### Scenario: Admin 费用证据存在
+
+- **WHEN** admin 费用或收费模块已有 manifest、contract、HTTP gate、页面 Network 或部分 DB repository 证据
+- **THEN** 只能升级对应 admin endpoint 的证据字段，不能把 app 缴费 legacy 标记为 caller-verified、DB-ready、write-ready 或 retirement candidate
+
+#### Scenario: App 缴费 endpoint 升级
+
+- **WHEN** `/app/fee/**`、`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable` 或 `/app/fee.saveRoomCreateFee` 准备升级状态
+- **THEN** 必须提供 app H5 或 HTTP 调用证据、legacy response contract、fallback/shadow-off、真实数据源或明确 gap、guard/write-read-rollback 证据；缺任一层时保持 app legacy partial/guarded/blocked
 
 ### Requirement: App guarded writes
 

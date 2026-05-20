@@ -168,6 +168,20 @@ Phase1-Phase7 在 OpenSpec 中解释为统一 Nitro API 合并的阶段链：Pha
 
 这个结构替代来源覆盖审计的长期维护价值：后续代理从 `tasks.md` 取任务，从 specs 取验收要求，从 `design.md` 取架构和来源解释，从 `agent-progress.md`/`agent-findings.md` 取执行事实与风险。临时审计文件完成后不得被当作执行前置入口，也不得恢复成长期维护矩阵。
 
+## Legacy Content Transcription Ledger
+
+本轮迁移的核心不是“删除三个 Markdown 文件”，而是把三个旧载体里的长文本语义改写为 OpenSpec 可执行结构。旧文件被删除后，后续代理仍必须能从 OpenSpec 中恢复相同的阶段关系、证据规则、当前进度和接力约束。
+
+| 旧载体                                                            | 必须转写的核心内容                                                                                                                                                                              | OpenSpec 落点                                                                                                                                                                                  | 转写口径                                                                                             |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 旧总设计 `2026-04-25-11comm-app-monorepo-api-migration-design.md` | 背景、已确认决策、唯一 `apps/api` 目标、`apps/app` 快照迁入、`apps/type` 事实源、Nitro 无鉴权、Phase1-7 阶段链、Phase1.1 文档/skills/AI 记忆治理、动态 mock、Vitest、Neon main、Phase7 退役门禁 | `unified-nitro-api-consolidation`、`source-history-and-memory-governance`、`db-readiness-and-write-verification`、`vitest-and-runtime-verification`、`retirement-gate-and-archive`、本设计文档 | 转写为架构与治理规则，不保留旧长文流水；保留所有会影响后续实现和误判防护的约束                       |
+| 旧矩阵 `phase7-endpoint-migration-matrix.md`                      | 基线口径、admin 已覆盖/剩余、app legacy 覆盖、P0/P1 fallback 与差集、app 剩余模块、扫描证据快照、复核硬门槛、当前接力摘要、历史事实压缩、风险                                                   | `phase7-evidence-model`、`admin-api-cutover`、`app-legacy-cutover`、`browser-and-environment-verification`、`tasks.md`、`agent-progress.md`、`agent-findings.md`                               | 转写为字段模型、状态枚举、证据层级、当前 baseline 和 endpoint/module backlog，不再维护一份并行大矩阵 |
+| 旧计划 `2026-05-10-phase7-batch-migration-plan.md`                | 强约束、no-go、当前统计口径、Agent Team 角色、批次拆分规则、每批固定流程、Batch0-8、完成定义、复核清单、禁止误判、Neon main 接力口径                                                            | `agent-team-batch-execution`、`legacy-superpowers-content-transcription`、`tasks.md`、`agent-progress.md`、`agent-findings.md`                                                                 | 转写为批次执行纪律和长期 backlog；Batch0-8 的语义保留，旧 checkbox 不再作为任务源                    |
+
+旧总设计的阶段链在 OpenSpec 中不再作为单一长文维护，而是拆成能力规范：Phase1/1.1 进入来源治理，Phase2-6 进入统一 Nitro API、admin/app cutover、browser 和 Vitest 规范，Phase7 进入证据模型、Agent Team、DB readiness 和 retirement gate。旧矩阵的状态表不再逐行复制，但它的状态字段、当前口径、下一切片和风险全部进入 `phase7-evidence-model`、`tasks.md` 与 `agent-findings.md`。旧计划的批次表不再作为第二任务源，但 Batch0-8 的顺序和完成定义进入 `agent-team-batch-execution` 与 `tasks.md`。
+
+语义覆盖闸门如下：删除旧载体前，后续代理必须能仅靠 OpenSpec 回答四个问题：统一 Nitro 合并目标是什么；Phase7 当前哪些证据完成、哪些仍缺；下一批应该做哪些 endpoint 且不碰哪些范围；为什么旧服务目录仍不能退役。若任一问题只能从旧三文档回答，就说明转写不完整。
+
 ## Current Handoff Baseline
 
 迁移时应保留以下当前口径，后续执行前必须重新扫描验证：

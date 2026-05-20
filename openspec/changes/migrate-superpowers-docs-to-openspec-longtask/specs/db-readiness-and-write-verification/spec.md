@@ -84,6 +84,20 @@ Phase7 写入验收必须使用唯一 `PHASE7_E2E_*` 或 `phase7RunId` 标记，
 - **WHEN** 写入窗口关闭后 endpoint 不再返回 guarded response
 - **THEN** 不得继续本批次任何写入口验收，必须先恢复 guard 并记录事故
 
+### Requirement: Neon main 接力 checklist
+
+Neon main 验收 MUST 保留旧计划的接力 checklist：不使用 Neon 测试分支；DB deep readiness 使用 main 分支连接串且只通过环境变量注入；`RUN_PHASE7_DB_READINESS_CHECK=1` 后 `/__nitro/ready` 必须返回 `DB_READY`；写入口默认先证明 `409 PHASE7_MUTATION_GUARDED`；写入窗口仅在 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 下临时开放；payload 必须带 `PHASE7_E2E_*` 或 `phase7RunId`；必须读回、回滚/清理、残留检查和 guard 恢复；任何残留、清理失败或 guard 未恢复都停止同批次后续写入。
+
+#### Scenario: 执行 Neon main 只读验收
+
+- **WHEN** endpoint 只需要只读 DB 样本
+- **THEN** 仍必须先证明 health、`DB_READY`、目标 repository 读取真实业务表和字段映射，不能用空数组、mock 或兼容默认值替代
+
+#### Scenario: 执行 Neon main 写入验收
+
+- **WHEN** endpoint 需要证明写能力
+- **THEN** 必须按接力 checklist 完整执行，并把每一步证据写入 `agent-progress.md` 或稳定证据文件
+
 ### Requirement: 写入证据模板
 
 任何写入口升级前，`writeReadRollbackEvidence` 必须能追溯到固定字段：endpoint、phase7RunId、databaseTarget、connectionEvidence、healthEvidence、readyEvidence、baselineEvidence、guardBefore、writeWindow、writeRequest、writeResponse、readBackMethod、readBackResult、rollbackMethod、rollbackResult、residualCheck、guardAfter、operator、timestamp、artifactPath。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。

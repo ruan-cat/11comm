@@ -38,6 +38,7 @@ Phase7 不是孤立的 endpoint 统计任务。它服务于更上层的核心迁
 - `browser-and-environment-verification`: 定义 Chrome DevTools MCP 三端双环境验收矩阵，覆盖本地 `apps/api`/`apps/admin`/`apps/app` 三个 dev 服务和三个 package `homepage` 指向的生产入口。
 - `agent-team-batch-execution`: 定义旧计划中的 Agent Team 分工、batch 0-8 调度语义、每批固定流程、业务路径颗粒度拆分、独立复核和单一任务源纪律。
 - `source-history-and-memory-governance`: 定义旧三文档来源覆盖、git 历史溯源、Memorix 接力索引、当前/历史事实分离、文档/skills/AI 记忆治理和证据 artifact 索引。
+- `legacy-superpowers-content-transcription`: 定义旧总设计、旧 endpoint 矩阵和旧 batch 计划的核心内容如何转写为 OpenSpec requirement、design 决策、tasks backlog、progress checkpoint 和 findings 记忆。
 - `retirement-gate-and-archive`: 定义旧服务退役门禁、受保护路径、旧文档退役、引用替换和删除前提。
 
 ### Modified Capabilities

@@ -20,6 +20,12 @@
 - [x] [新增] `specs/browser-and-environment-verification/spec.md` - 补齐 Chrome DevTools MCP 三端双环境验收矩阵：本地 `apps/api`/`apps/admin`/`apps/app` 三个 dev 服务和三个 package `homepage` 指向的生产入口。
 - [x] [新增] `specs/agent-team-batch-execution/spec.md` - 补齐旧计划中的 Agent Team 分工、batch 0-8 调度语义、每批固定流程和独立复核要求。
 - [x] [新增] `specs/source-history-and-memory-governance/spec.md` - 补齐旧三文档来源覆盖、git 历史溯源、Memorix、文档/skills/AI 记忆治理和证据 artifact 索引要求。
+- [x] [新增] `specs/legacy-superpowers-content-transcription/spec.md` - 补齐旧总设计、旧 endpoint 矩阵和旧 batch 计划的核心长文本语义转写完成定义。
+- [x] [修改] `specs/phase7-evidence-model/spec.md` - 补齐旧矩阵证据默认值、target/retirement 状态组合和 retirement ledger 最低字段。
+- [x] [修改] `specs/admin-api-cutover/spec.md`、`specs/app-legacy-cutover/spec.md` - 补齐 admin manifest/HTTP gate 最低证据字段和 app fallback/guard 当前红线。
+- [x] [修改] `specs/source-history-and-memory-governance/spec.md`、`specs/unified-nitro-api-consolidation/spec.md` - 补齐 Phase1/Phase1.1、Phase2/Phase3 边界、Markdown/skills/AI 记忆治理和 Nitro runtime governance。
+- [x] [修改] `specs/vitest-and-runtime-verification/spec.md`、`specs/browser-and-environment-verification/spec.md` - 补齐 CI/workflow 门禁、Windows dev gotcha 和 Chrome CDP fallback 证据边界。
+- [x] [修改] `specs/agent-team-batch-execution/spec.md`、`specs/db-readiness-and-write-verification/spec.md` - 补齐 Agent Team 角色产出、Batch0 fresh scan gate、Batch0-8 映射、batch done definition、复核硬规则和 Neon main checklist。
 - [x] [记录] Memorix - 已记录 `#4405 OpenSpec restored unified Nitro mainline`。
 
 ## 0A. Source History Re-Audit And Coverage Matrix
@@ -38,6 +44,32 @@
 - [x] [修改] `agent-findings.md` - 记录旧矩阵内的冲突口径：前文写 admin old path exact coverage 155/155，末尾仍残留“未覆盖约 51 个”的旧说法；以后必须以 fresh scan 为准。
 - [x] [修改] `agent-progress.md` - 记录用户已手动恢复三份旧 Superpowers 文档；旧文档存在不代表恢复为任务源。
 - [x] [校验] 运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`，确认本 backlog 格式有效。
+
+## 1AA. Legacy Superpowers Content Transcription
+
+- [x] [新增] `specs/legacy-superpowers-content-transcription/spec.md` - 建立旧三文档语义转写完成定义，防止只替换引用而丢失长文本任务语义。
+- [x] [修改] `design.md` - 增加 `Legacy Content Transcription Ledger`，把旧总设计、旧矩阵、旧计划分别映射到 OpenSpec 能力规范、任务和发现记录。
+- [x] [复核] 对旧总设计章节完成语义覆盖复核：背景、已确认决策、Phase1-7、Phase1.1 文档治理、Nitro/API 文件组织、Vitest、Neon main、Phase7 退役门禁已落入 `design.md`、`unified-nitro-api-consolidation`、`source-history-and-memory-governance`、`vitest-and-runtime-verification`、`db-readiness-and-write-verification` 和 `retirement-gate-and-archive`。
+- [x] [复核] 对旧矩阵章节完成语义覆盖复核：基线口径、Admin 已覆盖/剩余、App legacy 覆盖、P0/P1 fallback 与差集、剩余模块、扫描证据、硬门槛、当前接力、风险已落入 `phase7-evidence-model`、`admin-api-cutover`、`app-legacy-cutover`、`browser-and-environment-verification`、`agent-progress.md` 和 `agent-findings.md`。
+- [x] [复核] 对旧 batch 计划章节完成语义覆盖复核：强约束、Agent Team、Batch0-8、每批固定流程、完成定义、复核清单、禁止误判和 Neon main 接力口径已落入 `agent-team-batch-execution`、`db-readiness-and-write-verification`、`tasks.md` 和 `agent-findings.md`。
+- [x] [复核] 删除旧三文档前已逐项确认审计缺口收敛：矩阵默认值、ledger 最低字段、admin 小片证据字段、app fallback 红线、Windows dev gotcha、CDP fallback、Phase1.1 细则、CI/workflow 门禁、Batch done definition、当前“已不再待补”负清单均已转写进 OpenSpec。
+- [x] [记录] 删除旧三文档前，`agent-progress.md` 已记录语义转写完成，`agent-findings.md` 已记录仍按 historical pointer 保留的旧事实和不迁移原因。
+
+## 1AB. Full Agent Team Second Review For Legacy Transcription
+
+- [x] [任务源闸门] 本块已作为“旧三文档语义转写二次复核”的唯一 OpenSpec 任务落点；探索、编辑、复核成员的临时报告只能作为输入，必须合并回 `tasks.md`、`agent-progress.md`、`agent-findings.md`、`design.md` 或 `specs/**` 后才可作为接力事实。
+- [x] [探索产物] 探索成员 A/B/C 已按旧总设计、旧 endpoint 状态矩阵、旧 batch 执行计划分别输出逐文档、逐章节、逐落点核对结论，并指出 Phase5/Phase6、动态 mock、Batch7a、retirement ledger、admin/app 收费缴费边界等缺口；缺口已交由编辑成员收敛，未写成运行时迁移完成。
+- [x] [编辑产物-D] 编辑子代理 D 已在 `legacy-superpowers-content-transcription/spec.md` 补强语义覆盖闸门：要求逐文档、逐章节、逐落点复核，且旧文件名只能作为历史来源说明，不能作为执行入口；同时在本任务源、`agent-progress.md`、`agent-findings.md` 和稳定索引记录本轮二次复核边界。
+- [x] [编辑产物-F] 编辑子代理 F 已按复核成员 E 的不通过结论补旧语义：Phase5 `L0-L4` 与 `houseCharge` 历史样板、Phase6 shadow/proxy/fallback 顺序、动态 mock 增量同步、Batch7a 历史证据口径、retirement ledger 物化维护方式、admin 收费缴费与 app 缴费 legacy 双端边界；本项只代表 OpenSpec 文档补强，不代表 runtime 迁移、生产 DB_READY、shadow-off/fallback 或旧服务退役完成。
+- [x] [复核产物-G] 复核成员 G 已独立检查旧三文档章节 canonical 落点、旧文件执行入口残留、`agent-progress.md`/`agent-findings.md` 非任务源边界、以及文档载体转写未被误判为 runtime 迁移完成；结论为通过，无必须修复项。
+- [x] [收敛] 主代理已汇总探索、编辑、复核结论，并只勾选已被证据支持的二次复核项；本块收敛只代表旧三文档格式与语义迁移补强完成，不代表 Phase7 runtime 迁移、生产 DB_READY、真实库样本、shadow-off/fallback 或旧服务退役完成。
+
+## 1AC. Third Agent Team Reverse Audit For Legacy Transcription
+
+- [x] [探索产物-H/I/J] 第三轮探索成员 H/I/J 已分别从 git 历史读取旧总设计、旧 endpoint 状态矩阵和旧 batch 执行计划本体，执行反向章节审计；三路结论均为 PASS，无必须补写缺口，只提出 Phase4+ 示例、单一汇总报告软约束、`do-long-task checkpoint` 术语和 Batch0-8 搜索索引等建议级补强。
+- [x] [编辑产物-K] 编辑成员 K 已按建议级缺口做最小 OpenSpec 补强：Phase4+ `repair/resource/parking`、`charge-machine/open-door`、`machine-record` 示例边界，约 3500 行单一汇总报告软约束，`do-long-task checkpoint` 接力术语，以及 Batch0-8 到当前 backlog 的搜索索引；本项不代表 runtime 迁移、生产 DB_READY、真实库样本、shadow-off/fallback 或旧服务退役完成。
+- [x] [复核产物-L] 复核成员 L 已独立检查 K 的改动范围、四个建议点落点、任务源纪律和 no-go 边界，结论为 PASS；K 的增量只落在允许的 OpenSpec 文档和接力记录内，未新增平行任务树。
+- [x] [校验] 第三轮收敛后已运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`、`git diff --check -- openspec/changes/migrate-superpowers-docs-to-openspec-longtask docs/superpowers/phase7-openspec-migration-index.md`、`openspec list --json` 和旧文件名引用扫描；旧文件名仍只作为 provenance/index 出现。
 
 ## 1A. Spec-To-Task Traceability And Task Source Hygiene
 
@@ -63,6 +95,8 @@
 - [ ] [复核] `apps/api` health/ready、runtime manifest、contract tests、HTTP gate 和 browser/API evidence 必须互相一致；route 存在但 runtime manifest 缺失时不得升级为 old path exact covered。
 
 ## 1C. Batch Execution Control And Agent Handoff
+
+Batch0-8 -> 当前 backlog 索引：Batch0 对应 §1/§1A/§1B fresh scan 与证据字段；Batch1-5 对应 §3 app legacy、fee/report、guarded writes；Batch6-7 对应 §2 admin cutover、CRUD、R2/upload；Batch8 对应 §3.4 remaining app modules；该索引只用于搜索定位，不新增平行任务树。
 
 - [ ] [调度] 后续每个实施批次必须先声明 batch 目标、涉及 endpoint、owner 文件、预期测试、DB/浏览器/生产证据需求和不触碰范围；不得一次性吞掉整域。
 - [ ] [调度] admin 批次按三级业务路径拆分，每个编辑子代理只负责 2-3 个 endpoint 或一个小子模块；app legacy 批次每次只处理 2-3 个 endpoint 或一个小模块。
@@ -245,6 +279,7 @@
 
 - [ ] [冻结] 建立旧服务新增入口回归扫描：任何新业务能力进入 `apps/admin/server` 或 `apps/app/server` 都记录为 Phase7 regression。
 - [ ] [汇总] 生成 old-service retirement candidate 清单：每个旧 endpoint 必须有 target status、caller evidence、browser/HTTP evidence、fallback evidence、DB/write evidence、retirement decision。
+- [ ] [汇总] 维护 retirement ledger 物化记录：每个 admin/app endpoint 必须在 `tasks.md` 或其引用的稳定证据 artifact 中落行，至少包含 batchId、ownerRole、sourceKind、sourcePath、businessPath、method、oldPath、appsApiTarget、coverageKind、callerEvidence、dataSourceStatus、targetStatus、browserEvidence、fallbackEvidence、dbReadinessEvidence、writeReadRollbackEvidence、retirementDecision、notes；未落行或字段不全不得升级为退役候选。
 - [ ] [汇总] retirement candidate 清单必须覆盖 admin exact endpoint、app legacy endpoint、client-only gap、server-only endpoint、debug/test/edge route、upload/R2 route、guarded write route；不得只统计普通 list。
 - [ ] [验证] 退役评审前运行旧服务引用扫描：`apps/admin/src`、`apps/app/src`、`apps/api`、配置、docs、scripts 和 tests 中对 `apps/admin/server`、`apps/app/server`、旧 `/api/**`、旧 `/app/**` base 的引用必须分类处理。
 - [ ] [验证] 退役评审前运行 fallback/shadow-off 复验：确认目标 endpoint 在关闭旧 fallback 或 shadow off 后仍命中 `apps/api`；只有旧本地证据时必须标记 stale 或重采。
@@ -259,9 +294,9 @@
 - [x] [探索] 对照三份已恢复旧文档逐段确认：目标架构、Phase1-7 阶段链、P0-P8 批次、矩阵字段、当前接力状态、Memorix 编号、Neon main 流程、no-go 约束均已进入 OpenSpec。
 - [x] [探索] 对照三份旧文档 git history 确认关键提交已进入 `agent-findings.md`：`2af48327`、`611c5f99`、`828a019e`、`cf85abbd`、`e3b377fa`、`058a9680`、`0a68f7d7`、`1969bbac`、`04a8e56c`、`6bf1dbc2`。
 - [x] [修改] 将临时来源覆盖审计中仍有长期价值的 provenance、artifact index、Memorix index、禁止误判和临时审计边界迁入 canonical 文件；不再维护独立覆盖大表。
-- [ ] [修改] 所有对旧三文档的执行入口引用必须指向 OpenSpec canonical 或稳定索引；历史文档如需保留旧文件名，只能作为“迁移来源”文字，不作为任务源链接。
-- [ ] [校验] 运行旧路径引用扫描，区分 OpenSpec 内的迁移来源记录与外部死链。
-- [ ] [校验] `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过，且 `openspec list --json` 显示本 change 仍有未完成 Nitro 合并任务。
-- [ ] [删除] 只有在用户确认 OpenSpec 已完整承接信息后，才删除三份旧 Superpowers 文档。
+- [x] [修改] 所有对旧三文档的执行入口引用已指向 OpenSpec canonical 或稳定索引；旧文件名只作为“迁移来源”文字，不作为任务源链接。
+- [x] [校验] 运行旧路径引用扫描，区分 OpenSpec 内的迁移来源记录与外部死链；旧三文档自身内部互引随文件删除一并退场。
+- [x] [校验] `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过，且 `openspec list --json` 显示本 change 仍有未完成 Nitro 合并任务。
+- [x] [删除] 用户已明确要求核心内容转写后全面删除三份旧 Superpowers 文档；删除只代表文档载体退场，不代表 runtime 旧服务退役。
 - [x] [删除] 删除临时来源覆盖审计文件；后续不再要求 agent 持续同步更新该文件。
-- [ ] [记录] 删除旧文档后，更新 `agent-progress.md`、`agent-findings.md`、稳定索引和 Memorix。
+- [x] [记录] 删除旧文档后，更新 `agent-progress.md`、`agent-findings.md`、稳定索引和 Memorix。

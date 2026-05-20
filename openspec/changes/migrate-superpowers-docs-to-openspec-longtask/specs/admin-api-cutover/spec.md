@@ -79,6 +79,20 @@ Admin cutover 必须区分 hook-level resolver evidence、page-level Chrome Netw
 - **WHEN** list 页面通过 `/api-shadow` 返回 200
 - **THEN** 只能证明该页面 list 读路径可达，不得推导同页面的新增、编辑、删除、详情、上传、审批、支付等操作完成
 
+### Requirement: Admin manifest 与 HTTP gate 证据最低字段
+
+Admin runtime manifest、contract test 和 HTTP gate 证据 MUST 至少记录 `targetClient=admin`、`routeKind=admin-canonical`、`responseContract`、`ownerModule`、`cutoverStatus`、旧路径、目标 route、HTTP method、测试文件、运行命令、端口或 base URL、响应摘要和剩余缺口。旧矩阵中 2026-05-19 的 operation、patrol/parking、expense、report、community、house-property 小片证据只代表本地 manifest/contract/HTTP gate，不能自动升级生产 `DB_READY`、真实库样本、shadow-off/fallback 或退役候选。
+
+#### Scenario: 记录一个 admin list HTTP gate
+
+- **WHEN** 后续代理为 admin list endpoint 补 runtime manifest、contract test 或 fetch 型 HTTP gate
+- **THEN** 必须写明 ownerModule、cutoverStatus、测试命令和是否只是 `available-in-apps-api-not-caller-verified`
+
+#### Scenario: 复用 2026-05-19 小片证据
+
+- **WHEN** 引用 operation-team 13 个、patrol/parking 10 个、expense-manage 14 个、report-manage 12 个、community-manage 7 个或 house-property-manage 10 个 manifest/HTTP gate 证据
+- **THEN** 必须标为 local manifest/contract/HTTP gate 历史证据，并继续保留生产 DB、真实库样本、shadow-off/fallback、页面交互和退役缺口
+
 ### Requirement: Admin 旧服务退役准备度
 
 Admin old path exact coverage 不能作为删除 `apps/admin/server` 的证明。Admin 退役准备必须同时具备统一 Nitro 承接证据、调用端证据、DB 或接受的非 DB 解释、页面或 HTTP gate、fallback/shadow-off、写入口闭环、retirement gate 评审。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。

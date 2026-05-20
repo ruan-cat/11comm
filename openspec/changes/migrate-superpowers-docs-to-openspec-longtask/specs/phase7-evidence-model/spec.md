@@ -14,6 +14,20 @@ Phase7 后续每个 endpoint 或任务切片都必须保留稳定证据字段：
 - **WHEN** endpoint 缺少关键证据字段
 - **THEN** 该 endpoint 必须保持 unknown-needs-triage、candidate-after-evidence、legacy-fallback、blocked 或 keep-source，不得进入 delete-candidate
 
+### Requirement: Phase7 证据默认值
+
+从旧矩阵迁移或新建 endpoint 状态行时，缺省值 MUST 保守：`callerEvidence=pending-client-rg-or-page-evidence`、`browserEvidence=pending-chrome-mcp`、`fallbackEvidence=pending-shadow-off-or-fallback-drill`、`dbReadinessEvidence=READY_CONFIGURED-only`、`retirementDecision=keep-source`。`writeReadRollbackEvidence` 只有确认无写入行为时才可写 `not-applicable`；写入口必须保持 `pending`、`guarded`、`blocked-for-execution` 或更具体的未完成状态。
+
+#### Scenario: 新建 endpoint 状态行
+
+- **WHEN** 后续代理把一个旧 admin 或 app legacy endpoint 加入 OpenSpec 任务/进度记录
+- **THEN** 未采集到的 caller、browser、fallback、DB 和写入证据必须使用 pending/READY_CONFIGURED-only/keep-source 等保守默认值，不得留空或猜测完成
+
+#### Scenario: 写入口状态初始化
+
+- **WHEN** endpoint 是 create、update、delete、支付、缴费、开门、维修流转、审批或其它 side-effect 路径
+- **THEN** `writeReadRollbackEvidence` 不得默认为 `not-applicable`，必须记录 guard、pending 或 blocked 状态
+
 ### Requirement: 覆盖口径枚举
 
 `coverageKind` 必须区分 `old-path-exact-covered`、`canonical-only`、`not-covered`、`unknown-needs-triage`。`apps/api` canonical route 存在不能抵扣旧 path exact coverage；old path exact coverage 也不能证明调用端、DB、fallback 或退役完成。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
@@ -50,6 +64,48 @@ Phase7 后续每个 endpoint 或任务切片都必须保留稳定证据字段：
 
 - **WHEN** endpoint 已通过本地 HTTP gate 或 `/api-shadow` 页面 Network
 - **THEN** 可以记录为本地证据，但 retirementDecision 仍应保持 `keep-source`、`blocked` 或 `candidate-after-review`，直到所有退役门禁满足
+
+### Requirement: Target status 枚举与组合语义
+
+Phase7 `targetStatus` MUST 至少区分 `available-in-apps-api-not-caller-verified`、`candidate-after-evidence`、`legacy-fallback`、`blocked-for-execution`、`unknown-needs-triage`、`not-candidate`、`delete-candidate`。`retirementDecision` MUST 至少区分 `keep-source`、`blocked`、`candidate-after-review`、`delete-candidate`。这些值可以组合，但组合必须保守解释：只要 caller、browser、fallback、DB/write 或独立复核缺失，`retirementDecision` 就不能升级为 `delete-candidate`。
+
+#### Scenario: apps/api 可达但 caller 未验证
+
+- **WHEN** runtime manifest、contract test 和 HTTP gate 都通过，但调用端还没有页面、hook 或生产证据
+- **THEN** `targetStatus` 可以是 `available-in-apps-api-not-caller-verified`，`retirementDecision` 仍必须是 `keep-source` 或 `candidate-after-review`
+
+#### Scenario: endpoint 暂无法安全执行
+
+- **WHEN** 写入口缺少可清理哨兵数据、R2 环境、真实 schema、生产 DB env 或 guard 恢复证据
+- **THEN** `targetStatus` 必须保持 `blocked-for-execution` 或 `unknown-needs-triage`，不能用历史 HTTP 200 降低风险等级
+
+### Requirement: Retirement ledger 最低字段
+
+后续替代旧矩阵的 retirement ledger MUST 至少能追溯 `batchId`、`ownerRole`、`sourceKind`、`sourcePath`、`businessPath`、`method`、`oldPath`、`appsApiTarget`、`coverageKind`、`callerEvidence`、`dataSourceStatus`、`targetStatus`、`browserEvidence`、`fallbackEvidence`、`dbReadinessEvidence`、`writeReadRollbackEvidence`、`retirementDecision` 和 `notes`。OpenSpec 可以分散存放这些字段，但不得让任一 endpoint 的来源、目标、证据或退役判断不可追溯。
+
+#### Scenario: 生成退役候选清单
+
+- **WHEN** 后续代理准备评审一个 endpoint 或目录是否可退役
+- **THEN** 必须能从 `tasks.md`、`agent-progress.md`、`agent-findings.md` 或稳定证据文件组合出上述最低字段
+
+#### Scenario: 字段只能从旧矩阵查到
+
+- **WHEN** 删除旧矩阵后某个 endpoint 的 sourcePath、oldPath、appsApiTarget 或 retirementDecision 只能从 git history 或旧文件恢复
+- **THEN** 说明 OpenSpec 转写不完整，必须补写 canonical 记录后再继续退役评审
+
+### Requirement: Retirement ledger 物化与维护方式
+
+Retirement ledger MUST 在 OpenSpec canonical 中物化为可追溯记录：优先落入 `tasks.md` 的 endpoint 任务行和对应 `agent-progress.md` checkpoint、`agent-findings.md` 风险记录、稳定证据 artifact 的组合；如某批次需要单独 artifact，必须从 `tasks.md` 或本 change 的 canonical 文件引用。每个 admin/app endpoint 在进入退役候选前必须至少落一行 endpoint 级 ledger 记录；未落行、缺最低字段或只能从旧文档/git history 恢复的 endpoint 不得升级为退役候选。
+
+#### Scenario: endpoint 进入 ledger
+
+- **WHEN** 后续代理新增或更新一个 admin/app endpoint 的迁移状态
+- **THEN** 必须在 `tasks.md` 或其引用的稳定证据位置落行，最低包含 endpoint 身份、旧来源、目标 `apps/api`、证据字段、retirementDecision、维护人/批次和更新时间；`agent-progress.md` 只记录 checkpoint 与验证命令，不承载平行任务树
+
+#### Scenario: 维护 ledger
+
+- **WHEN** route、manifest、caller、dataSourceStatus、fallbackEvidence、dbReadinessEvidence、writeReadRollbackEvidence 或 retirementDecision 发生变化
+- **THEN** 必须同步更新 ledger 行和对应验证记录；只有复核确认最低字段完整后，才允许从 `keep-source` 或 `candidate-after-review` 继续升级
 
 ### Requirement: 证据层级不可替代
 

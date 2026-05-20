@@ -69,3 +69,17 @@ Vitest 不得默认连接 Neon main 或执行真实生产写入。数据库相�
 
 - **WHEN** Vitest、typecheck、HTTP gate 或 OpenSpec 校验失败
 - **THEN** 对应任务不得勾选完成，必须记录失败命令、关键错误、影响范围和下一步修复方向
+
+### Requirement: CI 与 workflow 门禁
+
+统一 Nitro API 迁移相关 CI/workflow MUST 保留旧总设计门禁：依赖安装使用 `pnpm install --frozen-lockfile`；monorepo 全量门禁使用 `pnpm run ci` 或项目当前等价脚本；App 专项 CI 继续覆盖 H5 production build、type-check、Vitest 和 Nitro/Vercel build；不得重新引入全局工具安装、`run_install`、`pnpm ls -g`、直接 `turbo --version`、直接全局 `turbo` 或依赖全局环境的步骤；必要 action major versions 不得随意降级，中文 workflow/job/step 名称应保留。
+
+#### Scenario: 修改 CI workflow
+
+- **WHEN** 后续代理修改 GitHub Actions、Vercel/Cloudflare 部署 workflow 或 monorepo CI 脚本
+- **THEN** 必须复核 lockfile 门禁、workspace-local Turbo、App 专项 CI、无全局安装和 action major version，且记录验证结果
+
+#### Scenario: 外部部署 check 失败
+
+- **WHEN** Cloudflare、Vercel 或 GitHub check 失败
+- **THEN** 必须先读取 check 状态、run 详情和可用日志；可本地复现的问题归入代码/配置修复，权限、项目绑定、环境变量或平台无日志问题记录为平台侧风险
