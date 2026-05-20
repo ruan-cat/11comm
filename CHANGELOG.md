@@ -1,3 +1,26 @@
+## v1.1.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.6...v1.1.0)
+
+### 📖 Documentation
+
+- **openspec:** ⚠️ 建立 Phase7 统一 Nitro 迁移任务体系 ([3f4cec16](https://github.com/ruan-cat/11comm/commit/3f4cec16))
+- **superpowers:** ⚠️ 将 Phase7 历史入口指向 OpenSpec ([f95583c5](https://github.com/ruan-cat/11comm/commit/f95583c5))
+- **prompts:** 更新 Phase7 OpenSpec 迁移提示 ([5f72732a](https://github.com/ruan-cat/11comm/commit/5f72732a))
+- **openspec:** ⚠️ 建立 Phase7 长任务 canonical 体系 ([ffbf20f4](https://github.com/ruan-cat/11comm/commit/ffbf20f4))
+- **superpowers:** ⚠️ 退场 Phase7 旧任务载体 ([c4ed26ca](https://github.com/ruan-cat/11comm/commit/c4ed26ca))
+
+#### ⚠️ Breaking Changes
+
+- **openspec:** ⚠️ 建立 Phase7 统一 Nitro 迁移任务体系 ([3f4cec16](https://github.com/ruan-cat/11comm/commit/3f4cec16))
+- **superpowers:** ⚠️ 将 Phase7 历史入口指向 OpenSpec ([f95583c5](https://github.com/ruan-cat/11comm/commit/f95583c5))
+- **openspec:** ⚠️ 建立 Phase7 长任务 canonical 体系 ([ffbf20f4](https://github.com/ruan-cat/11comm/commit/ffbf20f4))
+- **superpowers:** ⚠️ 退场 Phase7 旧任务载体 ([c4ed26ca](https://github.com/ruan-cat/11comm/commit/c4ed26ca))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.0.2-beta.6
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.5...v1.0.2-beta.6)
