@@ -9,18 +9,27 @@
 - OpenSpec change：`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/`
 - 唯一任务源：`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/tasks.md`
 - 设计与来源压缩：`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/design.md`
+- 语义转写闸门：`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/specs/legacy-superpowers-content-transcription/spec.md`
 - 进度记录：`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md`
 - 发现与风险：`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md`
 
+## 语义转写状态
+
+三份旧 Superpowers 大文档已经完成核心内容转写：旧总设计的统一 `apps/api` 架构、Phase1-7 阶段链、文档/skills/AI 记忆治理、Nitro/Vitest/Neon/退役门禁；旧 endpoint 矩阵的证据字段、状态模型、当前接力事实、负清单和禁止误判；旧 batch 计划的 Agent Team、Batch0-8、每批固定流程、完成定义、复核清单和 Neon main 接力口径，都已经落入 OpenSpec 的 `design.md`、`tasks.md`、`specs/**/spec.md`、`agent-progress.md` 和 `agent-findings.md`。
+
+旧文件名只作为历史来源标识保留在本索引和 OpenSpec 转写账本中，不再作为任务入口或长期维护对象。
+
+当前正在收敛旧三文档语义转写二次复核框架：后续 agent team 必须按旧总设计、旧 endpoint 状态矩阵、旧 batch 执行计划逐文档、逐章节、逐落点核对，每个章节至少落到 `specs/**/spec.md`、`tasks.md`、`agent-progress.md`、`agent-findings.md` 或 `design.md` 之一。这个复核框架只用于确认 OpenSpec 转写完整性，不制造第二任务源，也不表示 Nitro runtime 迁移、生产 `DB_READY` 或旧服务退役已经完成。
+
 ## 旧文档角色迁移
 
-| 旧文档角色                                              | 旧文件名                                                 | 新承接位置                                                                                                                                                     |
-| ------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phase7 endpoint 状态矩阵                                | `phase7-endpoint-migration-matrix.md`                    | `specs/phase7-evidence-model/spec.md`、`specs/admin-api-cutover/spec.md`、`agent-progress.md`                                                                  |
-| Phase7 batch 执行计划                                   | `2026-05-10-phase7-batch-migration-plan.md`              | `tasks.md`、`agent-progress.md`、`agent-findings.md`                                                                                                           |
-| monorepo API 迁移总设计                                 | `2026-04-25-11comm-app-monorepo-api-migration-design.md` | `design.md`、`specs/unified-nitro-api-consolidation/spec.md`、`specs/db-readiness-and-write-verification/spec.md`、`specs/retirement-gate-and-archive/spec.md` |
-| 旧三文档当前章节、git 历史、Memorix 编号和证据 artifact | 三份旧文档 + git history + Memorix                       | `design.md`、`specs/source-history-and-memory-governance/spec.md`、`agent-findings.md`                                                                         |
-| Agent Team、batch 0-8、每批固定流程和复核清单           | `2026-05-10-phase7-batch-migration-plan.md`              | `specs/agent-team-batch-execution/spec.md`、`tasks.md`                                                                                                         |
+| 旧文档角色                                              | 旧文件名                                                 | 新承接位置                                                                                                                                                                                                               |
+| ------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Phase7 endpoint 状态矩阵                                | `phase7-endpoint-migration-matrix.md`                    | `specs/legacy-superpowers-content-transcription/spec.md`、`specs/phase7-evidence-model/spec.md`、`specs/admin-api-cutover/spec.md`、`agent-progress.md`                                                                  |
+| Phase7 batch 执行计划                                   | `2026-05-10-phase7-batch-migration-plan.md`              | `specs/legacy-superpowers-content-transcription/spec.md`、`specs/agent-team-batch-execution/spec.md`、`tasks.md`、`agent-progress.md`、`agent-findings.md`                                                               |
+| monorepo API 迁移总设计                                 | `2026-04-25-11comm-app-monorepo-api-migration-design.md` | `specs/legacy-superpowers-content-transcription/spec.md`、`design.md`、`specs/unified-nitro-api-consolidation/spec.md`、`specs/db-readiness-and-write-verification/spec.md`、`specs/retirement-gate-and-archive/spec.md` |
+| 旧三文档当前章节、git 历史、Memorix 编号和证据 artifact | 三份旧文档 + git history + Memorix                       | `design.md`、`specs/source-history-and-memory-governance/spec.md`、`agent-findings.md`                                                                                                                                   |
+| Agent Team、batch 0-8、每批固定流程和复核清单           | `2026-05-10-phase7-batch-migration-plan.md`              | `specs/agent-team-batch-execution/spec.md`、`tasks.md`                                                                                                                                                                   |
 
 ## 统一 Nitro 合并主线
 
