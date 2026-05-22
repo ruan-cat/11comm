@@ -1,3 +1,32 @@
+## v1.2.1-beta.1
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.0...v1.2.1-beta.1)
+
+### ✨ 新增功能
+
+- **api:** 扩展 Phase7 admin 接口清单 ([25f32a75](https://github.com/ruan-cat/11comm/commit/25f32a75))
+
+### 🐞 修复缺陷
+
+- **api:** ⚠️ 阻断合同上传占位成功响应 ([d65d01e3](https://github.com/ruan-cat/11comm/commit/d65d01e3))
+
+### 📖 Documentation
+
+- **codex:** 记录 goal 暂停复盘与使用提示 ([35452837](https://github.com/ruan-cat/11comm/commit/35452837))
+- **openspec:** 补齐 Phase7 证据审计记录 ([8adc7b77](https://github.com/ruan-cat/11comm/commit/8adc7b77))
+
+### ✅ Tests
+
+- **phase7:** 补充 admin 接口迁移覆盖 ([95f352b0](https://github.com/ruan-cat/11comm/commit/95f352b0))
+
+#### ⚠️ Breaking Changes
+
+- **api:** ⚠️ 阻断合同上传占位成功响应 ([d65d01e3](https://github.com/ruan-cat/11comm/commit/d65d01e3))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.2.0
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.0.2-beta.6...v1.2.0)
