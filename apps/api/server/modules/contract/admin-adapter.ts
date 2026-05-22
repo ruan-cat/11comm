@@ -281,20 +281,35 @@ export function createAdminContractAdapter(service: ContractService) {
 		},
 
 		async uploadInit(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess({ uploadId: "mock-upload-id" }, "上传初始化成功");
+			void input;
+			return contractUploadBlocked();
 		},
 		async uploadSignPart(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess({ signedUrl: "" }, "签名成功");
+			void input;
+			return contractUploadBlocked();
 		},
 		async uploadComplete(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(null, "上传完成");
+			void input;
+			return contractUploadBlocked();
 		},
 		async uploadAbort(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess(null, "上传已取消");
+			void input;
+			return contractUploadBlocked();
 		},
 		async uploadStatus(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess({ status: "unknown" });
+			void input;
+			return contractUploadBlocked();
 		},
+	};
+}
+
+function contractUploadBlocked(): JsonVO<null> {
+	return {
+		success: false,
+		code: 409,
+		message:
+			"R2 upload is blocked in apps/api until R2 env, AWS SDK, upload session repository, and resumable upload verification are migrated.",
+		data: null,
 	};
 }
 
