@@ -52,6 +52,106 @@ const reportManageAdminListEndpoints = [
 	"/api/property-manage/report-manage/statement-expenses/list",
 ] as const;
 
+const contractManageCoveredAdminListEndpoints = [
+	"/api/property-manage/contract-manage/archive/list",
+	"/api/property-manage/contract-manage/attachment/list",
+	"/api/property-manage/contract-manage/clause/list",
+	"/api/property-manage/contract-manage/change/list",
+	"/api/property-manage/contract-manage/draft-contract/list",
+	"/api/property-manage/contract-manage/expire/list",
+	"/api/property-manage/contract-manage/first-party/list",
+	"/api/property-manage/contract-manage/print/list",
+	"/api/property-manage/contract-manage/review/list",
+	"/api/property-manage/contract-manage/second-party/list",
+	"/api/property-manage/contract-manage/template/list",
+	"/api/property-manage/contract-manage/type/list",
+] as const;
+
+const contractManageChangeCrudEndpoints = [
+	{ url: "/api/property-manage/contract-manage/change/create", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/change/detail", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/change/update", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/change/delete", method: "POST" },
+] as const;
+
+const contractManageDraftContractCrudEndpoints = [
+	{ url: "/api/property-manage/contract-manage/draft-contract/create", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/draft-contract/detail", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/draft-contract/update", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/draft-contract/delete", method: "POST" },
+] as const;
+
+const devConfigManageCenterEndpoints = [
+	{ url: "/api/dev-team/config-manage/center/list", method: "POST" },
+	{ url: "/api/dev-team/config-manage/center/create", method: "POST" },
+	{ url: "/api/dev-team/config-manage/center/detail", method: "GET" },
+	{ url: "/api/dev-team/config-manage/center/update", method: "POST" },
+	{ url: "/api/dev-team/config-manage/center/delete", method: "POST" },
+] as const;
+
+const devConfigManageDictionaryEndpoints = [
+	{ url: "/api/dev-team/config-manage/dictionary/list", method: "POST" },
+	{ url: "/api/dev-team/config-manage/dictionary/create", method: "POST" },
+	{ url: "/api/dev-team/config-manage/dictionary/detail", method: "GET" },
+	{ url: "/api/dev-team/config-manage/dictionary/update", method: "POST" },
+	{ url: "/api/dev-team/config-manage/dictionary/delete", method: "POST" },
+] as const;
+
+const devConfigManageItemEndpoints = [
+	{ url: "/api/dev-team/config-manage/item/list", method: "POST" },
+	{ url: "/api/dev-team/config-manage/item/create", method: "POST" },
+	{ url: "/api/dev-team/config-manage/item/detail", method: "GET" },
+	{ url: "/api/dev-team/config-manage/item/update", method: "POST" },
+	{ url: "/api/dev-team/config-manage/item/delete", method: "POST" },
+] as const;
+
+const devConfigManageTypeEndpoints = [
+	{ url: "/api/dev-team/config-manage/type/list", method: "POST" },
+	{ url: "/api/dev-team/config-manage/type/create", method: "POST" },
+	{ url: "/api/dev-team/config-manage/type/detail", method: "GET" },
+	{ url: "/api/dev-team/config-manage/type/update", method: "POST" },
+	{ url: "/api/dev-team/config-manage/type/delete", method: "POST" },
+] as const;
+
+const settingSystemChangePasswordEndpoints = [
+	{ url: "/api/setting-manage/system-manage/change-password/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/change-password/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/change-password/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/change-password/delete", method: "POST" },
+] as const;
+
+const settingSystemConfigEndpoints = [
+	{ url: "/api/setting-manage/system-manage/system-config/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/system-config/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/system-config/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/system-config/delete", method: "POST" },
+] as const;
+
+const settingSystemCommunityConfigurationEndpoints = [
+	{ url: "/api/setting-manage/system-manage/community-configuration/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/community-configuration/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/community-configuration/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/community-configuration/delete", method: "POST" },
+] as const;
+
+const settingSystemInitializeCellEndpoints = [
+	{ url: "/api/setting-manage/system-manage/initialize-cell/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/initialize-cell/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/initialize-cell/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/initialize-cell/delete", method: "POST" },
+] as const;
+
+const settingSystemRegisterProtocolEndpoints = [
+	{ url: "/api/setting-manage/system-manage/register-protocol/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/register-protocol/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/register-protocol/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/register-protocol/delete", method: "POST" },
+] as const;
+
+const settingOrganizeEdgeEndpoints = [
+	{ url: "/api/setting-manage/organize-manage/org-info/tree", method: "POST" },
+] as const;
+
 const patrolAdminListEndpoints = [
 	"/api/property-manage/patrol-manage/detail/list",
 	"/api/property-manage/patrol-manage/item/list",
@@ -113,6 +213,45 @@ describe("phase7 endpoint manifest", () => {
 		for (const url of reportManageAdminListEndpoints) {
 			expect(urls).toContain(url);
 		}
+		for (const url of contractManageCoveredAdminListEndpoints) {
+			expect(urls).toContain(url);
+		}
+		for (const endpoint of contractManageChangeCrudEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of contractManageDraftContractCrudEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of devConfigManageCenterEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of devConfigManageDictionaryEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of devConfigManageItemEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of devConfigManageTypeEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of settingSystemChangePasswordEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of settingSystemConfigEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of settingSystemCommunityConfigurationEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of settingSystemInitializeCellEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of settingSystemRegisterProtocolEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
+		for (const endpoint of settingOrganizeEdgeEndpoints) {
+			expect(urls).toContain(endpoint.url);
+		}
 		for (const url of operationTeamAdminListEndpoints) {
 			expect(urls).toContain(url);
 		}
@@ -148,6 +287,15 @@ describe("phase7 endpoint manifest", () => {
 					url: "/app/fee.listFee",
 					ownerModule: "fee",
 					phase: "phase2-fee-payment-report",
+				}),
+				expect.objectContaining({
+					url: "/api/property-manage/report-manage/payment-details-form/list",
+					targetClient: "admin",
+					routeKind: "admin-canonical",
+					ownerModule: "fee",
+					phase: "phase2-fee-payment-report",
+					responseContract: "JsonVO",
+					cutoverStatus: "available-in-apps-api-not-caller-verified",
 				}),
 				expect.objectContaining({
 					url: "/app/ownerRepair.listOwnerRepairs",
@@ -211,6 +359,149 @@ describe("phase7 endpoint manifest", () => {
 						routeKind: "admin-canonical",
 						ownerModule: "fee-report",
 						phase: "phase7-report-manage-admin-list",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...contractManageCoveredAdminListEndpoints.map((url) =>
+					expect.objectContaining({
+						url,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "contract",
+						phase: "phase7-contract-manage-admin-list",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...[...contractManageChangeCrudEndpoints, ...contractManageDraftContractCrudEndpoints].map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "contract",
+						phase: "phase7-contract-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...devConfigManageCenterEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "dev",
+						phase: "phase7-dev-config-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...devConfigManageDictionaryEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "dev",
+						phase: "phase7-dev-config-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...devConfigManageItemEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "dev",
+						phase: "phase7-dev-config-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...devConfigManageTypeEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "dev",
+						phase: "phase7-dev-config-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...settingSystemChangePasswordEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "setting",
+						phase: "phase7-setting-system-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...settingSystemConfigEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "setting",
+						phase: "phase7-setting-system-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...settingSystemCommunityConfigurationEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "setting",
+						phase: "phase7-setting-system-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...settingSystemInitializeCellEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "setting",
+						phase: "phase7-setting-system-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...settingSystemRegisterProtocolEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "setting",
+						phase: "phase7-setting-system-manage-admin-crud",
+						responseContract: "JsonVO",
+						cutoverStatus: "available-in-apps-api-not-caller-verified",
+					}),
+				),
+				...settingOrganizeEdgeEndpoints.map((endpoint) =>
+					expect.objectContaining({
+						url: endpoint.url,
+						method: endpoint.method,
+						targetClient: "admin",
+						routeKind: "admin-canonical",
+						ownerModule: "setting",
+						phase: "phase7-setting-organize-manage-admin-edge",
 						responseContract: "JsonVO",
 						cutoverStatus: "available-in-apps-api-not-caller-verified",
 					}),

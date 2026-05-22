@@ -241,6 +241,20 @@ describe('phase7 app api shadow base url', () => {
     ).toBe('http://legacy.example.com/app/fee.listFee')
   })
 
+  test.each([
+    '/app/feeConfig.listFeeConfigs',
+    '/app/reportFeeMonthStatistics.queryReportFeeSummary',
+    '/app/reportFeeMonthStatistics/queryPayFeeDetail',
+    '/app/dataReport.queryFeeDataReport',
+  ])('falls back to existing runtime base for fee/report %s when shadow is disabled', (endpoint) => {
+    expect(
+      prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'false',
+      }),
+    ).toBe(`http://legacy.example.com${endpoint}?communityId=COMM_001`)
+  })
+
   test('routes callComponent core/list to apps/api when shadow is enabled (Phase7 batch1)', () => {
     expect(
       prependRuntimeBaseUrl('/callComponent/core/list', {

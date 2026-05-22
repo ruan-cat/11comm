@@ -227,6 +227,47 @@ describe("fee DB repository phase7 read slice", () => {
 		});
 	});
 
+	test("reads room fee report from exHouseCharges with compatibility room ids", async () => {
+		const repository = createDbFeeRepository(
+			createFakeDb({
+				houseCharges: [
+					{
+						id: "ROOM_FEE_1",
+						houseId: "77777777-7777-4777-8777-777777777777",
+						expenseItem: "Property management fee",
+						receivableAmount: "300.50",
+						receivedAmount: "100.25",
+						status: "partial",
+						createTime: "2026-05-10 09:00:00",
+					},
+				],
+				counts: new Map([[exHouseCharges, 1]]),
+			}) as never,
+		);
+
+		const result = await repository.getRoomFeeReport({
+			page: 1,
+			row: 10,
+			communityId: "COMM_001",
+		});
+
+		expect(result).toEqual({
+			list: [
+				{
+					roomId: "77777777-7777-4777-8777-777777777777",
+					roomName: "77777777-7777-4777-8777-777777777777",
+					ownerName: "",
+					feeName: "Property management fee",
+					receivableFee: 300.5,
+					receivedFee: 100.25,
+					oweFee: 200.25,
+					stateName: "部分缴纳",
+				},
+			],
+			total: 1,
+		});
+	});
+
 	test("reads data report from rptExpenseSummaries", async () => {
 		const repository = createDbFeeRepository(
 			createFakeDb({

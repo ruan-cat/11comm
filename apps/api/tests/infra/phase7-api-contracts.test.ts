@@ -1,5 +1,8 @@
 import { describe, expect, test } from "vitest";
 
+import { createAdminContractAdapter } from "../../server/modules/contract/admin-adapter";
+import { createInMemoryContractRepository } from "../../server/modules/contract/repository";
+import { createContractService } from "../../server/modules/contract/service";
 import { createAdminFeeAdapter } from "../../server/modules/fee/admin-adapter";
 import { createInMemoryFeeRepository } from "../../server/modules/fee/repository";
 import { createFeeService } from "../../server/modules/fee/service";
@@ -52,6 +55,106 @@ const reportManageAdminListEndpoints = [
 	"/api/property-manage/report-manage/repair-report-form/list",
 	"/api/property-manage/report-manage/repair-reports-summary-table/list",
 	"/api/property-manage/report-manage/statement-expenses/list",
+] as const;
+
+const contractManageCoveredAdminListEndpoints = [
+	"/api/property-manage/contract-manage/archive/list",
+	"/api/property-manage/contract-manage/attachment/list",
+	"/api/property-manage/contract-manage/clause/list",
+	"/api/property-manage/contract-manage/change/list",
+	"/api/property-manage/contract-manage/draft-contract/list",
+	"/api/property-manage/contract-manage/expire/list",
+	"/api/property-manage/contract-manage/first-party/list",
+	"/api/property-manage/contract-manage/print/list",
+	"/api/property-manage/contract-manage/review/list",
+	"/api/property-manage/contract-manage/second-party/list",
+	"/api/property-manage/contract-manage/template/list",
+	"/api/property-manage/contract-manage/type/list",
+] as const;
+
+const contractManageChangeCrudEndpoints = [
+	{ url: "/api/property-manage/contract-manage/change/create", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/change/detail", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/change/update", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/change/delete", method: "POST" },
+] as const;
+
+const contractManageDraftContractCrudEndpoints = [
+	{ url: "/api/property-manage/contract-manage/draft-contract/create", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/draft-contract/detail", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/draft-contract/update", method: "POST" },
+	{ url: "/api/property-manage/contract-manage/draft-contract/delete", method: "POST" },
+] as const;
+
+const devConfigManageCenterEndpoints = [
+	{ url: "/api/dev-team/config-manage/center/list", method: "POST" },
+	{ url: "/api/dev-team/config-manage/center/create", method: "POST" },
+	{ url: "/api/dev-team/config-manage/center/detail", method: "GET" },
+	{ url: "/api/dev-team/config-manage/center/update", method: "POST" },
+	{ url: "/api/dev-team/config-manage/center/delete", method: "POST" },
+] as const;
+
+const devConfigManageDictionaryEndpoints = [
+	{ url: "/api/dev-team/config-manage/dictionary/list", method: "POST" },
+	{ url: "/api/dev-team/config-manage/dictionary/create", method: "POST" },
+	{ url: "/api/dev-team/config-manage/dictionary/detail", method: "GET" },
+	{ url: "/api/dev-team/config-manage/dictionary/update", method: "POST" },
+	{ url: "/api/dev-team/config-manage/dictionary/delete", method: "POST" },
+] as const;
+
+const devConfigManageItemEndpoints = [
+	{ url: "/api/dev-team/config-manage/item/list", method: "POST" },
+	{ url: "/api/dev-team/config-manage/item/create", method: "POST" },
+	{ url: "/api/dev-team/config-manage/item/detail", method: "GET" },
+	{ url: "/api/dev-team/config-manage/item/update", method: "POST" },
+	{ url: "/api/dev-team/config-manage/item/delete", method: "POST" },
+] as const;
+
+const devConfigManageTypeEndpoints = [
+	{ url: "/api/dev-team/config-manage/type/list", method: "POST" },
+	{ url: "/api/dev-team/config-manage/type/create", method: "POST" },
+	{ url: "/api/dev-team/config-manage/type/detail", method: "GET" },
+	{ url: "/api/dev-team/config-manage/type/update", method: "POST" },
+	{ url: "/api/dev-team/config-manage/type/delete", method: "POST" },
+] as const;
+
+const settingSystemChangePasswordEndpoints = [
+	{ url: "/api/setting-manage/system-manage/change-password/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/change-password/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/change-password/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/change-password/delete", method: "POST" },
+] as const;
+
+const settingSystemConfigEndpoints = [
+	{ url: "/api/setting-manage/system-manage/system-config/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/system-config/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/system-config/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/system-config/delete", method: "POST" },
+] as const;
+
+const settingSystemCommunityConfigurationEndpoints = [
+	{ url: "/api/setting-manage/system-manage/community-configuration/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/community-configuration/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/community-configuration/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/community-configuration/delete", method: "POST" },
+] as const;
+
+const settingSystemInitializeCellEndpoints = [
+	{ url: "/api/setting-manage/system-manage/initialize-cell/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/initialize-cell/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/initialize-cell/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/initialize-cell/delete", method: "POST" },
+] as const;
+
+const settingSystemRegisterProtocolEndpoints = [
+	{ url: "/api/setting-manage/system-manage/register-protocol/list", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/register-protocol/create", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/register-protocol/update", method: "POST" },
+	{ url: "/api/setting-manage/system-manage/register-protocol/delete", method: "POST" },
+] as const;
+
+const settingOrganizeEdgeEndpoints = [
+	{ url: "/api/setting-manage/organize-manage/org-info/tree", method: "POST" },
 ] as const;
 
 const patrolAdminListEndpoints = [
@@ -111,6 +214,8 @@ describe("phase7 apps-api dual client contracts", () => {
 			targetClient: "admin",
 			routeKind: "admin-canonical",
 			responseContract: "JsonVO",
+			ownerModule: "fee",
+			phase: "phase2-fee-payment-report",
 			cutoverStatus: "available-in-apps-api-not-caller-verified",
 		});
 		for (const url of expenseManageAdminListEndpoints) {
@@ -130,6 +235,137 @@ describe("phase7 apps-api dual client contracts", () => {
 				responseContract: "JsonVO",
 				ownerModule: "fee-report",
 				phase: "phase7-report-manage-admin-list",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const url of contractManageCoveredAdminListEndpoints) {
+			expectManifestEntry(url, {
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "contract",
+				phase: "phase7-contract-manage-admin-list",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of [...contractManageChangeCrudEndpoints, ...contractManageDraftContractCrudEndpoints]) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "contract",
+				phase: "phase7-contract-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of devConfigManageCenterEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "dev",
+				phase: "phase7-dev-config-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of devConfigManageDictionaryEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "dev",
+				phase: "phase7-dev-config-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of devConfigManageItemEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "dev",
+				phase: "phase7-dev-config-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of devConfigManageTypeEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "dev",
+				phase: "phase7-dev-config-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of settingSystemChangePasswordEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "setting",
+				phase: "phase7-setting-system-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of settingSystemConfigEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "setting",
+				phase: "phase7-setting-system-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of settingSystemCommunityConfigurationEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "setting",
+				phase: "phase7-setting-system-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of settingSystemInitializeCellEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "setting",
+				phase: "phase7-setting-system-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of settingSystemRegisterProtocolEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "setting",
+				phase: "phase7-setting-system-manage-admin-crud",
+				cutoverStatus: "available-in-apps-api-not-caller-verified",
+			});
+		}
+		for (const endpoint of settingOrganizeEdgeEndpoints) {
+			expectManifestEntry(endpoint.url, {
+				method: endpoint.method,
+				targetClient: "admin",
+				routeKind: "admin-canonical",
+				responseContract: "JsonVO",
+				ownerModule: "setting",
+				phase: "phase7-setting-organize-manage-admin-edge",
 				cutoverStatus: "available-in-apps-api-not-caller-verified",
 			});
 		}
@@ -239,6 +475,58 @@ describe("phase7 apps-api dual client contracts", () => {
 			},
 		});
 		expect(response).not.toHaveProperty("msg");
+	});
+
+	test("contract-manage covered admin adapters return JsonVO instead of app legacy envelope", async () => {
+		const admin = createAdminContractAdapter(createContractService(createInMemoryContractRepository()));
+
+		for (const response of [
+			await admin.listArchive({ pageIndex: 1, pageSize: 20 }),
+			await admin.listAttachment({ pageIndex: 1, pageSize: 20 }),
+			await admin.listClause({ pageIndex: 1, pageSize: 20 }),
+			await admin.listChange({ pageIndex: 1, pageSize: 20 }),
+			await admin.listDraftContract({ pageIndex: 1, pageSize: 20 }),
+			await admin.listExpire({ pageIndex: 1, pageSize: 20 }),
+			await admin.listFirstParty({ pageIndex: 1, pageSize: 20 }),
+			await admin.listPrint({ pageIndex: 1, pageSize: 20 }),
+			await admin.listReview({ pageIndex: 1, pageSize: 20 }),
+			await admin.listSecondParty({ pageIndex: 1, pageSize: 20 }),
+			await admin.listTemplate({ pageIndex: 1, pageSize: 20 }),
+			await admin.listContractType({ pageIndex: 1, pageSize: 20 }),
+		]) {
+			expect(response).toMatchObject({
+				success: true,
+				code: 200,
+				message: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+					pageIndex: 1,
+					pageSize: 20,
+				},
+			});
+			expect(response).not.toHaveProperty("msg");
+		}
+	});
+
+	test("contract-manage change and draft-contract CRUD adapters return JsonVO", async () => {
+		const admin = createAdminContractAdapter(createContractService(createInMemoryContractRepository()));
+
+		for (const response of [
+			await admin.createChange({ contractId: "CONTRACT_001", changeType: "amount" }),
+			await admin.updateChange({ id: "CHANGE_001", changeReason: "price adjusted" }),
+			await admin.deleteChange({ id: "CHANGE_001" }),
+			await admin.createDraftContract({ contractName: "Draft contract", contractNumber: "DRAFT_001" }),
+			await admin.updateDraftContract({ id: "CONTRACT_DRAFT_001", contractName: "Draft contract v2" }),
+			await admin.deleteDraftContract({ id: "CONTRACT_DRAFT_001" }),
+		]) {
+			expect(response).toMatchObject({
+				success: true,
+				code: 200,
+				message: expect.any(String),
+			});
+			expect(response).not.toHaveProperty("msg");
+		}
 	});
 
 	test("app legacy allowlist endpoint returns the old code msg data envelope", async () => {

@@ -164,6 +164,28 @@ describe("repair DB repository phase7 batch3", () => {
 			},
 		]);
 	});
+
+	test("keeps core list mixed compat while reading repair types from DB", async () => {
+		const repository = createDbRepairRepository(
+			createFakeDb({
+				types: [{ id: "DB_REPAIR_TYPE", typeName: "DB repair type", sortOrder: 1 }],
+			}) as never,
+		);
+
+		await expect(repository.listCoreDict({ domain: "repair_type" })).resolves.toEqual([
+			{ statusCd: "DB_REPAIR_TYPE", name: "DB repair type" },
+		]);
+
+		await expect(repository.listCoreDict({ domain: "repair_status" })).resolves.toEqual(
+			expect.arrayContaining([expect.objectContaining({ statusCd: "PENDING" })]),
+		);
+
+		await expect(repository.listCoreDict({ name: "apply_room_discount", type: "state" })).resolves.toEqual(
+			expect.arrayContaining([expect.objectContaining({ statusCd: "0" })]),
+		);
+
+		await expect(repository.listCoreDict({ name: "pay_fee_config", type: "fee_type_cd" })).resolves.toEqual([]);
+	});
 });
 
 function createFakeDb(seed: { settings?: any[]; types?: any[] }) {

@@ -3,10 +3,22 @@ import { afterEach, beforeEach, expect, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
 	useListQuery: vi.fn((options) => options),
+	useQuery: vi.fn((options) => options),
+	httpRequest: vi.fn(),
 }));
 
 vi.mock("@/composables/use-list-query", () => ({
 	useListQuery: mocks.useListQuery,
+}));
+
+vi.mock("@tanstack/vue-query", () => ({
+	useQuery: mocks.useQuery,
+}));
+
+vi.mock("@/utils/http", () => ({
+	http: {
+		request: mocks.httpRequest,
+	},
 }));
 
 interface OrganizeManageModuleConfig {
@@ -114,4 +126,56 @@ describe("phase7 organize-manage admin api shadow resolver", () => {
 			});
 		},
 	);
+
+	test("resolves org-info tree query through the shadow proxy when enabled", async () => {
+		const mod = (await importOrganizeManageModule(
+			{
+				name: "org-info-tree",
+				queryKeyPrefix: "orgInfoTree",
+				apiUrl: "/api/setting-manage/organize-manage/org-info/tree",
+				importModule: () => import("../org-info"),
+				useQuery: (imported) => (imported as typeof import("../org-info")).useOrganizationTreeQuery(),
+			},
+			{
+				VITE_11COMM_API_SHADOW_ENABLE: "true",
+				VITE_11COMM_API_USE_PROXY: "true",
+				VITE_11COMM_API_PROXY_PREFIX: "/api-shadow",
+				VITE_11COMM_API_BASE_URL: "http://127.0.0.1:3102",
+			},
+		)) as typeof import("../org-info");
+
+		mod.useOrganizationTreeQuery();
+		await mocks.useQuery.mock.calls[0]?.[0].queryFn();
+
+		expect(mocks.httpRequest).toHaveBeenCalledWith(
+			"post",
+			"/api-shadow/api/setting-manage/organize-manage/org-info/tree",
+		);
+	});
+
+	test("resolves org-info tree query through the direct apps/api base when enabled without proxy", async () => {
+		const mod = (await importOrganizeManageModule(
+			{
+				name: "org-info-tree",
+				queryKeyPrefix: "orgInfoTree",
+				apiUrl: "/api/setting-manage/organize-manage/org-info/tree",
+				importModule: () => import("../org-info"),
+				useQuery: (imported) => (imported as typeof import("../org-info")).useOrganizationTreeQuery(),
+			},
+			{
+				VITE_11COMM_API_SHADOW_ENABLE: "true",
+				VITE_11COMM_API_USE_PROXY: "false",
+				VITE_11COMM_API_PROXY_PREFIX: "/api-shadow",
+				VITE_11COMM_API_BASE_URL: "http://127.0.0.1:3102",
+			},
+		)) as typeof import("../org-info");
+
+		mod.useOrganizationTreeQuery();
+		await mocks.useQuery.mock.calls[0]?.[0].queryFn();
+
+		expect(mocks.httpRequest).toHaveBeenCalledWith(
+			"post",
+			"http://127.0.0.1:3102/api/setting-manage/organize-manage/org-info/tree",
+		);
+	});
 });
