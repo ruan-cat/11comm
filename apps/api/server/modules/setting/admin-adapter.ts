@@ -1,4 +1,4 @@
-import type { JsonVO, PageDTO } from "@01s-11comm/type";
+import type { JsonVO, OrganizationTreeNode, PageDTO } from "@01s-11comm/type";
 import { adminSuccess } from "../../shared/runtime/response-builder";
 import type { SettingService } from "./service";
 import type {
@@ -341,8 +341,10 @@ export function createAdminSettingAdapter(service: SettingService) {
 			return adminSuccess(null, "删除成功");
 		},
 
-		async getOrgInfoTree(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			return adminSuccess([], "查询成功");
+		async getOrgInfoTree(input: Record<string, unknown>): Promise<JsonVO<OrganizationTreeNode[]>> {
+			void input;
+			const result = await service.getOrgInfoTree();
+			return adminSuccess(result, "查询成功");
 		},
 	};
 }

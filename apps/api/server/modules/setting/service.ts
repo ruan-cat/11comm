@@ -4,6 +4,7 @@ export interface SettingService {
 	// organize-manage
 	listDataPermission: SettingRepository["listDataPermission"];
 	listOrgInfo: SettingRepository["listOrgInfo"];
+	getOrgInfoTree: SettingRepository["getOrgInfoTree"];
 	listRolePermission: SettingRepository["listRolePermission"];
 	listSchedulingSetting: SettingRepository["listSchedulingSetting"];
 	listShiftSetting: SettingRepository["listShiftSetting"];
@@ -37,6 +38,7 @@ export function createSettingService(repository: SettingRepository): SettingServ
 	return {
 		listDataPermission: repository.listDataPermission.bind(repository),
 		listOrgInfo: repository.listOrgInfo.bind(repository),
+		getOrgInfoTree: repository.getOrgInfoTree.bind(repository),
 		listRolePermission: repository.listRolePermission.bind(repository),
 		listSchedulingSetting: repository.listSchedulingSetting.bind(repository),
 		listShiftSetting: repository.listShiftSetting.bind(repository),

@@ -1,4 +1,4 @@
-import { and, desc, eq, like, sql } from "drizzle-orm";
+import { and, asc, desc, eq, like, sql } from "drizzle-orm";
 import {
 	smDataPermissions,
 	smOrganizations,
@@ -13,6 +13,7 @@ import {
 	smRegisterProtocols,
 	smSystemConfigs,
 } from "@01s-11comm/type";
+import type { OrganizationTreeNode } from "@01s-11comm/type";
 import type { DbType } from "../../db";
 import { formatDateTime } from "../../utils/format-date";
 import type {
@@ -48,6 +49,7 @@ export interface SettingRepository {
 		params: ListDataPermissionParams,
 	) => Promise<{ list: AdminDataPermissionListItem[]; total: number }>;
 	listOrgInfo: (params: ListOrgInfoParams) => Promise<{ list: AdminOrgInfoListItem[]; total: number }>;
+	getOrgInfoTree: () => Promise<OrganizationTreeNode[]>;
 	listRolePermission: (
 		params: ListRolePermissionParams,
 	) => Promise<{ list: AdminRolePermissionListItem[]; total: number }>;
@@ -179,6 +181,23 @@ export function createDbSettingRepository(db: DbType): SettingRepository {
 					updateTime: formatDateTime(row.updateTime),
 				})),
 			};
+		},
+
+		async getOrgInfoTree(): Promise<OrganizationTreeNode[]> {
+			const rows = await db
+				.select({
+					id: smOrganizations.id,
+					orgName: smOrganizations.orgName,
+					orgCode: smOrganizations.orgCode,
+					orgType: smOrganizations.orgType,
+					sortOrder: smOrganizations.sortOrder,
+					parentId: smOrganizations.parentId,
+					remark: smOrganizations.remark,
+				})
+				.from(smOrganizations)
+				.orderBy(asc(smOrganizations.sortOrder), asc(smOrganizations.orgName));
+
+			return buildOrgInfoTree(rows);
 		},
 
 		async listRolePermission(
@@ -850,6 +869,9 @@ class InMemorySettingRepository implements SettingRepository {
 	async listOrgInfo(): Promise<{ list: AdminOrgInfoListItem[]; total: number }> {
 		return { list: [], total: 0 };
 	}
+	async getOrgInfoTree(): Promise<OrganizationTreeNode[]> {
+		return [];
+	}
 	async listRolePermission(): Promise<{ list: AdminRolePermissionListItem[]; total: number }> {
 		return { list: [], total: 0 };
 	}
@@ -930,4 +952,45 @@ class InMemorySettingRepository implements SettingRepository {
 
 export function createInMemorySettingRepository(): SettingRepository {
 	return new InMemorySettingRepository();
+}
+
+interface OrgInfoTreeRow {
+	id: string;
+	orgName: string | null;
+	orgCode: string | null;
+	orgType: string | null;
+	sortOrder: number | null;
+	parentId: string | null;
+	remark: string | null;
+}
+
+function buildOrgInfoTree(rows: OrgInfoTreeRow[]): OrganizationTreeNode[] {
+	const treeMap = new Map<string, OrganizationTreeNode>();
+	const roots: OrganizationTreeNode[] = [];
+
+	for (const row of rows) {
+		const node: OrganizationTreeNode = {
+			id: row.id,
+			name: row.orgName || "",
+			sort: row.sortOrder || 0,
+			children: [],
+		};
+		if (row.orgCode) node.code = row.orgCode;
+		if (row.orgType) node.type = row.orgType as OrganizationTreeNode["type"];
+		if (row.parentId) node.parentId = row.parentId;
+		if (row.remark) node.description = row.remark;
+		treeMap.set(row.id, node);
+	}
+
+	for (const row of rows) {
+		const node = treeMap.get(row.id);
+		if (!node) continue;
+		if (row.parentId && treeMap.has(row.parentId)) {
+			treeMap.get(row.parentId)?.children?.push(node);
+			continue;
+		}
+		roots.push(node);
+	}
+
+	return roots;
 }
