@@ -502,7 +502,7 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 4. 如果你仍旧在处理同一个任务，请你在现成的 agent team 子代理团队内继续新建、新增 agent team 成员。
 5. 及时关闭掉已经完成任务的 agent team 子代理成员。优雅的关闭掉子代理成员。
 
-## 042 <!-- TODO: --> 重构任务执行与存储模式，便于实现长任务连续执行
+## 042 <!-- 已完成 --> 重构任务执行与存储模式，便于实现长任务连续执行
 
 按照全局技能 do-long-task 的要求，我准备大规模重构以下三个旧任务载体。
 
@@ -523,3 +523,74 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 这是一个容易产生遗漏遗忘，缺省的错误。很容易出现记忆丢失。你应该认真阅读这三个文件，结合 memorix，查看这几个任务体系文件承载的历史。
 
 我们的本质是改造任务执行与记录的载体，从基于 superpower 的三个 markdown 文件，改造成基于 openspec 的一系列文件。
+
+## 043 <!-- TODO: 长任务 主要通用 codex cli 完成 --> 完成 app 和 admin 项目的独立 nitro 接口服务的迁移与搭建
+
+```markdown
+/goal 执行 OpenSpec change：`openspec\changes\migrate-superpowers-docs-to-openspec-longtask`。
+
+目标：
+持续完成 `tasks.md` 中所有未完成任务，直到：
+
+1. 所有 checkbox 都变成 `[x]`。
+2. `/opsx:verify <change-name>` 没有 CRITICAL。
+3. 项目的测试、lint、typecheck 全部通过。
+4. `agent-progress.md` 有最终总结。
+5. `agent-findings.md` 记录重要发现、失败尝试和遗留风险。
+6. 关键验收场景都有测试或明确验证记录。
+
+执行规则：
+
+- 先读取 `proposal.md`、`design.md`、`specs/`、`tasks.md`。
+- 以 `tasks.md` 为唯一主任务源。
+- 不要创建另一套任务列表。
+- 每次只处理一个小 task 或一个明确 checkpoint。
+- 每完成一个 task，更新 `tasks.md`。
+- 每完成一个 checkpoint，更新 `agent-progress.md`。
+- 重要发现写入 `agent-findings.md`。
+- 遇到实现问题时使用 Superpowers 的 `systematic-debugging`。
+- 实现每个小阶段时使用 Superpowers 的 `test-driven-development`、`subagent-driven-development`、`requesting-code-review`。
+- 不要每一步询问是否继续。
+- 只有遇到权限问题、需求冲突、破坏性操作风险、产品决策问题、连续 3 次同类失败，或需要产品决策时才暂停。
+
+停止条件：
+
+- 全部完成。
+- 无法继续且输出 BLOCKED 报告。
+- 运行达到 8 小时。
+- 上下文不足且无法通过文件恢复。
+
+---
+
+其他执行时的注意事项：
+
+1. **及时关闭已经使用完成的谷歌浏览器**： 在长达数个小时的长任务内，你会启用谷歌浏览器 MCP 来完成自测。请及时关闭掉已经完成测试的谷歌浏览器，避免打开过多的谷歌浏览器，以免造成电脑压力。
+2. **如何触发生产环境部署**： 我们项目目前的是 monorepo 项目，分别有 admin、app、api 三个核心子包。这三个子包子项目会分别对应 3 个 vercel 项目。你不需要去连接具体的 vercel 项目，你只需要知道在本项目的 dev 分支 push 提交后，这 3 个核心项目就会在各自的 vercel 项目内完成部署，最后实现生产环境更新。
+3. **连续长任务暂不允许执行具体的 git commit**： 我暂时不允许你在 dev 完成有意义的 git commit，并 push 远程。这意味着生产环境的更新和验证你都暂时做不了，请你把相关的生产环境验证的子任务，放到最后再做。这属于你的`卡点`，等你完成了其他全部 openspec 的子任务，只剩下其他卡点和这个生产环境验证的卡点时，再停下整个 goal 长任务，然后按照 `do-long-task` 技能的长任务纪律，停下来请求我的`干预`和`支持`。
+
+---
+
+你的核心任务是完成 app 和 admin 两个项目的 nitro 接口统一迁移，并且确保独立的 api 项目成为 app 和 admin 两个前端项目的独立后端。不要忘记这一些列任务的核心目的。
+```
+
+### 01 怀疑连续的 16 个小时的工作目标不对，工作失衡，任务细粒度本身就指向不明确
+
+我想先暂停一下你的 goal 工作，你的工作已经持续 16 小时了，我没看到你的任何代码修改。
+
+有效的更改仅仅只有一些 markdown 文档，和 vitest 测试用例。
+
+1. 怀疑 task.md 任务目标本身失衡： 我很怀疑你的 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 是不是本身设计的有问题啊？没有充分体现出我要实现 admin、app 迁移内置 nitro 接口到独立 api 项目的任务呢？是任务目标都不对么？失衡了么？
+2. 怀疑没有 task.md 任务细粒度划分机制： 我很怀疑你吗没有完整的 task.md 任务逐步新增的机制。我看到你在 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 目录内增加了好多 markdown 文档，我很怀疑，按照 openspec 的一些列 skills 引导，这些任务细粒度的迁移内容，不应该存储到 task.md 内成为细粒度的`子任务项`么？
+3. 你这边一直都是在调研迁移的完整度么？还是说你到现在都没办法确定清楚 admin 和 app 全部接口的迁移程度和可用程度么？你这 16 小时都在确定和验证么？
+
+请你认真看看 do-long-task、和 openspec 系列的 skills，结合你的修改内容，给我一个合适的答复。我对你接近 16 个小时的产出成果很不满。
+
+暂停现在的 goal 任务，在 `docs\reports` 目录内，给我生成一个报告，给我一个答复。
+
+---
+
+### 02
+
+1. 因此，根据报告 `docs\reports\2026-05-21-openspec-longtask-pause-review.md` 的说明，我们的`openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 任务文件，存在明显的任务权重失衡的问题。探索，排查，验证，补充证据的子任务太多了，这导致无法完成真实有效的 nitro 接口迁移推进。请你适当的缩减，合并，调整关于这些探索验证的子任务权重。尽快将真实的 nitro 迁移改造任务，调整其优先级。
+
+2. 根据报告要求，我要求你同时扫描全局的 `do-long-task` 和 `openspec` 这两款
