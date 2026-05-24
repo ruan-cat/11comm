@@ -129,6 +129,20 @@ describe('phase7 app api shadow base url', () => {
       '/app/ownerRepair.queryOwnerRepair',
       '/app/repairSetting.listRepairSettings',
       '/app/dict.queryRepairStates',
+      '/app/workorder/todo/list',
+      '/app/workorder/detail',
+      '/app/workorder/copy/list',
+      '/app/workorder/task/list',
+      '/app/workorder/task/items',
+      '/app/visit.getVisit',
+      '/app/visit.getVisitDetail',
+      '/app/profile.getUserProfile',
+      '/app/profile.listCommunities',
+      '/app/profile.listAttendanceRecords',
+      '/app/video.listMonitorArea',
+      '/app/video.listStaffMonitorMachine',
+      '/app/video.getPlayVideoUrl',
+      '/app/notice.listNotices',
     ])
 
     expect(isPhase2ApiShadowEndpoint('/app/fee.listFee')).toBe(true)
@@ -138,7 +152,27 @@ describe('phase7 app api shadow base url', () => {
     expect(isPhase2ApiShadowEndpoint('/app/ownerRepair.queryOwnerRepair')).toBe(true)
     expect(isPhase2ApiShadowEndpoint('/app/repairSetting.listRepairSettings')).toBe(true)
     expect(isPhase2ApiShadowEndpoint('/app/dict.queryRepairStates')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/workorder/todo/list')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/workorder/detail')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/workorder/copy/list')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/workorder/task/list')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/workorder/task/items')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/visit.getVisit')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/visit.getVisitDetail')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/profile.getUserProfile')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/profile.listCommunities')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/profile.listAttendanceRecords')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/video.listMonitorArea')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/video.listStaffMonitorMachine')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/video.getPlayVideoUrl')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/notice.listNotices')).toBe(true)
     expect(isPhase2ApiShadowEndpoint('/app/ownerRepair.saveOwnerRepair')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/workorder/create')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/workorder/copy/finish')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/visit.auditVisit')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/profile.changeCommunity')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/profile.changePassword')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.listActivitiess')).toBe(false)
     expect(isPhase2ApiShadowEndpoint('/callComponent/core/list')).toBe(true)
   })
 
@@ -223,6 +257,89 @@ describe('phase7 app api shadow base url', () => {
     ).toBe(`http://127.0.0.1:3102${endpoint}?communityId=COMM_001`)
   })
 
+  test.each([
+    '/app/workorder/todo/list',
+    '/app/workorder/detail',
+    '/app/workorder/copy/list',
+    '/app/workorder/task/list',
+    '/app/workorder/task/items',
+  ])('routes work-order readonly %s to apps/api when shadow is enabled', (endpoint) => {
+    expect(
+      prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe(`http://127.0.0.1:3102${endpoint}?communityId=COMM_001`)
+  })
+
+  test.each([
+    '/app/visit.getVisit',
+    '/app/visit.getVisitDetail',
+  ])('routes visit readonly %s to apps/api when shadow is enabled', (endpoint) => {
+    expect(
+      prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe(`http://127.0.0.1:3102${endpoint}?communityId=COMM_001`)
+  })
+
+  test.each([
+    '/app/profile.getUserProfile',
+    '/app/profile.listCommunities',
+    '/app/profile.listAttendanceRecords',
+  ])('routes profile readonly %s to apps/api when shadow is enabled', (endpoint) => {
+    expect(
+      prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe(`http://127.0.0.1:3102${endpoint}?communityId=COMM_001`)
+  })
+
+  test.each([
+    '/app/video.listMonitorArea',
+    '/app/video.listStaffMonitorMachine',
+    '/app/video.getPlayVideoUrl',
+  ])('routes video readonly %s to apps/api when shadow is enabled', (endpoint) => {
+    expect(
+      prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe(`http://127.0.0.1:3102${endpoint}?communityId=COMM_001`)
+  })
+
+  test('routes notice readonly to apps/api when shadow is enabled', () => {
+    expect(
+      prependRuntimeBaseUrl('/app/notice.listNotices?communityId=COMM_001', {
+        ...legacyRuntimeEnv,
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe('http://127.0.0.1:3102/app/notice.listNotices?communityId=COMM_001')
+  })
+
+  test.each([
+    '/app/workorder/create',
+    '/app/workorder/update',
+    '/app/workorder/start',
+    '/app/workorder/complete',
+    '/app/workorder/audit',
+    '/app/workorder/cancel',
+    '/app/workorder/copy/finish',
+    '/app/visit.auditVisit',
+    '/app/profile.changeCommunity',
+    '/app/profile.changePassword',
+  ])('keeps work-order mutation %s on the legacy runtime when shadow is enabled', (endpoint) => {
+    expect(
+      prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
+        ...legacyRuntimeEnv,
+        VITE_SERVER_BASEURL: 'http://127.0.0.1:3101',
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe(`http://127.0.0.1:3101${endpoint}?communityId=COMM_001`)
+  })
+
   test('falls back to existing runtime base for non-allowlisted app endpoint when shadow is enabled', () => {
     expect(
       prependRuntimeBaseUrl('/app/unknown.endpoint', {
@@ -230,6 +347,16 @@ describe('phase7 app api shadow base url', () => {
         VITE_11COMM_API_SHADOW_ENABLE: 'true',
       }),
     ).toBe('http://legacy.example.com/app/unknown.endpoint')
+  })
+
+  test('keeps activity readonly on the legacy runtime until the activity batch is completed', () => {
+    expect(
+      prependRuntimeBaseUrl('/app/activities.listActivitiess?communityId=COMM_001', {
+        ...legacyRuntimeEnv,
+        VITE_SERVER_BASEURL: 'http://127.0.0.1:3101',
+        VITE_11COMM_API_SHADOW_ENABLE: 'true',
+      }),
+    ).toBe('http://127.0.0.1:3101/app/activities.listActivitiess?communityId=COMM_001')
   })
 
   test('falls back to existing runtime base when shadow is disabled', () => {
@@ -289,6 +416,42 @@ describe('phase7 app api shadow base url', () => {
     )
     expect(prependRuntimeBaseUrl('/app/ownerRepair.saveOwnerRepair', productionEnv)).toBe(
       'https://01s-11-server.ruan-cat.com/app/ownerRepair.saveOwnerRepair',
+    )
+    expect(prependRuntimeBaseUrl('/app/workorder/copy/list', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/workorder/copy/list',
+    )
+    expect(prependRuntimeBaseUrl('/app/workorder/task/list', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/workorder/task/list',
+    )
+    expect(prependRuntimeBaseUrl('/app/workorder/task/items', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/workorder/task/items',
+    )
+    expect(prependRuntimeBaseUrl('/app/visit.getVisit', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/visit.getVisit',
+    )
+    expect(prependRuntimeBaseUrl('/app/visit.getVisitDetail', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/visit.getVisitDetail',
+    )
+    expect(prependRuntimeBaseUrl('/app/profile.getUserProfile', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/profile.getUserProfile',
+    )
+    expect(prependRuntimeBaseUrl('/app/profile.listCommunities', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/profile.listCommunities',
+    )
+    expect(prependRuntimeBaseUrl('/app/profile.listAttendanceRecords', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/profile.listAttendanceRecords',
+    )
+    expect(prependRuntimeBaseUrl('/app/video.listMonitorArea', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/video.listMonitorArea',
+    )
+    expect(prependRuntimeBaseUrl('/app/video.listStaffMonitorMachine', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/video.listStaffMonitorMachine',
+    )
+    expect(prependRuntimeBaseUrl('/app/video.getPlayVideoUrl', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/video.getPlayVideoUrl',
+    )
+    expect(prependRuntimeBaseUrl('/app/notice.listNotices', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/notice.listNotices',
     )
   })
 })

@@ -33,6 +33,20 @@ export const PHASE2_API_SHADOW_ENDPOINTS = [
   '/app/ownerRepair.queryOwnerRepair',
   '/app/repairSetting.listRepairSettings',
   '/app/dict.queryRepairStates',
+  '/app/workorder/todo/list',
+  '/app/workorder/detail',
+  '/app/workorder/copy/list',
+  '/app/workorder/task/list',
+  '/app/workorder/task/items',
+  '/app/visit.getVisit',
+  '/app/visit.getVisitDetail',
+  '/app/profile.getUserProfile',
+  '/app/profile.listCommunities',
+  '/app/profile.listAttendanceRecords',
+  '/app/video.listMonitorArea',
+  '/app/video.listStaffMonitorMachine',
+  '/app/video.getPlayVideoUrl',
+  '/app/notice.listNotices',
 ]
 
 /** 解析当前接口运行时 */
