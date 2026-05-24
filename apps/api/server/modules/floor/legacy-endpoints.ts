@@ -1,4 +1,5 @@
 import type { EndpointDefinition } from "../../shared/runtime/endpoint-registry";
+import { mergeInput } from "../../shared/runtime/legacy-endpoint-input";
 import { getFloorRuntime } from "./runtime";
 
 export const floorLegacyEndpointDefinitions: EndpointDefinition[] = [
@@ -13,17 +14,3 @@ export const floorLegacyEndpointDefinitions: EndpointDefinition[] = [
 		handler: ({ query, body, event }) => getFloorRuntime(event).legacyAdapter.queryFloorDetail(mergeInput(query, body)),
 	},
 ];
-
-function mergeInput(query: unknown, body: unknown): Record<string, unknown> {
-	return {
-		...asRecord(query),
-		...asRecord(body),
-	};
-}
-
-function asRecord(value: unknown): Record<string, unknown> {
-	if (!value || typeof value !== "object" || Array.isArray(value)) {
-		return {};
-	}
-	return value as Record<string, unknown>;
-}

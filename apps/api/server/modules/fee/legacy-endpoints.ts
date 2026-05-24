@@ -1,4 +1,5 @@
 import type { EndpointDefinition } from "../../shared/runtime/endpoint-registry";
+import { asRecord, mergeInput } from "../../shared/runtime/legacy-endpoint-input";
 import { getFeeRuntime } from "./runtime";
 
 export const feeLegacyEndpointDefinitions: EndpointDefinition[] = [
@@ -65,14 +66,3 @@ export const feeLegacyEndpointDefinitions: EndpointDefinition[] = [
 		handler: ({ query, body, event }) => getFeeRuntime(event).legacyAdapter.getDataReport(mergeInput(query, body)),
 	},
 ];
-
-function mergeInput(query?: Record<string, unknown>, body?: unknown): Record<string, unknown> {
-	return {
-		...(query ?? {}),
-		...asRecord(body),
-	};
-}
-
-function asRecord(value: unknown): Record<string, unknown> {
-	return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
-}
