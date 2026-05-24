@@ -1,3 +1,31 @@
+## v1.2.1
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.1-beta.1...v1.2.1)
+
+### ✨ 新增功能
+
+- 补齐合同类型列表统一接口证据 ([ff73478d](https://github.com/ruan-cat/11comm/commit/ff73478d))
+- **app:** 固化 App 影子放行与 runtime-base 路由 ([0e7f11cf](https://github.com/ruan-cat/11comm/commit/0e7f11cf))
+
+### 🦄 代码重构
+
+- **api:** 统一 App 旧端点分层与输入合并 ([534612dc](https://github.com/ruan-cat/11comm/commit/534612dc))
+
+### 📖 Documentation
+
+- **openspec:** 增加任务树纠偏与动态补全设计 ([7f06aba9](https://github.com/ruan-cat/11comm/commit/7f06aba9))
+- **openspec:** 收敛长任务实施优先队列 ([a3c0e3c8](https://github.com/ruan-cat/11comm/commit/a3c0e3c8))
+- **openspec:** 强化长任务收尾与接口自检规范 ([b63861dd](https://github.com/ruan-cat/11comm/commit/b63861dd))
+
+### ✅ Tests
+
+- **api:** 固化 App 旧端点清单与契约回归 ([06d822d9](https://github.com/ruan-cat/11comm/commit/06d822d9))
+- **api:** 固化活动端点未完成边界 ([06fa62b7](https://github.com/ruan-cat/11comm/commit/06fa62b7))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.2.1-beta.1
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.0...v1.2.1-beta.1)
