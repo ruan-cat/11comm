@@ -8,7 +8,8 @@ import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type { TypeListItem, TypeQueryParams } from "@01s-11comm/type";
 
 /** API 路径 */
-const API_URL = resolveAdminApiRequestUrl("/api/property-manage/contract-manage/type/list", import.meta.env);
+export const TYPE_LIST_API_PATH = "/api/property-manage/contract-manage/type/list";
+const API_URL = resolveAdminApiRequestUrl(TYPE_LIST_API_PATH, import.meta.env);
 
 /** 查询键前缀 */
 const QUERY_KEY_PREFIX = "type";

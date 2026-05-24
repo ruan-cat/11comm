@@ -2,6 +2,14 @@ import type { JsonVO, PageDTO } from "@01s-11comm/type";
 import { adminSuccess } from "../../shared/runtime/response-builder";
 import type { ContractService } from "./service";
 
+export const contractTypeListAdminAdapterEvidence = {
+	endpoint: "/api/property-manage/contract-manage/type/list",
+	responseContract: "JsonVO<PageDTO>",
+	dataSourceStatus: "drizzle-ctTypes-when-database-configured-empty-fallback-without-database",
+	scope: "admin-ordinary-list-only",
+	notCovered: ["contract-manage-CUD", "contract-manage-detail", "contract-manage-upload", "R2"],
+} as const;
+
 export function createAdminContractAdapter(service: ContractService) {
 	return {
 		async listArchive(input: Record<string, any>): Promise<JsonVO<PageDTO<any>>> {
