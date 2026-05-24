@@ -1,15 +1,18 @@
-## Task Source Rules
+## 任务源规则
 
 - [x] 本文件是 `migrate-superpowers-docs-to-openspec-longtask` 的唯一可执行任务源。
 - [x] 旧三文档只作为迁移来源和核对材料，不再作为后续执行 checklist。
 - [x] `agent-progress.md` 只记录 checkpoint、验证命令和证据路径。
 - [x] `agent-findings.md` 只记录风险、冲突、失败路径和禁止误判。
 - [x] `agent-progress.md` 与 `agent-findings.md` 不得出现新的待执行 checkbox、endpoint backlog、排期队列或“下一批清单”；如发现此类内容，必须先合并回 `tasks.md` 的 §1D 或对应业务章节，未合并前不得作为接力入口。
+- [x] `agent-progress.md`、`agent-findings.md` 和本文件的新增任务描述、检查点、记录项必须中文为主；禁止新增纯英文行，英文术语、命令、路径、状态码或 OpenSpec 关键字必须嵌入中文语境。
+- [x] 每轮变更结束前必须运行语言门禁：扫描本轮新增行中“含英文字母但不含中文字符”的纯英文行；同时人工复核英文字母明显压过中文说明的混合语言候选，并把结果写入 `agent-progress.md` 或 `agent-findings.md`。
+- [x] 发现纯英文日志、英文占满执行记录或无中文解释的混合语言记录时，必须先改写为中文主导；无法改写的原始输出只能作为 artifact 路径引用，并在 `agent-findings.md` 记录原因和边界，不得默默继续勾选任务或推进 runtime/DB_READY/退役结论。
 - [x] 每次状态变更后必须更新 `agent-progress.md`，并写入 Memorix。
 - [x] 任一任务没有验证证据时不得勾选完成。
 - [x] 临时来源审计已完成并迁入 canonical 文件；后续可执行任务、风险说明、接力 checkpoint 和规范要求必须落入 `tasks.md`、`agent-findings.md`、`agent-progress.md`、`design.md` 或 `specs/**`，不得维护第四份来源覆盖矩阵。
 
-## 0. Carrier Migration Completed
+## 0. 载体迁移已完成
 
 - [x] [新增] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 初始化 do-long-task 进度文件。
 - [x] [新增] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 初始化发现文件。
@@ -29,7 +32,7 @@
 - [x] [修改] `specs/agent-team-batch-execution/spec.md`、`specs/db-readiness-and-write-verification/spec.md` - 补齐 Agent Team 角色产出、Batch0 fresh scan gate、Batch0-8 映射、batch done definition、复核硬规则和 Neon main checklist。
 - [x] [记录] Memorix - 已记录 `#4405 OpenSpec restored unified Nitro mainline`。
 
-## 0A. Source History Re-Audit And Coverage Matrix
+## 0A. 来源历史复审与覆盖矩阵
 
 - [x] [探索] 搜索 Memorix：Phase7、OpenSpec、Nitro 合并、DB_READY、Chrome MCP、App repair、旧 Superpowers 文档迁移。
 - [x] [探索] 使用子代理独立审计三份旧文档当前内容、OpenSpec 覆盖情况、Memorix 接力记录和三文件 git history。
@@ -38,7 +41,7 @@
 - [x] [修改] `agent-findings.md` - 写入来源覆盖、git 历史、Memorix、CDP fallback、旧文档恢复状态和仍不可删除结论。
 - [x] [修改] `agent-progress.md` - 修正“旧三文档已删除”的陈旧表述，记录用户已恢复旧文档且当前仅作为迁移来源。
 
-## 1. Baseline Reconciliation
+## 1. 基线对齐
 
 - [x] [探索] 重新扫描当前 working tree：`apps/api/server/routes/api/**/*.ts`、`apps/admin/server/api/**/*.ts`、`apps/app/server/modules/**/endpoints.ts`、`apps/api/server/shared/runtime/runtime-endpoints.ts`。
 - [x] [探索] 重新扫描调用端：`apps/admin/src/**/*.{ts,vue}` 中 `/api/**` 调用，`apps/app/src/**/*.{ts,vue}` 中 `/app/**` 与 `/callComponent/**` 调用。
@@ -46,7 +49,7 @@
 - [x] [修改] `agent-progress.md` - 记录用户已手动恢复三份旧 Superpowers 文档；旧文档存在不代表恢复为任务源。
 - [x] [校验] 运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`，确认本 backlog 格式有效。
 
-## 1AA. Legacy Superpowers Content Transcription
+## 1AA. 旧 Superpowers 内容转写
 
 - [x] [新增] `specs/legacy-superpowers-content-transcription/spec.md` - 建立旧三文档语义转写完成定义，防止只替换引用而丢失长文本任务语义。
 - [x] [修改] `design.md` - 增加 `Legacy Content Transcription Ledger`，把旧总设计、旧矩阵、旧计划分别映射到 OpenSpec 能力规范、任务和发现记录。
@@ -56,7 +59,7 @@
 - [x] [复核] 删除旧三文档前已逐项确认审计缺口收敛：矩阵默认值、ledger 最低字段、admin 小片证据字段、app fallback 红线、Windows dev gotcha、CDP fallback、Phase1.1 细则、CI/workflow 门禁、Batch done definition、当前“已不再待补”负清单均已转写进 OpenSpec。
 - [x] [记录] 删除旧三文档前，`agent-progress.md` 已记录语义转写完成，`agent-findings.md` 已记录仍按 historical pointer 保留的旧事实和不迁移原因。
 
-## 1AB. Full Agent Team Second Review For Legacy Transcription
+## 1AB. 旧内容转写的全员二次复核
 
 - [x] [任务源闸门] 本块已作为“旧三文档语义转写二次复核”的唯一 OpenSpec 任务落点；探索、编辑、复核成员的临时报告只能作为输入，必须合并回 `tasks.md`、`agent-progress.md`、`agent-findings.md`、`design.md` 或 `specs/**` 后才可作为接力事实。
 - [x] [探索产物] 探索成员 A/B/C 已按旧总设计、旧 endpoint 状态矩阵、旧 batch 执行计划分别输出逐文档、逐章节、逐落点核对结论，并指出 Phase5/Phase6、动态 mock、Batch7a、retirement ledger、admin/app 收费缴费边界等缺口；缺口已交由编辑成员收敛，未写成运行时迁移完成。
@@ -65,26 +68,26 @@
 - [x] [复核产物-G] 复核成员 G 已独立检查旧三文档章节 canonical 落点、旧文件执行入口残留、`agent-progress.md`/`agent-findings.md` 非任务源边界、以及文档载体转写未被误判为 runtime 迁移完成；结论为通过，无必须修复项。
 - [x] [收敛] 主代理已汇总探索、编辑、复核结论，并只勾选已被证据支持的二次复核项；本块收敛只代表旧三文档格式与语义迁移补强完成，不代表 Phase7 runtime 迁移、生产 DB_READY、真实库样本、shadow-off/fallback 或旧服务退役完成。
 
-## 1AC. Third Agent Team Reverse Audit For Legacy Transcription
+## 1AC. 旧内容转写的第三轮反向审计
 
 - [x] [探索产物-H/I/J] 第三轮探索成员 H/I/J 已分别从 git 历史读取旧总设计、旧 endpoint 状态矩阵和旧 batch 执行计划本体，执行反向章节审计；三路结论均为 PASS，无必须补写缺口，只提出 Phase4+ 示例、单一汇总报告软约束、`do-long-task checkpoint` 术语和 Batch0-8 搜索索引等建议级补强。
 - [x] [编辑产物-K] 编辑成员 K 已按建议级缺口做最小 OpenSpec 补强：Phase4+ `repair/resource/parking`、`charge-machine/open-door`、`machine-record` 示例边界，约 3500 行单一汇总报告软约束，`do-long-task checkpoint` 接力术语，以及 Batch0-8 到当前 backlog 的搜索索引；本项不代表 runtime 迁移、生产 DB_READY、真实库样本、shadow-off/fallback 或旧服务退役完成。
 - [x] [复核产物-L] 复核成员 L 已独立检查 K 的改动范围、四个建议点落点、任务源纪律和 no-go 边界，结论为 PASS；K 的增量只落在允许的 OpenSpec 文档和接力记录内，未新增平行任务树。
 - [x] [校验] 第三轮收敛后已运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`、`git diff --check -- openspec/changes/migrate-superpowers-docs-to-openspec-longtask docs/superpowers/phase7-openspec-migration-index.md`、`openspec list --json` 和旧文件名引用扫描；旧文件名仍只作为 provenance/index 出现。
 
-## 1A. Spec-To-Task Traceability And Task Source Hygiene
+## 1A. 规范到任务追踪与任务源治理
 
 - [x] [修改] `tasks.md` - 补齐 spec-to-task 覆盖、统一 `apps/api` runtime 对账、调用端证据、Vitest/HTTP/Neon/Chrome MCP 证据矩阵和退役门禁任务层，避免只剩 endpoint 数量块。
 - [x] [复核] 对 `specs/**/spec.md` 每个 `### Requirement` 建立任务落点复核：`unified-nitro-api-consolidation` 必须落到 §1B/§2/§3/§4/§5，`admin-api-cutover` 必须落到 §2/§2A，`app-legacy-cutover` 必须落到 §3/§3A，`agent-team-batch-execution` 必须落到 §1C，`vitest-and-runtime-verification` 必须落到 §4B，`db-readiness-and-write-verification` 必须落到 §4/§4C，`browser-and-environment-verification` 必须落到 §4A，`retirement-gate-and-archive` 必须落到 §5/§6。
 
 Task 54 traceability note: 探索成员 B 判定原显式名单为 PARTIAL；以下 4 个同属 `specs/**/spec.md` 的 spec 也必须纳入“每个 `### Requirement` 建立任务落点复核”，且本说明不是新增任务树。
 
-| Spec                                       | Requirement 落点                                                                                                                                           |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `admin-special-cases`                      | §2/§2A/§4C/§5                                                                                                                                              |
-| `phase7-evidence-model`                    | §1B/§4/§4A/§4B/§4C/§5                                                                                                                                      |
-| `source-history-and-memory-governance`     | §1A/§1C/§6                                                                                                                                                 |
-| `legacy-superpowers-content-transcription` | §1AA/§1AB/§1AC/§6；历史语义迁移只证明旧文档内容已转写到 OpenSpec，不代表 runtime 迁移、生产 `DB_READY`、真实库样本、shadow-off/fallback 或旧服务退役完成。 |
+| Spec                                                         | Requirement 落点                                                                                                                                           |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `admin-special-cases`（后台特殊情况）                        | §2/§2A/§4C/§5                                                                                                                                              |
+| `phase7-evidence-model`（Phase7 证据模型）                   | §1B/§4/§4A/§4B/§4C/§5                                                                                                                                      |
+| `source-history-and-memory-governance`（来源历史与记忆治理） | §1A/§1C/§6                                                                                                                                                 |
+| `legacy-superpowers-content-transcription`                   | §1AA/§1AB/§1AC/§6；历史语义迁移只证明旧文档内容已转写到 OpenSpec，不代表 runtime 迁移、生产 `DB_READY`、真实库样本、shadow-off/fallback 或旧服务退役完成。 |
 
 Task 54 traceability detail: 探索成员 A 判定仍有 PARTIAL 缺口，以下细化项必须在现有章节中复核落点；本说明仅收敛 spec-to-task traceability，不新增可执行任务源。
 
@@ -107,7 +110,7 @@ Task 54 traceability detail: 探索成员 A 判定仍有 PARTIAL 缺口，以下
 
 Task 58 compression note: `剩余模块`、`remaining modules`、`数量块`、`压缩桶`、`模块桶` 只作为旧文档索引或历史口径，不作为可执行清单；admin endpoint 级展开位置为 §2.1/§2.2，app URL 级展开位置为 §3/§3.5；fresh scan 命令使用 `rg -n -- "/api/|/app/|/callComponent/" apps/admin/server apps/admin/src apps/app/server apps/app/src apps/api/server`、`rg --files apps/admin/server/api apps/app/server/modules apps/api/server/routes/api` 与业务路径 `rg -n -- "rank-route-keys|definePage|resolveAdminApiRequestUrl" apps/admin/src` 交叉核对；若 fresh scan 无法展开到 endpoint 级，必须在对应任务或 `agent-findings.md` 写明缺少源码、动态 route、生成式注册、无调用端、server-only、edge/debug/test 或业务路径无法匹配等具体原因，并保持未完成。
 
-## 1B. Unified `apps/api` Runtime Traceability
+## 1B. 统一 `apps/api` 运行时追踪
 
 Task 54 mapping note: `unified-nitro-api-consolidation` 的 Requirement 落点复核必须在本节覆盖 Phase1 app 快照范围、Phase2/Phase3 边界、Phase5 `L0-L4`/`houseCharge` 历史样板、Phase6 shadow/proxy/fallback/allowlist 顺序；这些是统一 `apps/api` 主线的 traceability 证据，不代表任一 endpoint 已完成 runtime 迁移。
 
@@ -120,7 +123,7 @@ Task 54 mapping note: `unified-nitro-api-consolidation` 的 Requirement 落点�
 - [x] [验证] 每个 status 升级必须同时填写或引用 `coverageKind`、`dataSourceStatus`、`targetStatus`、`browserEvidence`、`fallbackEvidence`、`dbReadinessEvidence`、`writeReadRollbackEvidence`、`retirementDecision`；缺字段时不得勾选完成。证据见 `status-evidence-field-audit.md`；该 artifact 将 8 个字段固化为 status upgrade gate，并明确 `route-inventory.md` 的 `cutoverStatus` 与 `route-inventory-details.csv.md` 的 `manifestStatus` 只是 inventory 标签，不能替代 `coverageKind`、`targetStatus` 或 `retirementDecision`；`schema-wiring-audit.md` 只支持 `dataSourceStatus` 的 gap 口径，不能单独支持 `DB_READY`、fallback ready、写入闭环或退役。本项只代表字段完整性 gate 与 artifact 适用性审计通过，不代表任何 endpoint status 已升级、生产 `DB_READY`、真实库样本、shadow-off/fallback、写入闭环或旧服务退役完成。
 - [x] [复核] `apps/api` health/ready、runtime manifest、contract tests、HTTP gate 和 browser/API evidence 必须互相一致；route 存在但 runtime manifest 缺失时不得升级为 old path exact covered。证据见 `runtime-evidence-alignment-audit.md`；该 artifact 将 health/ready、route file、runtime manifest、contract tests、HTTP gate 与 browser/API evidence 分成独立 layer，并要求 endpoint、method、path、response contract、environment 与 data source 互相一致。route file 存在但 runtime manifest 缺失时只能保持 `canonical-only` 或 `unknown-needs-triage`，不得写成 `old-path-exact-covered`；`/__nitro/health`、`READY_CONFIGURED`、manifest entry、contract test、HTTP 200 或 browser/API evidence 任一单层证据都不能替代生产 `DB_READY`、真实库样本、shadow-off/fallback、写入闭环或旧服务退役证据。本项只代表跨证据一致性 gate 审计通过，不代表任何 endpoint status 已升级。
 
-## 1C. Batch Execution Control And Agent Handoff
+## 1C. 批次执行控制与代理交接
 
 Batch0-8 -> 当前 backlog 索引：Batch0 对应 §1/§1A/§1B fresh scan 与证据字段；Batch1-5 对应 §3 app legacy、fee/report、guarded writes；Batch6-7 对应 §2 admin cutover、CRUD、R2/upload；Batch8 对应 §3.5 Remaining App Modules；该索引只用于搜索定位，不新增平行任务树。
 
@@ -140,7 +143,7 @@ Task 129 no-go: 不得凭空新建业务路径；不得一口气整域迁移；�
 
 - [x] [调度] 每个批次至少有探索、编辑、复核三类角色；复核角色必须独立检查 source coverage、任务勾选、测试命令、证据文件和禁止误判。证据：本项已在下方固化为后续 batch 三角色最小契约，并在 `agent-progress.md` 记录 task130 checkpoint、在 `agent-findings.md` 记录 task130 no-go；本轮只修改 OpenSpec 文档，未修改运行时代码，不代表任何 endpoint runtime 迁移、生产 `DB_READY`、真实库样本、shadow-off/fallback、写入闭环或旧服务退役完成。
 
-Task 130 three-role batch contract: every future batch MUST include at least exploration, editing, and review roles. Exploration is responsible for source/caller/data-source/evidence gap discovery. Editing is responsible for controlled changes or explicit blocked reason, plus tests/commands/evidence paths. Review is responsible for independently checking source coverage, task checkbox eligibility, test commands, evidence files, and no-go misclassification. The reviewer must not be only the same editor self-reviewing the slice.
+任务 130 三角色批次契约：后续每个批次至少必须包含探索、编辑和复核角色。探索负责来源、调用端、数据源和证据缺口发现；编辑负责受控改动或明确阻断原因，并补测试、命令和证据路径；复核负责独立检查来源覆盖、任务勾选资格、测试命令、证据文件和禁止误判分类。复核人不得只是同一编辑者对本切片做自检。
 
 Task 130 no-go: 不得无复核就勾选；不得用子代理报告直接作为任务源；不得把复核结论替代实际测试、HTTP gate、browser evidence、`DB_READY`、真实库样本或写入回滚证据；不得把 local/contract/browser/historical evidence 升级为 production `DB_READY`、shadow-off/fallback、retirement；不得遗漏页面证据、写入回滚、`DB_READY`、真实库样本等不适用原因。
 
@@ -170,16 +173,17 @@ Task 133 no-go: 不得只跑无关命令冒充验证；不得用单一测试替�
 
 ### 1D.1 实施试点批次
 
-- [ ] [修改] `apps/api/server/modules/contract/admin-adapter.ts` - （实施 1/6）选定 `property-manage/contract-manage/type/list` 作为 admin 普通 list 试点，补齐独立 `apps/api` 返回契约、数据来源状态和 adapter 证据；不得夹带 CUD、detail、upload/R2。
-- [ ] [修改] `apps/api/server/shared/runtime/runtime-endpoints.ts` - （实施 2/6）对 `property-manage/contract-manage/type/list`、`/app/workorder/todo/list` 与 `/app/workorder/detail` 对齐 runtime manifest 字段、allowlist、coverage/status 口径和 caller 证据引用；缺口保持 `partial` 或 `unknown-needs-triage`。
-- [ ] [修改] `apps/admin/src/api/property-manage/contract-manage/type/index.ts` - （实施 3/6）复核并按需调整调用端 resolver，使页面请求命中统一 `apps/api`；不得改动同目录其他 contract endpoints。
-- [ ] [新增] `apps/api/server/modules/work-order/legacy-endpoints.ts` - （实施 4/6）为 `/app/workorder/todo/list` 与 `/app/workorder/detail` 新增独立 exact legacy handler，保持旧 App H5 envelope 或写明统一 app legacy contract；不得迁移 create/update/start/complete/audit/cancel 等写入口。
-- [ ] [新增] `apps/api/server/modules/work-order/legacy-adapter.ts` - （实施 5/6）为上述两个 work-order 只读入口补 compat adapter 和数据来源状态，明确只代表只读 exact handler 试点，不代表 `DB_READY` 或旧 app server 退役。
-- [ ] [新增] `apps/api/server/modules/purchase/legacy-adapter.ts` - （实施 6/6）对 `/app/purchase/updatePurchaseApply` 建立默认写入口 guard 或明确 no-go，默认禁止生产写入并返回受控阻断；不得伪造 read-back/rollback。
-- [ ] [验证] `apps/api/tests/legacy/` 与 `apps/api/tests/runtime/` - 为本批 work-order 只读 handler、purchase 写入口 guard、manifest/contract 边界补齐或更新对应 `*.test.ts`，并记录实际运行命令或未运行原因。
-- [ ] [验证] `.tmp/phase7-dev-browser/` - 对本批至少一个 admin list 页面和一个 app 只读页面补 Network 证据；记录 URL、method、status、响应摘要、console 状态和是否命中独立 `apps/api`。
-- [ ] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 记录本批实施文件、验证命令、证据路径、动态补全原因和下一步，不得新增 checkbox backlog。
-- [ ] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 复核本批是否误把 fallback、blocked guard、HTTP 200、`READY_CONFIGURED` 或 Vitest 通过写成 exact migrated、`DB_READY` 或 retirement candidate。
+- [x] [修改] `apps/api/server/modules/contract/admin-adapter.ts` - （实施 1/6）选定 `property-manage/contract-manage/type/list` 作为 admin 普通 list 试点，补齐独立 `apps/api` 返回契约、数据来源状态和 adapter 证据；不得夹带 CUD、detail、upload/R2。
+- [x] [修改] `apps/api/server/shared/runtime/runtime-endpoints.ts` - （实施 2/6）对 `property-manage/contract-manage/type/list`、`/app/workorder/todo/list` 与 `/app/workorder/detail` 对齐 runtime manifest 字段、allowlist、coverage/status 口径和 caller 证据引用；缺口保持 `partial` 或 `unknown-needs-triage`。
+- [x] [修改] `apps/admin/src/api/property-manage/contract-manage/type/index.ts` - （实施 3/6）复核并按需调整调用端 resolver，使页面请求命中统一 `apps/api`；不得改动同目录其他 contract endpoints。
+- [x] [新增] `apps/api/server/modules/work-order/legacy-endpoints.ts` - （实施 4/6）为 `/app/workorder/todo/list` 与 `/app/workorder/detail` 新增独立 exact legacy handler，保持旧 App H5 envelope 或写明统一 app legacy contract；不得迁移 create/update/start/complete/audit/cancel 等写入口。
+- [x] [新增] `apps/api/server/modules/work-order/legacy-adapter.ts` - （实施 5/6）为上述两个 work-order 只读入口补 compat adapter 和数据来源状态，明确只代表只读 exact handler 试点，不代表 `DB_READY` 或旧 app server 退役。
+- [x] [新增] `apps/api/server/modules/purchase/legacy-adapter.ts` - （实施 6/6）对 `/app/purchase/updatePurchaseApply` 建立默认写入口 guard 或明确 no-go，默认禁止生产写入并返回受控阻断；不得伪造 read-back/rollback。
+- [x] [新增] `apps/api/server/modules/purchase/legacy-endpoints.ts` - （动态补全）为 `/app/purchase/updatePurchaseApply` 暴露独立 exact registry 入口，使默认 guard 能在 `apps/api` 侧命中；不得新增采购真实写入、read-back 或 rollback 伪证据。
+- [x] [验证] `apps/api/tests/legacy/` 与 `apps/api/tests/runtime/` - 为本批 work-order 只读 handler、purchase 写入口 guard、manifest/contract 边界补齐或更新对应 `*.test.ts`，并记录实际运行命令或未运行原因。
+- [x] [验证] `.tmp/phase7-dev-browser/` - 对本批至少一个 admin list 页面和一个 app 只读页面补 Network 证据；记录 URL、method、status、响应摘要、console 状态和是否命中独立 `apps/api`。
+- [x] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 记录本批实施文件、验证命令、证据路径、动态补全原因和下一步，不得新增 checkbox backlog。
+- [x] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 复核本批是否误把 fallback、blocked guard、HTTP 200、`READY_CONFIGURED` 或 Vitest 通过写成 exact migrated、`DB_READY` 或 retirement candidate。
 
 ### 1D.2 动态任务补全纪律
 
@@ -208,13 +212,132 @@ Task 133 no-go: 不得只跑无关命令冒充验证；不得用单一测试替�
 - 每批结束必须能回答三个问题：本轮真实迁移了哪个 endpoint，证据证明了什么，哪些旧服务路径仍不能退役。
 - 后续新增 checkbox 必须继续使用 `[操作类型] 文件路径 - 具体改动` 格式；跨多个文件的需求必须拆成多个 file-level 任务后再执行。
 
-## 2. Admin Legacy Nitro Stream
+### 1D.5 2026-05-24 工单只读续批
+
+本批 named endpoint 只包含 `/app/workorder/copy/list`、`/app/workorder/task/list` 与 `/app/workorder/task/items` 三个 work-order 只读入口。Owner files：`apps/api/server/modules/work-order/legacy-adapter.ts`、`apps/api/server/modules/work-order/legacy-endpoints.ts`、`apps/api/server/shared/runtime/runtime-endpoints.ts`。目标是补独立 `apps/api` exact handler、runtime manifest、contract/manifest tests 与本地 app H5 Network 证据。预期测试：work-order legacy endpoint tests、runtime endpoint registry tests、endpoint manifest tests、Phase7 API contract tests、相关 package typecheck、OpenSpec strict 和 `git diff --check`。本批不触碰 `/app/workorder/create`、`/app/workorder/update`、`/app/workorder/start`、`/app/workorder/complete`、`/app/workorder/audit`、`/app/workorder/cancel`、`/app/workorder/copy/finish`，不声明 `DB_READY`、真实库样本、shadow-off/fallback、写入读回回滚或旧 app server 退役。
+
+- [x] [修改] `apps/api/server/modules/work-order/legacy-adapter.ts` - （实施 1/6）为 `/app/workorder/copy/list`、`/app/workorder/task/list` 与 `/app/workorder/task/items` 补只读 compat adapter 数据、分页、详情关联和错误路径；继续明确数据源为 deterministic compat seed，非 `DB_READY`。
+- [x] [修改] `apps/api/server/modules/work-order/legacy-endpoints.ts` - （实施 2/6）注册上述三个 endpoint 的 GET/POST exact handler，保持 query/body 合并规则且 body 覆盖 query。
+- [x] [修改] `apps/api/server/shared/runtime/runtime-endpoints.ts` - （实施 3/6）把上述三个 endpoint 纳入 `phase7-work-order-readonly` manifest，状态保持 `app-shadow-allowlist`，不得误标写入口完成。
+- [x] [修改] `apps/api/tests/legacy/work-order-legacy-endpoints.test.ts` - （实施 4/6）先补失败测试，覆盖 copy list、task list、task items、未知 ID/社区空数据和写入口仍未注册。
+- [x] [修改] `apps/api/tests/runtime/endpoint-registry.test.ts` - （实施 5/6）补 registry 断言，确认本批只读 endpoint 已注册且写入口仍未注册。
+- [x] [修改] `apps/api/tests/infra/endpoint-manifest.test.ts` 与 `apps/api/tests/infra/phase7-api-contracts.test.ts` - （实施 6/6）补 manifest/contract 断言，证明 runtime manifest、adapter evidence 与 response contract 对齐。
+- [x] [修改] `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts` - （动态补全 1/2）为 work-order 只读 endpoint 补 App H5 shadow allowlist 红绿测试；覆盖 `/app/workorder/todo/list`、`/app/workorder/detail` 与本批三个 endpoint 命中 `apps/api`，并断言写入口不进 allowlist。
+- [x] [修改] `apps/app/src/http/runtime-base.ts` - （动态补全 2/2）将 work-order 只读 endpoint 纳入 App H5 shadow allowlist，确保本地/生产 shadow 打到统一 `apps/api`；不得加入 create/update/start/complete/audit/cancel/copy/finish 写入口。
+- [x] [验证] `apps/api` 目标测试矩阵 - 运行本批相关 Vitest 红绿命令、相关 runtime/infra 回归、`pnpm -F @01s-11comm/api run typecheck`、OpenSpec strict 和 `git diff --check`。
+- [x] [验证] `.tmp/phase7-dev-browser/` - 对本批至少一个 app 页面补本地 Chrome DevTools Network 证据，记录 legacy path、method、status、响应摘要、console 状态和是否命中本地 `apps/api`。
+- [x] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 记录本批实施文件、红绿测试、扩展验证、证据路径和不触碰范围；不得新增 checkbox backlog。
+- [x] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 复核本批是否误把只读 compat seed、HTTP 200、Vitest 或页面 Network 写成 `DB_READY`、真实库样本、写入口完成或退役候选。
+
+### 1D.6 2026-05-24 访客只读批次
+
+本批 named endpoint 只包含 `/app/visit.getVisit` 与 `/app/visit.getVisitDetail` 两个 visit 只读入口。Owner files：`apps/api/server/modules/visit/legacy-adapter.ts`、`apps/api/server/modules/visit/legacy-endpoints.ts`、`apps/api/server/shared/runtime/runtime-endpoints.ts`、`apps/app/src/http/runtime-base.ts`。目标是补独立 `apps/api` exact handler、runtime manifest、contract/manifest tests、App H5 shadow allowlist 与本地 app H5 Network 证据。预期测试：visit legacy endpoint tests、runtime endpoint registry tests、endpoint manifest tests、Phase7 API contract tests、App runtime-base-url tests、相关 package typecheck、OpenSpec strict 和 `git diff --check`。本批不触碰 `/app/visit.auditVisit`，不声明 `DB_READY`、真实库样本、shadow-off/fallback、写入读回回滚或旧 app server 退役。
+
+- [x] [新增] `apps/api/server/modules/visit/legacy-adapter.ts` - （实施 1/6）为 `/app/visit.getVisit` 与 `/app/visit.getVisitDetail` 补只读 compat adapter 数据、分页、state/visitId 筛选、详情空数据行为和 evidence；明确数据源为 deterministic compat seed，非 `DB_READY`。
+- [x] [新增] `apps/api/server/modules/visit/legacy-endpoints.ts` - （实施 2/6）注册上述两个 endpoint 的 GET/POST exact handler，保持 query/body 合并规则且 body 覆盖 query；不得注册 `/app/visit.auditVisit`。
+- [x] [修改] `apps/api/server/shared/runtime/runtime-endpoints.ts` - （实施 3/6）把上述两个 endpoint 纳入 `phase7-visit-readonly` manifest，状态保持 `app-shadow-allowlist`，不得误标审核写入口完成。
+- [x] [新增] `apps/api/tests/legacy/visit-legacy-endpoints.test.ts` - （实施 4/6）先补失败测试，覆盖 list/detail、GET/POST、默认分页、state/visitId 筛选、未知或缺失 visitId 空分页和 audit 写入口仍未注册。
+- [x] [修改] `apps/api/tests/runtime/endpoint-registry.test.ts` - （实施 5/6）补 registry 断言，确认本批只读 endpoint 已注册且 `/app/visit.auditVisit` 仍未注册。
+- [x] [修改] `apps/api/tests/infra/endpoint-manifest.test.ts` 与 `apps/api/tests/infra/phase7-api-contracts.test.ts` - （实施 6/6）补 manifest/contract 断言，证明 runtime manifest、adapter evidence 与 response contract 对齐，且 audit 写入口不进入 manifest。
+- [x] [修改] `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts` - （动态补全 1/2）为 visit 只读 endpoint 补 App H5 shadow allowlist 红绿测试；覆盖 `/app/visit.getVisit` 与 `/app/visit.getVisitDetail` 命中 `apps/api`，并断言 `/app/visit.auditVisit` 不进 allowlist。
+- [x] [修改] `apps/app/src/http/runtime-base.ts` - （动态补全 2/2）将 visit 只读 endpoint 纳入 App H5 shadow allowlist，确保本地/生产 shadow 打到统一 `apps/api`；不得加入 audit 写入口。
+- [x] [验证] `apps/api` 与 `apps/app` 目标测试矩阵 - 运行本批相关 Vitest 红绿命令、runtime/infra 回归、`pnpm -F @01s-11comm/api run typecheck`、`pnpm -F @01s-11comm/app run type-check`、OpenSpec strict 和 `git diff --check`。
+- [x] [验证] `.tmp/phase7-dev-browser/` - 对 visit list/detail app 页面补本地 Chrome DevTools Network 证据，记录 legacy path、method、status、响应摘要、console 状态和是否命中本地 `apps/api`；不得提交审核表单。
+- [x] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 记录本批实施文件、红绿测试、扩展验证、证据路径和不触碰范围；不得新增 checkbox backlog。
+- [x] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 复核本批是否误把 visit compat seed、HTTP 200、Vitest 或页面 Network 写成 `DB_READY`、真实库样本、审核写入口完成或退役候选。
+
+### 1D.7 2026-05-24 个人资料只读批次
+
+本批 named endpoint 只包含 `/app/profile.getUserProfile`、`/app/profile.listCommunities` 与 `/app/profile.listAttendanceRecords` 三个 profile 只读入口。Owner files：`apps/api/server/modules/profile/legacy-adapter.ts`、`apps/api/server/modules/profile/legacy-endpoints.ts`、`apps/api/server/shared/runtime/runtime-endpoints.ts`、`apps/app/src/http/runtime-base.ts`。目标是补独立 `apps/api` exact handler、runtime manifest、contract/manifest tests、App H5 shadow allowlist 与本地 app H5 Network 证据。预期测试：profile legacy endpoint tests、runtime endpoint registry tests、endpoint manifest tests、Phase7 API contract tests、App runtime-base-url tests、相关 package typecheck、OpenSpec strict 和 `git diff --check`。本批不触碰 `/app/profile.changeCommunity` 与 `/app/profile.changePassword`，不声明 `DB_READY`、真实库样本、shadow-off/fallback、写入读回回滚或旧 app server 退役。
+
+- [x] [新增] `apps/api/server/modules/profile/legacy-adapter.ts` - （实施 1/6）为 `/app/profile.getUserProfile`、`/app/profile.listCommunities` 与 `/app/profile.listAttendanceRecords` 补只读 compat adapter 数据、keyword 筛选、month 默认/按月考勤生成和 evidence；明确数据源为 deterministic compat seed，非 `DB_READY`。
+- [x] [新增] `apps/api/server/modules/profile/legacy-endpoints.ts` - （实施 2/6）注册上述三个 endpoint 的 GET/POST exact handler，保持 query/body 合并规则且 body 覆盖 query；不得注册 `/app/profile.changeCommunity` 与 `/app/profile.changePassword`。
+- [x] [修改] `apps/api/server/shared/runtime/runtime-endpoints.ts` - （实施 3/6）把上述三个 endpoint 纳入 `phase7-profile-readonly` manifest，状态保持 `app-shadow-allowlist`，不得误标切换小区或改密码写入口完成。
+- [x] [新增] `apps/api/tests/legacy/profile-legacy-endpoints.test.ts` - （实施 4/6）先补失败测试，覆盖 profile snapshot、community keyword 筛选、attendance month/default、GET/POST、body 覆盖 query 和 change 写入口仍未注册。
+- [x] [修改] `apps/api/tests/runtime/endpoint-registry.test.ts` - （实施 5/6）补 registry 断言，确认本批只读 endpoint 已注册且 `/app/profile.changeCommunity`、`/app/profile.changePassword` 仍未注册。
+- [x] [修改] `apps/api/tests/infra/endpoint-manifest.test.ts` 与 `apps/api/tests/infra/phase7-api-contracts.test.ts` - （实施 6/6）补 manifest/contract 断言，证明 runtime manifest、adapter evidence 与 response contract 对齐，且 profile 写入口不进入 manifest。
+- [x] [修改] `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts` - （动态补全 1/2）为 profile 只读 endpoint 补 App H5 shadow allowlist 红绿测试；覆盖三个只读 endpoint 命中 `apps/api`，并断言 `/app/profile.changeCommunity` 与 `/app/profile.changePassword` 不进 allowlist。
+- [x] [修改] `apps/app/src/http/runtime-base.ts` - （动态补全 2/2）将 profile 只读 endpoint 纳入 App H5 shadow allowlist，确保本地/生产 shadow 打到统一 `apps/api`；不得加入切换小区或改密码写入口。
+- [x] [验证] `apps/api` 与 `apps/app` 目标测试矩阵 - 运行本批相关 Vitest 红绿命令、runtime/infra 回归、`pnpm -F @01s-11comm/api run typecheck`、`pnpm -F @01s-11comm/app run type-check`、OpenSpec strict 和 `git diff --check`。
+- [x] [验证] `.tmp/phase7-dev-browser/` - 对 profile index/change-community/attendance app 页面补本地 Chrome DevTools Network 证据，记录 legacy path、method、status、响应摘要、console 状态和是否命中本地 `apps/api`；不得提交切换小区或改密码表单。
+- [x] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 记录本批实施文件、红绿测试、扩展验证、证据路径和不触碰范围；不得新增 checkbox backlog。
+- [x] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 复核本批是否误把 profile compat seed、HTTP 200、Vitest 或页面 Network 写成 `DB_READY`、真实库样本、切换小区/改密码写入口完成或退役候选。
+
+### 1D.8 2026-05-24 视频只读批次
+
+本批 named endpoint 只包含 `/app/video.listMonitorArea`、`/app/video.listStaffMonitorMachine` 与 `/app/video.getPlayVideoUrl` 三个 video 只读入口。Owner files：`apps/api/server/modules/video/legacy-adapter.ts`、`apps/api/server/modules/video/legacy-endpoints.ts`、`apps/api/server/shared/runtime/runtime-endpoints.ts`、`apps/app/src/http/runtime-base.ts`。目标是补独立 `apps/api` exact handler、runtime manifest、contract/manifest tests、App H5 shadow allowlist 与本地 app H5 Network 证据。预期测试：video legacy endpoint tests、runtime endpoint registry tests、endpoint manifest tests、Phase7 API contract tests、App runtime-base-url tests、相关 package typecheck、OpenSpec strict 和 `git diff --check`。本批不声明 `DB_READY`、真实摄像头/视频平台集成、真实库样本、shadow-off/fallback、写入读回回滚或旧 app server 退役；播放 URL 只保留旧 mock 的 MDN 示例视频兼容语义。
+
+- [x] [新增] `apps/api/server/modules/video/legacy-adapter.ts` - （实施 1/6）为 `/app/video.listMonitorArea`、`/app/video.listStaffMonitorMachine` 与 `/app/video.getPlayVideoUrl` 补只读 compat adapter 数据、分页、`maId`/`machineNameLike` 筛选、默认 `machineId` 和 evidence；明确数据源为 deterministic compat seed，非 `DB_READY` 或真实摄像头平台。
+- [x] [新增] `apps/api/server/modules/video/legacy-endpoints.ts` - （实施 2/6）注册上述三个 endpoint 的 GET/POST exact handler，保持 query/body 合并规则且 body 覆盖 query。
+- [x] [修改] `apps/api/server/shared/runtime/runtime-endpoints.ts` - （实施 3/6）把上述三个 endpoint 纳入 `phase7-video-readonly` manifest，状态保持 `app-shadow-allowlist`，不得误标真实视频平台或 DB 完成。
+- [x] [新增] `apps/api/tests/legacy/video-legacy-endpoints.test.ts` - （实施 4/6）先补失败测试，覆盖监控区域、设备列表分页与筛选、播放 URL、GET/POST、body 覆盖 query 和 exact registry 边界。
+- [x] [修改] `apps/api/tests/runtime/endpoint-registry.test.ts` - （实施 5/6）补 registry 断言，确认本批三个 video 只读 endpoint 已注册。
+- [x] [修改] `apps/api/tests/infra/endpoint-manifest.test.ts` 与 `apps/api/tests/infra/phase7-api-contracts.test.ts` - （实施 6/6）补 manifest/contract 断言，证明 runtime manifest、adapter evidence 与 response contract 对齐。
+- [x] [修改] `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts` - （动态补全 1/2）为 video 只读 endpoint 补 App H5 shadow allowlist 红绿测试；覆盖三个 video endpoint 命中 `apps/api`。
+- [x] [修改] `apps/app/src/http/runtime-base.ts` - （动态补全 2/2）将 video 只读 endpoint 纳入 App H5 shadow allowlist，确保本地/生产 shadow 打到统一 `apps/api`。
+- [x] [验证] `apps/api` 与 `apps/app` 目标测试矩阵 - 运行本批相关 Vitest 红绿命令、runtime/infra 回归、`pnpm -F @01s-11comm/api run typecheck`、`pnpm -F @01s-11comm/app run type-check`、OpenSpec strict 和 `git diff --check`。
+- [x] [验证] `.tmp/phase7-dev-browser/` - 对 video list/play app 页面补本地 Chrome DevTools Network 证据，记录 legacy path、method、status、响应摘要、console 状态和是否命中本地 `apps/api`；不得写成真实摄像头联通证据。
+- [x] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 记录本批实施文件、红绿测试、扩展验证、证据路径和不触碰范围；不得新增 checkbox backlog。
+- [x] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 复核本批是否误把 video compat seed、MDN 示例视频、HTTP 200、Vitest 或页面 Network 写成 `DB_READY`、真实摄像头平台、真实库样本或退役候选。
+
+### 1D.9 2026-05-24 公告只读批次
+
+本批具名端点只包含 `/app/notice.listNotices` 一个公告只读入口。责任文件：`apps/api/server/modules/notice/legacy-adapter.ts`、`apps/api/server/modules/notice/legacy-endpoints.ts`、`apps/api/server/shared/runtime/runtime-endpoints.ts`、`apps/app/src/http/runtime-base.ts`。目标是补独立 `apps/api` 精确处理器、运行时清单、契约/清单测试、App H5 影子放行列表与本地 App H5 Network 证据。预期测试：公告旧端点测试、运行时端点注册表测试、端点清单测试、Phase7 API 契约测试、App 运行时基础地址测试、相关包类型检查、OpenSpec strict 校验和 `git diff --check`。本批不声明 `DB_READY`、真实库样本、shadow-off/fallback、写入读回回滚或旧 app server 退役；旧公告数据只保留确定性兼容种子语义。
+
+暂停检查点（2026-05-24）：本批次已经打开，但按用户要求在实现前暂停。当前已存在公告注册表、清单、契约和 App 运行时基础地址放行列表相关的 TDD 红灯测试文件/改动。预期红灯命令失败的原因是公告精确处理器、运行时清单条目和 App 影子放行列表实现仍不存在。在实现、绿灯验证、浏览器证据、进度记录和发现记录全部完成前，1D.9 的所有 checkbox 保持未勾选。
+
+- [x] [新增] `apps/api/server/modules/notice/legacy-adapter.ts` - （实施 1/6）为 `/app/notice.listNotices` 补只读兼容适配器数据、分页、`communityId`/`noticeTypeCd`/`noticeId`/`titleLike` 筛选和证据；明确数据源为确定性兼容种子，非 `DB_READY` 或真实库样本。
+- [x] [新增] `apps/api/server/modules/notice/legacy-endpoints.ts` - （实施 2/6）注册上述端点的 GET/POST 精确处理器，保持查询参数/请求体合并规则且请求体覆盖查询参数。
+- [x] [修改] `apps/api/server/shared/runtime/runtime-endpoints.ts` - （实施 3/6）把上述端点纳入 `phase7-notice-readonly` 运行时清单，状态保持 `app-shadow-allowlist`，不得误标 DB 完成。
+- [x] [新增] `apps/api/tests/legacy/notice-legacy-endpoints.test.ts` - （实施 4/6）先补失败测试，覆盖公告列表、详情式 `noticeId` 筛选、`noticeTypeCd`/`titleLike` 筛选、分页、GET/POST、请求体覆盖查询参数和精确注册表边界。
+- [x] [修改] `apps/api/tests/runtime/endpoint-registry.test.ts` - （实施 5/6）补注册表断言，确认本批公告只读端点已注册。
+- [x] [修改] `apps/api/tests/infra/endpoint-manifest.test.ts` 与 `apps/api/tests/infra/phase7-api-contracts.test.ts` - （实施 6/6）补清单/契约断言，证明运行时清单、适配器证据与响应契约对齐。
+- [x] [修改] `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts` - （动态补全 1/2）为公告只读端点补 App H5 影子放行列表红绿测试；覆盖 `/app/notice.listNotices` 命中 `apps/api`。
+- [x] [修改] `apps/app/src/http/runtime-base.ts` - （动态补全 2/2）将公告只读端点纳入 App H5 影子放行列表，确保本地/生产影子流量打到统一 `apps/api`。
+- [x] [验证] `apps/api` 与 `apps/app` 目标测试矩阵 - 运行本批相关 Vitest 红绿命令、runtime/infra 回归、`pnpm -F @01s-11comm/api run typecheck`、`pnpm -F @01s-11comm/app run type-check`、OpenSpec strict 和 `git diff --check`。
+- [x] [验证] `.tmp/phase7-dev-browser/` - 对公告列表/详情 App 页面补本地 Chrome DevTools Network 证据，记录旧路径、方法、状态、响应摘要、控制台状态和是否命中本地 `apps/api`；不得写成真实库样本或退役证据。
+- [x] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 记录本批实施文件、红绿测试、扩展验证、证据路径和不触碰范围；不得新增 checkbox backlog。
+- [x] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 复核本批是否误把公告兼容种子、HTTP 200、Vitest 或页面 Network 写成 `DB_READY`、真实库样本或退役候选。
+
+完成检查点（2026-05-24）：本批已按统一 App legacy 模块格式落地 `notice` 分层，除任务列出的适配器和端点文件外，还补齐 `types`、`repository`、`service`、`runtime`、`index`，并把结构防回归测试扩展到 `notice`。红灯复现确认缺实现时 API 与 App 影子测试按预期失败；实现后目标 API/APP 测试、扩展 API 回归、`api` typecheck、`app` type-check、OpenSpec strict、`git diff --check` 与暂存区 diff check 均通过。本地 Chrome DevTools 证据显示列表页和详情页均命中 `http://127.0.0.1:3102/app/notice.listNotices`，但页面控制台仍有既有 Vue/z-paging 渲染层错误；该错误不升级为 API 失败，也不得把本批写成生产 H5、`DB_READY`、真实库样本、shadow-off/fallback 或旧 app server 退役。
+
+### 1D.10 2026-05-24 App 旧端点模块分层纠偏
+
+本批由用户反馈触发，目标是修正 `profile`、`purchase`、`video`、`visit`、`work-order` 五个已新增 App 旧端点模块的写法不一致问题。OpenSpec 已要求显式 `adapter/service/repository` 分层和 runtime 组装；此前实现只满足旧路径、旧响应和清单接入，没有按 `fee`、`floor`、`repair` 的模块结构落地，这是执行偏差。本批只统一模块结构和新增防回归测试，不改变旧响应契约，不升级 `DB_READY`，不放开写入口，不声明旧 app server 可退役。
+
+- [x] [新增] `apps/api/tests/infra/app-legacy-module-layering.test.ts` - 补结构一致性红绿测试，要求五个模块都具备 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index`，并要求 handler 通过 `getXRuntime(event).legacyAdapter` 分发。
+- [x] [新增/修改] `apps/api/server/modules/profile/*` - 将个人资料旧端点改为 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 分层；兼容种子仍标记为确定性非 DB 数据源。
+- [x] [新增/修改] `apps/api/server/modules/video/*` - 将视频旧端点改为统一分层；播放地址仍为兼容示例数据，不得写成真实摄像头平台或真实库样本。
+- [x] [新增/修改] `apps/api/server/modules/visit/*` - 将访客只读旧端点改为统一分层；审核写入口继续不迁移、不放行。
+- [x] [新增/修改] `apps/api/server/modules/work-order/*` - 将工单只读旧端点改为统一分层；创建、更新、开始、完成、审核、取消等写入口继续保持未覆盖。
+- [x] [新增/修改] `apps/api/server/modules/purchase/*` - 将采购更新阻断旧端点改为统一 runtime/service 注入结构；默认 409 guard 行为保持不变，仍不执行真实写入。
+- [x] [验证] `apps/api` 目标测试矩阵 - 运行本批结构测试、五个 legacy endpoint 测试、runtime/infra 回归、`pnpm -F @01s-11comm/api run typecheck`、OpenSpec strict 和 `git diff --check`。§1D.9 公告只读模块实现后，原本阻断本项的 notice 红灯已解除；结构测试、五个旧端点契约测试、公告端点测试、runtime/infra 回归、`api` typecheck、OpenSpec strict 和 diff check 均已通过。
+- [x] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 已记录本批原因、改动、红绿测试和不触碰范围。
+- [x] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 已记录根因、权衡结论和后续约束，避免再次出现同一 OpenSpec 下的第二套接口写法。
+
+### 1D.11 2026-05-24 活动只读批次
+
+本批具名端点只包含 `/app/activities.listActivitiess` 一个活动只读入口；列表页和详情页共用该旧路径，通过 `activitiesId` 参数形成详情式查询。责任文件：`apps/api/server/modules/activity/*`、`apps/api/server/shared/runtime/runtime-endpoints.ts`、`apps/app/src/http/runtime-base.ts`。目标是补独立 `apps/api` 精确处理器、统一模块分层、运行时清单、契约/清单测试、App H5 影子放行列表与本地 App H5 Network 证据。写入口 `/app/activities.saveActivities`、`/app/activities.updateActivities`、`/app/activities.deleteActivities`、`/app/activities.increaseView`、`/app/activities.likeActivity`、`/app/activities.updateStatus`、`/app/activities.updateLike`、`/app/activities.updateCollect` 本批不迁移、不放行、不声明 guard 完成。活动数据源只允许记录为确定性兼容种子，不得写成 `DB_READY`、真实库样本、真实写入能力或旧 app server 退役。
+
+- [ ] [新增] `apps/api/tests/legacy/activity-legacy-endpoints.test.ts` - 先补失败测试，覆盖活动列表、`activitiesId` 详情式查询、`communityId`/`status`/`keyword` 筛选、分页、GET/POST、请求体覆盖查询参数、空数据和精确注册表边界。
+- [ ] [新增] `apps/api/server/modules/activity/*` - 按 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 统一分层实现 `/app/activities.listActivitiess`；兼容种子需保留旧字段名 `activitiess`，并明确非 DB 数据源。
+- [ ] [修改] `apps/api/server/shared/runtime/runtime-endpoints.ts` - 把活动只读端点纳入 `phase7-activity-readonly` 运行时清单，状态保持 `app-shadow-allowlist`。
+- [ ] [修改] `apps/api/tests/runtime/endpoint-registry.test.ts`、`apps/api/tests/infra/endpoint-manifest.test.ts`、`apps/api/tests/infra/phase7-api-contracts.test.ts`、`apps/api/tests/infra/app-legacy-module-layering.test.ts` - 补注册表、清单、契约和分层结构回归断言。
+- [ ] [修改] `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts` 与 `apps/app/src/http/runtime-base.ts` - 将活动只读端点纳入 App H5 影子放行列表，并确认 shadow enabled 时命中统一 `apps/api`。
+- [ ] [验证] `apps/api` 与 `apps/app` 目标测试矩阵 - 运行本批相关 Vitest 红绿命令、runtime/infra 回归、`pnpm -F @01s-11comm/api run typecheck`、`pnpm -F @01s-11comm/app run type-check`、OpenSpec strict 和 `git diff --check`。
+- [ ] [验证] `.tmp/phase7-dev-browser/` - 对活动列表或详情 App 页面补本地 Chrome DevTools Network 证据，记录旧路径、方法、状态、响应摘要、控制台状态和是否命中本地 `apps/api`；如果详情页额外触发浏览量写入口，必须记录为未迁移/仍走旧运行时，不得升级为写能力完成。
+- [ ] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 记录本批实施文件、红绿测试、扩展验证、证据路径和不触碰范围；不得新增平行任务清单。
+- [ ] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 复核本批是否误把活动兼容种子、HTTP 200、Vitest 或页面 Network 写成 `DB_READY`、真实库样本、写入口完成或退役候选。
+
+暂停收尾说明：当前 `1D.11` 活动只读批次仍未完成，本次只是把状态记录为可续接的暂停收尾。下一次新会话应直接从 `1D.11` 下方所有未勾选项继续，不要跳到后续章节，也不要把本批写成已完成。当前还差的关键内容是 `apps/api/server/modules/activity/*` 的活动只读模块分层实现、运行时清单/注册表/契约回归、`apps/app/src/http/runtime-base.ts` 的 App H5 影子放行确认、`apps/api` 与 `apps/app` 的目标验证，以及 `.tmp/phase7-dev-browser/` 下本地活动列表或详情页 Network 证据。复核时必须继续保持保守口径：不要把活动批次误写成完成、`DB_READY`、真实库样本或写入口放行完成；写入口仍只作为未迁移范围记录，不得升级为本批能力。
+
+## 2. 后台旧接口 Nitro 流
 
 本节不是后续顺序探索队列；只承接 §1D 当前滚动小批次产生的证据回写、状态修正和阻断记录。未被 §1D 当前批次点名的条目不得因排列顺序被自动执行。
 
 Task 54 mapping note: `admin-api-cutover` 和 `admin-special-cases` 的 Requirement 落点复核必须在 §2/§2A 证明 admin manifest/HTTP gate 最低字段已明文化，包括 `targetClient`、`routeKind`、`sourceKind`、`businessPath`、`oldPath`、`appsApiTarget`、`method`、`responseContract`、`coverageKind`、`targetStatus`、`browserEvidence`、`fallbackEvidence`、`dbReadinessEvidence` 和 `retirementDecision`；缺字段时不得升级 coverage 或退役状态。
 
-### 2.1 Next Slice: `property-manage/contract-manage` 12 Normal List Endpoints
+### 2.1 下一切片：`property-manage/contract-manage` 12 个普通列表端点
 
 - [x] [探索] 对照 `rank-route-keys.ts`、旧 `apps/admin/server/api/property-manage/contract-manage/**`、现有 `apps/api` route、admin hook 和 runtime manifest，确认 12 个普通 list endpoint 的当前覆盖状态。
 
@@ -244,7 +367,7 @@ Task 81 evidence note: task77-task80 后已运行并记录目标 API 验证命�
 
 Task 82 evidence note: 已更新 `agent-progress.md`、`agent-findings.md` 并写入 Memorix `#4472`；独立复核 agent `Nash` 对 task80/task81 给出 PASS。该记录只代表 task77-task80 共 12 个 `property-manage/contract-manage` 普通 list endpoint 的 local-dev runtime manifest、contract test 与 gated HTTP test 条目覆盖；HTTP gate 本轮仍因未设置 `RUN_PHASE7_HTTP_TESTS=1` 和 `PHASE7_API_BASE_URL` 按既有机制 skipped，不代表真实 HTTP passed、页面 Network、生产 `DB_READY`、真实库样本、shadow-off/fallback、写入闭环、upload/R2、CUD/detail 或旧服务退役。
 
-### 2.2 Admin Evidence Backlog
+### 2.2 后台证据待办
 
 - [x] [修改] 将 `expense-summary`、`report-manage`、`dev-team/config-manage`、`setting-manage/system-manage` 从旧文档数量块补成当前 `tasks.md` 显式任务行；旧数量口径只作为历史证据，不再作为可执行清单本身。
 - [x] [复核] 先统一 admin 数量口径：`dev-team/config-manage` 旧文档“16”指四个子模块的 CRUD 方法，当前 legacy 文件树为 20 个文件；`setting-manage/system-manage` 旧文档“15”指五个子模块的 CUD 方法，当前 legacy 文件树为 20 个文件；`property-manage/expense-manage` 旧 runtime/HTTP gate 口径为 14 个 Phase7 list，当前 legacy list 文件为 16 个；`property-manage/report-manage` 旧 runtime/HTTP gate 口径为 12 个 Phase7 list，当前 legacy list 文件为 13 个。执行时必须在 `agent-progress.md` 写明采用哪一种口径。
@@ -294,7 +417,7 @@ Task 100 partial evidence note: `setting-manage/system-manage/system-config/{lis
 - [ ] [验证] `property-manage/contract-manage/change/{create,detail,update,delete}` 与 `property-manage/contract-manage/draft-contract/{create,detail,update,delete}` - 复核 8 个 CRUD/DB 证据、HTTP gate、真实页面交互和 rollback 证据；继续与 2.1 的普通 list 切片隔离。
 
 Task 101 partial evidence note: `property-manage/contract-manage/change/{create,detail,update,delete}` 与 `property-manage/contract-manage/draft-contract/{create,detail,update,delete}` 当前只能记录 local apps/api partial evidence，不能勾选完成。本轮已补 8 个独立 `apps/api` Nitro route 与 runtime/adapter/repository/test 证据：`apps/api/server/routes/api/property-manage/contract-manage/change/{create.post.ts,detail.post.ts,update.post.ts,delete.post.ts}` 与 `apps/api/server/routes/api/property-manage/contract-manage/draft-contract/{create.post.ts,detail.post.ts,update.post.ts,delete.post.ts}` 均从 `nitro/h3` 导入并调用 `getContractRuntime(event).adminAdapter`；`runtimeEndpointManifest` 新增 8 条 admin canonical POST manifest，phase 为 `phase7-contract-manage-admin-crud`、owner `contract`、`responseContract=JsonVO`、`cutoverStatus=available-in-apps-api-not-caller-verified`；新增 `apps/api/tests/admin/contract-change-draft-crud.test.ts` 覆盖 manifest、8 个 route 分发到 contract runtime adapter、repository 使用 `ctChanges` / `ct_changes` 与 `ctContracts` / `ct_contracts`，以及 detail/delete 缺失 id 返回 400；同步补强 `apps/api/tests/infra/endpoint-manifest.test.ts`、`apps/api/tests/infra/phase7-api-contracts.test.ts` 与 `apps/api/tests/http/phase7-gated-http.test.ts` 的 manifest/contract/gated HTTP 条目。本地验证：`pnpm -F @01s-11comm/api exec vitest run tests/admin/contract-change-draft-crud.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts tests/http/phase7-gated-http.test.ts` 通过，3 文件 15 tests passed + 1 文件 22 skipped；`pnpm -F @01s-11comm/api run typecheck` 通过；`openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过。`route-inventory.md` 与 `route-inventory-details.csv.md` 已同步 8 行 manifest 状态，admin canonical manifest 计数从 116 更新到 124，contract manifest 行数从 12 更新到 20。阻断/no-go：本轮没有执行生产 create/detail/update/delete，没有生产 write-read-rollback/清理闭环，没有生产 admin H5 页面 Network，没有生产 `DB_READY` 或 Neon readiness，没有 shadow-off/fallback 和 retirement ledger；默认 HTTP gate 未设置 `RUN_PHASE7_HTTP_TESTS=1` 与 `PHASE7_API_BASE_URL` 时仍按既有机制 skipped，因此不得把本轮 partial 写成 task101 完成、生产 CUD 成功、旧服务可退役、upload/R2 完成或 contract-manage 25 个 route 全量完成。
-Task 101 correction note: 2026-05-21 independent review found the wording above was too broad about `phase7-gated-http.test.ts`; the authoritative correction is that task101's 8 CUD/detail endpoints are covered by manifest/contract/route/repository Vitest, but they are not listed as real HTTP gate targets and no production CUD HTTP was executed. The command included `tests/http/phase7-gated-http.test.ts`, but that file was skipped by default because `RUN_PHASE7_HTTP_TESTS=1` and `PHASE7_API_BASE_URL` were not set; it cannot be used as production HTTP evidence for the 8 task101 endpoints. The same review also corrected current route inventory counts to the actual runtime manifest state: 136 admin canonical manifest rows total and 20 contract rows. This correction does not complete task101.
+任务 101 修正说明：2026-05-21 独立复核发现上文对 `phase7-gated-http.test.ts` 的表述过宽。权威修正口径是：task101 的 8 个 CUD/detail 端点已有 manifest、contract、route、repository 级 Vitest 覆盖，但它们没有列入真实 HTTP gate 目标，也没有执行生产 CUD HTTP。命令中虽然包含 `tests/http/phase7-gated-http.test.ts`，但该文件在未设置 `RUN_PHASE7_HTTP_TESTS=1` 和 `PHASE7_API_BASE_URL` 时按默认机制跳过，不能作为 task101 这 8 个端点的生产 HTTP 证据。同一复核还把当前 route inventory 数量修正为实际 runtime manifest 状态：admin canonical manifest 共 136 行，contract 行共 20 行。本修正不代表 task101 完成。
 
 - [ ] [验证] `property-manage/contract-manage/upload/{init,sign-part,complete,abort,status}` - 继续保持 R2 阻断前置项；没有 R2 env、AWS SDK 依赖、upload session 表和前端断点续传闭环前，不得写成完成。
       Task 102 blocked evidence note: `property-manage/contract-manage/upload/{init,sign-part,complete,abort,status}` 当前继续保持 R2 blocked，不能勾选完成。本轮做了具体 Nitro/API 安全收敛：新增 `apps/api/tests/admin/contract-upload-r2-blocked.test.ts`，先红灯确认默认 `createAdminContractAdapter(...).uploadInit()` 仍返回 `success=true` 和 `uploadId="mock-upload-id"`，随后把 `apps/api/server/modules/contract/admin-adapter.ts` 的 `uploadInit`、`uploadSignPart`、`uploadComplete`、`uploadAbort`、`uploadStatus` 统一改为 `409` JsonVO 阻断响应，message 明确包含 R2 阻断原因，避免 placeholder/mock-like success 被误判为可用。专项测试覆盖三件事：5 个 upload URL 仍不在 `runtimeEndpointManifest`，默认 adapter 不再返回 `mock-upload-id`、空 `signedUrl` 或 `status="unknown"`，5 个 route 文件仍能从 `nitro/h3` route 壳分发到 `getContractRuntime(event).adminAdapter.upload*`。只读探索与复核报告位于 `.tmp/phase7-agent-reports/2026-05-21-task102-contract-upload-r2-explorer.md` 和 `.tmp/phase7-agent-reports/2026-05-21-task102-contract-upload-r2-review-criteria.md`，均结论为 BLOCK。验证通过：红灯命令 `pnpm -F @01s-11comm/api exec vitest run tests/admin/contract-upload-r2-blocked.test.ts` 先失败，失败点为 adapter 返回 placeholder success；补阻断后同命令 3 tests passed；组合回归 `pnpm -F @01s-11comm/api exec vitest run tests/admin/contract-upload-r2-blocked.test.ts tests/admin/contract-change-draft-crud.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts tests/http/phase7-gated-http.test.ts` 通过，4 文件 18 tests passed + 1 文件 22 skipped；`pnpm -F @01s-11comm/api run typecheck` 通过。阻断/no-go：`apps/api/package.json` 仍无 `@aws-sdk/client-s3` / `@aws-sdk/s3-request-presigner` 依赖，`apps/api` 仍无 R2 env/client/service/repository 迁移，upload session/parts schema 与旧 admin upload-service/前端断点续传 hook 只能作为 partial/source evidence，不能替代独立 API 的 R2 multipart、DB session 写入读回、前端闭环、生产 HTTP/页面 evidence、生产 `DB_READY`、shadow-off/fallback 或 retirement；5 个 upload route 仍不得加入可用 manifest，不得写成 old path exact covered、生产上传完成或旧服务可退役。
@@ -313,13 +436,13 @@ Edge route production admin H5 evidence update: 生产 admin H5 地址按 `apps/
 - [ ] [验证] 对 admin shadow-off/fallback 做当前环境复验；若只存在本地 2026-05-16 旧证据，应标记为历史证据并评估是否需要重采。
 - [ ] [复核] 确认 admin 前端 resolver 迁移仍为完成状态；如 fresh scan 发现新的硬编码 `/api/**`，记录为 Phase7 regression。
 
-### 2.3 Admin DB / R2 / Edge Decisions
+### 2.3 后台 DB / R2 / 边缘决策
 
 - [ ] [探索] 对 contract upload 5 个 route 做 R2 前置复核：`@aws-sdk/client-s3`、`@aws-sdk/s3-request-presigner` 依赖、R2 env、`ctUploadSessions` 和 `ctUploadSessionParts` 表、前端断点续传 hook。
 - [ ] [决策] 在 R2 env 和表结构确认前，contract upload 保持 `blocked-pending-r2-env`，不得把 mock/in-memory response 写成完成。
 - [ ] [探索] 复核 `debug-env.get.ts`、`j1-dashboard/center/commonmenu/get.ts`、`org-info/tree.post.ts` 是否应迁入统一 `apps/api`、保留旧服务、或标记为不参与退役候选。
 
-## 2A. Admin Caller, Business Path, And Retirement Ledger
+## 2A. 后台调用端、业务路径与退役台账
 
 Task 54 mapping note: admin caller 与 retirement ledger 复核必须把 manifest/HTTP gate 字段、业务路径、页面入口、HTTP gate、contract evidence、DB/write evidence 和退役决策逐 endpoint 对齐；普通 list、detail、CUD、upload/R2、edge/debug route 不能互相替代。
 
@@ -332,11 +455,11 @@ Task 54 mapping note: admin caller 与 retirement ledger 复核必须把 manifes
 - [ ] [汇总] admin retirement candidate 行必须逐 endpoint 记录：old path、business path、target route、runtime manifest、caller evidence、browser/HTTP evidence、DB/write evidence、fallback/shadow-off evidence、retirement decision。
 - [ ] [复核] admin old path exact coverage、resolver 完成、HTTP gate 通过、页面 list 成功均不能单独触发 `apps/admin/server` 删除候选；必须等待 §5 退役门禁。
 
-## 3. App Legacy Nitro Stream
+## 3. App 旧接口 Nitro 流
 
 本节不是后续顺序探索队列；只承接 §1D 当前滚动小批次产生的证据回写、状态修正和阻断记录。未被 §1D 当前批次点名的条目不得因排列顺序被自动执行。
 
-### 3.1 `/callComponent/**` And Floor Follow-Up
+### 3.1 `/callComponent/**` 与楼栋后续跟进
 
 - [x] [探索] `/callComponent/core/list` - 复核 repair 与 property-application 两类调用语义、`name/type/domain` 参数、旧服务数据源和 `apps/api` compat handler。
 - [x] [实施] `/callComponent/core/list` - 若可迁移，补 canonical service/repository 或明确保留 fallback；如果仍为 in-memory compat，必须保持 `legacy-fallback` 或 `candidate-after-evidence`，不得写 DB 完成。
@@ -345,7 +468,7 @@ Task 54 mapping note: admin caller 与 retirement ledger 复核必须把 manifes
 - [ ] [验证] `/app/floor.queryFloors` 与 `/app/floor.queryFloorDetail` - 补 App H5 页面 Network、真实库样本复核和 shadow-off/fallback evidence；合成 `floorId` 不得误写为真实 floor 主键。
       Task floor partial evidence update (2026-05-21): 本轮补了具体 Nitro/API 与生产证据，但本 checkbox 仍保持未完成，因为 shadow-off/fallback drill 与 detail 自然页面入口仍未闭环。代码现状：`apps/api/server/modules/floor/legacy-endpoints.ts` 注册 `/app/floor.queryFloors`、`/app/floor.queryFloorDetail` 的 GET+POST，`runtime-endpoints.ts` 将两者标为 `app-shadow-allowlist`；DB runtime 有 `DATABASE_URL` 时通过 `apps/api/server/modules/floor/repository.ts` 从 `hpHouses` / `hp_houses` 聚合 `communityId + buildingNo + floor` 生成兼容 floor 视图。合成 `floorId` 形如 `DB_<communityUuid>_<buildingNo>_<floorNum>`，不是真实 floor 专表主键；无 DB URL fallback 才生成 `F_COMM_*`。生产 API homepage 取 `apps/api/package.json` 的 `https://01s-11-server.ruan-cat.com`，生产 App H5 homepage 取 `apps/app/package.json` 的 `https://01s-11-app.ruan-cat.com`。Chrome 打开 `https://01s-11-app.ruan-cat.com/#/pages-sub/property/floor-list` 后 Network 捕获 `GET https://01s-11-server.ruan-cat.com/app/floor.queryFloors?page=1&row=10&communityId=COMM_001`，status 200，response 为 `{ code, msg, data }`，首批返回 `DB_92f3885e-f3eb-5f5e-a0db-1f3e0373fd21_A_1` 与 `DB_92f3885e-f3eb-5f5e-a0db-1f3e0373fd21_B_2`；response headers 含 `x-api-phase=phase3-infra` 与 `x-request-id=req_dc3236af-1eb6-4e17-8414-fc5f0ced76ff`，console 无消息；artifact：`.tmp/phase7-dev-browser/2026-05-21-floor-production-app-floor-list.network-response`、`.snapshot.txt`、`.png`，request 元数据由 Chrome tool 输出记录，未生成独立 `.network-request` 文件。生产 API list->detail 等价采样确认 `/app/floor.queryFloors?page=1&row=1&communityId=COMM_001` 返回 `DB_92f3885e-f3eb-5f5e-a0db-1f3e0373fd21_A_1`，随后 `/app/floor.queryFloorDetail?floorId=DB_92f3885e-f3eb-5f5e-a0db-1f3e0373fd21_A_1` 返回同一 `floorId/floorNum=1/floorName=A-1/communityId=92f3885e-f3eb-5f5e-a0db-1f3e0373fd21`。受控 Neon 样本反查只记录脱敏 host 与聚合结果：`hp_houses` 中 `community_id=92f3885e-f3eb-5f5e-a0db-1f3e0373fd21`、`building_no=A`、`floor=1` 有 `house_count=2`，可解释该 `DB_*` 兼容 ID 的来源；`/__nitro/ready` 生产当前仍为 `READY_CONFIGURED`、`connected=null`、`probeEnabled=false`，所以不能写成全局 `DB_READY`。测试新增/验证：`apps/api/tests/http/phase7-gated-http.test.ts` 新增 `serves app legacy floor list and detail DB synthetic id over real HTTP`，默认 gate 25 skipped，生产 `$env:RUN_PHASE7_HTTP_TESTS='1'; $env:PHASE7_API_BASE_URL='https://01s-11-server.ruan-cat.com'; pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts -t "serves app legacy floor list and detail DB synthetic id over real HTTP"` 结果为 1 passed、24 skipped；`pnpm -F @01s-11comm/api exec vitest run tests/modules/floor-db-repository.test.ts tests/legacy/floor-legacy-endpoints.test.ts tests/runtime/legacy-fallback.test.ts` 结果为 3 files 22 tests passed；`pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/floor-endpoints.test.ts src/tests/nitro-runtime/runtime-base-url.test.ts` 结果为 2 files 44 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过。边界：`apps/app/src` 只发现 `getFloorDetail()` 封装和测试引用，未发现自然 H5 页面触发 `/app/floor.queryFloorDetail`；`floor-list.vue` 会把合成 `floorId` 继续传给 unit/room 流程，但本轮只证明 floor list/detail 往返，不证明下游 unit/room 真实外键可用。fallback 状态：`legacy-dispatch` 只在 registry 404 时调用 `proxyLegacyAppRequest`，两个 floor endpoint 已有 exact registry handler；`apps/app/src/http/runtime-base.ts` 与 runtime-base 测试证明 shadow enabled 时 floor 请求指向统一 `apps/api`，但还缺明确 shadow-off/fallback drill 与退役评审。旧 app server 对照采样显示旧服务仍返回 `success/code/message/timestamp` 与 `F_COMM_*`，新 `apps/api` 返回 `{ code,msg,data }` 与 `DB_*`，因此不能写成旧 envelope 完全一致，只能写成 unified app legacy contract。No-go：不得勾选本 task；不得写成 `DB_READY`、shadow-off/fallback 已复验、真实 floor 主键、unit/room 下游完成、app legacy 全量完成或旧 app server 可退役。
 
-### 3.2 Repair Legacy Follow-Up
+### 3.2 维修旧接口后续跟进
 
 - [x] [验证] `/app/repairSetting.listRepairSettings` - 补 App H5 页面 Network 或明确无页面入口原因。
       Task repairSetting.listRepairSettings evidence update (2026-05-21): 本轮按“补 App H5 页面 Network”闭环，不是“无页面入口”。自然调用入口确认：`apps/app/src/pages-sub/repair/add-order.vue` 导入 `getRepairSettings`，`loadRepairTypes()` 在 `onLoad()` 时触发，页面入口为 `https://01s-11-app.ruan-cat.com/#/pages-sub/repair/add-order?communityId=COMM_001`。生产 App H5 Chrome Network 捕获 `GET https://01s-11-server.ruan-cat.com/app/repairSetting.listRepairSettings?communityId=COMM_001&publicArea=T&page=1&row=50`，status 200，response `{ code: 0, msg: "query success", data: [...] }`，首条为 `repairType=e49c1c1d-8778-55fe-84e2-ac670440ed67`、`repairTypeName=cleaning`、`publicArea=T`，response headers 含 `x-api-phase=phase3-infra`、`x-request-id=req_be8e6c6e-efe9-4855-820b-2f1aaeb27c1a`、`access-control-allow-origin=https://01s-11-app.ruan-cat.com`，console 无消息；artifacts：`.tmp/phase7-dev-browser/2026-05-21-repair-setting-production-app-add-order.network-request.md`、`.network-response`、`.snapshot.txt`、`.png`。API 侧已有 exact handler：`apps/api/server/modules/repair/legacy-endpoints.ts` 注册 GET+POST，`legacyAdapter.listRepairSettings` 返回旧 `{ code,msg,data }` envelope，`runtime-endpoints.ts` 标记为 `app-shadow-allowlist`。验证通过：生产 HTTP gate `$env:RUN_PHASE7_HTTP_TESTS='1'; $env:PHASE7_API_BASE_URL='https://01s-11-server.ruan-cat.com'; pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts -t "serves Batch3 repair read-only legacy endpoints over real HTTP"` 为 1 passed、24 skipped；`pnpm -F @01s-11comm/api exec vitest run tests/legacy/repair-legacy-endpoints.test.ts tests/modules/repair-db-repository.test.ts tests/runtime/legacy-fallback.test.ts` 为 3 files 14 tests passed；`pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/repair-endpoints.test.ts src/tests/nitro-runtime/runtime-base-url.test.ts` 为 2 files 45 tests passed。No-go：本项只关闭 `/app/repairSetting.listRepairSettings` 的 App H5 页面 Network 证据缺口，不代表 repair legacy 全量完成、生产 `DB_READY`、shadow-off/fallback 复验、`ownerRepair.saveOwnerRepair` 写入闭环或旧 app server 可退役。
@@ -356,7 +479,7 @@ Task 54 mapping note: admin caller 与 retirement ledger 复核必须把 manifes
 - [x] [实施] `/callComponent/ownerRepair.appraiseRepair` - 默认保持 guarded；评价写入不得用 in-memory 演练替代真实写入闭环。
       Task ownerRepair.appraiseRepair guard evidence update (2026-05-21): 本轮只闭环默认 guard，不开启写入窗口、不设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1`、不执行生产评价写入。实现边界确认：`apps/api/server/modules/repair/legacy-endpoints.ts` 注册 `POST /callComponent/ownerRepair.appraiseRepair`，转发 `getRepairRuntime(event).legacyAdapter.appraiseRepair(asRecord(body))`；`apps/api/server/modules/repair/legacy-adapter.ts` 的 `appraiseRepair()` 在 `repairId/context` 校验和 `service.appraiseRepair()` 前先判断 `process.env.PHASE7_ALLOW_LEGACY_MUTATIONS === "1"`，默认返回 `legacyFailure(...,409,{ errorCode:"PHASE7_MUTATION_GUARDED" })`；`runtime-endpoints.ts` 将该 URL 纳入 guarded mutation set。调用端边界确认：`apps/app/src/pages-sub/repair/appraise.vue` 的 submit path 调 `appraiseRepair()`，`apps/app/src/api/repair.ts` 映射到 `/callComponent/ownerRepair.appraiseRepair`；本轮未走 H5 表单点击，只验证生产 API 默认 guard。验证通过：`pnpm -F @01s-11comm/api exec vitest run tests/legacy/callcomponent-batch1.test.ts -t "blocks /callComponent/ownerRepair.appraiseRepair by default"` 为 1 passed、12 skipped；生产高风险写入口 gate 已补入该 endpoint，`$env:RUN_PHASE7_HTTP_TESTS='1'; $env:PHASE7_API_BASE_URL='https://01s-11-server.ruan-cat.com'; pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts -t "blocks high-risk app legacy mutation endpoints by default over real HTTP"` 为 1 passed、24 skipped。生产直接 guard probe：`POST https://01s-11-server.ruan-cat.com/callComponent/ownerRepair.appraiseRepair`，body 摘要为 `repairId=65eba1b3-4d85-514a-836e-85c68c3b573e`、`context=Phase7 appraise guard probe`、`communityId=COMM_001`，HTTP status 200 但业务体 `{ code:409,msg:"Phase7 mutation guard blocked callComponent/ownerRepair.appraiseRepair; ...",data:null,errorCode:"PHASE7_MUTATION_GUARDED" }`，response headers 含 `x-api-phase=phase3-infra`、`x-request-id=req_71b5d129-057d-44d0-912a-9482714621f9`。残留检查：同一工单详情查询前后 `beforeStatus=10001`、`afterStatus=10001`、`sameRepairId=true`，说明 guard probe 未改变维修工单状态；artifact：`.tmp/phase7-dev-browser/2026-05-21-owner-repair-appraise-guard-production-api.md`。No-go：本项只证明默认 guard 生效并阻止生产评价写入；不代表评价写入窗口已获授权，不代表真实评价 create/read-back/rollback/residual cleanup 已完成，不代表 repair 评价链路可放行，不代表 `repair.replyRepairAppraise` 或其他维修写入口完成，也不代表旧 app server 可退役。
 
-### 3.3 Fee / Report Legacy Follow-Up
+### 3.3 收费 / 报表旧接口后续跟进
 
 - [x] [探索] `/app/fee.listFee`、`/app/fee.queryFeeDetail`、`/app/oweFeeCallable.listOweFeeCallable` - 先补 join 来源、字段语义和兼容 DTO 设计，不得直接做不可信 DB wiring。
       Task fee join/DTO exploration update (2026-05-21): 本轮只关闭探索项，结论是三端点目前不得升级为可信 DB wiring。实现边界确认：`apps/api/server/modules/fee/repository.ts` 的 `createDbFeeRepository(db)` 通过 `Object.assign(fallback,{...})` 覆盖部分 DB-backed 方法，但当前没有覆盖 `listLegacyFees`、`listFeeDetails`、`listOweFeeCallables`；因此 `/app/fee.listFee`、`/app/fee.queryFeeDetail`、`/app/oweFeeCallable.listOweFeeCallable` 即使在 DB runtime 下仍走 in-memory compatibility 分支。字段语义确认：`fee.listFee` 兼容 DTO 包含 `feeId/feeName/feeType/roomId/roomName/communityId/ownerName/ownerTel/receivedAmount/paidAmount/oweAmount/startTime/endTime/deadlineTime/state/stateName`；`fee.queryFeeDetail` 兼容 DTO 当前主要返回 `data.list`，旧 app server 还额外返回 `data.feeDetails`；`oweFeeCallable.listOweFeeCallable` 返回 `amountdOwed/callableWayName/staffName/remark/startTime/endTime` 等催缴兼容字段。调用端确认：`apps/app/src/pages-sub/fee/detail.vue` 调 `getFeeList()` 与 `getFeeDetail()`；`apps/app/src/pages-sub/property/apply-room-detail.vue` 通过 `getFeeDetailList()` 调 `/app/fee.queryFeeDetail`；`apps/app/src/pages-sub/fee/write-owe-callable.vue` 调 `getFeeList()` 加载待催缴费用，写入提交仍由 3.4 guard 项保护。生产采样：新 API `GET /app/fee.listFee?page=1&row=2&communityId=COMM_001` 返回旧 `{code,msg,data}` envelope，`x-request-id=req_e6dd00ce-9040-43cc-a4d7-1ac41f86a468`，`data.total=3`；`GET /app/fee.queryFeeDetail?...feeId=FEE_001` 返回 `x-request-id=req_ddb66430-0c52-488d-b9cb-ee495c33d55c`、`data.list` 两条；`GET /app/oweFeeCallable.listOweFeeCallable?...` 返回 `x-request-id=req_4133c948-7ee3-47cc-91a7-31eea877cb7f`、`data.list[0].callableWayName=电话催缴`。旧 app server 对三端点均可读但 envelope 为 `{success,code,message,data,timestamp}`，且样本数据存在差异，例如旧 `fee.listFee total=4`、旧 `fee.queryFeeDetail` 额外包含 `data.feeDetails`。验证引用：`apps/api/tests/legacy/fee-legacy-endpoints.test.ts` 覆盖三端点 legacy shape；`apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts` 覆盖 shadow enabled/disabled 路由行为。Artifact：`.tmp/phase7-dev-browser/2026-05-21-fee-join-and-room-report-exploration.md`。No-go：本项的完成含义是“已确认 join/DTO gap 并阻止不可信 DB wiring”，不代表三端点已完成真实 DB join，不代表生产 `DB_READY`、新旧 parity、旧 app server 退役或费用写入口可放行。
@@ -365,14 +488,14 @@ Task 54 mapping note: admin caller 与 retirement ledger 复核必须把 manifes
 - [x] [探索] `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` - 确认房间维度报表数据源；没有明确来源前保持 `schema-exists-not-wired` 或 `unknown-needs-triage`。
       Task fee room report source exploration update (2026-05-21): 本轮关闭探索项但保持 conservative status：数据源已确认是 `exHouseCharges` 兼容视图，不是完整房间/业主 join。实现边界确认：`apps/api/server/modules/fee/legacy-endpoints.ts` 将 `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` 分发到 `legacyAdapter.getRoomFeeReport()`；`apps/api/server/modules/fee/repository.ts` 的 DB branch `getRoomFeeReport()` 读取 `exHouseCharges`，当前只在 `roomId` 为 UUID 时下推到 `exHouseCharges.houseId`，`communityId=COMM_001` 这种非 UUID legacy 值不会被强行写入 UUID 列；`floorId` 当前无法下推，因为 `exHouseCharges` 没有 floor column。DTO 语义确认：`roomId` 与 `roomName` 当前都来自 `exHouseCharges.houseId`，`ownerName` 固定为空字符串，`feeName/receivableFee/receivedFee/oweFee/stateName` 来自费用项、金额和状态映射；因此它是 `db-read-with-join-gap`，不是完整房间维度报表。生产采样：新 API `GET /app/reportFeeMonthStatistics.queryReportFeeDetailRoom?page=1&row=2&communityId=COMM_001` 返回旧 `{code,msg,data}` envelope，`x-request-id=req_3c46a536-b369-45ce-8e37-33217f7a40ce`，样本 `roomId/roomName` 为 UUID-like house id，`ownerName=""`；旧 app server 同 path 返回 human-readable `ROOM_001/1栋101室/张三` 等样本，说明新旧数据源和 DTO 丰富度仍有差异。调用端确认：`apps/app/src/pages-sub/report/room-fee.vue` 会调 `getRoomFeeReport()`；前序已有同页生产 App H5 Network 旁证命中过该 endpoint。验证引用：`apps/api/tests/modules/fee-db-repository.test.ts` 新增 `reads room fee report from exHouseCharges with compatibility room ids`，证明 DB 源和 owner/roomName 兼容 gap；`apps/api/tests/legacy/fee-legacy-endpoints.test.ts` 覆盖 legacy shape；生产 Batch4 gate 未把该端点纳入关闭项，避免误写为完整完成。Artifact：`.tmp/phase7-dev-browser/2026-05-21-fee-join-and-room-report-exploration.md`。No-go：本项只证明数据源与 gap 已确认；不代表完整房间/楼栋/业主 join 完成，不代表生产 `DB_READY`、新旧 parity、旧 app server 退役，也不代表 report fee room 页面可作为最终验收。
 
-### 3.4 App Guarded Writes
+### 3.4 App 受保护写入口
 
 - [x] [验证] 默认 guard：`/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee` 必须继续返回 `409 PHASE7_MUTATION_GUARDED`。
       Task fee guarded writes evidence update (2026-05-21): 本轮只闭环三项默认 guard，不开启写入窗口、不设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1`、不执行生产支付/催缴/费用创建写入。实现边界确认：`apps/api/server/modules/fee/legacy-endpoints.ts` 注册 `POST /app/payment.nativeQrcodePayment`、`POST /app/oweFeeCallable.writeOweFeeCallable`、`POST /app/fee.saveRoomCreateFee`，分别转发到 `getFeeRuntime(event).legacyAdapter.nativeQrcodePayment/writeOweFeeCallable/saveRoomCreateFee(asRecord(body))`；`apps/api/server/modules/fee/legacy-adapter.ts` 的三个方法均在调用 `service.createNativeQrcodePayment()`、`service.writeOweFeeCallable()` 或 `service.saveRoomCreateFee()` 前先判断 `process.env.PHASE7_ALLOW_LEGACY_MUTATIONS === "1"`，默认返回 `legacyFailure(...,409,{ errorCode:"PHASE7_MUTATION_GUARDED" })`；生产 high-risk app mutation gate 覆盖三项 endpoint。验证通过：`pnpm -F @01s-11comm/api exec vitest run tests/legacy/fee-legacy-endpoints.test.ts -t "blocks payment, callable write, and fee-create actions by default in phase7 execution guard"` 为 1 passed、4 skipped；生产高风险写入口 gate `$env:RUN_PHASE7_HTTP_TESTS='1'; $env:PHASE7_API_BASE_URL='https://01s-11-server.ruan-cat.com'; pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts -t "blocks high-risk app legacy mutation endpoints by default over real HTTP"` 为 1 passed、24 skipped。生产直接 guard probes：`POST https://01s-11-server.ruan-cat.com/app/payment.nativeQrcodePayment` 返回 HTTP 200、业务 `code=409`、`errorCode=PHASE7_MUTATION_GUARDED`、`x-api-phase=phase3-infra`、`x-request-id=req_ea0f955b-bd09-4186-945b-2c2fea1460a0`；`POST /app/oweFeeCallable.writeOweFeeCallable` 返回同类 409 guard，`x-request-id=req_a4450f46-abfc-462e-a2ca-15d26f819b49`；`POST /app/fee.saveRoomCreateFee` 返回同类 409 guard，`x-request-id=req_c827dc1d-1088-4da7-8c53-4efc7d7f8b4c`。残留检查：同一社区 `GET /app/fee.listFee?page=1&row=10&communityId=COMM_001` 在三次 probe 前后均为 `code=0`、`data.total=3`，可见 fee ids 仍为 `FEE_001/FEE_002/FEE_003`；artifact：`.tmp/phase7-dev-browser/2026-05-21-fee-guarded-writes-production-api.md`。No-go：本项只证明三项默认 guard 生效并阻止生产写入；不代表支付、催缴或费用创建写链路已放行，不代表受控写入窗口、read-back、rollback/cleanup、residual cleanup 或 guard restored 已完成，不代表生产 `DB_READY`、shadow-off/fallback 或旧 app server 退役。
 - [ ] [设计] 如需开启写入窗口，先定义 `PHASE7_E2E_*` / `phase7RunId`、测试数据、业务允许范围、read-back、rollback/cleanup、residual check、guard restored。
 - [ ] [执行] 未取得明确授权与回滚方案前，不得对支付、催缴、费用创建执行真实生产写入。
 
-### 3.5 Remaining App Modules
+### 3.5 剩余 App 模块
 
 - [x] [修改] 将 app remaining modules 从压缩桶补成当前 `apps/app/server/modules/**/endpoints.ts` 的显式 URL 台账；下面每一行 URL 都是待归类 endpoint，执行时不得只按模块桶结算。
 
@@ -474,10 +597,10 @@ Task client-only gap exploration update (2026-05-21): 本轮只建立四条 clie
 
 Task server-only endpoint summary update (2026-05-21): 本轮只关闭横向调查项，含义是这些模块已不再隐藏在未展开的 server-only/remaining bucket，不代表独立 `apps/api` exact handler、退役候选或旧 app server 可删除。分类结果：`contact` 是当前调用端扫描下的 server-only compatibility/mock 模块，未发现正常 `apps/app/src/api/contact.ts` 或普通业务页面调用；`test` 是 diagnostic/mock-only，应排除业务完成率；`activity`、`notice`、`profile`、`video`、`staff`、`oa-workflow` 均有真实 App H5 API wrapper 和页面/路由调用，严格说不是 server-only，但仍没有独立 `apps/api` exact registry。源码证据：这些模块都被 `apps/app/server/shared/runtime/runtime-endpoints.ts` 导入旧 App runtime；独立 `apps/api/server/shared/runtime/runtime-endpoints.ts` 只导入 fee/repair/floor app legacy definitions，没有这些模块 exact entries。证据 artifact：`.tmp/phase7-dev-browser/2026-05-21-activity-exploration.md`、`contact-exploration.md`、`notice-profile-video-test-exploration.md`、`staff-exploration.md`、`oa-workflow-exploration.md`，横向汇总见 `.tmp/phase7-dev-browser/2026-05-21-server-only-endpoint-summary.md`。验证：`pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/activity-endpoints.test.ts src/tests/nitro-runtime/contact-endpoints.test.ts src/tests/nitro-runtime/notice-endpoints.test.ts src/tests/nitro-runtime/profile-endpoints.test.ts src/tests/nitro-runtime/staff-endpoints.test.ts src/tests/nitro-runtime/test-endpoints.test.ts src/tests/nitro-runtime/video-endpoints.test.ts src/tests/nitro-runtime/oa-workflow-endpoints.test.ts src/tests/nitro-runtime/runtime-endpoints.test.ts src/tests/nitro-runtime/legacy-endpoints.test.ts` 通过，10 文件 28 tests passed；`pnpm -F @01s-11comm/api exec vitest run tests/runtime/legacy-fallback.test.ts tests/runtime/endpoint-registry.test.ts` 通过，2 文件 6 tests passed。No-go：本项不代表 `DB_READY`、生产 App H5 Network、真实库样本、写入口 guard/read-back/rollback、shadow-off/fallback 复验、retirement ledger 或旧服务退役。
 
-- [ ] [实施] 每次只选 2-3 个 app legacy endpoint 或一个小模块，先补 manifest/allowlist/contract/guard，再考虑 DB repository。
-- [ ] [复核] app 端任何 endpoint 迁移完成前都必须区分只读 POST、受控写、真实写、高风险阻断和 legacy fallback。
+- [x] [实施] 每次只选 2-3 个 app legacy endpoint 或一个小模块，先补 manifest/allowlist/contract/guard，再考虑 DB repository。当前已将 `profile`、`purchase`、`video`、`visit`、`work-order`、`fee`、`floor`、`repair`、`notice` 的 legacy endpoint 输入合并胶水收敛到共享 helper，并用分层测试固定接口形状。
+- [x] [复核] app 端任何 endpoint 迁移完成前都必须区分只读 POST、受控写、真实写、高风险阻断和 legacy fallback。当前 `purchase` 仍保持默认 guard，`profile`、`video`、`visit`、`work-order`、`notice` 仍作为只读兼容/allowlist 证据，未升级为 DB-ready。
 
-## 3A. App Caller, Legacy Compatibility, And Difference Ledger
+## 3A. App 调用端、旧兼容与差异台账
 
 Task 54 mapping note: `app-legacy-cutover` 的收费缴费边界复核必须在本节确认 admin 收费/缴费证据不得升级为 app legacy 完成；app fee/payment 相关 endpoint 必须独立证明旧 envelope、legacy path、method、payload、guard/fallback、caller evidence、browser/HTTP evidence 和 retirement decision。
 
@@ -490,7 +613,7 @@ Task 54 mapping note: `app-legacy-cutover` 的收费缴费边界复核必须在�
 - [ ] [验证] app client-only call 不能因旧 server 未扫描到 endpoint 而忽略；必须判断是否旧外部项目、动态 route、proxy、mock、已迁入 `apps/api` 或实际死调用。
 - [ ] [汇总] app retirement candidate 行必须逐 endpoint 记录：legacy path、method、old module、caller evidence、target handler/adapter、manifest/allowlist、guard/fallback、dataSourceStatus、browser/HTTP evidence、retirement decision。
 
-## 4. Unified `apps/api` Runtime And DB Readiness
+## 4. 统一 `apps/api` 运行时与 DB 就绪
 
 本节不是后续顺序探索队列；只承接 §1D 当前滚动小批次产生的证据回写、状态修正和阻断记录。未被 §1D 当前批次点名的条目不得因排列顺序被自动执行。
 
@@ -504,7 +627,7 @@ Task 54 mapping note: `db-readiness-and-write-verification` 与 `phase7-evidence
 - [ ] [验证] `apps/api` runtime manifest 与 `apps/api/server/routes/api/**/*.ts` 文件树、admin adapter、app legacy adapter、contract tests 互相对齐；缺任一层时 endpoint 只能保持 partial。
 - [ ] [验证] `apps/api` 生产 `homepage`、本地 dev base URL、admin resolver base、app shadow/API base 必须在证据中分开记录；不得把 preview、local 或旧域名混写成生产。
 
-## 4A. Chrome MCP Three-Surface Environment Verification
+## 4A. Chrome MCP 三端环境验证
 
 Task 54 mapping note: `browser-and-environment-verification` 的 Requirement 落点复核必须包含 Windows 本地 dev gotcha：启动或复用 `apps/admin` dev 前后应记录 `cross-env`、`NODE_OPTIONS`、`VITE_DISABLE_AUTOGENERATION_IMPORT_FILE` 或等价配置状态，避免把未启用 shadow/env 的 Network 证据误记为 `apps/api` 命中。
 
@@ -521,7 +644,7 @@ Task production homepage source update (2026-05-21): 本轮只关闭 §4A 的生
 - [ ] [验证] 生产 app H5 Chrome MCP 页面 Network：读取 app homepage 后进入目标业务页面，记录 `/app/**` 或 `/callComponent/**` 请求目标、response contract、fallback 和证据文件。
 - [ ] [记录] 更新 `agent-progress.md`、`agent-findings.md` 和 Memorix；明确每条证据属于 local-dev 还是 production，属于 admin/app/API 哪一端，不能跨端或跨环境升级状态。
 
-## 4B. Vitest, Contract, Typecheck, And HTTP Gate Matrix
+## 4B. Vitest、契约、类型检查与 HTTP 门禁矩阵
 
 Task 54 mapping note: `vitest-and-runtime-verification` 的 Requirement 落点复核必须包含 CI/workflow 门禁：记录 `pnpm install --frozen-lockfile`、`pnpm run ci` 或等价 CI 命令、App H5 build/typecheck/Vitest/Nitro/Vercel build 结果；禁止 `npm install -g`、`pnpm add -g`、全局 `turbo` 或任何全局工具安装冒充项目验证。
 
@@ -534,7 +657,7 @@ Task 54 mapping note: `vitest-and-runtime-verification` 的 Requirement 落点�
 - [ ] [验证] 每个实施切片记录实际运行的命令：相关 Vitest、package typecheck、runtime manifest/contract test、HTTP gate、OpenSpec strict 校验和 `git diff --check`；失败或跳过原因写入 `agent-findings.md`。
 - [ ] [复核] Vitest 通过不能替代 Chrome MCP 页面证据、Neon main `DB_READY`、真实库样本、写入读回回滚、shadow-off/fallback 或 retirement gate。
 
-## 4C. Neon Main, Schema, And Write-Read-Rollback Matrix
+## 4C. Neon Main、Schema 与写入读回回滚矩阵
 
 Task 54 mapping note: `db-readiness-and-write-verification` 的写入类 Requirement 落点复核必须确认默认 guard 返回 `409 PHASE7_MUTATION_GUARDED` 或等价受保护响应；任一 controlled write、read-back、rollback/cleanup、residual check 或 guard restored 失败后，同批后续写入必须停止并记录阻断原因。
 
@@ -546,7 +669,7 @@ Task 54 mapping note: `db-readiness-and-write-verification` 的写入类 Require
 - [ ] [验证] 费用、支付、开门、维修流转、业主资料、审批流等真实业务对象默认禁止生产破坏性写入；无法构造可清理哨兵数据时保持 blocked。
 - [ ] [记录] 写入证据必须写入 endpoint、env、guard state、phase7RunId、insert/update/delete target、read-back query、cleanup result、residual count、guard restored 和 artifact path。
 
-## 5. Retirement Gate
+## 5. 退役门禁
 
 - [ ] [冻结] 建立旧服务新增入口回归扫描：任何新业务能力进入 `apps/admin/server` 或 `apps/app/server` 都记录为 Phase7 regression。
 - [ ] [汇总] 生成 old-service retirement candidate 清单：每个旧 endpoint 必须有 target status、caller evidence、browser/HTTP evidence、fallback evidence、DB/write evidence、retirement decision。
@@ -560,7 +683,7 @@ Task 54 mapping note: `db-readiness-and-write-verification` 的写入类 Require
 - [ ] [保护] `D:\code\ruan-cat\01s-11comm-app` 永久保留，只能只读引用和采集迁移证据，不作为删除对象。
 - [ ] [决策] 删除、移动、归档、重命名或清空旧服务目录必须是独立 OpenSpec change 或明确单独评审，不得夹带在 endpoint 迁移任务里。
 
-## 6. Legacy Superpowers Document Final Cleanup
+## 6. 旧 Superpowers 文档最终清理
 
 - [x] [探索] 对照三份已恢复旧文档逐段确认：目标架构、Phase1-7 阶段链、P0-P8 批次、矩阵字段、当前接力状态、Memorix 编号、Neon main 流程、no-go 约束均已进入 OpenSpec。
 - [x] [探索] 对照三份旧文档 git history 确认关键提交已进入 `agent-findings.md`：`2af48327`、`611c5f99`、`828a019e`、`cf85abbd`、`e3b377fa`、`058a9680`、`0a68f7d7`、`1969bbac`、`04a8e56c`、`6bf1dbc2`。

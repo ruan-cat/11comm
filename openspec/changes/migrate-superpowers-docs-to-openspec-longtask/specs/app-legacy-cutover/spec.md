@@ -61,6 +61,25 @@ App legacy endpoint 迁入统一 `apps/api` 时，必须按独立 Nitro 项目�
 - **WHEN** `apps/app` H5 调用端切向 `apps/api`
 - **THEN** 必须记录调用端文件、环境变量或 resolver 来源、请求路径、payload、response envelope、Network 或 HTTP gate 证据，以及 shadow/fallback 关闭或保留的原因
 
+### Requirement: App legacy endpoint 格式统一
+
+新增或改写 app legacy endpoint MUST 采用统一模块分层与 handler 形状。目标模块必须保持 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 的职责边界；`legacy-endpoints.ts` 只负责声明旧路径、method 与 handler registry，handler MUST 通过 `get<Module>Runtime(event).legacyAdapter` 分发。runtime manifest、App shadow allowlist、legacy response contract、module files 与 test MUST 在同一切片内对齐；任一层缺失时，只能保持 partial、guarded、fallback-only 或 unknown-needs-triage。 本 requirement MUST 作为后续执行、格式自检和退役评审的强制约束。
+
+#### Scenario: 新增或改写 app legacy endpoint 定义
+
+- **WHEN** 在 `apps/api/server/modules/<module>/legacy-endpoints.ts` 新增或改写 app legacy endpoint
+- **THEN** handler 必须采用 `({ query, body, event }) => get<Module>Runtime(event).legacyAdapter.<method>(...)` 或等价只读/写入最小形状，并只通过共享输入适配逻辑处理 query/body；不得在 `legacy-endpoints.ts` 内写业务查询、构造兼容数据、创建 adapter/service/repository、直接访问数据库或手写 response envelope
+
+#### Scenario: 对齐 endpoint 多层证据
+
+- **WHEN** endpoint 被加入 runtime manifest、App shadow allowlist、response contract 或迁移测试
+- **THEN** legacy path、method、owner module、cutoverStatus、dataSourceStatus、guard/fallback 口径和 response envelope 必须互相一致；manifest-only、allowlist-only、contract-only、module-only 或 test-only 都不能单独证明接口已 cutover
+
+#### Scenario: 发现格式偏差
+
+- **WHEN** 新增代码绕过 runtime 的 `legacyAdapter`、在 `legacy-endpoints.ts` 里内联 mock/store/DB 逻辑、复制旧 app server handler、只注册 manifest 不补 module files/test，或让 allowlist 指向尚无统一 handler 的旧路径
+- **THEN** 该写法属于违反规范的偏差，不能作为迁移完成证据；必须回到统一分层并补齐 runtime manifest、allowlist、response contract 与 Vitest/infra test 后才能升级状态
+
 ### Requirement: `/callComponent/**` 迁移规则
 
 `/callComponent/**` endpoint 必须独立评审，不能被 `/app/**` 迁移结论覆盖。`/callComponent/core/list` 需复核 repair 与 property-application 两类调用语义、`name/type/domain` 参数、旧服务数据源、compat handler 和页面命中证据；`/callComponent/ownerRepair.appraiseRepair` 是写入评价路径，默认保持 guard。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。

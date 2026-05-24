@@ -14,6 +14,10 @@ proposal -> specs -> design -> tasks -> implement
 
 长期 canonical 文件只包括本 change 下的 `proposal.md`、`design.md`、`tasks.md`、`specs/**/spec.md`、`agent-findings.md` 和 `agent-progress.md`。临时来源覆盖审计只服务于本次迁移核对，不作为后续执行入口、任务源或需要持续维护的第四份矩阵。
 
+后续执行 guidance：凡是涉及 Nitro 接口、legacy endpoint、模块分层或 caller/manifest/contract 对齐的批次，都必须先完成格式自检，再允许把任务从未完成改为完成；`legacy-endpoints.ts` 只能做分发，module files、runtime manifest、App shadow allowlist、legacy response contract 与 `*.test.ts` 必须同时对齐，只有四层齐备并且自检通过时才算完成，单层 HTTP 证据或人工阅读不能直接升级状态。
+
+后续记录 guidance：`tasks.md`、`agent-progress.md`、`agent-findings.md` 以及它们派生的批次总结默认都要中文叙述。英文术语、命令、路径、接口名、状态码和 OpenSpec 关键字只能作为中文句子里的证据标识，不得把纯英文段落当作 canonical 结论；若必须保留原始英文输出、代码块或 artifact 原文，必须先补中文解释并注明边界，且不能把整行纯英文当成正常记录。
+
 ## Core Mission
 
 旧总设计的核心目标不是“维护阶段 7 文档”，而是完成以下架构迁移：

@@ -1,8 +1,20 @@
-# Agent Findings
+# 代理发现记录
 
 本文中“后续”“仍需”“必须”“待归类”或 endpoint 相关表述只表示风险、禁止误判、冲突口径或历史事实边界，不构成执行顺序、endpoint backlog 或任务源；可执行项一律以 `tasks.md` 未完成 checkbox 为准。
 
 本文件记录发现、风险、失败路径和不迁移原因，不记录可执行任务清单。
+
+语言边界：本文件新增发现必须中文为主，禁止纯英文行。英文术语、命令、路径、状态码、接口名或 OpenSpec 关键字只能作为中文语境中的证据标识；若发现纯英文日志、英文占满执行记录或无中文解释的混合语言记录，必须先改写为中文主导，无法改写时在本文件记录原因、artifact 边界和后续处理，不能默默继续推进任务勾选、runtime、`DB_READY` 或退役结论。
+
+## 2026-05-24 日志语言治理发现
+
+本轮发现 `agent-progress.md`、`agent-findings.md` 和 `tasks.md` 已经有任务源边界，但缺少明确的中文日志门禁；这会让后续子代理把英文 reviewer 摘要、命令输出或 artifact 摘要整段贴入接力记录，造成中文协作上下文断裂，也容易把执行记录和发现记录的边界重新打散。
+
+治理结论：新增记录必须中文为主，纯英文行视为违规；英文术语可以保留，但必须嵌入中文动作、结论或证据边界。`No-go`、`DB_READY`、`runtime manifest`、`fallback evidence`、命令和路径都只能作为术语或证据标识，不能整行占满记录。
+
+检查机制：后续每轮文档或日志变更结束前，应扫描本轮新增行中“含英文字母但不含中文字符”的纯英文行；对英文字母明显压过中文说明的新增行进行人工复核。检查结果写入 `agent-progress.md` 的 checkpoint 或本文件的发现记录；若本轮只引用原始输出，必须改为 artifact 路径加中文摘要。
+
+违规处置：发现纯英文行或英文占满执行记录时，先回写规范化中文记录；若无法改写，必须在本文件记录原因、证据边界和阻断状态。未处理前不得继续勾选任务、升级 endpoint 状态、声称 `DB_READY`、写入退役候选或把发现记录当成执行队列。
 
 ## 2026-05-24 任务比例纠偏发现
 
@@ -16,26 +28,26 @@
 
 No-go：不得把本轮文档和任务结构调整写成 runtime 迁移、`DB_READY`、shadow-off/fallback 复验、写入口安全放行或旧服务可退役。后续若执行中发现缺失任务，只能回写 `tasks.md`，`agent-progress.md` 与 `agent-findings.md` 仍不得承载 checkbox backlog。
 
-## Legacy Document Roles
+## 旧文档角色
 
 - 三份旧 Superpowers 文档的细目、职责和历史用途已迁入 OpenSpec canonical：`design.md` 记录来源角色与压缩原则，`tasks.md` 记录唯一可执行 backlog，本文件记录历史 provenance、风险和证据索引。
 - `docs/superpowers/phase7-openspec-migration-index.md` 是后续接力的稳定入口，指向 OpenSpec canonical、`tasks.md`、`agent-progress.md` 和本文件。
 - 临时来源覆盖审计快照已经完成使命并被删除；后续不得恢复或维护第四份来源覆盖矩阵。
 - 后续执行入口只能是 OpenSpec canonical：可执行 backlog 归 `tasks.md`，风险和禁止误判归本文件，checkpoint 归 `agent-progress.md`，架构和验收规则归 `design.md` 与 `specs/**`。
 
-## Must Preserve
+## 必须保留
 
 - 旧总设计的核心迁移目标：`apps/admin/server` 和 `apps/app/server` 的旧 Nitro API 责任逐步合并到独立部署的 `apps/api`。
 - `apps/api` 是 admin 与 app 的唯一长期 Nitro API 服务目标。
 - Phase7 是统一 Nitro API 迁移的退役准备阶段，不是孤立的 endpoint 数量统计阶段。
 - admin legacy Nitro stream 与 app legacy/mock Nitro stream 必须分别跟踪；admin exact coverage 不能推导 app legacy 完成。
 - `coverageKind`、`dataSourceStatus`、`targetStatus`、`browserEvidence`、`fallbackEvidence`、`dbReadinessEvidence`、`writeReadRollbackEvidence`、`retirementDecision` 的字段语义。
-- `READY_CONFIGURED != DB_READY`。
+- `READY_CONFIGURED != DB_READY`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 - `legacy-fallback 200 != DB/repository 完成`。
-- `canonical-only != old path exact covered`。
-- `hook-level evidence != browserEvidence`。
-- `local-dev browserEvidence != production browserEvidence`。
-- `admin H5 evidence != app H5 evidence != API server evidence`。
+- `canonical-only != old path exact covered`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+- `hook-level evidence != browserEvidence`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+- `local-dev browserEvidence != production browserEvidence`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+- `admin H5 evidence != app H5 evidence != API server evidence`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 - 当前 no-go-for-retirement 状态。
 - 受保护路径：`apps/admin/server`、`apps/app/server`、`D:\code\ruan-cat\01s-11comm-app`。
 - Neon main 验收规则：不使用 Neon 测试分支；`RUN_PHASE7_DB_READINESS_CHECK=1` 且 `/__nitro/ready` 返回 `DB_READY` 才能记录 DB_READY。
@@ -44,7 +56,7 @@ No-go：不得把本轮文档和任务结构调整写成 runtime 迁移、`DB_RE
 - Vitest 规则：运行时代码变更必须补 `*.test.ts` 或记录不可写原因；测试使用 `describe` 与 `test`，从 `vitest` 导入断言工具；Vitest 不能替代 Neon main `DB_READY`、真实库样本、写入读回回滚或旧服务退役门禁。
 - Chrome MCP 三端双环境规则：admin H5、app H5、API server 必须分别在 local-dev 和 production 记录；local-dev 覆盖 `apps/api`、`apps/admin`、`apps/app` 三个 dev 服务，production 地址必须从三个 package 的 `homepage` 字段重新读取。
 
-## Known Current Gaps
+## 当前已知缺口
 
 - 2026-05-19 初版 OpenSpec 迁移过度聚焦 Phase7 证据门禁，未充分呈现“admin/app 两套旧 Nitro API 合并到独立 `apps/api`”的上层主线；已补 `unified-nitro-api-consolidation` spec、设计四流模型和索引说明。
 - 2026-05-19 二次复核发现 `tasks.md` 仍错误表现为 43/43 已完成，只覆盖文档载体迁移，没有承接旧计划 P0-P8 的后续 Nitro 合并任务；已重写为长期 backlog。
@@ -105,7 +117,7 @@ No-go：不得把本轮文档和任务结构调整写成 runtime 迁移、`DB_RE
 - 2026-05-20 task 120 no-go：route file 存在但 runtime manifest 缺失时只能保持 `canonical-only` 或 `unknown-needs-triage`，不得写成 `old-path-exact-covered`；`READY_CONFIGURED` 不能冒充 `DB_READY`；contract test 或 HTTP 200 不能冒充 Chrome MCP browserEvidence；local-dev evidence 不能外推为 production evidence；`contract`、`dev`、`setting`、`debug`、`j1-dashboard` 等 `manifest-missing` 行不得升级为 manifest covered。
 - 2026-05-20 task 128 调度 no-go：后续 batch 启动声明不是完成证据，只是实施前 guard。不得一次性吞掉 admin、app legacy、DB/write 或 retirement 整域；不得在没有明确 endpoint 或业务路径列表时实施；不得把 owner 文件、目标 `apps/api` route/manifest/adapter/caller 文件、预期测试和 DB/浏览器/生产证据需求留空后继续动手；不得越过本批声明去触碰 upload/R2/CUD/write/detail/retirement 或无关范围；不得把 local、contract、HTTP gate、historical Batch7a 或启动声明本身升级为 production `DB_READY`、真实库样本、shadow-off/fallback 完成、写入闭环或旧服务退役候选。
 
-## Source Re-Audit Findings
+## 来源复审发现
 
 - 2026-05-19 独立子代理复核确认：旧总设计的核心任务是 `apps/admin/server` 与 `apps/app/server`/旧 app 项目中的旧 Nitro 职责合并到独立 `apps/api`，Phase7 只是这条主线的退役准备阶段。
 - 2026-05-19 独立子代理复核确认：旧计划 §2、§12、§13 的 Agent Team 模型、每批固定流程、批次拆分和复核清单此前没有 spec 化；已新增 `agent-team-batch-execution`。
@@ -115,14 +127,14 @@ No-go：不得把本轮文档和任务结构调整写成 runtime 迁移、`DB_RE
 - 2026-05-19 独立子代理复核确认：`agent-progress.md` 中“旧三文档已删除”的陈旧表达会误导后续接力；已修正为“用户已恢复，当前只作迁移来源/核对材料”。
 - 2026-05-19 编辑子代理 B 复核确认：临时来源审计中值得长期保留的是 provenance 线索、Memorix lookup、artifact evidence、禁止误判和临时审计边界；旧文档章节覆盖大表不应原样迁入 canonical。
 
-## Canonicalized Source Audit Summary
+## 规范化来源审计摘要
 
 - 来源角色：旧 endpoint 矩阵提供证据字段、状态字段、扫描快照、当前口径和禁止误判；旧 batch 计划提供 Agent Team 调度、P0-P8 批次、每批固定流程和复核门槛；旧总设计提供唯一 `apps/api` 架构、Phase1-7 阶段链、文档/AI 记忆治理、Vitest、Neon main 和退役门禁。
 - OpenSpec 落点：执行项进入 `tasks.md`；统一 API 主线进入 `unified-nitro-api-consolidation` 与 `design.md`；app/admin cutover 进入对应 specs；DB、Vitest、浏览器验收、Agent Team 与来源治理分别进入 `db-readiness-and-write-verification`、`vitest-and-runtime-verification`、`browser-and-environment-verification`、`agent-team-batch-execution`、`source-history-and-memory-governance`。
 - 压缩决策：旧矩阵大表不逐字复制；只有 endpoint 级 backlog、明确差集调查、风险说明和证据索引进入 canonical。历史批次流水只能解释来源，不能自动继承为完成事实。
 - 退场边界：临时来源覆盖审计快照完成迁移后已删除；后续 agent 不应继续要求同步维护它，也不得恢复成长期任务源。
 
-## Git History Provenance
+## Git 历史来源
 
 | 提交                               | 旧文件    | 结论                                                                                                                      |
 | ---------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------- |
@@ -139,7 +151,7 @@ No-go：不得把本轮文档和任务结构调整写成 runtime 迁移、`DB_RE
 | `04a8e56c`                         | 三文件    | 同步 expense-summary、report-manage 和 App repair evidence。                                                              |
 | `6bf1dbc2`                         | 三文件    | 同步 2026-05-19 admin list manifest/contract/HTTP gate 和 contract-manage 下一片。                                        |
 
-## Memorix Lookup Index
+## Memorix 检索索引
 
 - `#4152`：Neon main 验收口径；只能作为 DB readiness 规则来源，不能代替本轮生产 `DB_READY`。
 - `#4217`、`#4218`、`#4220`、`#4221`：Phase7 resolver、readiness/browser/fallback 边界、handoff 文档和 no-go gotcha。
@@ -150,17 +162,17 @@ No-go：不得把本轮文档和任务结构调整写成 runtime 迁移、`DB_RE
 - `#4375`、`#4376`、`#4377`：App repair H5 CORS block、evidence docs 和 session completion；仍缺 production DB_READY、真实库样本、shadow-off/fallback 和 `/app/repairSetting.listRepairSettings` 单独页面证据。
 - `#4405`-`#4409`：本次 OpenSpec 迁移修复过程的记录。
 
-## Artifact Evidence Index
+## 证据产物索引
 
-- `.tmp/phase7-dev-browser/2026-05-16-final-batch-page-network-verification.log`：local final batch page/API shadow 44/44 PASS。
+- `.tmp/phase7-dev-browser/2026-05-16-final-batch-page-network-verification.log`：local final batch page/API shadow 44/44 PASS。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 - `.tmp/phase7-dev-browser/2026-05-16-final-batch-shadow-verification.log`：local shadow-off/fallback 44/44 演练。
 - `.tmp/phase7-dev-browser/2026-05-16-crud-batch-http-gate-verification.log`：47 个 CRUD/边缘 route HTTP gate。
 - `.tmp/phase7-dev-browser/2026-05-18-report-manage-remaining-page-network-verification.md`：7 个 report-manage 页面 Network。
-- `.tmp/phase7-dev-browser/2026-05-18-report-manage-remaining-http-gate.log`：report-manage HTTP gate。
+- `.tmp/phase7-dev-browser/2026-05-18-report-manage-remaining-http-gate.log`：report-manage HTTP gate。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 - `.tmp/phase7-dev-browser/2026-05-18-app-repair-readonly-h5-network-verification.md`：App repair 只读 H5 页面 Network；如本轮无法确认 MCP transport，应按 CDP/fallback 证据谨慎使用。
 - `.tmp/phase7-agent-reports/**`：子代理历史报告；有效事实必须迁入 OpenSpec canonical 后才可用于接力。
 
-## Reference Risks
+## 引用风险
 
 - 三份旧文档曾被 prompt、历史计划、汇总报告和设计文档交叉引用。
 - 2026-05-19：已提供稳定迁移索引 `docs/superpowers/phase7-openspec-migration-index.md`。
@@ -168,68 +180,68 @@ No-go：不得把本轮文档和任务结构调整写成 runtime 迁移、`DB_RE
 - 当前 OpenSpec change 与稳定索引内仍保留旧文件名，用于说明迁移来源、删除对象和历史发现；这不是外部死链，也不是执行入口。
 - `proposal.md`、`design.md`、`tasks.md` 与本文件已改为指向 OpenSpec canonical，不再把旧三文档或临时来源覆盖审计文件当作执行源。
 
-## Deletion Notes
+## 删除说明
 
 - 旧 endpoint 状态矩阵、旧 Phase7 batch 计划和旧 monorepo API 迁移总设计曾在前一轮被删除后由用户恢复；本轮按用户要求完成核心内容转写后再次删除。
 - `docs/superpowers/phase7-openspec-migration-index.md` 是后续文档侧稳定入口。
 - 后续执行入口必须是 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/tasks.md`。
 - 本次没有修改运行时代码、数据库 schema、部署配置或 package dependency。
 
-## Failed Or Blocked Attempts
+## 失败或阻断尝试
 
 - 2026-05-19：尝试创建 date-prefixed OpenSpec change `2026-05-19-migrate-superpowers-docs-to-openspec-longtask` 失败，CLI 报错 change name must start with a letter。已改用合法名称 `migrate-superpowers-docs-to-openspec-longtask`。
 
-## Task 129 No-Go Findings
+## 任务 129 禁止误判发现
 
 2026-05-20：task129 只固化调度颗粒度，不是 runtime 迁移证据。后续 admin 批次必须以 `apps/admin/src/router/rank/rank-route-keys.ts` 的三级业务路径为 canonical 坐标，不得凭空新建业务路径，不得一口气整域迁移；同一路径下超过 3 个 endpoint 时必须继续按 ordinary list、upload/R2、CUD/detail、edge endpoint 或紧密 endpoint 小组拆分，且不得把 upload/R2/write/delete/detail 与 ordinary list 混在同一普通 list 批次。app legacy 批次每次只能处理 2-3 endpoints 或一个小模块，可按 `/callComponent/**`、floor、repair、fee/report、guarded write、remaining app module 拆分；本调度项不得被当成端点 runtime 迁移完成、`DB_READY`、shadow-off、fallback 移除或旧服务退役证据。
 
-## Task 130 No-Go Findings
+## 任务 130 禁止误判发现
 
 2026-05-20：task130 只固化 batch 三角色与独立复核契约，不是 runtime 迁移证据。后续任何批次不得无复核就勾选，不得把同一编辑者自审写成独立复核，不得用子代理报告直接作为任务源；子代理有效事实必须合并回 OpenSpec canonical 后才能接力。复核结论不得替代实际测试、HTTP gate、browser evidence、`DB_READY`、真实库样本或写入回滚证据；local、contract、browser、historical evidence 不得升级为 production `DB_READY`、shadow-off/fallback 或 retirement。若某类证据不适用，必须写明不适用原因，不能空缺后用总结文字覆盖缺口。
 
-## Task 131 No-Go Findings
+## 任务 131 禁止误判发现
 
 2026-05-20：task131 只固化子代理输出的 canonical merge 边界，不是 runtime 迁移证据。后续不得把聊天记录、子代理总结、`.tmp/phase7-agent-reports/**`、旧 Superpowers 文档或临时报告当成后续执行入口、完成证据、接力入口或长期维护清单；不得新建第四份长期 source coverage 矩阵；不得用“子代理说已完成”替代 tests/evidence/checkbox；不得把未合并到 `tasks.md`、`agent-progress.md`、`agent-findings.md`、`design.md` 或 `specs/**` 的临时结论用于接力。artifact 路径可以作为证据引用，但不得维护 parallel checkbox 清单或第二任务树。
 
-## Task 132 No-Go Findings
+## 任务 132 禁止误判发现
 
 2026-05-20：task132 只固化复核发现缺口后的退回/新建编辑切片边界，不是 runtime 迁移证据。后续复核发现任务缺漏、证据不足、状态越权升级、旧服务退役误判、source coverage 缺失、测试/证据命令缺失或 no-go 约束缺失时，必须退回对应 endpoint 或新建后续编辑切片，并保持任务未完成、partial、blocked、unknown-needs-triage 或 keep-source，直到补齐。不得用总结文字覆盖缺口；不得口头豁免证据；不得把复核发现写成完成证据；不得把 local/contract/HTTP/browser/historical evidence 升级为 production `DB_READY`、真实库样本、shadow-off/fallback、write closure 或 retirement candidate；不得删除、移动、归档、重命名或清空旧服务目录。
 
-## Task 133 No-Go Findings
+## 任务 133 禁止误判发现
 
 2026-05-20：task133 只固化每批结束前的验证门禁，不是 runtime 迁移证据。后续每个批次必须运行与本批相关的 OpenSpec strict、`git diff --check`、包级测试/typecheck、Vitest、HTTP gate、browser/API evidence 中适用项，或明确记录不可运行/不适用原因；文档-only 批次至少需要 OpenSpec strict 和 diff check，runtime 批次必须按修改范围补包级测试/typecheck、contract/manifest/HTTP gate，并按适用性分层记录 browser evidence、DB_READY、真实库样本、写入回滚和 retirement gate。不得只跑无关命令冒充验证；不得用单一测试替代 browser evidence、DB_READY、真实库样本、写入回滚或 retirement gate；不得全局安装工具或依赖全局 turbo；不得把不可运行原因留空；不得把失败批次写成完成。任一 required check 失败时必须在 `agent-progress.md` 记录失败命令/摘要，在本文件记录阻断原因、影响范围和下一步，并按 task132 退回或新建编辑切片。
 
-## Task 76 Contract-Manage List Coverage Findings
+## 任务 76 Contract-Manage 列表覆盖发现
 
 2026-05-20：task76 只完成 `property-manage/contract-manage` 12 个普通 list endpoint 的当前覆盖状态确认，不是 runtime 迁移完成证据。`contract-manage-list-coverage-audit.md` 记录了 12 个旧 admin source、12 个 `apps/api` route 和 12 个 admin hook 均存在；探索当时 `runtimeEndpointManifest`、`apps/api` contract/manifest tests 和 gated HTTP test 对这 12 个 endpoint 全缺失。task77-task80 后 12 个普通 list endpoint 获得本地 manifest/contract/gated HTTP test 条目；不得把 route file 存在、旧 source 存在、admin hook 存在或 shadow resolver 测试写成 production `DB_READY`、真实库样本、shadow-off/fallback、真实页面 Network、真实 HTTP 已跑或旧服务退役。`rank-route-keys.ts` 只登记 5 个相关三级业务路径，另外 7 个普通 list 目前不能写成 rank 页面完成。
 
-## Task 77 Contract-Manage List Findings
+## 任务 77 Contract-Manage 列表发现
 
 2026-05-20：task77 只为 `archive/list`、`attachment/list`、`clause/list` 增补本地 `runtimeEndpointManifest`、manifest/contract tests 和 gated HTTP test 条目，不包含 upload/R2、write/delete/detail，也不代表其他 9 个 contract-manage list endpoint 完成。三端点 status 只能写为 `available-in-apps-api-not-caller-verified`；不得升级为生产 `DB_READY`、真实库样本、shadow-off/fallback、真实页面 Network、真实 HTTP 已跑、写入闭环或旧服务退役。当前 HTTP gate 文件已补断言，但本地命令因缺少 `RUN_PHASE7_HTTP_TESTS=1` 和 `PHASE7_API_BASE_URL` 按既有机制 skipped，因此只能写成 gated HTTP test coverage added / local gated run skipped，不能写成真实 HTTP passed。
 
-## Task 78 Contract-Manage List Findings
+## 任务 78 Contract-Manage 列表发现
 
 2026-05-20：task78 只为 `change/list`、`draft-contract/list`、`expire/list` 增补本地 `runtimeEndpointManifest`、manifest/contract tests 和 gated HTTP test 条目；不包含 `change/{create,detail,update,delete}`、`draft-contract/{create,detail,update,delete}`、upload/R2、write/delete/detail，也不代表 `first-party/list`、`print/list`、`review/list`、`second-party/list`、`template/list`、`type/list` 完成。三端点 status 只能写为 `available-in-apps-api-not-caller-verified`；不得升级为生产 `DB_READY`、真实库样本、shadow-off/fallback、真实页面 Network、真实 HTTP 已跑、写入闭环或旧服务退役。HTTP gate 文件已补断言，但本地命令因缺少 `RUN_PHASE7_HTTP_TESTS=1` 和 `PHASE7_API_BASE_URL` 按既有机制 skipped，因此只能写成 gated HTTP test coverage added / local gated run skipped，不能写成真实 HTTP passed。
 
-## Task 79 Contract-Manage List Findings
+## 任务 79 Contract-Manage 列表发现
 
 2026-05-20：task79 只为 `first-party/list`、`print/list`、`review/list` 增补本地 `runtimeEndpointManifest`、manifest/contract tests 和 gated HTTP test 条目；不包含 upload/R2、write/delete/detail，也不代表 `second-party/list`、`template/list`、`type/list` 完成。三端点 status 只能写为 `available-in-apps-api-not-caller-verified`；不得升级为生产 `DB_READY`、真实库样本、shadow-off/fallback、真实页面 Network、真实 HTTP 已跑、写入闭环或旧服务退役。HTTP gate 文件已补断言，但本地命令因缺少 `RUN_PHASE7_HTTP_TESTS=1` 和 `PHASE7_API_BASE_URL` 按既有机制 skipped，因此只能写成 gated HTTP test coverage added / local gated run skipped，不能写成真实 HTTP passed。
 
-## Task 80 Contract-Manage List Findings
+## 任务 80 Contract-Manage 列表发现
 
 2026-05-20：task80 只为 `second-party/list`、`template/list`、`type/list` 增补本地 `runtimeEndpointManifest`、manifest/contract tests 和 gated HTTP test 条目；不包含 upload/R2、write/delete/detail，也不代表 25 个 contract-manage route 整体完成。至此 task77-task80 覆盖的是 12 个普通 list endpoint，status 只能写为 `available-in-apps-api-not-caller-verified`；不得升级为生产 `DB_READY`、真实库样本、shadow-off/fallback、真实页面 Network、真实 HTTP 已跑、写入闭环或旧服务退役。HTTP gate 文件已补断言，但本地命令因缺少 `RUN_PHASE7_HTTP_TESTS=1` 和 `PHASE7_API_BASE_URL` 按既有机制 skipped，因此只能写成 gated HTTP test coverage added / local gated run skipped，不能写成真实 HTTP passed。
 
-## Task 82 Contract-Manage Record Findings
+## 任务 82 Contract-Manage 记录发现
 
 2026-05-20：task82 只完成记录闭环：`agent-progress.md`、本文件和 Memorix `#4472` 已同步 task77-task80 的 12 个普通 list endpoint local-dev manifest/contract/gated HTTP test 覆盖事实，并记录独立复核 PASS。该记录项不得被解释为新增运行时代码、真实 HTTP passed、页面 Network、生产 `DB_READY`、真实库样本、shadow-off/fallback、写入闭环、upload/R2、CUD/detail 或旧服务退役证据。
 
-## Task 199 Admin Count Baseline Findings
+## 任务 199 后台数量基线发现
 
 2026-05-20：task199 只完成 admin 数量口径复核和 OpenSpec 文档收敛，不是 Nitro 接口迁移完成。`dev-team/config-manage` 旧文档“16”= 四个子模块按 `list/create/update/delete` 的历史 CRUD 方法口径；当前 legacy 文件树为 20 个文件，四个子模块 `center/dictionary/item/type` 各含 `list/create/detail/update/delete`，`apps/api` 目标 route 也为 20 个，但缺 runtime manifest/contract/HTTP gate 覆盖。`setting-manage/system-manage` 旧文档“15”= 五个子模块按 `create/update/delete` 的历史 CUD 方法口径；当前 legacy 文件树为 20 个文件，五个子模块 `change-password/community-configuration/initialize-cell/register-protocol/system-config` 各含 `list/create/update/delete`，`apps/api` 目标 route 也为 20 个，但缺 `/api/setting-manage/system-manage/**` runtime manifest/contract/HTTP gate 覆盖。`property-manage/expense-manage` 当前 legacy list 文件树为 16 个 = 14 个 `phase7-expense-manage-admin-list` list + 2 个 `phase5a-expense-manage` list（`house-charge/list`、`expense-item-setting/list`）；既有 Phase7 runtime/HTTP gate 数组只代表 14 个 list 分组，不等于当前 list 总数。`property-manage/report-manage` 当前 legacy list 文件树为 13 个 = 12 个 `phase7-report-manage-admin-list` list + 1 个 `phase2-fee-payment-report` list（`payment-details-form/list`）；既有 Phase7 runtime/HTTP gate 数组只代表 12 个 list 分组，不等于当前 list 总数。
 
 No-go：不得把 20/20/16/13 写成 runtime manifest、contract、HTTP gate、页面 Network、生产 `DB_READY`、真实库样本、shadow-off/fallback、写入闭环或旧服务退役证据；不得用目录数量替代 endpoint ledger；不得把 list evidence 推导到 CUD/detail/upload/R2。后续执行必须以当前 working tree legacy 文件树和 `tasks.md` 显式 endpoint 行为准，旧数字只作为 dated historical snapshot。
 
-## Task 203 Report Expense Summary Findings
+## 任务 203 Report Expense Summary 发现
 
 2026-05-20：task203 对应 `property-manage/report-manage/expense-summary-table/list`，当前结论为 partial evidence，不能勾选完成。
 
@@ -239,13 +251,13 @@ Production API partial evidence：生产 API 入口来自 `apps/api/package.json
 
 No-go：当前没有 `RUN_PHASE7_DB_READINESS_CHECK=1` 下的 `DB_READY`，没有 Neon main readiness probe 通过证据，没有 admin H5 生产页面 Network，没有 shadow-off/fallback 演练，没有退役 ledger/旧服务退役证据。因此不得把本 task 写成完成，不得把 `READY_CONFIGURED`、HTTP 200、本地 Vitest 或生产 API 200 写成 `DB_READY`、真实库样本完整或 retirement。特别禁止把 `expense-manage/expense-summary-table` 的 `.tmp` 页面证据当成 report 证据。
 
-2026-05-21 refresh: this task remains incomplete. Independent `apps/api` production returned the report contract for `POST /api/property-manage/report-manage/expense-summary-table/list`: `x-request-id=req_fc097735-1a83-46fd-86f2-4445e363dba9`, `success=true`, `total=2`, and a sample with `feeItem=物业费`, `currentReceivable=50000.00`, `currentActualReceipt=45000.00`, `chargeRate=90.00%`, `statisticsTime=2024-01-01`. The same run returned ready `x-request-id=req_1ec42e11-19d4-444b-8fde-50a79b7a1e60`, `code=READY_CONFIGURED`, `connected=null`, `probeEnabled=false`, so it is still not `DB_READY`.
+2026-05-21 重新采样：本任务仍未完成。独立 `apps/api` 生产环境对 `POST /api/property-manage/report-manage/expense-summary-table/list` 返回 report 契约：`x-request-id=req_fc097735-1a83-46fd-86f2-4445e363dba9`、`success=true`、`total=2`，样本包含 `feeItem=物业费`、`currentReceivable=50000.00`、`currentActualReceipt=45000.00`、`chargeRate=90.00%`、`statisticsTime=2024-01-01`。同轮 ready 返回 `x-request-id=req_1ec42e11-19d4-444b-8fde-50a79b7a1e60`、`code=READY_CONFIGURED`、`connected=null`、`probeEnabled=false`，因此仍不是 `DB_READY`。
 
-Production admin H5 route `GET https://01s-11comm.ruan-cat.com/property-manage/report-manage/expense-summary-table` returned only the SPA HTML document. Same-origin admin `POST /api/property-manage/report-manage/expense-summary-table/list` returned HTTP 200 with `x-request-id=e469c568-07ab-4b9b-b8a9-6dfae75a05ab`, but the sample keys were legacy/source-style `time`, `expenseItemId`, `expenseItemName`, `receivableAmount`, `actualAmount`, `status`, and `remark`. Local legacy source confirms `apps/admin/server/api/property-manage/report-manage/expense-summary-table/list.post.ts` reads `rptExpenseSummaries` but maps to legacy `ExpenseSummaryTableListItem` fields. Therefore this same-origin response cannot be used as proof of production admin H5 page Network cutover to the independent report contract, and it cannot be used as shadow-off/fallback success.
+生产 admin H5 路由 `GET https://01s-11comm.ruan-cat.com/property-manage/report-manage/expense-summary-table` 只返回 SPA HTML 文档。同源后台 `POST /api/property-manage/report-manage/expense-summary-table/list` 返回 HTTP 200，`x-request-id=e469c568-07ab-4b9b-b8a9-6dfae75a05ab`，但样本字段是旧 source 形态的 `time`、`expenseItemId`、`expenseItemName`、`receivableAmount`、`actualAmount`、`status`、`remark`。本地旧来源确认 `apps/admin/server/api/property-manage/report-manage/expense-summary-table/list.post.ts` 读取 `rptExpenseSummaries`，但映射到旧 `ExpenseSummaryTableListItem` 字段。因此该同源响应不能作为生产 admin H5 页面 Network 已切到独立 report 契约的证据，也不能作为 shadow-off/fallback 成功证据。
 
-Artifact: `.tmp/phase7-dev-browser/2026-05-21-report-expense-summary-refresh.md`. No-go remains unchanged: do not mark task203 complete until `DB_READY`, Neon main readiness, real admin H5 page Network, shadow-off/fallback drill, and retirement ledger evidence exist.
+证据产物：`.tmp/phase7-dev-browser/2026-05-21-report-expense-summary-refresh.md`。禁止误判口径不变：在具备 `DB_READY`、Neon main readiness、真实 admin H5 页面 Network、shadow-off/fallback 演练和 retirement ledger 证据前，不得把 task203 标记为完成。
 
-## Task 208 Report Manage P1 Findings
+## 任务 208 Report Manage P1 发现
 
 2026-05-20：task208 对应 `property-manage/report-manage` P1 四端点：`owner-payment-details/list`、`repair-report-form/list`、`repair-reports-summary-table/list`、`statement-expenses/list`。当前结论为 partial evidence，不能勾选完成。
 
@@ -259,7 +271,7 @@ Production API partial evidence：生产 API shell 采样四个 POST 均 200 且
 
 No-go：不能勾选 task208，因为缺 `RUN_PHASE7_DB_READINESS_CHECK=1` 下 `/__nitro/ready` 返回 `DB_READY`。仍缺 Neon main readiness probe 通过证据、真实库样本逐端点证明、admin H5 页面 Network（本地和生产都未找到明确 artifact）、shadow-off/fallback 演练、retirement ledger/旧服务退役证据。不得把 production API 200、HTTP gate passed、Vitest、manifest/contract、fallback 空分页或 `READY_CONFIGURED` 写成 `DB_READY`、真实库样本完整、页面 Network、shadow-off/fallback 或 retirement。
 
-## Task 210 Report Manage Remaining Seven Findings
+## 任务 210 Report Manage 剩余七项发现
 
 2026-05-20：task210 对应 `property-manage/report-manage` 剩余七页：`arrears-details-list/list`、`data-statistics/list`、`deposit-report/list`、`fee-reminder/list`、`no-charge-house/list`、`outstanding-fees-analysis/list`、`patrol-report/list`。当前结论为 partial evidence，不能勾选完成。
 
@@ -271,7 +283,7 @@ Production API partial evidence：生产 API 地址来自 `apps/api/package.json
 
 No-go：不能勾选 task210，因为仍缺 `RUN_PHASE7_DB_READINESS_CHECK=1` 下 `/__nitro/ready` 返回 `DB_READY`、Neon main readiness probe 通过证据、生产 admin H5 页面 Network、shadow-off/fallback 演练、真实库样本逐端点证明和 retirement ledger/旧服务退役证据。不得把 local `/api-shadow` 页面 Network、production API 200、HTTP gate passed、Vitest、manifest/contract 覆盖或 `READY_CONFIGURED` 写成 `DB_READY`、真实库样本完整、生产页面 Network、shadow-off/fallback 或 retirement。
 
-## Task 211 Payment Details Form Findings
+## 任务 211 Payment Details Form 发现
 
 2026-05-20：task211 对应 `property-manage/report-manage/payment-details-form/list`，当前完成的是“第 13 个 report-manage list 的 phase、manifest、contract、HTTP gate 和历史测试覆盖归属复核”。该完成不代表生产 `DB_READY`、生产 admin H5 页面 Network、真实库样本完整、shadow-off/fallback、retirement ledger 或旧服务退役。
 
@@ -287,7 +299,7 @@ Production API partial evidence：`apps/api/package.json` 的 `homepage` 当前�
 
 No-go：不得把 task211 完成写成 report-manage 13/13 可退役、旧服务删除候选、生产 admin H5 页面 Network、Neon main `DB_READY`、真实库样本完整、shadow-off/fallback 或 write/read rollback 完成。真实生产 HTTP 200 与 Chrome API artifact 只能证明 API server 层 partial evidence；页面级生产 evidence 仍需通过 admin H5 入口另采。
 
-## Task 89 Expense Manage Phase7 Findings
+## 任务 89 Expense Manage Phase7 发现
 
 2026-05-20：task89 对应 `property-manage/expense-manage` Phase7 14 个 list。当前结论为 partial evidence，不能勾选完成。该 14 个 endpoint 是 `phase7-expense-manage-admin-list` 范围，不包括同目录下 `phase5a-expense-manage` 的 `house-charge/list` 与 `expense-item-setting/list`。
 
@@ -301,7 +313,7 @@ Production API partial evidence：生产 API 入口来自 `apps/api/package.json
 
 No-go：不得把 task89 勾选完成。仍缺生产 admin H5 页面 Network、`RUN_PHASE7_DB_READINESS_CHECK=1` 下 `/__nitro/ready` 返回 `DB_READY`、Neon main readiness probe 通过、真实库样本逐 endpoint 证明、shadow-off/fallback 演练和 retirement ledger/旧服务退役证据。不得把 route/manifest/test 覆盖、HTTP gate passed、production API 200、Chrome API artifact、本地 `.tmp` request/response 或 `READY_CONFIGURED` 写成 `DB_READY`、完整页面 Network、真实库样本完整、shadow-off/fallback 或 retirement。
 
-## Task 90 Expense Summary Alias Findings
+## 任务 90 Expense Summary 别名发现
 
 2026-05-20：task90 对应 `property-manage/expense-manage/expense-summary-table/list` 与 `property-manage/report-manage/expense-summary-table/list` 的同名路径隔离。当前结论为完成：页面、hook、ownerModule、数据表和响应字段语义没有混用；但该完成只覆盖 alias/语义隔离，不代表 `DB_READY`、生产 admin H5 页面 Network、真实库样本完整、shadow-off/fallback 或 retirement。
 
@@ -315,7 +327,7 @@ Verification evidence：`pnpm -F @01s-11comm/api exec vitest run tests/admin/exp
 
 No-go：不得把 task90 的 alias 隔离完成写成 task89 的 14 个 expense list 全量完成；不得把 expense `.tmp` artifact 写成 report 证据；不得把同名 hook 函数名或 query key 写成跨模块混用；不得把本地 Vitest/typecheck 写成生产 `DB_READY`、生产 admin H5 页面 Network、真实库样本完整、shadow-off/fallback 或 retirement。
 
-## Task 91 Expense Manage Phase5a Findings
+## 任务 91 Expense Manage Phase5a 发现
 
 2026-05-20：task91 对应 `property-manage/expense-manage/house-charge/list` 与 `property-manage/expense-manage/expense-item-setting/list`。当前结论为完成：两个 list 已按 phase5a 范围单独复核，不能混入 Phase7 14-list 完成口径；但该完成不代表生产 `DB_READY`、生产 admin H5 页面 Network、生产写入闭环、shadow-off/fallback 或旧服务退役。
 
@@ -331,7 +343,7 @@ Production API partial evidence：shell 与 Chrome DevTools browser-context 均�
 
 No-go：本轮没有执行生产 create/update/delete，不能把本地 create/update/delete 策略测试写成生产写入闭环。仍缺生产 `DB_READY`、Neon readiness、生产 admin H5 页面 Network、shadow-off/fallback 和 retirement ledger；不得把 phase5a `cut-to-apps-api` manifest、production API 200 或本地 Vitest 写成旧服务删除候选。
 
-## Task 92 Dev Config Center Findings
+## 任务 92 Dev Config Center 发现
 
 2026-05-20 / 2026-05-21：task92 对应 `dev-team/config-manage/center/{list,create,detail,update,delete}`。当前结论为 partial evidence，不能勾选完成。2026-05-20 记录只说明 `apps/api` 已有五个 route 文件和 repository CRUD 源码链路；2026-05-21 已进一步补齐本地 runtime manifest、API 专项 Vitest、infra contract 和默认 HTTP gate 证据，但仍不代表页面级 CUD、生产 detail/CUD、生产 `DB_READY` 或旧服务退役完成。
 
@@ -347,7 +359,7 @@ Local verification evidence：center 本地绿色组合命令 `pnpm -F @01s-11co
 
 No-go：不得把 `center/list` 的生产 API 200、admin resolver 测试、本地 manifest/contract/Vitest/skipped HTTP gate、repository 源码 CRUD 能力或旧/新 route 文件存在写成五个 endpoint 完成。仍缺生产 detail GET 真实调用证据、create/update/delete 受控写入读回回滚证据、生产 admin H5 页面 Network、生产 `DB_READY`、shadow-off/fallback 和 retirement ledger。
 
-## App Legacy CallComponent Core List Findings
+## App 旧 CallComponent 核心列表发现
 
 2026-05-21：`/callComponent/core/list` 属于 app legacy stream，不属于 admin canonical route。当前结论为 mixed compat / DB-wired-with-gap evidence；已补旧服务生产行为、生产 API server real HTTP gate、生产 App H5 页面 Network 和 DB repository mixed compat 测试，因此可关闭 §3.1 的 `[探索]`、`[实施]`、`[验证]` 三项，但三项完成不代表 DB_READY、真实 fee 字典迁移或旧服务退役。
 
@@ -365,7 +377,7 @@ Caller gap：`apps/app/src/pages-sub/property/apply-room.vue` 定义了 `loadApp
 
 No-go：`repair_type` 可记录为 DB-wired-with-gap，但 `repair_status`、`apply_room_discount/state` 仍是 compat/static，`pay_fee_config/fee_type_cd` 当前返回空数组；不得写成 DB 完成。`legacy-dispatch` 只有 registry 404 才会调用 `proxyLegacyAppRequest`，因此 `/callComponent/core/list` 的生产 HTTP gate 与 App H5 Network 可证明 exact handler 可达并被生产页面命中，但不能替代全局 shadow-off/fallback 复验、DB_READY、真实库样本或 retirement ledger；不能把本轮探索/实施/验证三项完成写成 `/callComponent/**` 全量完成、app legacy cutover 完成或旧 app server 可退役。
 
-## App Legacy Floor Findings
+## App 旧 Floor 发现
 
 2026-05-21：`/app/floor.queryFloors` 与 `/app/floor.queryFloorDetail` 属于 app legacy stream。当前结论为 partial evidence，不勾选 `tasks.md` 对应 checkbox。代码、生产 API、生产 App H5 list 页面和真实 `hp_houses` 样本均已有证据，但仍缺 detail 自然 H5 页面入口、明确 shadow-off/fallback drill、`DB_READY` 和 retirement ledger。
 
@@ -383,7 +395,7 @@ Old service comparison：旧 app server `https://01s-11-app-server.ruan-cat.com/
 
 No-go：不要勾选 floor task。不得把 `DB_*` 写成真实 floor 主键、不得把 floor list/detail 往返外推成 unit/room 下游真实外键完成、不得把 `READY_CONFIGURED` 或 `hp_houses` 单样本反查写成全局 `DB_READY`、不得把 exact handler 可达写成 shadow-off/fallback 退役完成、不得把旧 app server 可退役。
 
-## App Legacy Repair Setting Findings
+## App 旧 Repair Setting 发现
 
 2026-05-21：`/app/repairSetting.listRepairSettings` 验证项已按“补 App H5 页面 Network”关闭。该项不是无页面入口：`apps/app/src/pages-sub/repair/add-order.vue` 导入 `getRepairSettings`，`loadRepairTypes()` 在 `onLoad()` 中触发；页面入口为 `https://01s-11-app.ruan-cat.com/#/pages-sub/repair/add-order?communityId=COMM_001`。
 
@@ -395,7 +407,7 @@ Verification evidence：生产 HTTP gate `$env:RUN_PHASE7_HTTP_TESTS='1'; $env:P
 
 No-go：本项只证明 `/app/repairSetting.listRepairSettings` 的生产 App H5 页面 Network 已补齐，不代表 `/app/ownerRepair.listOwnerRepairs`、`/app/dict.queryRepairStates`、`/app/ownerRepair.queryOwnerRepair` 的 2026-05-18 页面证据仍有效，不代表 `/app/ownerRepair.saveOwnerRepair` 写入口闭环，不代表 production `DB_READY`、shadow-off/fallback 复验、repair legacy 全量完成或旧 app server 可退役。
 
-## App Legacy Repair Readonly Findings
+## App 旧 Repair 只读发现
 
 2026-05-21: `/app/ownerRepair.listOwnerRepairs`、`/app/dict.queryRepairStates`、`/app/ownerRepair.queryOwnerRepair` 已完成生产 App H5 Chrome MCP Network 重采并勾选 `tasks.md` 对应验证项。完成口径仅限“三个目标只读端点的生产页面 Network 命中生产 `apps/api` 且返回旧 app envelope”；不沿用 2026-05-18 本地历史证据作为当前完成依据。
 
@@ -411,7 +423,7 @@ Side finding：详情页同次载入还请求 `/app/ownerRepair.listRepairStaffR
 
 No-go：本项不代表 repair legacy 全量完成、生产 `DB_READY`、真实库样本完整、shadow-off/fallback 复验、`ownerRepair.saveOwnerRepair` 写入闭环、`listRepairStaffRecords` 完成或旧 app server 可退役。
 
-## App Legacy Owner Repair Save Guard Findings
+## App 旧 Owner Repair 保存阻断发现
 
 2026-05-21: `/app/ownerRepair.saveOwnerRepair` 已完成默认 guard 证据闭环并勾选 `tasks.md` 对应实施项。闭环口径是“默认保持 `409 PHASE7_MUTATION_GUARDED`，未开启写入窗口”；不是实际生产 create/read-back/rollback 完成。
 
@@ -421,11 +433,11 @@ Caller boundary：`apps/app/src/pages-sub/repair/add-order.vue` 的 submit path 
 
 Verification evidence：`pnpm -F @01s-11comm/api exec vitest run tests/legacy/repair-legacy-endpoints.test.ts -t "blocks owner repair create by default in phase7 execution guard"` 通过，1 passed、3 skipped。生产 HTTP gate `$env:RUN_PHASE7_HTTP_TESTS='1'; $env:PHASE7_API_BASE_URL='https://01s-11-server.ruan-cat.com'; pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts -t "blocks high-risk app legacy mutation endpoints by default over real HTTP"` 通过，1 passed、24 skipped，覆盖 `/app/ownerRepair.saveOwnerRepair`。直接生产 guard probe `POST https://01s-11-server.ruan-cat.com/app/ownerRepair.saveOwnerRepair` 返回 HTTP 200 但业务体 `{ code:409, data:null, errorCode:"PHASE7_MUTATION_GUARDED" }`，headers 含 `x-api-phase=phase3-infra` 和 `x-request-id=req_aa0e648e-ecd5-46f4-8d4c-eb4eb22ebfed`。同一关键词残留检查列表查询前后 `beforeTotal=3`、`afterTotal=3`。
 
-Artifact：`.tmp/phase7-dev-browser/2026-05-21-owner-repair-save-guard-production-api.md`。
+Artifact：`.tmp/phase7-dev-browser/2026-05-21-owner-repair-save-guard-production-api.md`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
 No-go：不得把本项写成生产维修工单创建完成、受控写入窗口已授权、read-back/rollback/cleanup 完成、repair 写链路放行、`ownerRepair.updateOwnerRepair` / `repairDispatch` / `repairFinish` / `repairEnd` / `repairStart` / `repairStop` 等其他流转写入口完成、生产 `DB_READY` 完成或旧 app server 可退役。
 
-## App Legacy Owner Repair Appraise Guard Findings
+## App 旧 Owner Repair 评价阻断发现
 
 2026-05-21: `/callComponent/ownerRepair.appraiseRepair` 已完成默认 guard 证据闭环并勾选 `tasks.md` 对应实施项。闭环口径是“默认保持 guarded，阻止生产评价写入”；不是实际评价写入、读回、回滚完成。
 
@@ -435,11 +447,11 @@ Caller boundary：`apps/app/src/pages-sub/repair/appraise.vue` 的 submit path �
 
 Verification evidence：`pnpm -F @01s-11comm/api exec vitest run tests/legacy/callcomponent-batch1.test.ts -t "blocks /callComponent/ownerRepair.appraiseRepair by default"` 通过，1 passed、12 skipped。生产 HTTP gate `blocks high-risk app legacy mutation endpoints by default over real HTTP` 已补 `/callComponent/ownerRepair.appraiseRepair` 并通过，1 passed、24 skipped。直接生产 guard probe `POST https://01s-11-server.ruan-cat.com/callComponent/ownerRepair.appraiseRepair` 返回 HTTP 200 但业务体 `{ code:409, data:null, errorCode:"PHASE7_MUTATION_GUARDED" }`，headers 含 `x-api-phase=phase3-infra` 和 `x-request-id=req_71b5d129-057d-44d0-912a-9482714621f9`。同一工单详情查询前后 `beforeStatus=10001`、`afterStatus=10001`、`sameRepairId=true`。
 
-Artifact：`.tmp/phase7-dev-browser/2026-05-21-owner-repair-appraise-guard-production-api.md`。
+Artifact：`.tmp/phase7-dev-browser/2026-05-21-owner-repair-appraise-guard-production-api.md`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
 No-go：不得把本项写成生产评价创建完成、受控写入窗口已授权、read-back/rollback/cleanup 完成、repair 评价链路放行、`repair.replyRepairAppraise` 完成、其他维修写入口完成、生产 `DB_READY` 完成或旧 app server 可退役。
 
-## App Legacy Fee Guarded Writes Findings
+## App 旧 Fee 写入口阻断发现
 
 2026-05-21: `/app/payment.nativeQrcodePayment`、`/app/oweFeeCallable.writeOweFeeCallable`、`/app/fee.saveRoomCreateFee` 已完成默认 guard 证据闭环并勾选 `tasks.md` 3.4 默认 guard 项。闭环口径是“默认阻止生产支付、催缴和费用创建写入”；不是实际支付/催缴/费用创建、读回、回滚完成。
 
@@ -449,11 +461,11 @@ Verification evidence：`pnpm -F @01s-11comm/api exec vitest run tests/legacy/fe
 
 Production probe evidence：直接生产 probes 均返回 HTTP 200 包裹旧 app 业务 409。`POST https://01s-11-server.ruan-cat.com/app/payment.nativeQrcodePayment` 返回 `errorCode=PHASE7_MUTATION_GUARDED`、`x-api-phase=phase3-infra`、`x-request-id=req_ea0f955b-bd09-4186-945b-2c2fea1460a0`。`POST https://01s-11-server.ruan-cat.com/app/oweFeeCallable.writeOweFeeCallable` 返回同类 guard，`x-request-id=req_a4450f46-abfc-462e-a2ca-15d26f819b49`。`POST https://01s-11-server.ruan-cat.com/app/fee.saveRoomCreateFee` 返回同类 guard，`x-request-id=req_c827dc1d-1088-4da7-8c53-4efc7d7f8b4c`。同一社区 `GET /app/fee.listFee?page=1&row=10&communityId=COMM_001` 在 probes 前后均为 `code=0`、`data.total=3`，可见 fee ids 保持 `FEE_001/FEE_002/FEE_003`。
 
-Artifact：`.tmp/phase7-dev-browser/2026-05-21-fee-guarded-writes-production-api.md`。
+Artifact：`.tmp/phase7-dev-browser/2026-05-21-fee-guarded-writes-production-api.md`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
 No-go：不得把本项写成支付、催缴或费用创建可放行。仍缺受控写入窗口授权、真实 write/read-back/rollback/cleanup、residual cleanup、guard restored、生产 `DB_READY`、shadow-off/fallback 和旧 app server 退役证据。
 
-## App Legacy Fee Report Readonly Findings
+## App 旧 Fee Report 只读发现
 
 2026-05-21: `/app/feeConfig.listFeeConfigs`、`/app/reportFeeMonthStatistics.queryReportFeeSummary`、`/app/reportFeeMonthStatistics/queryPayFeeDetail`、`/app/dataReport.queryFeeDataReport` 已完成 3.3 只读验证项并勾选 `tasks.md`。闭环口径是 HTTP gate、生产响应样本、DB repository 意图测试与 shadow-off/fallback 行为证据；不是生产 `DB_READY`，也不是旧服务退役。
 
@@ -465,11 +477,11 @@ Production evidence：生产 API 采样来自 `https://01s-11-server.ruan-cat.co
 
 Legacy fallback comparison：旧 app server `https://01s-11-app-server.ruan-cat.com` 对同四端点均可读，HTTP 200，但 envelope 为 `{ success,code,message,data,timestamp }`。旧服务样本含 `CONFIG_001/CONFIG_002`、summary `curReceivableFee=924`、pay fee detail `total=200`、data report `本月应收/本月实收/欠费房屋`。这只证明旧 runtime fallback 可读，且新旧数据源存在明显差异；不能写成完整 parity 或退役候选。
 
-Artifact：`.tmp/phase7-dev-browser/2026-05-21-fee-report-readonly-production-api.md`。
+Artifact：`.tmp/phase7-dev-browser/2026-05-21-fee-report-readonly-production-api.md`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
 No-go：生产 `GET /__nitro/ready` 仍为 `READY_CONFIGURED`、`connected=null`、`probeEnabled=false`，不是 `DB_READY`。不得把本项外推为 `/app/fee.listFee`、`/app/fee.queryFeeDetail`、`/app/oweFeeCallable.listOweFeeCallable` join/DTO 探索完成，也不得外推为 `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` 房间维度探索完成、费用写入口可放行、旧 app server 可退役或完整新旧数据一致。
 
-## App Legacy Fee Join And Room Report Exploration Findings
+## App 旧 Fee Join 与 Room Report 探索发现
 
 2026-05-21: 3.3 中 `/app/fee.listFee`、`/app/fee.queryFeeDetail`、`/app/oweFeeCallable.listOweFeeCallable` 和 `/app/reportFeeMonthStatistics.queryReportFeeDetailRoom` 两个探索项已关闭。关闭含义是“确认数据源、兼容 DTO 和 gap”，不是 DB_READY 或完整迁移完成。
 
@@ -481,11 +493,11 @@ Production and fallback evidence：新 API `fee.listFee`、`fee.queryFeeDetail`�
 
 Caller evidence：`apps/app/src/pages-sub/fee/detail.vue` 调 `getFeeList()` 与 `getFeeDetail()`；`apps/app/src/pages-sub/property/apply-room-detail.vue` 通过 `getFeeDetailList()` 调 `/app/fee.queryFeeDetail`；`apps/app/src/pages-sub/fee/write-owe-callable.vue` 调 `getFeeList()` 加载待催缴费用，写入提交仍由 3.4 guard 项保护；`apps/app/src/pages-sub/report/room-fee.vue` 调 `getRoomFeeReport()`。
 
-Artifact：`.tmp/phase7-dev-browser/2026-05-21-fee-join-and-room-report-exploration.md`。
+Artifact：`.tmp/phase7-dev-browser/2026-05-21-fee-join-and-room-report-exploration.md`。（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
 No-go：不得把探索项关闭写成真实 DB join 完成、完整房间/楼栋/业主维度完成、生产 `DB_READY`、新旧 parity、旧 app server 退役或费用写入口可放行。后续若要升级这些端点，必须先设计并验证 fee/room/owner/payment join 和 DTO parity。
 
-## Task 93 Dev Config Dictionary Findings
+## 任务 93 Dev Config Dictionary 发现
 
 2026-05-20：task93 对应 `dev-team/config-manage/dictionary/{list,create,detail,update,delete}`。当前结论为 partial evidence，不能勾选完成。本轮确实补了 Nitro/API 代码覆盖和测试，不是只写 Markdown；但仍缺页面级 CUD、生产写入回滚、FK 删除阻断、生产 `DB_READY` 和退役证据。
 
@@ -501,7 +513,7 @@ Inventory and caller boundary：`route-inventory.md` 与 `route-inventory-detail
 
 No-go：不得把本轮 manifest、contract、HTTP gate、production API list/detail 200 或 repository CRUD 源码能力写成 task93 完成。仍缺生产 create/update/delete 受控写入-读回-回滚证据、字典有子项时外键约束阻止删除的证据、生产 admin H5 页面 Network、生产 `DB_READY`、Neon readiness、shadow-off/fallback 和 retirement ledger；不能把 `dtDictionaries` evidence 外推到 `dtDictionaryItems`，也不能把 list/detail 只读 HTTP gate 外推为 CUD 完成。
 
-## Task 94 Dev Config Item Findings
+## 任务 94 Dev Config Item 发现
 
 2026-05-20：task94 对应 `dev-team/config-manage/item/{list,create,detail,update,delete}`。当前结论为 partial evidence，不能勾选完成。本轮补了 Nitro/API 代码覆盖和测试，但仍缺页面级 CUD、生产写入回滚、生产 `DB_READY` 和退役证据。
 
@@ -517,7 +529,7 @@ Inventory and caller boundary：`route-inventory.md` 与 `route-inventory-detail
 
 No-go：不得把本轮 manifest、contract、HTTP gate、production API list/detail 200 或 repository CRUD 源码能力写成 task94 完成。仍缺生产 create/update/delete 受控写入-读回-回滚证据、生产 admin H5 页面 Network、生产 `DB_READY`、Neon readiness、shadow-off/fallback 和 retirement ledger；不能把 `dtDictionaryItems` evidence 外推到 `dtDictionaries`，也不能把 list/detail 只读 HTTP gate 外推为 CUD 完成。
 
-## Task 95 Dev Config Type Findings
+## 任务 95 Dev Config Type 发现
 
 2026-05-20：task95 对应 `dev-team/config-manage/type/{list,create,detail,update,delete}`。当前结论为 partial evidence，不能勾选完成。本轮补了 Nitro/API 代码覆盖和测试，但仍缺页面级 CUD、生产写入回滚、生产 `DB_READY` 和退役证据。
 
@@ -533,7 +545,7 @@ Inventory and caller boundary：`route-inventory.md` 与 `route-inventory-detail
 
 No-go：不得把本轮 manifest、contract、HTTP gate、production API list/detail 200 或 repository CRUD 源码能力写成 task95 完成。仍缺生产 create/update/delete 受控写入-读回-回滚证据、生产 admin H5 页面 Network、生产 `DB_READY`、Neon readiness、shadow-off/fallback 和 retirement ledger；不能把 `dtConfigTypes` evidence 外推到 `dtDictionaries` 或 `dtDictionaryItems`，也不能把 list/detail 只读 HTTP gate 外推为 CUD 完成。
 
-## Task 96 Setting Change Password Findings
+## 任务 96 Setting Change Password 发现
 
 2026-05-20：task96 对应 `setting-manage/system-manage/change-password/{list,create,update,delete}`。当前结论为 partial evidence，不能勾选完成。本轮补了 Nitro/API 代码覆盖和测试，但仍缺页面级 CUD、生产写入回滚、生产 `DB_READY` 和退役证据。
 
@@ -549,7 +561,7 @@ Inventory and caller boundary：`route-inventory.md` 与 `route-inventory-detail
 
 No-go：不得把本轮 manifest、contract、HTTP gate、production API list 200 或 repository CRUD 源码能力写成 task96 完成。仍缺生产 create/update/delete 受控写入-读回-回滚证据、生产 admin H5 页面 Network、生产 `DB_READY`、Neon readiness、shadow-off/fallback 和 retirement ledger；也不能把 change-password 四行覆盖外推为 setting system-manage 20 个文件或 setting 全量 28 个 route 完成。
 
-## Task 97 Setting Community Configuration Findings
+## 任务 97 Setting Community Configuration 发现
 
 2026-05-20：task97 对应 `setting-manage/system-manage/community-configuration/{list,create,update,delete}`。当前结论为 partial evidence，不能勾选完成。本轮补了 Nitro/API 代码覆盖和测试，但仍缺页面级 CUD、生产写入回滚、生产 `DB_READY` 和退役证据。
 
@@ -565,7 +577,7 @@ Inventory and caller boundary：`route-inventory.md` 与 `route-inventory-detail
 
 No-go：不得把本轮 manifest、contract、HTTP gate、production API list 200 或 repository CRUD 源码能力写成 task97 完成。仍缺生产 create/update/delete 受控写入-读回-回滚证据、生产 admin H5 页面 Network、生产 `DB_READY`、Neon readiness、shadow-off/fallback 和 retirement ledger；也不能把 community-configuration 四行覆盖外推为 setting system-manage 20 个文件或 setting 全量 28 个 route 完成。
 
-## Task 98 Setting Initialize Cell Findings
+## 任务 98 Setting Initialize Cell 发现
 
 2026-05-20：task98 对应 `setting-manage/system-manage/initialize-cell/{list,create,update,delete}`。当前结论为 partial evidence，不能勾选完成。本轮补了 Nitro/API 代码覆盖和测试，但仍缺页面级 CUD、生产写入回滚、生产 `DB_READY` 和退役证据。
 
@@ -581,7 +593,7 @@ Inventory and caller boundary：`route-inventory.md` 与 `route-inventory-detail
 
 No-go：不得把本轮 manifest、contract、HTTP gate、production API list 200 或 repository CRUD 源码能力写成 task98 完成。仍缺生产 create/update/delete 受控写入-读回-回滚证据、生产 admin H5 页面 Network、生产 `DB_READY`、Neon readiness、shadow-off/fallback 和 retirement ledger；也不能把 initialize-cell 四行覆盖外推为 setting system-manage 20 个文件或 setting 全量 28 个 route 完成。
 
-## Task 99 Setting Register Protocol Findings
+## 任务 99 Setting Register Protocol 发现
 
 2026-05-21：task99 对应 `setting-manage/system-manage/register-protocol/{list,create,update,delete}`。当前结论为 partial evidence，不能勾选完成。本轮补了 Nitro/API 代码覆盖和测试，但仍缺页面级 CUD、生产写入回滚、生产 `DB_READY` 和退役证据。
 
@@ -597,7 +609,7 @@ Inventory and caller boundary：`route-inventory.md` 与 `route-inventory-detail
 
 No-go：不得把本轮 manifest、contract、HTTP gate、production API list 200 或 repository CRUD 源码能力写成 task99 完成。仍缺生产 create/update/delete 受控写入-读回-回滚证据、生产 admin H5 页面 Network、生产 `DB_READY`、Neon readiness、shadow-off/fallback 和 retirement ledger；也不能把 register-protocol 四行覆盖外推为 setting system-manage 20 个文件或 setting 全量 28 个 route 完成。
 
-## Task 100 Setting System Config Findings
+## 任务 100 Setting System Config 发现
 
 2026-05-21：task100 对应 `setting-manage/system-manage/system-config/{list,create,update,delete}`。当前结论为 partial evidence，不能勾选完成。本轮补了 Nitro/API 代码覆盖和测试，但仍缺页面级 CUD、生产写入回滚、生产 `DB_READY` 和退役证据。
 
@@ -613,7 +625,7 @@ Inventory and caller boundary：`route-inventory.md` 与 `route-inventory-detail
 
 No-go：不得把本轮 manifest、contract、HTTP gate、production API list 200 或 repository CRUD 源码能力写成 task100 完成。仍缺生产 create/update/delete 受控写入-读回-回滚证据、生产 admin H5 页面 Network、生产 `DB_READY`、Neon readiness、shadow-off/fallback 和 retirement ledger；也不能把 system-config 四行覆盖外推为 setting system-manage 20 个 endpoint 完成或 setting 全量 28 个 route 完成。
 
-## Task 101 Contract Change/Draft CRUD Findings
+## 任务 101 Contract Change/Draft CRUD 发现
 
 2026-05-21：task101 对应 `property-manage/contract-manage/change/{create,detail,update,delete}` 与 `property-manage/contract-manage/draft-contract/{create,detail,update,delete}`。当前结论为 partial evidence，不能勾选完成。本轮补了 local apps/api Nitro/API 代码覆盖和测试，但仍缺生产 CUD、write-read-rollback、生产 admin H5 Network、生产 `DB_READY` 和退役证据。
 
@@ -627,445 +639,567 @@ Inventory and caller boundary：`route-inventory.md` 与 `route-inventory-detail
 
 No-go：不得把本轮 manifest、route、adapter、repository、Vitest 或 skipped HTTP gate 写成 task101 完成。仍缺生产 create/detail/update/delete 实际请求证据、受控写入-读回-回滚和清理证据、生产 admin H5 页面 Network、生产 `DB_READY`、Neon readiness、shadow-off/fallback 和 retirement ledger；也不能把 change/draft-contract 8 行覆盖外推为 upload/R2 完成、contract-manage 25 个 route 全量完成或旧 `apps/admin/server` 可退役。
 
-## Edge Route Setting Org Tree Findings
+## 边缘路由 Setting Org Tree 发现
 
-2026-05-21: edge route task covers `org-info/tree`, `j1-dashboard/center/commonmenu/get`, and `debug-env.get`. Current conclusion is partial evidence, not task completion.
+2026-05-21：边缘路由任务覆盖 `org-info/tree`、`j1-dashboard/center/commonmenu/get` 和 `debug-env.get`。当前结论只是 partial evidence，不是任务完成。
 
-Implemented evidence: `org-info/tree` is the only one of the three promoted to local apps/api admin contract coverage. `apps/api/server/routes/api/setting-manage/organize-manage/org-info/tree.post.ts` dispatches to `getSettingRuntime(event).adminAdapter.getOrgInfoTree`; `apps/api/server/modules/setting/admin-adapter.ts` now calls `service.getOrgInfoTree`; `apps/api/server/modules/setting/service.ts` exposes the repository method; `apps/api/server/modules/setting/repository.ts` reads `smOrganizations` / `sm_organizations`, orders by `sortOrder` and `orgName`, and builds `OrganizationTreeNode[]` parent-child data. `apps/api/server/shared/runtime/runtime-endpoints.ts` now includes `/api/setting-manage/organize-manage/org-info/tree` as admin canonical POST with phase `phase7-setting-organize-manage-admin-edge`, owner `setting`, response `JsonVO`, and status `available-in-apps-api-not-caller-verified`.
+实施证据：三项里只有 `org-info/tree` 升级为本地 `apps/api` 后台契约覆盖。`apps/api/server/routes/api/setting-manage/organize-manage/org-info/tree.post.ts` 分发到 `getSettingRuntime(event).adminAdapter.getOrgInfoTree`；`apps/api/server/modules/setting/admin-adapter.ts` 调用 `service.getOrgInfoTree`；`apps/api/server/modules/setting/service.ts` 暴露 repository 方法；`apps/api/server/modules/setting/repository.ts` 读取 `smOrganizations` / `sm_organizations`，按 `sortOrder` 和 `orgName` 排序，并构建 `OrganizationTreeNode[]` 父子树。`apps/api/server/shared/runtime/runtime-endpoints.ts` 已把 `/api/setting-manage/organize-manage/org-info/tree` 纳入 admin canonical POST，phase 为 `phase7-setting-organize-manage-admin-edge`，owner 为 `setting`，response 为 `JsonVO`，status 为 `available-in-apps-api-not-caller-verified`。
 
-Contract and exclusion evidence: `apps/api/tests/admin/setting-organize-edge-routes.test.ts` first failed for the expected reasons: missing manifest row, adapter returned `data: []`, and repository lacked `getOrgInfoTree`. After implementation it verifies manifest coverage, route-to-adapter dispatch, adapter/service/repository tree behavior, and repository table intent. The same test asserts `debug-env.get.ts` and `j1-dashboard/center/commonmenu/get.ts` are not in `runtimeEndpointManifest`; `debug-env` is diagnostic-only (`nodeEnv` + `nitro: true`) and `commonmenu/get` is still a placeholder file route returning `[]` with no proven business module or real caller.
+契约与排除证据：`apps/api/tests/admin/setting-organize-edge-routes.test.ts` 初始按预期失败，原因是缺 manifest 行、adapter 返回 `data: []`、repository 缺 `getOrgInfoTree`。实现后，该测试验证 manifest 覆盖、route 到 adapter 分发、adapter/service/repository 的树行为和 repository 表意图。同一测试断言 `debug-env.get.ts` 与 `j1-dashboard/center/commonmenu/get.ts` 不在 `runtimeEndpointManifest` 中；`debug-env` 只是诊断接口（`nodeEnv` + `nitro: true`），`commonmenu/get` 仍是返回 `[]` 的占位文件路由，没有已证明的业务模块或真实调用端。
 
-Verification evidence: `pnpm -F @01s-11comm/api exec vitest run tests/admin/setting-organize-edge-routes.test.ts` passed after the red/green cycle, 1 file 5 tests passed. `pnpm -F @01s-11comm/api exec vitest run tests/admin/setting-organize-edge-routes.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts` passed, 3 files 16 tests passed. `pnpm -F @01s-11comm/api run typecheck` passed.
+验证证据：红绿循环后，`pnpm -F @01s-11comm/api exec vitest run tests/admin/setting-organize-edge-routes.test.ts` 通过，1 文件 5 测试通过。`pnpm -F @01s-11comm/api exec vitest run tests/admin/setting-organize-edge-routes.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，3 文件 16 测试通过。`pnpm -F @01s-11comm/api run typecheck` 通过。
 
-Local admin H5 browser evidence: `org-info/tree` now has local Chrome DevTools MCP page Network evidence. Local dev services were `apps/api` on `http://127.0.0.1:3102` and `apps/admin` on `http://127.0.0.1:8080`, with admin shadow env set to proxy `/api-shadow` to the local API base. The business route was `http://127.0.0.1:8080/#/setting-manage/organize-manage/org-info`; after injecting a minimal local login state, Network recorded `POST http://127.0.0.1:8080/api-shadow/api/setting-manage/organize-manage/org-info/tree` with status 200 and a `JsonVO` organization tree response. Artifacts are `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-local-admin-page.network-request`, `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-local-admin-page.network-response`, `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-local-admin-page.snapshot.txt`, and `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-local-admin-page.png`. `org-info/list` also returned 200 through `/api-shadow` on the same page and was saved as a side artifact, but it remains `manifest-missing` and must not be upgraded from this evidence.
+本地 admin H5 浏览器证据：`org-info/tree` 已具备本地 Chrome DevTools MCP 页面 Network 证据。本地 dev 服务分别是 `apps/api` 的 `http://127.0.0.1:3102` 和 `apps/admin` 的 `http://127.0.0.1:8080`，后台 shadow 环境把 `/api-shadow` 代理到本地 API base。业务路由为 `http://127.0.0.1:8080/#/setting-manage/organize-manage/org-info`；注入最小本地登录态后，Network 记录到 `POST http://127.0.0.1:8080/api-shadow/api/setting-manage/organize-manage/org-info/tree`，状态 200，响应为 `JsonVO` 组织树。证据产物为 `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-local-admin-page.network-request`、`.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-local-admin-page.network-response`、`.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-local-admin-page.snapshot.txt` 和 `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-local-admin-page.png`。同页 `org-info/list` 也通过 `/api-shadow` 返回 200 并保存为旁证，但它仍是 `manifest-missing`，不得由该证据升级。
 
 Production API blocker: `apps/api/package.json` declares production API homepage `https://01s-11-server.ruan-cat.com`. Production read-only sampling on 2026-05-21 showed `GET /__nitro/ready` returning `READY_CONFIGURED` with `checks.database.connected=null` and `probeEnabled=false`, so this is not `DB_READY`. `POST /api/setting-manage/organize-manage/org-info/tree` returned 200 with `success=true`, `code=200`, but `data=[]`. The same production API returned 5 organization rows for `POST /api/setting-manage/organize-manage/org-info/list` (`total=5`, first row `总公司/HQ`). This combination means production API reachability exists, but production DB-backed tree behavior is not proven and should be treated as a deployment/runtime blocker until tree returns the expected hierarchy in production. Chrome artifacts are `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-api.chrome.network-request`, `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-api.chrome.network-response`, `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-list-production-api.chrome.network-request`, `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-list-production-api.chrome.network-response`, `.tmp/phase7-dev-browser/2026-05-21-api-ready-production-api.chrome.network-request`, and `.tmp/phase7-dev-browser/2026-05-21-api-ready-production-api.chrome.network-response`.
 
-Production admin H5 blocker: `apps/admin/package.json` declares production admin homepage `https://01s-11comm.ruan-cat.com`. After injecting a minimal local browser login state, Chrome reached `https://01s-11comm.ruan-cat.com/#/setting-manage/organize-manage/org-info`. Network shows the production page directly calling `POST https://01s-11-server.ruan-cat.com/api/setting-manage/organize-manage/org-info/tree` with status 200 and `data=[]`; it also calls `POST https://01s-11-server.ruan-cat.com/api/setting-manage/organize-manage/org-info/list` with status 200 and 5 rows. The page snapshot shows the organization tree container empty while the table has 5 rows. Artifacts are `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-admin-page.network-request`, `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-admin-page.network-response`, `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-list-production-admin-page.network-request`, `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-list-production-admin-page.network-response`, `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-admin-page.snapshot.txt`, and `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-admin-page.png`. This proves production admin H5 caller routing to `apps/api`, but it also confirms the production tree data blocker.
+生产 admin H5 阻断证据：`apps/admin/package.json` 声明生产后台首页为 `https://01s-11comm.ruan-cat.com`。注入最小本地浏览器登录态后，Chrome 到达 `https://01s-11comm.ruan-cat.com/#/setting-manage/organize-manage/org-info`。Network 显示生产页面直接请求 `POST https://01s-11-server.ruan-cat.com/api/setting-manage/organize-manage/org-info/tree`，状态 200 但 `data=[]`；同时请求 `POST https://01s-11-server.ruan-cat.com/api/setting-manage/organize-manage/org-info/list`，状态 200 且有 5 行。页面 snapshot 显示组织树容器为空，而右侧表格有 5 行。证据产物为 `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-admin-page.network-request`、`.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-admin-page.network-response`、`.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-list-production-admin-page.network-request`、`.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-list-production-admin-page.network-response`、`.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-admin-page.snapshot.txt` 和 `.tmp/phase7-dev-browser/2026-05-21-setting-organize-org-info-tree-production-admin-page.png`。这证明生产 admin H5 调用已路由到 `apps/api`，但也确认生产 tree 数据仍被阻断。
 
-Inventory boundary: `route-inventory.md` and `route-inventory-details.csv.md` now count 137 admin canonical manifest rows and 21 `setting` rows. This update only upgrades `org-info/tree`; the remaining `setting-manage/organize-manage` rows remain manifest-missing.
+清单边界：`route-inventory.md` 和 `route-inventory-details.csv.md` 当前统计到 137 条 admin canonical manifest 行与 21 条 `setting` 行。本更新只升级 `org-info/tree`；其余 `setting-manage/organize-manage` 行仍保持 manifest-missing。
 
-No-go: do not mark the edge route task complete yet. Missing evidence still includes production `DB_READY`, production tree data parity, shadow-off/fallback, and retirement ledger. Do not treat `debug-env` or `commonmenu/get` as business migration rows, and do not infer `setting-manage/organize-manage` full coverage from the single `org-info/tree` row.
+禁止误判：暂时不得把 edge route 任务标记为完成。缺失证据仍包括生产 `DB_READY`、生产 tree 数据一致性、shadow-off/fallback 和 retirement ledger。不得把 `debug-env` 或 `commonmenu/get` 当成业务迁移行，也不得从单个 `org-info/tree` 行推断 `setting-manage/organize-manage` 已全量覆盖。
 
-## App Notice Profile Video Test Exploration Findings
+## App Notice、Profile、Video 测试探索发现
 
-2026-05-21: §3.5 `notice/profile/video` and `test` exploration is closed as triage, not as independent `apps/api` migration.
+2026-05-21：§3.5 的 `notice/profile/video` 与 `test` 探索已按归类口径关闭，不是独立 `apps/api` 迁移完成。
 
-`notice/profile/video` are legacy App H5 runtime modules with real App page callers, but independent `apps/api` has no exact registry entries for the nine paths. Production `apps/api` currently returns 200 for those `/app/**` paths only because `legacy-dispatch` falls back to `https://01s-11-app-server.ruan-cat.com` after registry 404. The response envelope is `{ success, code, message, data, timestamp }`, which is old App server shape, not the `apps/api` exact app legacy `{ code, msg, data }` contract used by migrated fee/floor/repair handlers. Therefore these nine endpoints must remain `legacy-fallback/mock-like` until a future slice adds explicit manifest/allowlist/contract/guard and repository decisions.
+`notice/profile/video` 是旧 App H5 runtime 模块，且存在真实 App 页面调用端，但独立 `apps/api` 还没有这九条路径的精确注册项。生产 `apps/api` 当前对这些 `/app/**` 路径返回 200，只是因为 `legacy-dispatch` 在 registry 404 后回退到 `https://01s-11-app-server.ruan-cat.com`。响应 envelope 是 `{ success, code, message, data, timestamp }`，这是旧 App server 形态，不是已迁移 fee/floor/repair handler 使用的独立 `apps/api` 精确旧 App 契约 `{ code, msg, data }`。因此，在后续切片补明确 manifest、allowlist、contract、guard 和 repository 决策前，这九个端点必须继续保持 `legacy-fallback/mock-like`。
 
-`profile.changeCommunity` and `profile.changePassword` are mutation-like operations in the old in-memory profile repository. Current production 200 samples are fallback evidence and do not prove a Phase7 guarded exact handler. A future migration must not copy them as open writes; it needs an explicit guard, write/read-back/rollback model, and a decision on whether these are mock-only, public profile operations, or real account/community state changes.
+`profile.changeCommunity` 和 `profile.changePassword` 在旧 in-memory profile repository 中属于类写入操作。当前生产 200 样本只是 fallback 证据，不能证明已经有 Phase7 guarded 精确 handler。后续迁移不得把它们直接复制成开放写入口；必须先补明确 guard、写入读回回滚模型，并决定它们到底是 mock-only、公开个人资料操作，还是实际账号/小区状态变更。
 
-`video.getPlayVideoUrl` returns sample media from `interactive-examples.mdn.mozilla.net` with the machine id appended. That is useful compatibility evidence but not a real camera/video integration and not DB evidence.
+`video.getPlayVideoUrl` 返回的是 `interactive-examples.mdn.mozilla.net` 的示例媒体地址，并拼接 machine id。它可以作为兼容证据，但不是摄像头/视频平台真实集成证据，也不是 DB 证据。
 
-`/test`, `/test/params`, and `/test/error` are diagnostic/mock routes. Independent `apps/api` production returns 404 for all three because only `/app/**` and `/callComponent/**` enter legacy fallback. The old app server returns H5 HTML for `/test*`, not diagnostic JSON. These routes should be excluded from business endpoint completion percentage and retirement ledgers unless a later explicit diagnostic-route decision says otherwise.
+`/test`、`/test/params` 和 `/test/error` 是诊断/mock 路由。独立 `apps/api` 生产环境对三者均返回 404，因为只有 `/app/**` 和 `/callComponent/**` 会进入 legacy fallback。旧 app server 对 `/test*` 返回 H5 HTML，而不是诊断 JSON。除非后续有明确的诊断路由决策，否则这些路由应从业务 endpoint 完成率和退役台账中排除。
 
-Tooling gotcha: PowerShell `Invoke-WebRequest -SkipHttpErrorCheck` and direct `[System.Net.Http.HttpClient]` sampling both failed in this shell before HTTP conclusions could be made. The accepted production evidence was collected with Node 22 `fetch`; do not reuse the earlier PowerShell errors as endpoint status evidence.
+工具陷阱：PowerShell `Invoke-WebRequest -SkipHttpErrorCheck` 和直接 `[System.Net.Http.HttpClient]` 采样在本 shell 中都失败了，不能据此下 HTTP 结论。已采纳的生产证据来自 Node 22 `fetch`；不得把早期 PowerShell 报错复用为 endpoint 状态证据。
 
-No-go: this finding does not prove `DB_READY`, exact `apps/api` handlers, real DB samples, profile write safety, shadow-off/fallback retirement, or old app server retirement.
+禁止误判：本发现不证明 `DB_READY`、精确 `apps/api` handler、真实 DB 样本、profile 写入口安全、shadow-off/fallback 退役或旧 app server 退役。
 
-## App Room Unit Exploration Findings
+## App Room Unit 探索发现
 
-2026-05-21: §3.5 `room/unit` exploration is closed as ID-semantics and fallback triage, not independent `apps/api` migration.
+2026-05-21：§3.5 的 `room/unit` 探索已按 ID 语义和 fallback 归类口径关闭，不是独立 `apps/api` 迁移完成。
 
-`apps/app/server/modules/unit/repository.ts` generates synthetic IDs such as `F_COMM_001_001` and `U_COMM_001_001_01`. `apps/app/server/modules/room/repository.ts` generates synthetic IDs such as `R_COMM_001_001_01_01`. These values are old App compatibility/mock identifiers. They must not be described as real database primary keys, real building/unit/room foreign keys, or proof that downstream DB joins are safe.
+`apps/app/server/modules/unit/repository.ts` 会生成 `F_COMM_001_001`、`U_COMM_001_001_01` 这类合成 ID。`apps/app/server/modules/room/repository.ts` 会生成 `R_COMM_001_001_01_01` 这类合成 ID。这些值是旧 App 兼容/mock 标识，不得描述成真实数据库主键、真实楼栋/单元/房屋外键，或下游 DB join 安全的证明。
 
-Production `apps/api` returns HTTP 200 for `/app/unit.queryUnits`, `/app/unit.queryUnitDetail`, `/app/room.queryRooms`, and `/app/room.queryRoomDetail`, but the response envelope is `{ success, code, message, data, timestamp }`. Independent `apps/api` has no exact room/unit app legacy registry entries, so these are legacy fallback proxy samples from the old app server, not migrated exact handlers. Current ready evidence is still `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+生产 `apps/api` 对 `/app/unit.queryUnits`、`/app/unit.queryUnitDetail`、`/app/room.queryRooms` 和 `/app/room.queryRoomDetail` 返回 HTTP 200，但响应 envelope 是 `{ success, code, message, data, timestamp }`。独立 `apps/api` 没有 room/unit App 旧端点精确注册项，因此这些只是旧 app server 的 legacy fallback 代理样本，不是已迁移的精确 handler。当前 ready 证据仍是 database probe disabled 的 `READY_CONFIGURED`，不是 `DB_READY`。
 
-Caller coverage exists in `apps/app/src/api/unit.ts`, `apps/app/src/api/room.ts`, `pages-sub/property/unit-list.vue`, `room-list.vue`, and `room-detail.vue`; that proves App H5 has consumers, not that the consumers have cut over to exact `apps/api` handlers.
+`apps/app/src/api/unit.ts`、`apps/app/src/api/room.ts`、`pages-sub/property/unit-list.vue`、`room-list.vue` 和 `room-detail.vue` 存在调用端覆盖；这只能证明 App H5 有消费者，不能证明消费者已经切到独立 `apps/api` 精确 handler。
 
-A future migration should either map compatibility IDs to schema-backed real keys explicitly or preserve them as documented compatibility IDs in a new exact handler. It must not silently mix the synthetic `F/U/R_COMM_*` namespace with real UUID-backed schema rows.
+后续迁移要么明确把兼容 ID 映射到 schema-backed 真实键，要么在新的精确 handler 中把它们保留为有文档说明的兼容 ID。不得把合成 `F/U/R_COMM_*` 命名空间静默混入真实 UUID-backed schema 行。
 
-No-go: this finding does not prove DB-backed room/unit reads, App H5 production page Network, shadow-off/fallback retirement, or old app server retirement.
+禁止误判：本发现不证明 DB-backed room/unit 读取、App H5 生产页面 Network、shadow-off/fallback 退役或旧 app server 退役。
 
-## App Contact Exploration Findings
+## App Contact 探索发现
 
-2026-05-21: Section 3.5 `contact` exploration is closed as server-only/fallback/mutation-risk triage, not as independent `apps/api` migration.
+2026-05-21：§3.5 的 `contact` 探索已按 server-only、fallback 与写入风险归类口径关闭，不是独立 `apps/api` 迁移完成。
 
-`apps/app/server/modules/contact/endpoints.ts` defines eight old App runtime endpoints and `apps/app/server/shared/runtime/runtime-endpoints.ts` includes them. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register contact exact handlers, so production 200 responses for `/app/contact.*` are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/server/modules/contact/endpoints.ts` 定义 8 个旧 App runtime endpoint，`apps/app/server/shared/runtime/runtime-endpoints.ts` 已包含它们。独立 `apps/api/server/shared/runtime/runtime-endpoints.ts` 没有注册 contact 精确 handler，因此生产 `/app/contact.*` 的 200 响应只是通过 `legacy-dispatch` 得到的旧 App server fallback 样本，不是已迁移精确 handler。
 
-The old contact repository is in-memory and mock/randomized. It generates `CON_001` through `CON_030`, uses randomized names/phones/departments/positions/online states, and uses `Math.random()` inside `getFavoriteContacts()`. Therefore favorite-contact output is volatile and cannot be used as deterministic new/old parity evidence. Emergency contacts are compatibility samples such as `EMG_001` and `400-888-9999`.
+旧 contact repository 是 in-memory 且含 mock/randomized 行为。它生成 `CON_001` 到 `CON_030`，使用随机姓名、电话、部门、岗位和在线状态，并在 `getFavoriteContacts()` 内使用 `Math.random()`。因此常用联系人输出不稳定，不能作为确定性新旧 parity 证据。紧急联系人只是 `EMG_001`、`400-888-9999` 这类兼容样本。
 
-Current caller scan did not find a normal `apps/app/src/api/contact.ts` wrapper or ordinary App H5 business page caller for `/app/contact.*`. Found callers are limited to Vite mock wrapping, types/constants, tests, icons, and unrelated contact-phone UI fields. This makes the module server-only in the current App H5 caller scan, but server-only does not authorize deletion.
+当前调用端扫描没有发现正常的 `apps/app/src/api/contact.ts` wrapper，也没有发现 `/app/contact.*` 的普通 App H5 业务页面调用端。已发现的调用只限于 Vite mock 包装、类型/常量、测试、图标和无关联系电话 UI 字段。这使该模块在当前 App H5 调用端扫描下属于 server-only，但 server-only 不等于允许删除。
 
-`/app/contact.updateOnlineStatus` is a POST mutation in the old runtime and mutates the in-memory contact object. No production POST was executed in this slice. If retained in independent `apps/api`, it needs an explicit default guard, controlled write window, read-back, rollback/cleanup, and residual check. It must not be migrated as an open production write.
+`/app/contact.updateOnlineStatus` 是旧 runtime 中的 POST 写入口，会修改 in-memory contact 对象。本切片没有执行生产 POST。如果保留到独立 `apps/api`，它需要明确的默认 guard、受控写入窗口、读回、回滚/清理和残留检查。不得把它迁移成开放生产写入口。
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+当前 ready 证据仍是 database probe disabled 的 `READY_CONFIGURED`，不是 `DB_READY`。
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed contact data, App H5 page cutover, contact write safety, shadow-off/fallback retirement, or old app server retirement.
+禁止误判：本发现不证明精确 `apps/api` handler、DB-backed contact 数据、App H5 页面切流、contact 写入口安全、shadow-off/fallback 退役或旧 app server 退役。
 
-## App Appointment Exploration Findings
+## App Appointment 探索发现
 
-2026-05-21: Section 3.5 `appointment` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21：§3.5 的 `appointment` 探索已按页面调用端、fallback 和写入风险归类口径关闭，不是独立 `apps/api` 迁移完成。
 
-`apps/app/src/api/appointment.ts` and `apps/app/src/pages-sub/appointment/index.vue` prove a real App H5 caller exists for both `/app/communitySpace.listCommunitySpaceConfirmOrder` and `/app/communitySpace.saveCommunitySpaceConfirmOrder`. This differs from server-only modules, but it does not prove cutover to an exact independent `apps/api` handler.
+`apps/app/src/api/appointment.ts` 和 `apps/app/src/pages-sub/appointment/index.vue` 证明 `/app/communitySpace.listCommunitySpaceConfirmOrder` 与 `/app/communitySpace.saveCommunitySpaceConfirmOrder` 都存在真实 App H5 调用端。这与 server-only 模块不同，但仍不能证明已经切到独立 `apps/api` 精确 handler。
 
-Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register appointment exact handlers. Production read-only responses for `/app/communitySpace.listCommunitySpaceConfirmOrder` use the old App H5 `{ success, code, message, data, timestamp }` envelope, so they are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+独立 `apps/api/server/shared/runtime/runtime-endpoints.ts` 没有注册 appointment 精确 handler。生产 `/app/communitySpace.listCommunitySpaceConfirmOrder` 只读响应使用旧 App H5 `{ success, code, message, data, timestamp }` envelope，因此它们是通过 `legacy-dispatch` 得到的旧 App server fallback 样本，不是已迁移精确 handler。
 
 `/app/communitySpace.saveCommunitySpaceConfirmOrder` is a POST 核销 endpoint in the old runtime. The old repository mutates in-memory order state from `WAIT_CONFIRM` to `CONFIRMED`; existing App runtime tests intentionally prove that mutation behavior. No production POST was executed in this slice. If retained in independent `apps/api`, it needs an explicit default guard, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+当前 ready 证据仍是 database probe disabled 的 `READY_CONFIGURED`，不是 `DB_READY`。
 
 No-go: this finding does not prove exact `apps/api` handlers, DB-backed appointment orders, safe 核销 writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
 
-## App Visit Exploration Findings
+## App Visit 探索发现
 
-2026-05-21: Section 3.5 `visit` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `visit` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/visit.ts`, `apps/app/src/pages-sub/visit/index.vue`, and `apps/app/src/pages-sub/visit/detail.vue` prove real App H5 callers exist for `/app/visit.getVisit`, `/app/visit.getVisitDetail`, and `/app/visit.auditVisit`. This does not prove cutover to an exact independent `apps/api` handler.
+`apps/app/src/api/visit.ts`, `apps/app/src/pages-sub/visit/index.vue`, and `apps/app/src/pages-sub/visit/detail.vue` prove real App H5 callers exist for `/app/visit.getVisit`, `/app/visit.getVisitDetail`, and `/app/visit.auditVisit`. This does not prove cutover to an exact independent `apps/api` handler.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register visit exact handlers. Its `return-visit` admin route is unrelated to App H5 `/app/visit.*`. Production read-only responses for `/app/visit.*` use the old App H5 `{ success, code, message, data, timestamp }` envelope, so they are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register visit exact handlers. Its `return-visit` admin route is unrelated to App H5 `/app/visit.*`. Production read-only responses for `/app/visit.*` use the old App H5 `{ success, code, message, data, timestamp }` envelope, so they are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`/app/visit.auditVisit` is a POST approval endpoint in the old runtime. The old repository mutates in-memory `state/stateName`; existing App runtime tests intentionally prove that mutation behavior. No production POST was executed in this slice. If retained in independent `apps/api`, it needs an explicit default guard, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+`/app/visit.auditVisit` is a POST approval endpoint in the old runtime. The old repository mutates in-memory `state/stateName`; existing App runtime tests intentionally prove that mutation behavior. No production POST was executed in this slice. If retained in independent `apps/api`, it needs an explicit default guard, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed visit data, safe visit approval writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed visit data, safe visit approval writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Repair Extra Exploration Findings
+## App Repair Extra 探索发现
 
-2026-05-21: Section 3.5 `repair-extra` exploration is closed as exact-registry-gap/fallback/shared-URL/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `repair-extra` exploration is closed as exact-registry-gap/fallback/shared-URL/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/repair/endpoints.ts` registers the 18 endpoints in this row. Ten are read-compatible list/dictionary/statistics/resource paths, while eight are repair workflow mutations: update, dispatch, finish, end, reply appraise, start, stop, and grabbing repair. The old repository is in-memory and mutates repair state for these workflow actions.
+`apps/app/server/modules/repair/endpoints.ts` registers the 18 endpoints in this row. Ten are read-compatible list/dictionary/statistics/resource paths, while eight are repair workflow mutations: update, dispatch, finish, end, reply appraise, start, stop, and grabbing repair. The old repository is in-memory and mutates repair state for these workflow actions.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/repair.ts` exposes wrappers for the row, and `pages-sub/repair/dispatch.vue`, `finish.vue`, `handle.vue`, `select-resource.vue`, `order-detail.vue`, `end-order.vue`, `appraise-reply.vue`, and `order-list.vue` provide natural page or action callers. This proves caller presence, but does not prove cutover to independent exact handlers.
+`apps/app/src/api/repair.ts` exposes wrappers for the row, and `pages-sub/repair/dispatch.vue`, `finish.vue`, `handle.vue`, `select-resource.vue`, `order-detail.vue`, `end-order.vue`, `appraise-reply.vue`, and `order-list.vue` provide natural page or action callers. This proves caller presence, but does not prove cutover to independent exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Independent `apps/api/server/modules/repair/legacy-endpoints.ts` currently registers only the Phase4A minimal repair slice: owner repair list/detail, save guard, repair settings, repair states, core list, and appraise guard. The `repair-extra` row endpoints are absent from `runtimeEndpointDefinitions` and `runtimeEndpointManifest`; tests explicitly assert `repairDispatch`, `listStaffRepairs`, `resourceStore.listResources`, and `resourceStoreType.listResourceStoreTypes` are absent.
+Independent `apps/api/server/modules/repair/legacy-endpoints.ts` currently registers only the Phase4A minimal repair slice: owner repair list/detail, save guard, repair settings, repair states, core list, and appraise guard. The `repair-extra` row endpoints are absent from `runtimeEndpointDefinitions` and `runtimeEndpointManifest`; tests explicitly assert `repairDispatch`, `listStaffRepairs`, `resourceStore.listResources`, and `resourceStoreType.listResourceStoreTypes` are absent.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production API read samples for the ten read-compatible paths returned old App fallback envelopes `{ success, code, message, data, timestamp }` through the API front door. Representative request IDs: `listStaffRepairs=req_12333f99-2038-491f-8b66-104c1e7c3af2`, `listStaffFinishRepairs=req_cf3236c2-e417-47ca-81d0-868326b164be`, `listRepairStaffs=req_a3ba4c0e-08ae-4b35-b2fb-120a0f0131c8`, `repairTypeUsers=req_be27338b-4b7c-4e00-9a4a-b3f8c6ce6571`, `listUserStorehouses=req_cf94934c-f1c2-4230-952e-3c4075d8848c`, `statistics=req_5a006987-3c43-4cec-b5da-d60a444610db`, `resourceStoreTypes=req_77ad9820-6b8c-4cf8-9b1e-018834b75b83`, `staffRecords=req_a14fa585-624c-4f54-bc40-d17c7485c6d1`, `payTypes=req_150551f6-d681-460b-83e3-9f121368bc3f`, `resources=req_7a349708-4a70-48d3-a3ea-a18187efe551`. Direct fallback base returned compatible old envelopes; App H5 direct API-path probes returned 404.
+Production API read samples for the ten read-compatible paths returned old App fallback envelopes `{ success, code, message, data, timestamp }` through the API front door. Representative request IDs: `listStaffRepairs=req_12333f99-2038-491f-8b66-104c1e7c3af2`, `listStaffFinishRepairs=req_cf3236c2-e417-47ca-81d0-868326b164be`, `listRepairStaffs=req_a3ba4c0e-08ae-4b35-b2fb-120a0f0131c8`, `repairTypeUsers=req_be27338b-4b7c-4e00-9a4a-b3f8c6ce6571`, `listUserStorehouses=req_cf94934c-f1c2-4230-952e-3c4075d8848c`, `statistics=req_5a006987-3c43-4cec-b5da-d60a444610db`, `resourceStoreTypes=req_77ad9820-6b8c-4cf8-9b1e-018834b75b83`, `staffRecords=req_a14fa585-624c-4f54-bc40-d17c7485c6d1`, `payTypes=req_150551f6-d681-460b-83e3-9f121368bc3f`, `resources=req_7a349708-4a70-48d3-a3ea-a18187efe551`. Direct fallback base returned compatible old envelopes; App H5 direct API-path probes returned 404.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`/app/resourceStoreType.listResourceStoreTypes` is a repair/resource shared URL. The old legacy merge dispatcher sends paginated calls to the resource module and non-paginated calls to the repair module. Therefore this finding does not close the larger `resource` 24-endpoint row.
+`/app/resourceStoreType.listResourceStoreTypes` is a repair/resource shared URL. The old legacy merge dispatcher sends paginated calls to the resource module and non-paginated calls to the repair module. Therefore this finding does not close the larger `resource` 24-endpoint row.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed. If these workflow endpoints are migrated, they need explicit default guard behavior, controlled test data, read-back, rollback/cleanup, residual check, guard restoration, and App H5 page evidence.
+No production POST was executed. If these workflow endpoints are migrated, they need explicit default guard behavior, controlled test data, read-back, rollback/cleanup, residual check, guard restoration, and App H5 page evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed repair-extra data, safe repair workflow writes, production App H5 Network cutover, resource row completion, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed repair-extra data, safe repair workflow writes, production App H5 Network cutover, resource row completion, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Resource Exploration Findings
+## App Resource 探索发现
 
-2026-05-21: Section 3.5 `resource` exploration is closed as source/caller/fallback/shared-URL/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `resource` exploration is closed as source/caller/fallback/shared-URL/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/resource/endpoints.ts` registers the 24 endpoints in this row. Eleven are read-compatible list/audit/resource-stock paths; thirteen are purchase, item-out, allocation, audit, delete, enter, transfer, return, or scrap write endpoints. The old repository is in-memory and mutates purchase/apply/allocation lists or audit task states for these write paths.
+`apps/app/server/modules/resource/endpoints.ts` registers the 24 endpoints in this row. Eleven are read-compatible list/audit/resource-stock paths; thirteen are purchase, item-out, allocation, audit, delete, enter, transfer, return, or scrap write endpoints. The old repository is in-memory and mutates purchase/apply/allocation lists or audit task states for these write paths.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/resource.ts` exposes wrappers for the row. Resource pages under `pages-sub/resource/*` and the purchase list page provide real page/action callers. This proves caller presence, but not cutover to independent exact handlers.
+`apps/app/src/api/resource.ts` exposes wrappers for the row. Resource pages under `pages-sub/resource/*` and the purchase list page provide real page/action callers. This proves caller presence, but not cutover to independent exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` currently imports only fee, repair, and floor app legacy definitions. It has no resource exact app legacy handler. The infra manifest test explicitly keeps `/app/resourceStore.listResourceStores` out of the independent runtime manifest. Therefore production 200 responses for these resource paths are old App fallback samples through the API front door.
+Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` currently imports only fee, repair, and floor app legacy definitions. It has no resource exact app legacy handler. The infra manifest test explicitly keeps `/app/resourceStore.listResourceStores` out of the independent runtime manifest. Therefore production 200 responses for these resource paths are old App fallback samples through the API front door.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Duplicate URL boundaries matter: `/app/resourceStore.listResourceStores` is merged from purchase/resource and returns both `data.list` and `data.resourceStores`; `/app/purchase/purchaseApply` is also purchase/resource shared and is a write endpoint; `/app/resourceStoreType.listResourceStoreTypes` is repair/resource shared and dispatches to resource only when `page` or `row` is present.
+Duplicate URL boundaries matter: `/app/resourceStore.listResourceStores` is merged from purchase/resource and returns both `data.list` and `data.resourceStores`; `/app/purchase/purchaseApply` is also purchase/resource shared and is a write endpoint; `/app/resourceStoreType.listResourceStoreTypes` is repair/resource shared and dispatches to resource only when `page` or `row` is present.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read samples for the 11 read-compatible paths returned old App fallback envelopes `{ success, code, message, data, timestamp }`. Representative request IDs: `resourceStore.listResourceStores=req_56bfc168-5bcc-4b97-9a5c-f69446fbe94e`, `listStorehouses=req_a0c2ff28-e353-43d7-9b51-57207c8ec10e`, `purchaseApply.listPurchaseApplys=req_c7c6b454-a1ca-42fb-9019-bafe7bfae55d`, `itemRelease.listItemRelease=req_410a21dc-fe80-408d-9cfd-73dde3b0820e`, `listAllocationStorehouseApplys=req_51a7cd3e-012d-47b3-a9df-2f3a458453cf`, `listMyAuditOrders=req_70b15a19-932f-4789-b2b7-2d76790c0879`, `queryUndoItemRelease=req_c6336bb7-a249-41a1-8477-72578b2e86af`, `listAllocationStoreAuditOrders=req_9f400111-223a-40ad-bd4c-6bcf9dc7b8ae`, `resourceStoreType.listResourceStoreTypes=req_2d238c3d-81c5-45d4-ab1d-ba5b626fa1de`, `listAllocationStorehouses=req_709a67f4-afb1-43cc-8e37-a2a5f74c0843`, `queryMyResourceStoreInfo=req_ac26b46d-89f3-43bb-be80-20d2d5581a9b`. Direct fallback base returned compatible old envelopes; App H5 direct API-path probes returned 404.
+Production read samples for the 11 read-compatible paths returned old App fallback envelopes `{ success, code, message, data, timestamp }`. Representative request IDs: `resourceStore.listResourceStores=req_56bfc168-5bcc-4b97-9a5c-f69446fbe94e`, `listStorehouses=req_a0c2ff28-e353-43d7-9b51-57207c8ec10e`, `purchaseApply.listPurchaseApplys=req_c7c6b454-a1ca-42fb-9019-bafe7bfae55d`, `itemRelease.listItemRelease=req_410a21dc-fe80-408d-9cfd-73dde3b0820e`, `listAllocationStorehouseApplys=req_51a7cd3e-012d-47b3-a9df-2f3a458453cf`, `listMyAuditOrders=req_70b15a19-932f-4789-b2b7-2d76790c0879`, `queryUndoItemRelease=req_c6336bb7-a249-41a1-8477-72578b2e86af`, `listAllocationStoreAuditOrders=req_9f400111-223a-40ad-bd4c-6bcf9dc7b8ae`, `resourceStoreType.listResourceStoreTypes=req_2d238c3d-81c5-45d4-ab1d-ba5b626fa1de`, `listAllocationStorehouses=req_709a67f4-afb1-43cc-8e37-a2a5f74c0843`, `queryMyResourceStoreInfo=req_ac26b46d-89f3-43bb-be80-20d2d5581a9b`. Direct fallback base returned compatible old envelopes; App H5 direct API-path probes returned 404.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The existing client-only gap paths `/app/itemRelease.queryFinishItemRelease`, `/app/purchase/updatePurchaseApply`, `/app/purchaseApply.listAuditHistoryOrders`, and `/app/resourceStore.listAllocationStoreHisAuditOrders` remain blocked and are not closed by this finding.
+The existing client-only gap paths `/app/itemRelease.queryFinishItemRelease`, `/app/purchase/updatePurchaseApply`, `/app/purchaseApply.listAuditHistoryOrders`, and `/app/resourceStore.listAllocationStoreHisAuditOrders` remain blocked and are not closed by this finding.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed. If resource writes are migrated, they need explicit default guard behavior, controlled test data, read-back, rollback/cleanup, residual check, guard restoration, and App H5 page evidence.
+No production POST was executed. If resource writes are migrated, they need explicit default guard behavior, controlled test data, read-back, rollback/cleanup, residual check, guard restoration, and App H5 page evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed resource data, safe resource workflow writes, client-only gap closure, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed resource data, safe resource workflow writes, client-only gap closure, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Purchase Exploration Findings
+## App Purchase 探索发现
 
-2026-05-21: Section 3.5 `purchase` exploration is closed as duplicate-URL/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `purchase` exploration is closed as duplicate-URL/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`/app/resourceStore.listResourceStores` and `/app/purchase/purchaseApply` are duplicate legacy URLs shared by the old `purchase` and `resource` modules. The old App runtime intentionally keeps these URLs out of the module priority layers and serves them through `legacy-endpoints.ts` merge definitions. Therefore future migration must preserve the merged compatibility contract or make a deliberate split decision; it must not silently pick only one module's response shape.
+`/app/resourceStore.listResourceStores` and `/app/purchase/purchaseApply` are duplicate legacy URLs shared by the old `purchase` and `resource` modules. The old App runtime intentionally keeps these URLs out of the module priority layers and serves them through `legacy-endpoints.ts` merge definitions. Therefore future migration must preserve the merged compatibility contract or make a deliberate split decision; it must not silently pick only one module's response shape.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`/app/resourceStore.listResourceStores` production output includes both `data.list` and `data.resourceStores`. That is compatibility/fallback behavior from the old App server. Independent `apps/api` has no exact purchase app legacy registry entries for this slice.
+`/app/resourceStore.listResourceStores` production output includes both `data.list` and `data.resourceStores`. That is compatibility/fallback behavior from the old App server. Independent `apps/api` has no exact purchase app legacy registry entries for this slice.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`/app/purchase/purchaseApply`, `/app/purchase/urgentPurchaseApply`, and the client-only `/app/purchase/updatePurchaseApply` are write endpoints or write callers. No production POST was executed. Existing old-runtime tests only prove in-memory mutation/merge behavior; they do not prove Phase7 guarded exact handlers.
+`/app/purchase/purchaseApply`, `/app/purchase/urgentPurchaseApply`, and the client-only `/app/purchase/updatePurchaseApply` are write endpoints or write callers. No production POST was executed. Existing old-runtime tests only prove in-memory mutation/merge behavior; they do not prove Phase7 guarded exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`/app/purchaseApply.listAuditHistoryOrders` is a client-only read gap in this slice. The API wrapper exists in `apps/app/src/api/resource.ts`, but no old runtime endpoint was found and both production `apps/api` fallback and direct old App server probes return HTTP 500 with `error/status/unhandled`. This path is blocked until an exact handler, fallback fix, or product retirement decision exists.
+`/app/purchaseApply.listAuditHistoryOrders` is a client-only read gap in this slice. The API wrapper exists in `apps/app/src/api/resource.ts`, but no old runtime endpoint was found and both production `apps/api` fallback and direct old App server probes return HTTP 500 with `error/status/unhandled`. This path is blocked until an exact handler, fallback fix, or product retirement decision exists.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-This finding does not close the larger `resource` 24-endpoint row even though the two modules share URLs.
+This finding does not close the larger `resource` 24-endpoint row even though the two modules share URLs.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed purchase/resource data, safe purchase writes, client-only gap closure, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed purchase/resource data, safe purchase writes, client-only gap closure, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Owner Exploration Findings
+## App Owner 探索发现
 
-2026-05-21: Section 3.5 `owner` exploration is closed as page-caller/fallback/high-risk-write triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `owner` exploration is closed as page-caller/fallback/high-risk-write triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/owner.ts`, `owner-list.vue`, `add-owner.vue`, and `edit-owner.vue` prove real App H5 callers exist for `/app/owner.queryOwnerAndMembers`, `/app/owner.saveRoomOwner`, `/app/owner.editOwner`, and `/app/owner.deleteOwner`. This does not prove cutover to an exact independent `apps/api` handler.
+`apps/app/src/api/owner.ts`, `owner-list.vue`, `add-owner.vue`, and `edit-owner.vue` prove real App H5 callers exist for `/app/owner.queryOwnerAndMembers`, `/app/owner.saveRoomOwner`, `/app/owner.editOwner`, and `/app/owner.deleteOwner`. This does not prove cutover to an exact independent `apps/api` handler.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register owner exact handlers. Mentions of `ownerRepair` and admin owner routes are unrelated to App H5 `/app/owner.*`. Production read-only responses for `/app/owner.queryOwnerAndMembers` use the old App H5 `{ success, code, message, data, timestamp }` envelope, so they are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register owner exact handlers. Mentions of `ownerRepair` and admin owner routes are unrelated to App H5 `/app/owner.*`. Production read-only responses for `/app/owner.queryOwnerAndMembers` use the old App H5 `{ success, code, message, data, timestamp }` envelope, so they are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The owner module contains personal-data-shaped fields (`name`, `link`, `idCard`, `address`) and three write endpoints. The old repository mutates in-memory owner/member state on save, edit, and delete; existing App runtime tests intentionally prove that mutation behavior. No production POST was executed in this slice. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write windows, read-back, rollback/cleanup, residual checks, and App H5 evidence.
+The owner module contains personal-data-shaped fields (`name`, `link`, `idCard`, `address`) and three write endpoints. The old repository mutates in-memory owner/member state on save, edit, and delete; existing App runtime tests intentionally prove that mutation behavior. No production POST was executed in this slice. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write windows, read-back, rollback/cleanup, residual checks, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed owner data, safe owner writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed owner data, safe owner writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Item Release Exploration Findings
+## App Item Release 探索发现
 
-2026-05-21: Section 3.5 `item-release` exploration is closed as V2 page-caller/fallback/client-only-gap/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `item-release` exploration is closed as V2 page-caller/fallback/client-only-gap/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/item-release.ts`, `pages-sub/item/release.vue`, and `pages-sub/item/release-detail.vue` prove real App H5 callers exist for the six V2 item-release endpoints. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register item-release exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/item-release.ts`, `pages-sub/item/release.vue`, and `pages-sub/item/release-detail.vue` prove real App H5 callers exist for the six V2 item-release endpoints. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register item-release exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`/app/itemRelease.auditItemRelease` is a POST approval endpoint in the old runtime. The old repository mutates in-memory state by moving a pending task into the finished list, updating the detail remark, and appending an approval comment. No production POST was executed in this slice. If retained in independent `apps/api`, it needs an explicit default guard, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+`/app/itemRelease.auditItemRelease` is a POST approval endpoint in the old runtime. The old repository mutates in-memory state by moving a pending task into the finished list, updating the detail remark, and appending an approval comment. No production POST was executed in this slice. If retained in independent `apps/api`, it needs an explicit default guard, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The non-V2 `/app/itemRelease.queryFinishItemRelease` is a client-only read gap from `apps/app/src/api/resource.ts`. No old runtime endpoint was found for that exact path, and both production `apps/api` fallback and direct old App server probes return HTTP 500 with `error/status/unhandled`. It remains blocked until an exact handler, fallback fix, or product retirement decision exists.
+The non-V2 `/app/itemRelease.queryFinishItemRelease` is a client-only read gap from `apps/app/src/api/resource.ts`. No old runtime endpoint was found for that exact path, and both production `apps/api` fallback and direct old App server probes return HTTP 500 with `error/status/unhandled`. It remains blocked until an exact handler, fallback fix, or product retirement decision exists.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed item-release data, safe item-release approval writes, client-only gap closure, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed item-release data, safe item-release approval writes, client-only gap closure, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Staff Exploration Findings
+## App Staff 探索发现
 
-2026-05-21: Section 3.5 `staff` exploration is closed as dynamic-route/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `staff` exploration is closed as dynamic-route/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/staff/endpoints.ts` registers the eight staff endpoints. `/app/staff/:staffId` is a `GET` dynamic detail route, while literal routes such as `/app/staff/by-department`, `/app/staff/search`, `/app/staff/organizations`, and `/app/staff/online` must match before the dynamic route. The old repository is in-memory, with 50 random staff rows plus `STAFF_DEMO_PINYIN`, and uses `pinyin-pro` for pinyin-aware fuzzy search.
+`apps/app/server/modules/staff/endpoints.ts` registers the eight staff endpoints. `/app/staff/:staffId` is a `GET` dynamic detail route, while literal routes such as `/app/staff/by-department`, `/app/staff/search`, `/app/staff/organizations`, and `/app/staff/online` must match before the dynamic route. The old repository is in-memory, with 50 random staff rows plus `STAFF_DEMO_PINYIN`, and uses `pinyin-pro` for pinyin-aware fuzzy search.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/staff.ts`, `apps/app/src/hooks/useAddressList.ts`, and `apps/app/src/pages/address/list.vue` prove real App H5 address-book callers exist for list/detail/by-department usage. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register staff exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/staff.ts`, `apps/app/src/hooks/useAddressList.ts`, and `apps/app/src/pages/address/list.vue` prove real App H5 address-book callers exist for list/detail/by-department usage. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register staff exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: list `req_27b00611-51b2-4db8-97c0-c928f160937c`, dynamic detail `req_6ab9cd91-0f0e-47ad-aba6-24031dd8a0a7`, byDepartment `req_606dcb67-131c-4b67-a30d-57f2d749c5d7`, search `req_2d6642a1-ad8a-4e51-bf96-2c838419218c`, organizations `req_3f2b5d16-3cfb-402f-9bf7-6584dec9d39f`, and online `req_e048b536-8f29-47ca-bc71-e975cebceed2`. The app H5 homepage from `apps/app/package.json` returned HTTP 404 for the same staff paths, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: list `req_27b00611-51b2-4db8-97c0-c928f160937c`, dynamic detail `req_6ab9cd91-0f0e-47ad-aba6-24031dd8a0a7`, byDepartment `req_606dcb67-131c-4b67-a30d-57f2d749c5d7`, search `req_2d6642a1-ad8a-4e51-bf96-2c838419218c`, organizations `req_3f2b5d16-3cfb-402f-9bf7-6584dec9d39f`, and online `req_e048b536-8f29-47ca-bc71-e975cebceed2`. The app H5 homepage from `apps/app/package.json` returned HTTP 404 for the same staff paths, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`/app/staff/update-online-status` and `/app/staff/add` are POST mutation endpoints in the old runtime. No production POST was executed in this slice. If retained in independent `apps/api`, they need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+`/app/staff/update-online-status` and `/app/staff/add` are POST mutation endpoints in the old runtime. No production POST was executed in this slice. If retained in independent `apps/api`, they need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed staff data, safe staff writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed staff data, safe staff writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Coupon Exploration Findings
+## App Coupon 探索发现
 
-2026-05-21: Section 3.5 `coupon` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `coupon` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/coupon/endpoints.ts` registers the seven coupon/integral/reserve write-off endpoints. The old repository is in-memory: 42 coupon write-off records, 28 integral logs, 36 reserve write-off records, and one integral setting. `writeOffCoupon()`, `useIntegral()`, and `saveReserveOrder()` prepend records to old runtime memory, so they are write paths even though the data is mock-like.
+`apps/app/server/modules/coupon/endpoints.ts` registers the seven coupon/integral/reserve write-off endpoints. The old repository is in-memory: 42 coupon write-off records, 28 integral logs, 36 reserve write-off records, and one integral setting. `writeOffCoupon()`, `useIntegral()`, and `saveReserveOrder()` prepend records to old runtime memory, so they are write paths even though the data is mock-like.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/coupon.ts`, `pages-sub/coupon/write-off-coupon.vue`, `pages-sub/coupon/write-off-integral.vue`, and `pages-sub/coupon/write-off-reserve.vue` prove real App H5 callers exist for the coupon, integral, and reserve write-off flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register coupon exact handlers. `apps/api/server/shared/runtime/env.ts` sets the default fallback base to `https://01s-11-app-server.ruan-cat.com`, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/coupon.ts`, `pages-sub/coupon/write-off-coupon.vue`, `pages-sub/coupon/write-off-integral.vue`, and `pages-sub/coupon/write-off-reserve.vue` prove real App H5 callers exist for the coupon, integral, and reserve write-off flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register coupon exact handlers. `apps/api/server/shared/runtime/env.ts` sets the default fallback base to `https://01s-11-app-server.ruan-cat.com`, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: coupon list `req_918db659-c967-4a4c-9f69-a9d98a0db28a`, integral setting `req_5d802e98-00b4-49ca-a04e-cebfcab830e2`, integral logs `req_46a1c783-a064-4782-a8a3-ab8ba07bb04f`, and reserve list `req_c1f23b18-93c0-4b6c-9685-b7d19346f88f`. The same four paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: coupon list `req_918db659-c967-4a4c-9f69-a9d98a0db28a`, integral setting `req_5d802e98-00b4-49ca-a04e-cebfcab830e2`, integral logs `req_46a1c783-a064-4782-a8a3-ab8ba07bb04f`, and reserve list `req_c1f23b18-93c0-4b6c-9685-b7d19346f88f`. The same four paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for `/app/couponProperty.writeOffCouponPropertyUser`, `/app/integral.useIntegral`, or `/app/reserveOrder.saveReserveGoodsConfirmOrder`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for `/app/couponProperty.writeOffCouponPropertyUser`, `/app/integral.useIntegral`, or `/app/reserveOrder.saveReserveGoodsConfirmOrder`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed coupon/integral/reserve data, safe write-off or integral-consumption writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed coupon/integral/reserve data, safe write-off or integral-consumption writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Inspection Exploration Findings
+## App Inspection 探索发现
 
-2026-05-21: Section 3.5 `inspection` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `inspection` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/inspection/endpoints.ts` registers seven inspection endpoints, including `/app/staff.listStaffs` as the inspection transfer candidate staff list. The old repository is in-memory: 20 tasks, per-task details, 10 today-report rows, 20 transfer staff candidates, and item title definitions for `ITEM_001` through `ITEM_005`. `submitInspection()` mutates task detail state to `20200407` and writes description/photos; `transferTask()` mutates the task assignee name.
+`apps/app/server/modules/inspection/endpoints.ts` registers seven inspection endpoints, including `/app/staff.listStaffs` as the inspection transfer candidate staff list. The old repository is in-memory: 20 tasks, per-task details, 10 today-report rows, 20 transfer staff candidates, and item title definitions for `ITEM_001` through `ITEM_005`. `submitInspection()` mutates task detail state to `20200407` and writes description/photos; `transferTask()` mutates the task assignee name.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/inspection.ts` and the inspection pages under `apps/app/src/pages-sub/inspection/` prove real App H5 callers exist for task list, today report, detail, item titles, submit, staff list, and transfer. `pages-sub/maintenance/transfer.vue` also reuses `getStaffList()`. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register inspection exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/inspection.ts` and the inspection pages under `apps/app/src/pages-sub/inspection/` prove real App H5 callers exist for task list, today report, detail, item titles, submit, staff list, and transfer. `pages-sub/maintenance/transfer.vue` also reuses `getStaffList()`. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register inspection exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: task list `req_b15f1763-0a4b-46c7-bee6-5c9d33141f94`, today report `req_dc97f2fa-66ee-4368-bb5d-fe139661ffba`, task details for `TASK_001` `req_53d0240f-7f37-477c-b4c6-559bfcf361d0`, item titles for `ITEM_001` `req_1059713b-673a-49c8-aae2-965cb4d7b0fc`, and staff list `req_0d9631c5-d8d8-4463-8454-c6a166116d2d`. The same five paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: task list `req_b15f1763-0a4b-46c7-bee6-5c9d33141f94`, today report `req_dc97f2fa-66ee-4368-bb5d-fe139661ffba`, task details for `TASK_001` `req_53d0240f-7f37-477c-b4c6-559bfcf361d0`, item titles for `ITEM_001` `req_1059713b-673a-49c8-aae2-965cb4d7b0fc`, and staff list `req_0d9631c5-d8d8-4463-8454-c6a166116d2d`. The same five paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for `/app/inspection.submitInspection` or `/app/inspection.transferTask`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for `/app/inspection.submitInspection` or `/app/inspection.transferTask`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed inspection data, safe inspection submit/transfer writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed inspection data, safe inspection submit/transfer writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Maintenance Exploration Findings
+## App Maintenance 探索发现
 
-2026-05-21: Section 3.5 `maintenance` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `maintenance` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/maintenance/endpoints.ts` registers seven maintenance endpoints. The old repository is in-memory: 15 maintenance tasks, per-task detail rows, and status values `10001` pending, `10002` processing, `10003` completed. `startTask()`, `completeTask()`, `submitSingle()`, and `transferTask()` mutate task state, task detail content, or staff assignment.
+`apps/app/server/modules/maintenance/endpoints.ts` registers seven maintenance endpoints. The old repository is in-memory: 15 maintenance tasks, per-task detail rows, and status values `10001` pending, `10002` processing, `10003` completed. `startTask()`, `completeTask()`, `submitSingle()`, and `transferTask()` mutate task state, task detail content, or staff assignment.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/maintenance.ts`, `pages-sub/maintenance/task-list.vue`, `execute.vue`, `execute-single.vue`, and `transfer.vue` prove real App H5 callers exist for list/detail/items and the start/complete/single-submit/transfer flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register maintenance exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/maintenance.ts`, `pages-sub/maintenance/task-list.vue`, `execute.vue`, `execute-single.vue`, and `transfer.vue` prove real App H5 callers exist for list/detail/items and the start/complete/single-submit/transfer flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register maintenance exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: list `req_d6f53c9e-fe49-4be6-94e2-1570a194c867`, detail for `MT_001` `req_b375aea4-5b4f-443d-8b97-6c9eb1d3350a`, and detail items `req_ca5ca526-7352-418b-ad82-fb8c2b0e4f1b`. The same three paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: list `req_d6f53c9e-fe49-4be6-94e2-1570a194c867`, detail for `MT_001` `req_b375aea4-5b4f-443d-8b97-6c9eb1d3350a`, and detail items `req_ca5ca526-7352-418b-ad82-fb8c2b0e4f1b`. The same three paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for `/app/maintenance.startMaintenanceTask`, `/app/maintenance.completeMaintenanceTask`, `/app/maintenance.submitMaintenanceSingle`, or `/app/maintenance.transferMaintenanceTask`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for `/app/maintenance.startMaintenanceTask`, `/app/maintenance.completeMaintenanceTask`, `/app/maintenance.submitMaintenanceSingle`, or `/app/maintenance.transferMaintenanceTask`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed maintenance data, safe maintenance writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed maintenance data, safe maintenance writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Meter Exploration Findings
+## App Meter 探索发现
 
-2026-05-21: Section 3.5 `meter` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `meter` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/meter/endpoints.ts` registers 10 meter endpoints. Seven are read-compatible GET/POST endpoints: `/app/meter.listMeterWaters`, `/app/meter.queryFeeTypes`, `/app/meter.queryFeeTypesItems`, `/app/meter.listMeterType`, `/app/meter.queryPreMeterWater`, `/app/meter.listFloorShareReading`, and `/app/meter.listFloorShareMeter`. Three are POST mutation endpoints: `/app/meter.saveMeterWater`, `/app/meter.saveFloorShareReading`, and `/app/meter.auditFloorShareReading`.
+`apps/app/server/modules/meter/endpoints.ts` registers 10 meter endpoints. Seven are read-compatible GET/POST endpoints: `/app/meter.listMeterWaters`, `/app/meter.queryFeeTypes`, `/app/meter.queryFeeTypesItems`, `/app/meter.listMeterType`, `/app/meter.queryPreMeterWater`, `/app/meter.listFloorShareReading`, and `/app/meter.listFloorShareMeter`. Three are POST mutation endpoints: `/app/meter.saveMeterWater`, `/app/meter.saveFloorShareReading`, and `/app/meter.auditFloorShareReading`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The old repository is in-memory. It creates 60 meter reading rows, fee types/config items, meter types, 16 floor-share meters, and 28 floor-share readings. `saveMeterWater()` prepends a new meter reading, `saveFloorShareReading()` prepends a pending floor-share reading, and `auditFloorShareReading()` mutates floor-share state and audit remark.
+The old repository is in-memory. It creates 60 meter reading rows, fee types/config items, meter types, 16 floor-share meters, and 28 floor-share readings. `saveMeterWater()` prepends a new meter reading, `saveFloorShareReading()` prepends a pending floor-share reading, and `auditFloorShareReading()` mutates floor-share state and audit remark.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/meter.ts`, `pages-sub/meter/reading.vue`, `add-meter.vue`, `qrcode-meter.vue`, `share-meter.vue`, `add-share-reading.vue`, and `audit-share-reading.vue` prove real App H5 callers exist. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register meter exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/meter.ts`, `pages-sub/meter/reading.vue`, `add-meter.vue`, `qrcode-meter.vue`, `share-meter.vue`, `add-share-reading.vue`, and `audit-share-reading.vue` prove real App H5 callers exist. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register meter exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: meter list `req_7f105a94-44f2-42b6-9376-cb2c46cfe567`, fee types `req_736d64cf-7eb8-4e75-b071-b4f2e62d31b5`, fee items `req_b44f6af9-fb73-403d-adaf-a4f8a7ed0edd`, meter types `req_78ce679d-a9d4-4e99-87d1-58c31e2b58c8`, previous meter value `req_4108b838-aef1-4ff2-a005-1df873938b91`, floor-share readings `req_a931aa30-c98d-4ac4-a259-68aab0728014`, floor-share meters `req_c48412d8-d686-4763-acb0-38fe4e3b2950`, and one `fsmId=FSM_0001` filtered sample `req_6f690e4b-f1a2-4787-a65c-836d75dbcb22`. The same seven read-compatible paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: meter list `req_7f105a94-44f2-42b6-9376-cb2c46cfe567`, fee types `req_736d64cf-7eb8-4e75-b071-b4f2e62d31b5`, fee items `req_b44f6af9-fb73-403d-adaf-a4f8a7ed0edd`, meter types `req_78ce679d-a9d4-4e99-87d1-58c31e2b58c8`, previous meter value `req_4108b838-aef1-4ff2-a005-1df873938b91`, floor-share readings `req_a931aa30-c98d-4ac4-a259-68aab0728014`, floor-share meters `req_c48412d8-d686-4763-acb0-38fe4e3b2950`, and one `fsmId=FSM_0001` filtered sample `req_6f690e4b-f1a2-4787-a65c-836d75dbcb22`. The same seven read-compatible paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for `/app/meter.saveMeterWater`, `/app/meter.saveFloorShareReading`, or `/app/meter.auditFloorShareReading`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for `/app/meter.saveMeterWater`, `/app/meter.saveFloorShareReading`, or `/app/meter.auditFloorShareReading`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed meter data, safe meter writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed meter data, safe meter writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Activity Exploration Findings
+## App Activity 探索发现
 
-2026-05-21: Section 3.5 `activity` exploration is closed as read/side-effect/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `activity` exploration is closed as read/side-effect/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/activity/endpoints.ts` registers nine activity endpoints. `/app/activities.listActivitiess` is GET/POST compatible and is used for both list and detail. Detail is not pure read: when `activitiesId` is supplied, `apps/app/server/modules/activity/repository.ts` calls `increaseView(activitiesId)` inside `list()`, mutating `viewCount`.
+`apps/app/server/modules/activity/endpoints.ts` registers nine activity endpoints. `/app/activities.listActivitiess` is GET/POST compatible and is used for both list and detail. Detail is not pure read: when `activitiesId` is supplied, `apps/app/server/modules/activity/repository.ts` calls `increaseView(activitiesId)` inside `list()`, mutating `viewCount`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The remaining eight endpoints are mutation or counter/status endpoints: `/app/activities.saveActivities`, `/app/activities.updateActivities`, `/app/activities.deleteActivities`, `/app/activities.increaseView`, `/app/activities.likeActivity`, `/app/activities.updateStatus`, `/app/activities.updateLike`, and `/app/activities.updateCollect`.
+The remaining eight endpoints are mutation or counter/status endpoints: `/app/activities.saveActivities`, `/app/activities.updateActivities`, `/app/activities.deleteActivities`, `/app/activities.increaseView`, `/app/activities.likeActivity`, `/app/activities.updateStatus`, `/app/activities.updateLike`, and `/app/activities.updateCollect`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The old repository is in-memory with 30 seeded activities. It supports `communityId`, `status`, `activitiesId`, and `keyword` filters and returns the legacy `activitiess` spelling. The create/update/delete/view/like/status/collect methods mutate in-memory rows.
+The old repository is in-memory with 30 seeded activities. It supports `communityId`, `status`, `activitiesId`, and `keyword` filters and returns the legacy `activitiess` spelling. The create/update/delete/view/like/status/collect methods mutate in-memory rows.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/activity.ts`, `pages/activity/index.vue`, `pages/activity/detail.vue`, and `components/activity/activity-actions.vue` prove real App H5 callers exist for list/detail, view-count, like, and collect flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register activity exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/activity.ts`, `pages/activity/index.vue`, `pages/activity/detail.vue`, and `components/activity/activity-actions.vue` prove real App H5 callers exist for list/detail, view-count, like, and collect flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register activity exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only list/filter samples returned old `{success,code,message,data,timestamp}` envelopes: base list `req_d1615e2b-c5ec-4d04-b3b0-32ea2b8bdeed`, `status=ONGOING` `req_2f2972b0-d494-4931-b1ed-1e5d7d4c065d`, and `keyword=health` `req_2315dcef-a275-44ca-85ca-a303cea88681`. Detail GET with `activitiesId` was intentionally not executed because it increments view count. The same three list/filter paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read-only list/filter samples returned old `{success,code,message,data,timestamp}` envelopes: base list `req_d1615e2b-c5ec-4d04-b3b0-32ea2b8bdeed`, `status=ONGOING` `req_2f2972b0-d494-4931-b1ed-1e5d7d4c065d`, and `keyword=health` `req_2315dcef-a275-44ca-85ca-a303cea88681`. Detail GET with `activitiesId` was intentionally not executed because it increments view count. The same three list/filter paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for create/update/delete/view/like/status/collect endpoints. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence. Detail GET also needs an explicit decision because the old API combines read and view-count mutation.
+No production POST was executed for create/update/delete/view/like/status/collect endpoints. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence. Detail GET also needs an explicit decision because the old API combines read and view-count mutation.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed activity data, safe activity writes, detail side-effect acceptability, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed activity data, safe activity writes, detail side-effect acceptability, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Complaint Exploration Findings
+## App Complaint 探索发现
 
-2026-05-21: Section 3.5 `complaint` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `complaint` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/complaint/endpoints.ts` registers seven complaint endpoints. Four endpoints are read-compatible: `/app/auditUser.listAuditComplaints`, `/app/auditUser.listAuditHistoryComplaints`, `/app/complaint.listComplaintEvent`, and `/app/complaintAppraise.listComplaintAppraise`. Three endpoints are mutation endpoints: `/app/complaint`, `/app/complaint.auditComplaint`, and `/app/complaintAppraise.replyComplaintAppraise`.
+`apps/app/server/modules/complaint/endpoints.ts` registers seven complaint endpoints. Four endpoints are read-compatible: `/app/auditUser.listAuditComplaints`, `/app/auditUser.listAuditHistoryComplaints`, `/app/complaint.listComplaintEvent`, and `/app/complaintAppraise.listComplaintAppraise`. Three endpoints are mutation endpoints: `/app/complaint`, `/app/complaint.auditComplaint`, and `/app/complaintAppraise.replyComplaintAppraise`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The old repository is in-memory with 40 seeded complaints and prebuilt event/appraise rows for the first 15 complaints. `saveComplaint()` prepends a complaint and create event, `auditComplaint()` appends a handle event and may mutate complaint state/stateName, and `replyComplaintAppraise()` mutates appraise state and replyContext.
+The old repository is in-memory with 40 seeded complaints and prebuilt event/appraise rows for the first 15 complaints. `saveComplaint()` prepends a complaint and create event, `auditComplaint()` appends a handle event and may mutate complaint state/stateName, and `replyComplaintAppraise()` mutates appraise state and replyContext.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/complaint.ts`, `pages-sub/complaint/list.vue`, `finish.vue`, `order.vue`, `detail.vue`, `handle.vue`, `audit.vue`, and `appraise-reply.vue` prove real App H5 callers exist for todo/history/order/detail/handle/audit/appraise-reply flows. `handleComplaint()` and `auditComplaint()` both use `/app/complaint.auditComplaint`, so simple handling and audit result submission share the same write endpoint. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register complaint exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/complaint.ts`, `pages-sub/complaint/list.vue`, `finish.vue`, `order.vue`, `detail.vue`, `handle.vue`, `audit.vue`, and `appraise-reply.vue` prove real App H5 callers exist for todo/history/order/detail/handle/audit/appraise-reply flows. `handleComplaint()` and `auditComplaint()` both use `/app/complaint.auditComplaint`, so simple handling and audit result submission share the same write endpoint. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register complaint exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: todo list `req_720c48de-85b7-4f13-88c0-b232cbf67aa2`, history list `req_8d17ba93-7e26-4b09-bb3c-cf7bde79e33d`, complaint events for `COMP_001` `req_66aa7e48-f1cd-482d-8569-9e6bbf35505a`, and complaint appraises for `COMP_001` `req_46740223-638f-4a0b-b958-bc5dfe11b2f9`. The same four read-compatible paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: todo list `req_720c48de-85b7-4f13-88c0-b232cbf67aa2`, history list `req_8d17ba93-7e26-4b09-bb3c-cf7bde79e33d`, complaint events for `COMP_001` `req_66aa7e48-f1cd-482d-8569-9e6bbf35505a`, and complaint appraises for `COMP_001` `req_46740223-638f-4a0b-b958-bc5dfe11b2f9`. The same four read-compatible paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for `/app/complaint`, `/app/complaint.auditComplaint`, or `/app/complaintAppraise.replyComplaintAppraise`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for `/app/complaint`, `/app/complaint.auditComplaint`, or `/app/complaintAppraise.replyComplaintAppraise`. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed complaint data, safe complaint create/audit/reply writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed complaint data, safe complaint create/audit/reply writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Parking Exploration Findings
+## App Parking 探索发现
 
-2026-05-21: Section 3.5 `parking` exploration is closed as page-caller/fallback/high-risk-device-command triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `parking` exploration is closed as page-caller/fallback/high-risk-device-command triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/parking/endpoints.ts` registers twelve parking endpoints. Nine endpoints are read-compatible: `/app/owner.queryOwnerCars`, `/app/parkingArea.listParkingAreas`, `/app/machine.listParkingAreaMachines`, `/app/carInout.listCarInParkingAreaCmd`, `/app/parkingCoupon.listParkingCouponCar`, `/app/tempCarFee.getTempCarFeeOrder`, `/app/carInoutDetail.listCarInoutDetail`, `/app/carInoutPayment.listCarInoutPayment`, and `/app/machine.getBarrierCloudVideo`. Three endpoints are high-risk device or vehicle-flow commands: `/app/machine/openDoor`, `/app/machine/closeDoor`, and `/app/machine.customCarInOutCmd`.
+`apps/app/server/modules/parking/endpoints.ts` registers twelve parking endpoints. Nine endpoints are read-compatible: `/app/owner.queryOwnerCars`, `/app/parkingArea.listParkingAreas`, `/app/machine.listParkingAreaMachines`, `/app/carInout.listCarInParkingAreaCmd`, `/app/parkingCoupon.listParkingCouponCar`, `/app/tempCarFee.getTempCarFeeOrder`, `/app/carInoutDetail.listCarInoutDetail`, `/app/carInoutPayment.listCarInoutPayment`, and `/app/machine.getBarrierCloudVideo`. Three endpoints are high-risk device or vehicle-flow commands: `/app/machine/openDoor`, `/app/machine/closeDoor`, and `/app/machine.customCarInOutCmd`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The old repository is in-memory with seeded parking areas, barrier machines, owner cars, in/out details, payments, temporary in-area cars, and coupons. The open-door and close-door handlers currently validate `machineCode` and return placeholder success. The custom car in/out command validates `carNum` and `type` and returns placeholder success. These are not safe production write samples.
+The old repository is in-memory with seeded parking areas, barrier machines, owner cars, in/out details, payments, temporary in-area cars, and coupons. The open-door and close-door handlers currently validate `machineCode` and return placeholder success. The custom car in/out command validates `carNum` and `type` and returns placeholder success. These are not safe production write samples.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/parking.ts`, `pages-sub/parking/owner-car.vue`, `barrier-gate.vue`, `barrier-video.vue`, `car-in.vue`, and `car-out.vue` prove real App H5 callers exist for vehicle list, barrier management, video, manual car-in, and manual car-out flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register these parking App legacy exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/parking.ts`, `pages-sub/parking/owner-car.vue`, `barrier-gate.vue`, `barrier-video.vue`, `car-in.vue`, and `car-out.vue` prove real App H5 callers exist for vehicle list, barrier management, video, manual car-in, and manual car-out flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register these parking App legacy exact handlers, so production 200 responses are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: owner cars `req_13e9f287-e84b-486f-9ab6-0d22eae89f64`, parking areas `req_b36bba72-e1b9-4b08-976e-2d37f76d4fac`, machines `req_8c43db84-d711-49a2-89a0-581e84a6fa57`, temp cars in area `req_238d307f-e5e4-4bb3-818a-859d6cfb1ec5`, coupons `req_f5b53517-7f79-498a-aa97-fd48e2823b44`, temp fee `req_d4811f08-8584-4ccf-a7a8-59827a5dbe54`, in/out detail `req_5956645f-e4c5-474f-aea7-866048af7490`, payments `req_d1e35831-9f11-4aa6-ad86-145604bd689e`, and barrier video `req_c9b184a1-a9b6-4716-9bab-9cbbd3ba1b4e`. The same nine read-compatible paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: owner cars `req_13e9f287-e84b-486f-9ab6-0d22eae89f64`, parking areas `req_b36bba72-e1b9-4b08-976e-2d37f76d4fac`, machines `req_8c43db84-d711-49a2-89a0-581e84a6fa57`, temp cars in area `req_238d307f-e5e4-4bb3-818a-859d6cfb1ec5`, coupons `req_f5b53517-7f79-498a-aa97-fd48e2823b44`, temp fee `req_d4811f08-8584-4ccf-a7a8-59827a5dbe54`, in/out detail `req_5956645f-e4c5-474f-aea7-866048af7490`, payments `req_d1e35831-9f11-4aa6-ad86-145604bd689e`, and barrier video `req_c9b184a1-a9b6-4716-9bab-9cbbd3ba1b4e`. The same nine read-compatible paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for `/app/machine/openDoor`, `/app/machine/closeDoor`, or `/app/machine.customCarInOutCmd`. If retained in independent `apps/api`, these endpoints need explicit default guards, product authorization, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for `/app/machine/openDoor`, `/app/machine/closeDoor`, or `/app/machine.customCarInOutCmd`. If retained in independent `apps/api`, these endpoints need explicit default guards, product authorization, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed parking data, safe barrier/device writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed parking data, safe barrier/device writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Property Application Exploration Findings
+## App Property Application 探索发现
 
-2026-05-21: Section 3.5 `property-application` exploration is closed as page-caller/fallback/shared-conflict/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `property-application` exploration is closed as page-caller/fallback/shared-conflict/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/property-application/endpoints.ts` registers ten source paths. Four module-owned paths are read-compatible: `/app/applyRoomDiscount/queryApplyRoomDiscount`, `/app/feeDiscount/queryFeeDiscount`, `/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord`, and `/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail`. Four module-owned paths are mutations: `/app/applyRoomDiscount/updateApplyRoomDiscount`, `/app/applyRoomDiscount/updateReviewApplyRoomDiscount`, `/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord`, and `/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord`.
+`apps/app/server/modules/property-application/endpoints.ts` registers ten source paths. Four module-owned paths are read-compatible: `/app/applyRoomDiscount/queryApplyRoomDiscount`, `/app/feeDiscount/queryFeeDiscount`, `/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord`, and `/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail`. Four module-owned paths are mutations: `/app/applyRoomDiscount/updateApplyRoomDiscount`, `/app/applyRoomDiscount/updateReviewApplyRoomDiscount`, `/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord`, and `/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Two source paths in this row are shared or conflicting rather than property-application-owned in independent `apps/api`: `/callComponent/core/list` is served by the repair shared compatibility layer, and `/app/fee.queryFeeDetail` is served by the fee legacy compatibility layer. The App source filters both out of `propertyApplicationRuntimeEndpointDefinitions`, so they must not be claimed as property-application-only exact migration.
+Two source paths in this row are shared or conflicting rather than property-application-owned in independent `apps/api`: `/callComponent/core/list` is served by the repair shared compatibility layer, and `/app/fee.queryFeeDetail` is served by the fee legacy compatibility layer. The App source filters both out of `propertyApplicationRuntimeEndpointDefinitions`, so they must not be claimed as property-application-only exact migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The old repository is in-memory with apply-room rows, tracking records, record details, fee discounts, and fee details. `updateCheckInfo()` mutates application check state and photos, `updateReviewInfo()` mutates review state, `saveRecord()` prepends tracking data, and `deleteRecord()` removes tracking data.
+The old repository is in-memory with apply-room rows, tracking records, record details, fee discounts, and fee details. `updateCheckInfo()` mutates application check state and photos, `updateReviewInfo()` mutates review state, `saveRecord()` prepends tracking data, and `deleteRecord()` removes tracking data.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/property-application.ts`, `pages-sub/property/apply-room.vue`, `apply-room-detail.vue`, `apply-room-record.vue`, `apply-room-record-detail.vue`, and `apply-room-record-handle.vue` prove real App H5 callers exist for list/detail/dict/discount/fee-detail/record flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not import property-application runtime definitions, so production 200 responses for module-owned property-application paths are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.
+`apps/app/src/api/property-application.ts`, `pages-sub/property/apply-room.vue`, `apply-room-detail.vue`, `apply-room-record.vue`, `apply-room-record-detail.vue`, and `apply-room-record-handle.vue` prove real App H5 callers exist for list/detail/dict/discount/fee-detail/record flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not import property-application runtime definitions, so production 200 responses for module-owned property-application paths are old App server fallback samples through `legacy-dispatch`, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only samples: apply list `req_a244efd7-a28f-4b32-bdf8-72709a02b8b8`, apply detail `req_89041f06-ffbd-4602-bc8a-84a1c052433c`, shared dict `req_1ff9ac84-db81-45a4-b60a-d8c6b7ec25c4`, fee discount `req_efddc7ca-deeb-41f4-8a87-39a2c332b33a`, fee detail `req_e34b08d7-f0f5-49ac-a6ba-c010d9af4e1d`, record list `req_5f701338-5040-475d-923c-3463c725f63c`, and record detail `req_b35002c9-5d53-45ba-9aae-6d33f4fdbb35`. The same seven source read paths also returned HTTP 200 from the default fallback server. For `/callComponent/core/list` and `/app/fee.queryFeeDetail`, the independent API response contract differs from fallback because independent `apps/api` uses the shared repair/fee compatibility implementations.
+Production read-only samples: apply list `req_a244efd7-a28f-4b32-bdf8-72709a02b8b8`, apply detail `req_89041f06-ffbd-4602-bc8a-84a1c052433c`, shared dict `req_1ff9ac84-db81-45a4-b60a-d8c6b7ec25c4`, fee discount `req_efddc7ca-deeb-41f4-8a87-39a2c332b33a`, fee detail `req_e34b08d7-f0f5-49ac-a6ba-c010d9af4e1d`, record list `req_5f701338-5040-475d-923c-3463c725f63c`, and record detail `req_b35002c9-5d53-45ba-9aae-6d33f4fdbb35`. The same seven source read paths also returned HTTP 200 from the default fallback server. For `/callComponent/core/list` and `/app/fee.queryFeeDetail`, the independent API response contract differs from fallback because independent `apps/api` uses the shared repair/fee compatibility implementations.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST or DELETE was executed for check update, review update, record save, or record delete. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST or DELETE was executed for check update, review update, record save, or record delete. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove ten-path exact `apps/api` ownership, DB-backed property-application data, safe check/review/record writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove ten-path exact `apps/api` ownership, DB-backed property-application data, safe check/review/record writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Work Order Exploration Findings
+## App Work Order 探索发现
 
-2026-05-21: Section 3.5 `work-order` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `work-order` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/work-order/endpoints.ts` registers twelve old App runtime endpoints. Five paths are read-compatible: `/app/workorder/todo/list`, `/app/workorder/copy/list`, `/app/workorder/detail`, `/app/workorder/task/list`, and `/app/workorder/task/items`. Seven paths are mutations: `/app/workorder/create`, `/app/workorder/update`, `/app/workorder/start`, `/app/workorder/complete`, `/app/workorder/audit`, `/app/workorder/cancel`, and `/app/workorder/copy/finish`.
+`apps/app/server/modules/work-order/endpoints.ts` registers twelve old App runtime endpoints. Five paths are read-compatible: `/app/workorder/todo/list`, `/app/workorder/copy/list`, `/app/workorder/detail`, `/app/workorder/task/list`, and `/app/workorder/task/items`. Seven paths are mutations: `/app/workorder/create`, `/app/workorder/update`, `/app/workorder/start`, `/app/workorder/complete`, `/app/workorder/audit`, `/app/workorder/cancel`, and `/app/workorder/copy/finish`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The old repository is in-memory with seeded todo work orders, copy work orders, task rows, and task items. `create`, `update`, `start`, `complete`, `audit`, `cancel`, and `finishCopyWork` mutate in-memory work order or task-item state.
+The old repository is in-memory with seeded todo work orders, copy work orders, task rows, and task items. `create`, `update`, `start`, `complete`, `audit`, `cancel`, and `finishCopyWork` mutate in-memory work order or task-item state.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/work-order.ts`, `pages-sub/work/do-work.vue`, `copy-work.vue`, `work-detail.vue`, `start-work.vue`, `edit-work.vue`, `audit-work.vue`, `task-list.vue`, and `do-copy-work.vue` prove real App H5 callers exist for list/detail/create/update/start/complete/audit/task/copy-finish flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register work-order exact handlers. Production 200 responses are routed through the independent API front door and then fall back to the old App server, not migrated exact handlers.
+`apps/app/src/api/work-order.ts`, `pages-sub/work/do-work.vue`, `copy-work.vue`, `work-detail.vue`, `start-work.vue`, `edit-work.vue`, `audit-work.vue`, `task-list.vue`, and `do-copy-work.vue` prove real App H5 callers exist for list/detail/create/update/start/complete/audit/task/copy-finish flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register work-order exact handlers. Production 200 responses are routed through the independent API front door and then fall back to the old App server, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
 Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: todo list sample `WO_001/state=10001/stateName=待处理`, detail `WO_001/state=10001`, copy list `WO_100/state=10002/stateName=处理中`, task list `TASK_WO_001_001/state=W`, and task items `ITEM_WO_001_001/state=W`. Response-header spot checks from the independent API showed `x-api-phase=phase3-infra` and request ids for the five read paths, but the response body matches the default old App fallback server shape, so this remains fallback evidence. Representative app H5 homepage requests returned HTTP 404, so this is not App H5 page-level Network evidence.
 
-No production POST was executed for create, update, start, complete, audit, cancel, or copy-finish. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for create, update, start, complete, audit, cancel, or copy-finish. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed work-order data, safe work-order writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed work-order data, safe work-order writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App OA Workflow Exploration Findings
+## App OA Workflow 探索发现
 
-2026-05-21: Section 3.5 `oa-workflow` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `oa-workflow` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/oa-workflow/endpoints.ts` registers thirteen old App runtime endpoints. Nine paths are read-compatible or query endpoints: `/app/oa/workflow/query`, `/app/oa/workflow/form/query`, `/app/oa/workflow/form/data/query`, `/app/oa/workflow/task/undo/query`, `/app/oa/workflow/task/his/query`, `/app/oa/workflow/user/query`, `/app/oa/workflow/image/run`, `/app/oa/workflow/task/next`, and `/app/oa/workflow/undo/next-deal-user`. Four paths are mutations: `/app/oa/workflow/form/save`, `/app/oa/workflow/form/update`, `/app/oa/workflow/audit`, and `/app/oa/workflow/undo/audit`.
+`apps/app/server/modules/oa-workflow/endpoints.ts` registers thirteen old App runtime endpoints. Nine paths are read-compatible or query endpoints: `/app/oa/workflow/query`, `/app/oa/workflow/form/query`, `/app/oa/workflow/form/data/query`, `/app/oa/workflow/task/undo/query`, `/app/oa/workflow/task/his/query`, `/app/oa/workflow/user/query`, `/app/oa/workflow/image/run`, `/app/oa/workflow/task/next`, and `/app/oa/workflow/undo/next-deal-user`. Four paths are mutations: `/app/oa/workflow/form/save`, `/app/oa/workflow/form/update`, `/app/oa/workflow/audit`, and `/app/oa/workflow/undo/audit`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The old repository is in-memory with three seeded flows, three workflow records, flow form schemas, comment history, a static base64 workflow image, and placeholder next-task data. `saveFormData`, `updateFormData`, and `submitAudit` mutate in-memory workflow records or comments.
+The old repository is in-memory with three seeded flows, three workflow records, flow form schemas, comment history, a static base64 workflow image, and placeholder next-task data. `saveFormData`, `updateFormData`, and `submitAudit` mutate in-memory workflow records or comments.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/oa-workflow.ts`, `pages-sub/oa/workflow.vue`, `workflow-form.vue`, `workflow-form-edit.vue`, `workflow-todo.vue`, `workflow-finish.vue`, `workflow-detail.vue`, `workflow-audit.vue`, and `audit-todo.vue` prove real App H5 callers exist for workflow list, form query, form save/update, todo/history, detail, image, next-task, and audit flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register oa-workflow exact handlers, so production 200 responses are old App server fallback samples through the independent API front door, not migrated exact handlers.
+`apps/app/src/api/oa-workflow.ts`, `pages-sub/oa/workflow.vue`, `workflow-form.vue`, `workflow-form-edit.vue`, `workflow-todo.vue`, `workflow-finish.vue`, `workflow-detail.vue`, `workflow-audit.vue`, and `audit-todo.vue` prove real App H5 callers exist for workflow list, form query, form save/update, todo/history, detail, image, next-task, and audit flows. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register oa-workflow exact handlers, so production 200 responses are old App server fallback samples through the independent API front door, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read/query samples returned old `{success,code,message,data,timestamp}` envelopes: workflow list `req_d4ea46d5-133c-4902-8e69-851f44de81f7`, form definition `req_a706fd77-b28f-417f-ab88-af335763a28a`, form data `req_865e1136-2cb0-47da-90a4-5778863db9c4`, undo list `req_0b90802d-86b1-44bf-933c-aed181f4af11`, history list `req_71e8ce9d-0a41-40fa-92a6-746bf94e06a5`, comments `req_1ce0ce66-9bf4-483e-b473-63a9af10602a`, workflow image `req_529c8b0a-17ff-4184-b8a4-127d22c9fd76`, next task `req_fe3683db-f0c7-4dfb-9089-0bd62ebf617d`, and next deal user `req_0dc4e296-e772-4f3b-8e23-1589db2ad836`. The same nine query paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read/query samples returned old `{success,code,message,data,timestamp}` envelopes: workflow list `req_d4ea46d5-133c-4902-8e69-851f44de81f7`, form definition `req_a706fd77-b28f-417f-ab88-af335763a28a`, form data `req_865e1136-2cb0-47da-90a4-5778863db9c4`, undo list `req_0b90802d-86b1-44bf-933c-aed181f4af11`, history list `req_71e8ce9d-0a41-40fa-92a6-746bf94e06a5`, comments `req_1ce0ce66-9bf4-483e-b473-63a9af10602a`, workflow image `req_529c8b0a-17ff-4184-b8a4-127d22c9fd76`, next task `req_fe3683db-f0c7-4dfb-9089-0bd62ebf617d`, and next deal user `req_0dc4e296-e772-4f3b-8e23-1589db2ad836`. The same nine query paths also returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for form save, form update, audit, or undo audit. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for form save, form update, audit, or undo audit. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed workflow data, safe workflow form/audit writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed workflow data, safe workflow form/audit writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Client-Only Gap Findings
+## App Client-Only 缺口发现
 
-2026-05-21: Section 3.5 client-only gap investigation is closed as explicit blocker triage, not as gap repair or independent `apps/api` migration.
+2026-05-21: Section 3.5 client-only gap investigation is closed as explicit blocker triage, not as gap repair or independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The four paths are exposed by `apps/app/src/api/resource.ts`: `/app/itemRelease.queryFinishItemRelease`, `/app/purchase/updatePurchaseApply`, `/app/purchaseApply.listAuditHistoryOrders`, and `/app/resourceStore.listAllocationStoreHisAuditOrders`.
+The four paths are exposed by `apps/app/src/api/resource.ts`: `/app/itemRelease.queryFinishItemRelease`, `/app/purchase/updatePurchaseApply`, `/app/purchaseApply.listAuditHistoryOrders`, and `/app/resourceStore.listAllocationStoreHisAuditOrders`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Observed page callers exist for three of them: `pages-sub/resource/item-out-audit.vue` calls the non-V2 item-release history path, `pages-sub/resource/allocation-audit.vue` calls the allocation history path, and `pages-sub/resource/edit-purchase-apply.vue` calls `updatePurchaseApply()`. No direct page caller was found in this scan for `listAuditHistoryOrders()`, but the wrapper exists and must remain tracked.
+Observed page callers exist for three of them: `pages-sub/resource/item-out-audit.vue` calls the non-V2 item-release history path, `pages-sub/resource/allocation-audit.vue` calls the allocation history path, and `pages-sub/resource/edit-purchase-apply.vue` calls `updatePurchaseApply()`. No direct page caller was found in this scan for `listAuditHistoryOrders()`, but the wrapper exists and must remain tracked.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No exact old runtime endpoint was found for the four paths. The old item-release module registers `/app/itemRelease.queryFinishItemReleaseV2`, not the non-V2 path. The resource module registers current undo/audit paths but not the three history gap paths. The purchase module does not register `/app/purchase/updatePurchaseApply`. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` also has no exact app legacy entries for these paths.
+No exact old runtime endpoint was found for the four paths. The old item-release module registers `/app/itemRelease.queryFinishItemReleaseV2`, not the non-V2 path. The resource module registers current undo/audit paths but not the three history gap paths. The purchase module does not register `/app/purchase/updatePurchaseApply`. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` also has no exact app legacy entries for these paths.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production GET samples for the three read gaps returned HTTP 500 through the independent API front door and HTTP 500 through the direct old App fallback server. Production request ids were `req_6c90d16e-45b6-47db-b4ca-6f8b15d661ec` for `/app/itemRelease.queryFinishItemRelease`, `req_e9c02c31-6b52-4c30-aaeb-08e848937aea` for `/app/purchaseApply.listAuditHistoryOrders`, and `req_bd38a683-8ea1-4db9-919c-6628119fad0f` for `/app/resourceStore.listAllocationStoreHisAuditOrders`. The response body shape was `{ error, status, unhandled }` rather than a legacy success envelope.
+Production GET samples for the three read gaps returned HTTP 500 through the independent API front door and HTTP 500 through the direct old App fallback server. Production request ids were `req_6c90d16e-45b6-47db-b4ca-6f8b15d661ec` for `/app/itemRelease.queryFinishItemRelease`, `req_e9c02c31-6b52-4c30-aaeb-08e848937aea` for `/app/purchaseApply.listAuditHistoryOrders`, and `req_bd38a683-8ea1-4db9-919c-6628119fad0f` for `/app/resourceStore.listAllocationStoreHisAuditOrders`. The response body shape was `{ error, status, unhandled }` rather than a legacy success envelope.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for `/app/purchase/updatePurchaseApply`. If retained in independent `apps/api`, it needs an exact handler or product retirement decision plus default guard, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for `/app/purchase/updatePurchaseApply`. If retained in independent `apps/api`, it needs an exact handler or product retirement decision plus default guard, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, client-only gap fixes, DB-backed resource/purchase/item-release data, safe purchase update writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, client-only gap fixes, DB-backed resource/purchase/item-release data, safe purchase update writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Server-Only Endpoint Summary Findings
+## App Server-Only 端点汇总发现
 
-2026-05-21: Section 3.5 server-only endpoint investigation is closed as cross-module classification, not as exact `apps/api` migration or deletion approval.
+2026-05-21: Section 3.5 server-only endpoint investigation is closed as cross-module classification, not as exact `apps/api` migration or deletion approval.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The row name is broader than the actual evidence. `contact` is the only named module currently classified as server-only/mock compatibility in the strict App H5 caller scan. `test` is diagnostic/mock-only. `activity`, `notice`, `profile`, `video`, `staff`, and `oa-workflow` all have real App H5 API wrappers and page or route callers, so they are not server-only in the strict caller sense.
+The row name is broader than the actual evidence. `contact` is the only named module currently classified as server-only/mock compatibility in the strict App H5 caller scan. `test` is diagnostic/mock-only. `activity`, `notice`, `profile`, `video`, `staff`, and `oa-workflow` all have real App H5 API wrappers and page or route callers, so they are not server-only in the strict caller sense.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-All named modules are imported by `apps/app/server/shared/runtime/runtime-endpoints.ts` and therefore exist in the old App runtime registry. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not import these module definitions; it maps exact app legacy definitions from fee, repair, and floor only. Current production success responses for these modules, where present, remain fallback evidence unless a later slice adds exact independent handlers and corresponding contract/guard evidence.
+All named modules are imported by `apps/app/server/shared/runtime/runtime-endpoints.ts` and therefore exist in the old App runtime registry. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not import these module definitions; it maps exact app legacy definitions from fee, repair, and floor only. Current production success responses for these modules, where present, remain fallback evidence unless a later slice adds exact independent handlers and corresponding contract/guard evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The cross-module summary artifact is `.tmp/phase7-dev-browser/2026-05-21-server-only-endpoint-summary.md`. It points to the stable module artifacts for activity, contact, notice/profile/video/test, staff, and oa-workflow.
+The cross-module summary artifact is `.tmp/phase7-dev-browser/2026-05-21-server-only-endpoint-summary.md`. It points to the stable module artifacts for activity, contact, notice/profile/video/test, staff, and oa-workflow.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-This summary is intended to prevent two opposite mistakes: deleting old runtime modules just because current H5 caller scan is thin, and claiming exact independent migration just because production `/app/**` fallback returned 200.
+This summary is intended to prevent two opposite mistakes: deleting old runtime modules just because current H5 caller scan is thin, and claiming exact independent migration just because production `/app/**` fallback returned 200.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed data, production App H5 Network cutover, safe writes, shadow-off/fallback retirement, retirement ledger completeness, or old App server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed data, production App H5 Network cutover, safe writes, shadow-off/fallback retirement, retirement ledger completeness, or old App server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## App Renovation Exploration Findings
+## App Renovation 探索发现
 
-2026-05-21: Section 3.5 `renovation` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.
+2026-05-21: Section 3.5 `renovation` exploration is closed as page-caller/fallback/write-risk triage, not as independent `apps/api` migration.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/server/modules/renovation/endpoints.ts` registers eight old App runtime endpoints. Three paths are read-compatible: `/app/roomRenovation/queryRoomRenovation`, `/app/roomRenovation/queryRoomRenovationRecord`, and `/app/roomRenovation/queryRoomRenovationRecordDetail`. Five paths are mutations: `/app/roomRenovation/updateRoomToExamine`, `/app/roomRenovation/saveRoomRenovationDetail`, `/app/roomRenovation/updateRoomRenovationState`, `/app/roomRenovation/updateRoomDecorationRecord`, and `/app/roomRenovation/deleteRoomRenovationRecord`.
+`apps/app/server/modules/renovation/endpoints.ts` registers eight old App runtime endpoints. Three paths are read-compatible: `/app/roomRenovation/queryRoomRenovation`, `/app/roomRenovation/queryRoomRenovationRecord`, and `/app/roomRenovation/queryRoomRenovationRecordDetail`. Five paths are mutations: `/app/roomRenovation/updateRoomToExamine`, `/app/roomRenovation/saveRoomRenovationDetail`, `/app/roomRenovation/updateRoomRenovationState`, `/app/roomRenovation/updateRoomDecorationRecord`, and `/app/roomRenovation/deleteRoomRenovationRecord`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-The old repository is in-memory with 36 seeded renovation applications, tracking records, and optional media rows. Examine, acceptance, finish-state update, record add, and record delete mutate in-memory application, record, or media state.
+The old repository is in-memory with 36 seeded renovation applications, tracking records, and optional media rows. Examine, acceptance, finish-state update, record add, and record delete mutate in-memory application, record, or media state.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-`apps/app/src/api/renovation.ts`, `pages-sub/property/renovation.vue`, `renovation-detail.vue`, `renovation-record.vue`, `renovation-record-handle.vue`, and `renovation-record-detail.vue` prove real App H5 callers exist. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register renovation exact handlers, so production 200 responses are old App server fallback samples through the independent API front door, not migrated exact handlers.
+`apps/app/src/api/renovation.ts`, `pages-sub/property/renovation.vue`, `renovation-detail.vue`, `renovation-record.vue`, `renovation-record-handle.vue`, and `renovation-record-detail.vue` prove real App H5 callers exist. Independent `apps/api/server/shared/runtime/runtime-endpoints.ts` does not register renovation exact handlers, so production 200 responses are old App server fallback samples through the independent API front door, not migrated exact handlers.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: renovation list `req_d45bc0a3-4c41-43a0-854d-8bc29fca9234` with sample `REN_0001/ROOM_0001/state=3000`, record list `req_8cdee700-427c-4071-9bc0-2ac68451ca4f` with sample `RR_0001/REN_0001/state=3000`, and record detail `req_cc956105-e0ba-4ec0-9d63-32ffcd4e60af` with an empty media array for the selected record. The same three read paths returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.
+Production read-only samples returned old `{success,code,message,data,timestamp}` envelopes: renovation list `req_d45bc0a3-4c41-43a0-854d-8bc29fca9234` with sample `REN_0001/ROOM_0001/state=3000`, record list `req_8cdee700-427c-4071-9bc0-2ac68451ca4f` with sample `RR_0001/REN_0001/state=3000`, and record detail `req_cc956105-e0ba-4ec0-9d63-32ffcd4e60af` with an empty media array for the selected record. The same three read paths returned old envelopes from the default fallback server; representative app H5 homepage requests returned HTTP 404, so this is API-layer fallback evidence, not App H5 page-level Network evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No production POST was executed for examine, acceptance, finish-state update, record add, or record delete. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.
+No production POST was executed for examine, acceptance, finish-state update, record add, or record delete. If retained in independent `apps/api`, these endpoints need explicit default guards, controlled write window, read-back, rollback/cleanup, residual check, and App H5 evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.
+Current ready evidence remains `READY_CONFIGURED` with database probe disabled, not `DB_READY`.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove exact `apps/api` handlers, DB-backed renovation data, safe renovation writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.
+No-go: this finding does not prove exact `apps/api` handlers, DB-backed renovation data, safe renovation writes, production App H5 Network cutover, shadow-off/fallback retirement, or old app server retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## Production Homepage Source Findings
+## 生产首页来源发现
 
-2026-05-21: Section 4A production homepage source task is closed as package-field evidence only.
+2026-05-21: Section 4A production homepage source task is closed as package-field evidence only.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Structured `ConvertFrom-Json` reads confirmed the current authoritative production entrypoints:
+Structured `ConvertFrom-Json` reads confirmed the current authoritative production entrypoints:（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-- Admin H5: `apps/admin/package.json` -> `https://01s-11comm.ruan-cat.com`
-- App H5: `apps/app/package.json` -> `https://01s-11-app.ruan-cat.com`
-- Unified API server: `apps/api/package.json` -> `https://01s-11-server.ruan-cat.com`
+- Admin H5: `apps/admin/package.json` -> `https://01s-11comm.ruan-cat.com`（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+- App H5: `apps/app/package.json` -> `https://01s-11-app.ruan-cat.com`（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+- Unified API server: `apps/api/package.json` -> `https://01s-11-server.ruan-cat.com`（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-Supplemental direct field reads with `Select-String` matched the same three values. Earlier inline `node -e` attempts were discarded because PowerShell quoting mangled the JavaScript; no files were changed by those failed commands. The accepted evidence source is the structured PowerShell JSON read plus direct field reads.
+Supplemental direct field reads with `Select-String` matched the same three values. Earlier inline `node -e` attempts were discarded because PowerShell quoting mangled the JavaScript; no files were changed by those failed commands. The accepted evidence source is the structured PowerShell JSON read plus direct field reads.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-No-go: this finding does not prove production health, production ready, `DB_READY`, Chrome page Network, local dev base URL, admin resolver base, app shadow/API base, shadow-off/fallback retirement, or old service retirement.
+No-go: this finding does not prove production health, production ready, `DB_READY`, Chrome page Network, local dev base URL, admin resolver base, app shadow/API base, shadow-off/fallback retirement, or old service retirement.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
 
-## Task 102 Contract Upload/R2 Findings
+## 2026-05-24 1D 试点批次发现
+
+本批只为具名试点端点补独立 `apps/api` 精确覆盖，不关闭整个工单模块、采购/资源 client-only gap 类、contract upload/R2、生产 DB readiness、生产 H5 切流或退役门禁。
+
+`property-manage/contract-manage/type/list` remains an admin canonical `JsonVO<PageDTO>` endpoint. The adapter evidence declares `dataSourceStatus=drizzle-ctTypes-when-database-configured-empty-fallback-without-database`: with a Nitro event and DB URL it reads `ctTypes`; without database configuration the in-memory fallback remains empty-compatible. The manifest status stays conservative as `available-in-apps-api-not-caller-verified`; local admin browser evidence proves `/api-shadow` can reach the independent API, but the full admin business page redirected to login, so this is not production page cutover or login-through page evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+`/app/workorder/todo/list` and `/app/workorder/detail` now have exact independent `apps/api` handlers with the unified app legacy contract `{ code, msg, data }`, phase `phase7-work-order-readonly`, owner `work-order`, and `app-shadow-allowlist`. The data source is deterministic compatibility seed data, not DB-backed data and not production real sample evidence. No work-order write endpoints were registered; create/update/start/complete/audit/cancel/copy/finish remain out of scope.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+`/app/purchase/updatePurchaseApply` now has an exact independent guard endpoint, phase `phase7-purchase-guarded-write`, owner `purchase`, and `blocked-for-execution`. The guard is intentionally no-go even if the generic `PHASE7_ALLOW_LEGACY_MUTATIONS` flag is set, because no exact old server source exists for this client-only write path. No production POST, real write, read-back, rollback, or cleanup evidence was executed or claimed.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+Browser evidence is local only. Admin artifact `.tmp/phase7-dev-browser/2026-05-24-admin-contract-type-list-fetch.json` and matching `.network-request` / `.network-response` show `POST http://127.0.0.1:8080/api-shadow/api/property-manage/contract-manage/type/list`, status 200, `x-api-phase=phase3-infra`, request-id `req_30638265-886b-4f26-8f48-8e1bdaa70055`, `success=true`, `total=3`. App artifact `.tmp/phase7-dev-browser/2026-05-24-app-workorder-page-natural.network-response` shows the natural `do-work` page request to `http://127.0.0.1:3102/app/workorder/todo/list?page=1&row=10&communityId=COMM_001`, status 200, `x-api-phase=phase3-infra`, request-id `req_7486d245-7cfd-4a01-901c-e133951f150b`, `code=0`, `total=2`. The app page emitted repeated Vue/z-paging scheduler errors `Cannot assign to read only property '_' of object '#<Object>'`; treat this as page-layer residual risk, not API handler failure.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+验证证据：TDD 红灯只因为新工单和采购端点尚未注册而失败；转绿后 6 文件 28 测试通过。扩展本地 API 验证 `tests/legacy tests/runtime tests/infra` 为 15 文件 85 测试通过。`@01s-11comm/api` 与 `@01s-11comm/admin` 类型检查通过，OpenSpec strict 校验通过。默认 HTTP gate 因未设置生产环境变量而跳过，因此本批没有产出生产 HTTP 证据。
+
+禁止误判：不得把本批写成生产 `DB_READY`、真实 DB-backed 工单数据、生产 App/Admin H5 Network 完成、采购更新写入闭环、工单写入闭环、shadow-off/fallback 退役、旧 app server 退役或完整 client-only gap 关闭。
+
+## 2026-05-24 1D.5 工单只读续批发现
+
+本批只将具名工单只读续批端点升级为独立 `apps/api` 精确覆盖：`/app/workorder/copy/list`、`/app/workorder/task/list`、`/app/workorder/task/items`。连同此前的 `/app/workorder/todo/list` 与 `/app/workorder/detail`，App H5 影子放行列表已覆盖五条工单只读路径，并继续排除七条工单写入路径。
+
+已发现并保留的兼容边界：`/app/workorder/copy/list` 保留旧来源行为，即接受 `communityId` 但不按它过滤；`/app/workorder/task/list` 与 `/app/workorder/task/items` 同时接受 `WORK_001` 和 `WO_001` 风格的工单 ID，并在响应行里返回调用方请求的 `workId`；`/app/workorder/task/items` 保留 `states` 逗号筛选，并对未知工单 ID 返回空分页而不是 404。
+
+本地 App H5 Network 证据命中 `http://127.0.0.1:3102`，不是旧 app fallback：抄送列表 request-id `req_8ae1688f-c994-4407-b03e-717ee6e1f34f` 返回 `total=2` 与 `isCopyToMe=true`；任务列表 request-id `req_4a1c8858-b5fe-4e4c-a37e-9c51c12a0aba` 返回 `TASK_WO_001_001` 与 `TASK_WO_001_002`；任务项 request-id `req_3bc55a74-07a0-47bb-aa9a-6649808f967c` 返回 `ITEM_WO_001_001` 与 `ITEM_WO_001_002`。证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d5-workorder-readonly-local-app-evidence.md`。
+
+页面层残留风险仍存在：`copy-work` 与 `do-copy-work` 出现已知 Vue/z-paging scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`。这记录为页面风险，不升级为 API handler 失败，因为目标 Network 响应为 HTTP 200 且 envelope 为预期的 `{ code, msg, data }`。`task-list` 只出现正常 Vite/app 日志和一次 CORB 提示，没有 API 失败。
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、DB-backed 工单数据、工单写入就绪、create/update/start/complete/audit/cancel/copy-finish 闭环、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。
+
+## 2026-05-24 1D.6 访客只读发现
+
+本批只将具名访客只读端点升级为独立 `apps/api` 精确覆盖：`/app/visit.getVisit` 与 `/app/visit.getVisitDetail`。`/app/visit.auditVisit` 被有意排除，它仍是写入端点，未来执行前需要 guard、受控写入窗口、读回、回滚/清理和残留检查。
+
+The independent visit adapter uses deterministic compatibility seed data, not a DB-backed repository. It preserves the app legacy `{ code, msg, data }` envelope, pagination fields, `state` filtering, `visitId` filtering, pending-task fields, and the old detail behavior where a missing or unknown `visitId` returns a successful empty pagination result rather than a 400/404. The endpoint layer registers GET/POST for the two readonly paths and keeps POST body parameters overriding query parameters. No audit endpoint is registered.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+Runtime manifest and App H5 shadow allowlist now agree for the two readonly paths. Manifest entries use phase `phase7-visit-readonly`, owner `visit`, response contract `{ code, msg, data }`, and status `app-shadow-allowlist`. The App H5 runtime-base allowlist routes the two readonly paths to `VITE_11COMM_API_BASE_URL` when shadow is enabled and still routes `/app/visit.auditVisit` to the legacy runtime base.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+本地 App H5 Network 证据命中独立本地 API，而不是旧 fallback：列表页 request-id `req_b6ea89ee-2681-4104-a7e4-02f850f395a5` 从 `http://127.0.0.1:3102/app/visit.getVisit?page=1&row=10&communityId=COMM_001` 返回 HTTP 200、`x-api-phase=phase3-infra`、`total=6`，样本为 `VISIT_00001/state=0/taskId=TASK_V_0001`；详情页 request-id `req_63429051-6a69-4e56-8c87-ee3e82320392` 从 `http://127.0.0.1:3102/app/visit.getVisitDetail?page=1&row=1&visitId=VISIT_00001&communityId=COMM_001` 返回 HTTP 200、`x-api-phase=phase3-infra`、`total=1`、`departureTime=2026-05-24 11:00:00`、`visitCase=Family visit`。证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d6-visit-readonly-local-app-evidence.md`。
+
+页面层残留风险仍存在：访客列表页反复出现已知 Vue/z-paging scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`，详情页也出现一次同类错误。该问题记录为页面层风险，不升级为 API handler 失败，因为目标 Network 响应为 HTTP 200 且旧 App envelope 符合预期。
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、DB-backed 访客数据、访客审核就绪、安全访客审批写入、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。
+
+## 2026-05-24 1D.7 个人资料只读发现
+
+本批只将具名个人资料只读端点升级为独立 `apps/api` 精确覆盖：`/app/profile.getUserProfile`、`/app/profile.listCommunities`、`/app/profile.listAttendanceRecords`。`/app/profile.changeCommunity` 与 `/app/profile.changePassword` 被有意排除，它们仍是写入/变更端点，未注册到独立 runtime registry，也未进入 App H5 影子放行列表。
+
+The independent profile adapter uses deterministic compatibility seed data, not a DB-backed repository. It preserves the app legacy `{ code, msg, data }` envelope, community keyword filtering, attendance generation by explicit month, a stable default month when the caller omits or passes an invalid month, and POST body over query parameter precedence at the endpoint layer. Profile, community, and attendance responses are clone-safe snapshots; no current community or password state is mutated by this batch.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+Runtime manifest and App H5 shadow allowlist now agree for the three readonly paths. Manifest entries use phase `phase7-profile-readonly`, owner `profile`, response contract `{ code, msg, data }`, and status `app-shadow-allowlist`. The App H5 runtime-base allowlist routes the three readonly paths to `VITE_11COMM_API_BASE_URL` when shadow is enabled and still routes `/app/profile.changeCommunity` and `/app/profile.changePassword` to the legacy runtime base.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+TDD 红灯证据符合预期：API 测试失败是因为 profile 端点、清单条目和 adapter 证据还不存在；App runtime-base 测试失败是因为三条 profile 只读路径仍解析到 `http://legacy.example.com`。转绿验证覆盖目标 API profile/runtime/infra/contract 测试、目标 App runtime-base 测试、扩展 API legacy/runtime/infra 测试、`@01s-11comm/api` typecheck、`@01s-11comm/app` type-check、OpenSpec strict 校验和 `git diff --check`。
+
+本地 App H5 Network 证据命中独立本地 API，而不是旧 fallback：profile 首页 request-id `req_7b9cfaac-8b8c-4c75-bf0b-24f01322cc50` 从 `http://127.0.0.1:3102/app/profile.getUserProfile` 返回 HTTP 200、`x-api-phase=phase3-infra`、`userName=Wang Xiaoming`；切换小区列表 request-id `req_04aec41a-5a9d-49ce-af51-34857a9bbae3` 从 `http://127.0.0.1:3102/app/profile.listCommunities` 返回 HTTP 200、`count=5`、首个小区 `Sunshine Garden`；考勤 request-id `req_69eaae85-3319-4f56-b4b2-70efedb30f4d` 从 `http://127.0.0.1:3102/app/profile.listAttendanceRecords?month=2026-05&staffId=STAFF_001` 返回 HTTP 200、`count=21`、首个规格 `1001/2002`。证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d7-profile-readonly-local-app-evidence.md`。
+
+页面层残留风险仍存在：profile 首页出现已知 Vue scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`；切换小区列表出现一次 CORB 提示，但目标只读请求成功且没有发起 change-community 写请求；考勤页反复出现 Vue scheduler 错误，并且页面可见空态，尽管目标 Network 响应包含考勤记录。这些均记录为页面层残留风险，不升级为 API handler 失败，因为目标 Network 响应为 HTTP 200 且旧 App envelope 符合预期。
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、DB-backed 个人资料数据、安全切换当前小区、改密码就绪、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。
+
+## 2026-05-24 1D.8 视频只读发现
+
+本批只将具名视频只读端点升级为独立 `apps/api` 精确覆盖：`/app/video.listMonitorArea`、`/app/video.listStaffMonitorMachine`、`/app/video.getPlayVideoUrl`。本批不声称覆盖任何真实摄像头平台、流控制命令、DB-backed 视频 repository、生产 H5 Network、shadow-off/fallback 退役或旧 app server 退役。
+
+The independent video adapter uses deterministic compatibility seed data, not a DB-backed repository. It preserves the app legacy `{ code, msg, data }` envelope, monitor-area list shape, monitor-machine pagination, `maId` filtering, `machineNameLike` filtering, default `machineId=MACHINE_0001`, and POST body over query parameter precedence at the endpoint layer. The returned play URL is the MDN sample video used for compatibility only; it is not real camera connectivity or video-platform evidence.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+Runtime manifest and App H5 shadow allowlist now agree for the three readonly paths. Manifest entries use phase `phase7-video-readonly`, owner `video`, response contract `{ code, msg, data }`, and status `app-shadow-allowlist`. The App H5 runtime-base allowlist routes the three video readonly paths to `VITE_11COMM_API_BASE_URL` when shadow is enabled.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+TDD 红灯证据符合预期：API 测试失败是因为 video 端点、清单条目和 adapter 证据还不存在；App runtime-base 测试失败是因为三条 video 只读路径仍解析到 `http://legacy.example.com`。转绿验证覆盖目标 API video/runtime/infra/contract 测试、目标 App runtime-base 测试、扩展 API legacy/runtime/infra 测试、`@01s-11comm/api` typecheck、`@01s-11comm/app` type-check、OpenSpec strict 校验和 `git diff --check`。
+
+本地 App H5 Network 证据命中独立本地 API，而不是旧 fallback：列表页区域请求 `req_2bf0385a-0237-4195-87bf-eb90b5669ce7` 从 `http://127.0.0.1:3102/app/video.listMonitorArea?page=1&row=100&communityId=COMM_001` 返回 HTTP 200、`x-api-phase=phase3-infra`、`total=4`、首个区域 `All Areas`；设备列表请求 `req_26bb5798-2d4d-47a8-81cc-ece00bcfa220` 从 `http://127.0.0.1:3102/app/video.listStaffMonitorMachine?page=1&row=10&communityId=COMM_001` 返回 HTTP 200、`total=26`、首台设备 `MACHINE_0001 / Monitor Device-01 / AREA_001`；播放页请求 `req_093cd4c5-0ba2-4c13-93ca-8384ba880505` 从 `http://127.0.0.1:3102/app/video.getPlayVideoUrl?communityId=COMM_001&machineId=MACHINE_0001` 返回 HTTP 200，内容为 MDN 示例 mp4 地址。证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d8-video-readonly-local-app-evidence.md`。
+
+页面层残留风险仍存在：视频列表页出现已知 Vue scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`，播放页加载外部示例媒体上下文时出现一次 CORB 提示。这些记录为页面层或外部媒体上下文风险，不升级为 API handler 失败，因为目标 Network 响应为 HTTP 200 且旧 App envelope 符合预期。
+
+A read-only reviewer flagged work-order, visit, profile, and purchase entries visible in the current diff as outside the video-only boundary. That is not treated as a Section 1D.8 blocker because those files contain earlier completed Section 1D.1, 1D.5, 1D.6, and 1D.7 work in the same uncommitted worktree. The video-specific files and declarations do not claim `DB_READY`, real camera connectivity, production H5 evidence, or retirement status.（中文说明：本行保留历史证据中的路径、命令、接口名或状态标识；语义以本文件中文结论和禁止误判口径为准。）
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、DB-backed 视频数据、真实摄像头/视频平台连通、视频流控制、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。
+
+## 2026-05-24 1D.10 App 旧端点模块分层纠偏发现
+
+用户指出 `apps/api/server/modules/profile`、`purchase`、`video`、`visit`、`work-order` 的接口写法与其他 `apps/api/server/modules` 不一致后，已复核 OpenSpec、现有模块和只读子代理审计结论。结论是：OpenSpec 并非没有规范，它在 `app-legacy-cutover` 与统一 `apps/api` 规范中已经要求显式 `adapter/service/repository` 分层、runtime 组装和 legacy adapter 契约边界；问题是此前实现没有贯彻该要求。
+
+偏差根因：此前实现优先把旧路径、旧响应 envelope、确定性兼容种子和测试快速跑通，导致 `legacy-adapter.ts` 同时承载类型、兼容数据、分页筛选、guard 和旧 envelope；`legacy-endpoints.ts` 还在模块顶层直接 `createLegacyXAdapter()`。这种写法能通过旧契约测试，但会形成第二套模块风格，后续切换 DB repository 或注入 runtime 时会继续扩散技术债。
+
+权衡结论：应该改格式，而且已经改。五个模块现在都补齐 `types.ts`、`repository.ts`、`service.ts`、`runtime.ts`、`index.ts`；确定性兼容数据移动到 repository，业务能力经 service 暴露，旧参数兼容和 `{ code, msg, data }` 输出保留在 legacy adapter，端点层统一通过 `getXRuntime(event).legacyAdapter` 分发。`purchase` 虽然仍是默认 409 guard，也改成 repository/service/runtime 注入结构；阻断语义不变，不执行真实写入。
+
+防回归证据：新增 `apps/api/tests/infra/app-legacy-module-layering.test.ts`。红灯阶段 15 个断言全部失败，原因分别是五个模块缺少分层文件、端点未走 runtime、adapter 未接收 service 注入；修复后该测试 1 文件 15 测试通过。结构测试加五个旧端点契约测试共 6 文件 41 测试通过，说明格式统一没有改变旧响应行为。`rg "const legacyAdapter = createLegacy|createLegacy(Profile|Purchase|Video|Visit|WorkOrder)Adapter\(\)"` 对五个模块无命中。
+
+验证边界：本批运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过，并对本批文件运行 `git diff --check` 通过。更宽的 `runtime/endpoint-manifest/phase7-api-contracts` 回归和 `pnpm -F @01s-11comm/api run typecheck` 当前被 §1D.9 公告只读批次已写红灯阻断：测试已预期 `/app/notice.listNotices` 和 `apps/api/server/modules/notice/legacy-adapter.ts`，但公告模块尚未实现。因此 §1D.10 的结构纠偏可记录为已实施和局部绿灯，但完整验证项不能勾选完成。
+
+## 2026-05-24 1D.9 公告只读暂停发现
+
+§1D.9 目前只是打开批次，尚未实现。当前红灯测试刻意描述 `/app/notice.listNotices` 的目标状态；在公告适配器、端点注册、运行时清单条目、App H5 影子放行列表、绿灯验证和浏览器证据都存在之前，不得把这些红灯测试当作迁移完成证据。
+
+当前红灯状态：`apps/api/tests/legacy/notice-legacy-endpoints.test.ts` 是新增文件，失败原因是 `runtimeEndpointDefinitions` 还没有 `/app/notice.listNotices` 精确处理器。`apps/api/tests/runtime/endpoint-registry.test.ts`、`apps/api/tests/infra/endpoint-manifest.test.ts` 和 `apps/api/tests/infra/phase7-api-contracts.test.ts` 已有公告相关预期/导入；在 `apps/api/server/modules/notice/legacy-adapter.ts`、`legacy-endpoints.ts` 和 `runtime-endpoints.ts` 实现前，这些断言会失败。`apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts` 已有放行列表预期；在 `apps/app/src/http/runtime-base.ts` 纳入公告路径前，该测试会失败。
+
+下次继续可复用的只读审计事实：旧 App runtime 为 `/app/notice.listNotices` 注册 GET 和 POST；自然 H5 调用只使用 GET。旧参数为 `page`、`row`、`communityId`，以及可选 `noticeTypeCd`、`noticeId`、`titleLike`。旧列表/详情响应负载为 `{ notices, total, page, row }`；每条公告包含 `noticeId`、`title`、`context`、`startTime`、可选 `timeStr`、`noticeTypeCd` 和 `communityId`。旧筛选规则是 `communityId`/`noticeTypeCd`/`noticeId` 精确匹配，加上 `title.includes(titleLike)`。空结果仍返回成功响应，`notices=[]` 且 `total=0`。
+
+后续浏览器证据应在配置本地 `apps/api` 与 App H5 影子环境后，使用本地 App H5 页面 `http://localhost:3000/#/pages/notice/index` 和 `http://localhost:3000/#/pages/notice/detail?noticeId=NOTICE_0001`。所需证据必须是 `/app/notice.listNotices` 的 Network 请求命中本地 `apps/api`，而不是旧服务 fallback。
+
+禁止误判：不得把当前 §1D.9 状态写成精确处理器覆盖、绿灯验证、本地浏览器证据、生产 App H5 Network、生产 `DB_READY`、DB-backed 公告数据、真实公告 repository 迁移、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。
+
+## 2026-05-24 1D.9 公告只读完成发现
+
+本批已把 `/app/notice.listNotices` 从旧 app fallback 风险推进为独立 `apps/api` 精确处理器。实现上没有沿用旧 `apps/app/server/modules/notice` 的扁平写法，而是按已经纠偏的 App legacy 模块格式补齐 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 七层；`legacy-adapter.ts` 只负责旧参数兼容、分页筛选入参归一和旧 `{ code, msg, data }` envelope，确定性兼容种子在 `repository.ts`，运行时组装在 `runtime.ts`。
+
+兼容边界：公告数据是确定性兼容种子，不是 DB-backed repository。筛选规则覆盖 `communityId`、`noticeTypeCd`、`noticeId` 精确匹配和 `titleLike` 包含匹配；分页返回 `{ notices, total, page, row }`；空结果保持 `code=0` 成功 envelope；POST 入口保持 body 覆盖 query 的旧端点兼容规则。该设计只服务公告只读列表和详情式查询，不包含公告新增、编辑、删除、真实库样本或发布流程。
+
+运行时和 App H5 影子状态已经对齐：`runtimeEndpointManifest` 中 `/app/notice.listNotices` 为 phase `phase7-notice-readonly`、owner `notice`、response contract `{ code, msg, data }`、status `app-shadow-allowlist`；App H5 的 `PHASE2_API_SHADOW_ENDPOINTS` 已加入 `/app/notice.listNotices`。结构防回归测试也已扩展到 `notice`，避免新的 App legacy 模块重新退回直接在 endpoint 顶层创建 adapter 的写法。
+
+验证证据：红灯阶段 API 失败点是公告精确处理器未注册、manifest 缺项和 `notice/legacy-adapter` 缺文件；App 失败点是公告路径仍解析到旧基础地址。实现后目标 API 矩阵 5 文件 50 测试通过，App notice 影子路由测试 1 文件 2 测试通过；扩展 API 回归 10 文件 76 测试通过；`@01s-11comm/api` typecheck、`@01s-11comm/app` type-check、OpenSpec strict、`git diff --check` 和 `git diff --cached --check` 均通过。
+
+本地 App H5 Network 证据命中独立本地 API，而不是旧 fallback：公告列表页 request-id `req_4c802807-b15f-4a14-9659-376314d9df9f` 从 `http://127.0.0.1:3102/app/notice.listNotices?page=1&row=10&communityId=COMM_001&noticeTypeCd=1001` 返回 HTTP 200、`x-api-phase=phase3-infra`、`total=25`、首条 `NOTICE_0001 / Elevator Maintenance Notice - Important`；公告详情页 request-id `req_5746ef60-4833-4105-ba24-a330989859ce` 从 `http://127.0.0.1:3102/app/notice.listNotices?page=1&row=1&communityId=COMM_001&noticeId=NOTICE_0001` 返回 HTTP 200、`total=1`、首条 `NOTICE_0001`。证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-notice-local-app-network-summary.md`。
+
+页面层残留风险仍存在：公告列表和详情页控制台出现已知 Vue/z-paging scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`，详情页还出现一次 CORB 提示。该问题没有阻止目标 Network 请求、响应和页面主要内容展示，但不能把本轮页面证据写成“控制台完全无错误”。它记录为页面层残留风险，不升级为 API handler 失败。
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、DB-backed 公告数据、真实公告库样本、公告写入口完成、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。
+
+## 2026-05-24 1D.10 验证阻断解除发现
+
+§1D.10 原先只完成了结构纠偏和局部绿灯，完整验证被 §1D.9 的公告红灯阻断。公告模块实现后，该阻断已解除：结构测试覆盖范围从五个纠偏模块扩展到 `notice`、`profile`、`purchase`、`video`、`visit`、`work-order` 六个模块；扩展 API 回归、`api` typecheck、OpenSpec strict 和 diff check 均已通过。
+
+该解除只说明接口格式统一和当前本地验证闭环完成，不改变各模块的数据源和风险等级。`profile`、`video`、`visit`、`work-order` 和 `notice` 仍是确定性兼容种子或兼容样例数据；`purchase` 仍是默认阻断 guard；所有写入口、真实 DB 样本、生产页面 Network、shadow-off/fallback 与退役台账仍需按后续具名批次单独证明。
+
+## 任务 102 Contract Upload/R2 发现
 
 2026-05-21：task102 对应 `property-manage/contract-manage/upload/{init,sign-part,complete,abort,status}`。当前结论为 BLOCK，不能勾选完成。本轮不是完成 R2 迁移，而是把独立 `apps/api` 内的 mock-like success 收敛为显式阻断，防止 `mock-upload-id`、空 `signedUrl` 或 `unknown` status 被误判为可用。
 
@@ -1076,3 +1210,13 @@ Evidence boundary：专项测试断言 5 个 upload URL 仍不在 `runtimeEndpoi
 Verification evidence：红灯命令 `pnpm -F @01s-11comm/api exec vitest run tests/admin/contract-upload-r2-blocked.test.ts` 先失败，失败点为 adapter 返回 placeholder success；修复后同命令通过，1 文件 3 tests passed。组合回归 `pnpm -F @01s-11comm/api exec vitest run tests/admin/contract-upload-r2-blocked.test.ts tests/admin/contract-change-draft-crud.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts tests/http/phase7-gated-http.test.ts` 通过，4 文件 18 tests passed + 1 文件 22 skipped。`pnpm -F @01s-11comm/api run typecheck` 通过。只读探索/复核报告位于 `.tmp/phase7-agent-reports/2026-05-21-task102-contract-upload-r2-explorer.md` 与 `.tmp/phase7-agent-reports/2026-05-21-task102-contract-upload-r2-review-criteria.md`，结论均为 BLOCK。
 
 No-go：不得把 route file 存在、adapter 409、schema table 存在、旧 admin upload-service、前端 hook/cache 或 skipped HTTP gate 写成 upload/R2 完成。仍缺 `apps/api` AWS SDK 依赖、脱敏 R2 env、真实 R2 multipart create/sign/status/complete/abort、DB upload session/part 写入读回、异常清理与幂等、前端断点续传页面闭环、local/production HTTP 或浏览器证据、生产 `DB_READY`、shadow-off/fallback 和 retirement ledger。5 个 upload route 不得加入 available manifest，不得写成 old path exact covered、生产上传完成或旧服务可退役。
+
+## 2026-05-24 App legacy endpoint 格式统一发现
+
+本轮确认用户指出的格式偏差需要修复：`profile`、`purchase`、`video`、`visit`、`work-order` 这些 App legacy 模块虽然已经具备 `runtime -> legacyAdapter` 分发，但各 `legacy-endpoints.ts` 仍保留本地重复 `mergeInput/asRecord` 胶水，和统一 Nitro 模块分层要求不完全一致。已将输入合并逻辑抽到 `apps/api/server/shared/runtime/legacy-endpoint-input.ts`，并同步收敛 `fee`、`floor`、`repair`、`notice` 等同类 legacy endpoint 文件，避免后续模块各自复制不同版本的 query/body 合并逻辑。
+
+防回归机制已经补到测试层：`app-legacy-module-layering.test.ts` 不再只检查文件存在，而是同时检查 endpoint 层不得直接引入 adapter/service/repository、必须经 `getXRuntime(event).legacyAdapter` 分发、runtime manifest 与 `{ code, msg, data }` response contract 对齐、只读端点保持 GET/POST、guard 写入口保持 POST 和 blocked 状态。`purchase-legacy-endpoints.test.ts` 补充 query/body 同传仍返回 409 guarded legacy envelope，证明统一 helper 没有放开真实写入。
+
+本轮边界：这只是接口格式和自检机制收敛，不是数据源升级。`profile`、`video`、`visit`、`work-order`、`notice` 仍不是生产 `DB_READY`，`purchase` 仍不能真实写入；本轮也没有完成生产 App H5 Network、真实库样本、shadow-off/fallback、写入读回回滚或旧 app server 退役。
+
+2026-05-24 活动批次暂停发现：目前能确认的只是 `1D.11` 已成为当前唯一接力入口，活动相关的独立 `apps/api/server/modules/activity/*`、运行时清单/注册表/契约闭环、`apps/app/src/http/runtime-base.ts` 放行和 `.tmp/phase7-dev-browser/` 证据仍未补齐；因此不要把现状误判为 `DB_READY`、真实库样本或写入口已放行。下一次接力继续保持中文主导记录，避免再写纯英文日志。

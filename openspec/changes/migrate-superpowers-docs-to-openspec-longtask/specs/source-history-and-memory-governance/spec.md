@@ -143,3 +143,22 @@ Phase7 和统一 Nitro API 迁移默认 MUST 使用 OpenSpec canonical 与单一
 
 - **WHEN** 旧 artifact 不存在、不可读或与当前代码状态不匹配
 - **THEN** 对应证据必须降级为 historical pointer，并安排重新采集或在 `agent-findings.md` 记录阻断
+
+### Requirement: 执行记录中文治理
+
+OpenSpec 的任务描述、检查点、执行记录和发现记录 MUST 以中文为主。`tasks.md`、`agent-progress.md` 与 `agent-findings.md` 不得新增纯英文行；英文术语、命令、路径、状态码、接口名或 OpenSpec 关键字必须嵌入中文语境，同一行应说明中文动作、结论或边界。该 requirement MUST 作为后续接力、复核和日志验收的强制约束。
+
+#### Scenario: 记录任务、检查点或发现
+
+- **WHEN** 后续代理写入 `tasks.md`、`agent-progress.md` 或 `agent-findings.md`
+- **THEN** 每条新增记录必须包含中文语义主体；如需保留 `DB_READY`、`No-go`、`runtime manifest`、命令或 artifact path，必须在同一行或同一记录中给出中文解释，不得整行纯英文
+
+#### Scenario: 运行语言门禁
+
+- **WHEN** 后续代理完成文档、任务或日志变更并准备接力
+- **THEN** 必须对本轮新增行执行语言门禁：含英文字母但不含中文字符的新增行判定为违规；英文字母明显压过中文说明的新增行判定为混合语言候选并进入人工复核，复核结论必须写入 `agent-progress.md` 或 `agent-findings.md`
+
+#### Scenario: 发现语言违规
+
+- **WHEN** 语言门禁发现纯英文行、英文占满执行记录、或历史记录被复制成无中文解释的混合语言日志
+- **THEN** 后续代理必须先改写为中文主导记录；若因保留原始错误输出、命令或 artifact 摘要确需保留英文，必须在 `agent-findings.md` 记录原因、边界和后续处理，不得默默继续推进 runtime、DB_READY、退役或任务勾选
