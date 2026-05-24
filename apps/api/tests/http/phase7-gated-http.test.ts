@@ -950,6 +950,7 @@ describeWhenEnabled("phase7 gated apps/api http verification", () => {
 			"/app/fee.saveRoomCreateFee",
 			"/app/ownerRepair.saveOwnerRepair",
 			"/callComponent/ownerRepair.appraiseRepair",
+			"/app/purchase/updatePurchaseApply",
 		]) {
 			const response = await fetchJson(`${baseUrl}${path}`, {
 				method: "POST",

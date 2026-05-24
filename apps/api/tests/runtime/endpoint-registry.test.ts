@@ -60,7 +60,7 @@ describe("endpoint registry runtime", () => {
 		});
 	});
 
-	test("runtime endpoint definitions include only allowed Phase2 and Phase4A legacy endpoints", () => {
+	test("runtime endpoint definitions include only allowed Phase2, Phase4A, and Phase7 legacy endpoints", () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
 		expect(findEndpointDefinition(registry, "GET", "/app/fee.listFee")).toBeTruthy();
@@ -69,9 +69,31 @@ describe("endpoint registry runtime", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listOwnerRepairs")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/repairSetting.listRepairSettings")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/dict.queryRepairStates")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/workorder/todo/list")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/workorder/detail")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/workorder/copy/list")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/workorder/task/list")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/workorder/task/items")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/visit.getVisit")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/visit.getVisitDetail")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/profile.getUserProfile")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/profile.listCommunities")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/profile.listAttendanceRecords")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/video.listMonitorArea")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/video.listStaffMonitorMachine")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/video.getPlayVideoUrl")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/notice.listNotices")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.listActivitiess")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/purchase/updatePurchaseApply")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairDispatch")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/workorder/create")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/workorder/copy/finish")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/visit.auditVisit")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/profile.changeCommunity")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/profile.changePassword")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listResources")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineBmoImpl")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/machine/listMachineRecords")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/activities.saveActivities")).toBeUndefined();
 	});
 });

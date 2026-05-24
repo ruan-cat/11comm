@@ -1,11 +1,20 @@
 import { describe, expect, test } from "vitest";
 
-import { createAdminContractAdapter } from "../../server/modules/contract/admin-adapter";
+import {
+	contractTypeListAdminAdapterEvidence,
+	createAdminContractAdapter,
+} from "../../server/modules/contract/admin-adapter";
 import { createInMemoryContractRepository } from "../../server/modules/contract/repository";
 import { createContractService } from "../../server/modules/contract/service";
 import { createAdminFeeAdapter } from "../../server/modules/fee/admin-adapter";
 import { createInMemoryFeeRepository } from "../../server/modules/fee/repository";
 import { createFeeService } from "../../server/modules/fee/service";
+import { noticeLegacyAdapterEvidence } from "../../server/modules/notice/legacy-adapter";
+import { profileLegacyAdapterEvidence } from "../../server/modules/profile/legacy-adapter";
+import { purchaseLegacyGuardEvidence } from "../../server/modules/purchase/legacy-adapter";
+import { videoLegacyAdapterEvidence } from "../../server/modules/video/legacy-adapter";
+import { visitLegacyAdapterEvidence } from "../../server/modules/visit/legacy-adapter";
+import { workOrderLegacyAdapterEvidence } from "../../server/modules/work-order/legacy-adapter";
 import { createEndpointRegistry, dispatchEndpoint } from "../../server/shared/runtime/endpoint-registry";
 import { runtimeEndpointDefinitions, runtimeEndpointManifest } from "../../server/shared/runtime/runtime-endpoints";
 
@@ -456,6 +465,94 @@ describe("phase7 apps-api dual client contracts", () => {
 			responseContract: "{ code, msg, data }",
 			cutoverStatus: "app-shadow-allowlist",
 		});
+		expectManifestEntry("/app/workorder/todo/list", {
+			method: ["GET", "POST"],
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "work-order",
+			phase: "phase7-work-order-readonly",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		expectManifestEntry("/app/workorder/detail", {
+			method: ["GET", "POST"],
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "work-order",
+			phase: "phase7-work-order-readonly",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		for (const url of ["/app/workorder/copy/list", "/app/workorder/task/list", "/app/workorder/task/items"]) {
+			expectManifestEntry(url, {
+				method: ["GET", "POST"],
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "work-order",
+				phase: "phase7-work-order-readonly",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
+		for (const url of ["/app/visit.getVisit", "/app/visit.getVisitDetail"]) {
+			expectManifestEntry(url, {
+				method: ["GET", "POST"],
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "visit",
+				phase: "phase7-visit-readonly",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
+		for (const url of [
+			"/app/profile.getUserProfile",
+			"/app/profile.listCommunities",
+			"/app/profile.listAttendanceRecords",
+		]) {
+			expectManifestEntry(url, {
+				method: ["GET", "POST"],
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "profile",
+				phase: "phase7-profile-readonly",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
+		for (const url of [
+			"/app/video.listMonitorArea",
+			"/app/video.listStaffMonitorMachine",
+			"/app/video.getPlayVideoUrl",
+		]) {
+			expectManifestEntry(url, {
+				method: ["GET", "POST"],
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "video",
+				phase: "phase7-video-readonly",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
+		expectManifestEntry("/app/notice.listNotices", {
+			method: ["GET", "POST"],
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "notice",
+			phase: "phase7-notice-readonly",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		expectManifestEntry("/app/purchase/updatePurchaseApply", {
+			method: "POST",
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "purchase",
+			phase: "phase7-purchase-guarded-write",
+			cutoverStatus: "blocked-for-execution",
+		});
 	});
 
 	test("admin canonical adapter returns JsonVO instead of app legacy envelope", async () => {
@@ -507,6 +604,18 @@ describe("phase7 apps-api dual client contracts", () => {
 			});
 			expect(response).not.toHaveProperty("msg");
 		}
+	});
+
+	test("contract type list adapter exposes Phase7 evidence without widening scope", () => {
+		expect(contractTypeListAdminAdapterEvidence).toMatchObject({
+			endpoint: "/api/property-manage/contract-manage/type/list",
+			responseContract: "JsonVO<PageDTO>",
+			dataSourceStatus: "drizzle-ctTypes-when-database-configured-empty-fallback-without-database",
+			scope: "admin-ordinary-list-only",
+		});
+		expect(contractTypeListAdminAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining(["contract-manage-CUD", "contract-manage-detail", "contract-manage-upload", "R2"]),
+		);
 	});
 
 	test("contract-manage change and draft-contract CRUD adapters return JsonVO", async () => {
@@ -574,6 +683,273 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(response).not.toHaveProperty("message");
 	});
 
+	test("work-order readonly app legacy endpoint returns the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/workorder/todo/list",
+				query: { page: 1, row: 1, communityId: "COMM_001" },
+			},
+			{
+				path: "/app/workorder/copy/list",
+				query: { page: 1, row: 1, communityId: "COMM_001" },
+			},
+			{
+				path: "/app/workorder/task/list",
+				query: { page: 1, row: 1, workId: "WO_001" },
+			},
+			{
+				path: "/app/workorder/task/items",
+				query: { page: 1, row: 1, workId: "WO_001" },
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+					page: 1,
+					pageSize: 1,
+				},
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+		}
+	});
+
+	test("work-order readonly adapter evidence stays scoped to exact read handlers", () => {
+		expect(workOrderLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-pilot",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/workorder/todo/list",
+				"/app/workorder/detail",
+				"/app/workorder/copy/list",
+				"/app/workorder/task/list",
+				"/app/workorder/task/items",
+			],
+		});
+		expect(workOrderLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining(["/app/workorder/create", "/app/workorder/update", "/app/workorder/cancel"]),
+		);
+	});
+
+	test("visit readonly app legacy endpoint returns the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/visit.getVisit",
+				query: { page: 1, row: 1, communityId: "COMM_001" },
+			},
+			{
+				path: "/app/visit.getVisitDetail",
+				query: { page: 1, row: 1, visitId: "VISIT_00001", communityId: "COMM_001" },
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+					page: 1,
+					pageSize: 1,
+				},
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+		}
+	});
+
+	test("visit readonly adapter evidence stays scoped to exact read handlers", () => {
+		expect(visitLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-pilot",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: ["/app/visit.getVisit", "/app/visit.getVisitDetail"],
+			notCovered: ["/app/visit.auditVisit"],
+		});
+	});
+
+	test("profile readonly app legacy endpoint returns the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/profile.getUserProfile",
+				query: {},
+			},
+			{
+				path: "/app/profile.listCommunities",
+				query: { keyword: "Sun" },
+			},
+			{
+				path: "/app/profile.listAttendanceRecords",
+				query: { month: "2026-03", staffId: "STAFF_001" },
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: expect.anything(),
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+		}
+	});
+
+	test("profile readonly adapter evidence stays scoped to exact read handlers", () => {
+		expect(profileLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-pilot",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: ["/app/profile.getUserProfile", "/app/profile.listCommunities", "/app/profile.listAttendanceRecords"],
+			notCovered: ["/app/profile.changeCommunity", "/app/profile.changePassword"],
+		});
+	});
+
+	test("video readonly app legacy endpoint returns the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/video.listMonitorArea",
+				query: { page: 1, row: 2, communityId: "COMM_001" },
+			},
+			{
+				path: "/app/video.listStaffMonitorMachine",
+				query: { page: 1, row: 2, maId: "AREA_001", communityId: "COMM_001" },
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+				},
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+		}
+
+		const play = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/video.getPlayVideoUrl",
+			query: { machineId: "MACHINE_0001", communityId: "COMM_001" },
+		});
+		expect(play).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				url: expect.stringContaining("flower.mp4"),
+			},
+		});
+		expect(play).not.toHaveProperty("success");
+	});
+
+	test("video readonly adapter evidence stays scoped to exact read handlers", () => {
+		expect(videoLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-pilot",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready-no-real-camera",
+			responseContract: "{ code, msg, data }",
+			endpoints: ["/app/video.listMonitorArea", "/app/video.listStaffMonitorMachine", "/app/video.getPlayVideoUrl"],
+		});
+		expect(videoLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining(["real-camera-platform", "db-backed-video-data", "video-stream-control"]),
+		);
+	});
+
+	test("notice readonly app legacy endpoint returns the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/notice.listNotices",
+			query: { page: 1, row: 1, communityId: "COMM_001", noticeTypeCd: "1001" },
+		});
+
+		expect(response).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				notices: expect.any(Array),
+				total: expect.any(Number),
+				page: 1,
+				row: 1,
+			},
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+	});
+
+	test("notice readonly adapter evidence stays scoped to exact read handlers", () => {
+		expect(noticeLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-pilot",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: ["/app/notice.listNotices"],
+		});
+		expect(noticeLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining(["db-backed-notice-data", "notice-write-or-delete"]),
+		);
+	});
+
+	test("purchase client-only write gap is guarded without write evidence", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/purchase/updatePurchaseApply",
+			body: { applyId: "PA_001", communityId: "COMM_001" },
+		});
+
+		expect(response).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining("Phase7"),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+	});
+
+	test("purchase guard evidence declares no-go write status", () => {
+		expect(purchaseLegacyGuardEvidence).toMatchObject({
+			scope: "client-only-gap-write-guard",
+			dataSourceStatus: "no-exact-legacy-server-source",
+			endpoint: "/app/purchase/updatePurchaseApply",
+			defaultBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
+		});
+	});
+
 	test("manifest marks repair readonly DB-wired endpoints as app shadow allowlisted", () => {
 		expectManifestEntry("/app/ownerRepair.listOwnerRepairs", {
 			targetClient: "app",
@@ -637,6 +1013,9 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(urls).not.toContain("/api/property-manage/expense-manage/house-charge/create");
 		expect(urls).not.toContain("/api/property-manage/expense-manage/house-charge/update");
 		expect(urls).not.toContain("/api/property-manage/expense-manage/house-charge/delete");
+		expect(urls).not.toContain("/app/visit.auditVisit");
+		expect(urls).not.toContain("/app/profile.changeCommunity");
+		expect(urls).not.toContain("/app/profile.changePassword");
 	});
 
 	test("manifest marks high-risk app legacy mutation actions as blocked for execution", () => {
@@ -646,6 +1025,7 @@ describe("phase7 apps-api dual client contracts", () => {
 			"/app/fee.saveRoomCreateFee",
 			"/app/ownerRepair.saveOwnerRepair",
 			"/callComponent/ownerRepair.appraiseRepair",
+			"/app/purchase/updatePurchaseApply",
 		]) {
 			expectManifestEntry(url, {
 				targetClient: "app",

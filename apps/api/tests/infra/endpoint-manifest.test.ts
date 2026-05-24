@@ -207,6 +207,21 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/callComponent/ownerRepair.appraiseRepair");
 		expect(urls).toContain("/app/floor.queryFloors");
 		expect(urls).toContain("/app/floor.queryFloorDetail");
+		expect(urls).toContain("/app/workorder/todo/list");
+		expect(urls).toContain("/app/workorder/detail");
+		expect(urls).toContain("/app/workorder/copy/list");
+		expect(urls).toContain("/app/workorder/task/list");
+		expect(urls).toContain("/app/workorder/task/items");
+		expect(urls).toContain("/app/visit.getVisit");
+		expect(urls).toContain("/app/visit.getVisitDetail");
+		expect(urls).toContain("/app/profile.getUserProfile");
+		expect(urls).toContain("/app/profile.listCommunities");
+		expect(urls).toContain("/app/profile.listAttendanceRecords");
+		expect(urls).toContain("/app/video.listMonitorArea");
+		expect(urls).toContain("/app/video.listStaffMonitorMachine");
+		expect(urls).toContain("/app/video.getPlayVideoUrl");
+		expect(urls).toContain("/app/notice.listNotices");
+		expect(urls).toContain("/app/purchase/updatePurchaseApply");
 		for (const url of expenseManageAdminListEndpoints) {
 			expect(urls).toContain(url);
 		}
@@ -268,6 +283,11 @@ describe("phase7 endpoint manifest", () => {
 			expect(urls).toContain(url);
 		}
 		expect(urls).not.toContain("/app/ownerRepair.repairDispatch");
+		expect(urls).not.toContain("/app/workorder/create");
+		expect(urls).not.toContain("/app/workorder/copy/finish");
+		expect(urls).not.toContain("/app/visit.auditVisit");
+		expect(urls).not.toContain("/app/profile.changeCommunity");
+		expect(urls).not.toContain("/app/profile.changePassword");
 		expect(urls).not.toContain("/app/ownerRepair.listStaffRepairs");
 		expect(urls).not.toContain("/app/resourceStore.listResourceStores");
 		expect(urls).not.toContain("/app/resourceStore.listResources");
@@ -340,6 +360,126 @@ describe("phase7 endpoint manifest", () => {
 					ownerModule: "floor",
 					phase: "phase7-batch2-floor",
 					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/workorder/todo/list",
+					method: ["GET", "POST"],
+					ownerModule: "work-order",
+					phase: "phase7-work-order-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/workorder/detail",
+					method: ["GET", "POST"],
+					ownerModule: "work-order",
+					phase: "phase7-work-order-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/workorder/copy/list",
+					method: ["GET", "POST"],
+					ownerModule: "work-order",
+					phase: "phase7-work-order-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/workorder/task/list",
+					method: ["GET", "POST"],
+					ownerModule: "work-order",
+					phase: "phase7-work-order-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/workorder/task/items",
+					method: ["GET", "POST"],
+					ownerModule: "work-order",
+					phase: "phase7-work-order-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/visit.getVisit",
+					method: ["GET", "POST"],
+					ownerModule: "visit",
+					phase: "phase7-visit-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/visit.getVisitDetail",
+					method: ["GET", "POST"],
+					ownerModule: "visit",
+					phase: "phase7-visit-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/profile.getUserProfile",
+					method: ["GET", "POST"],
+					ownerModule: "profile",
+					phase: "phase7-profile-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/profile.listCommunities",
+					method: ["GET", "POST"],
+					ownerModule: "profile",
+					phase: "phase7-profile-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/profile.listAttendanceRecords",
+					method: ["GET", "POST"],
+					ownerModule: "profile",
+					phase: "phase7-profile-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/video.listMonitorArea",
+					method: ["GET", "POST"],
+					ownerModule: "video",
+					phase: "phase7-video-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/video.listStaffMonitorMachine",
+					method: ["GET", "POST"],
+					ownerModule: "video",
+					phase: "phase7-video-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/video.getPlayVideoUrl",
+					method: ["GET", "POST"],
+					ownerModule: "video",
+					phase: "phase7-video-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/notice.listNotices",
+					method: ["GET", "POST"],
+					ownerModule: "notice",
+					phase: "phase7-notice-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/purchase/updatePurchaseApply",
+					method: "POST",
+					ownerModule: "purchase",
+					phase: "phase7-purchase-guarded-write",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "blocked-for-execution",
 				}),
 				...expenseManageAdminListEndpoints.map((url) =>
 					expect.objectContaining({

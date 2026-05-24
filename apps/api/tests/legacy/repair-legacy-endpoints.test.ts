@@ -25,7 +25,7 @@ describe("repair legacy endpoints wave4a", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listStaffRepairs")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listResources")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/resourceStoreType.listResourceStoreTypes")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/workorder/todo/list")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/workorder/create")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/auditUser.listAuditComplaints")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/owner.queryOwnerCars")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/machine/listMachineRecords")).toBeUndefined();
