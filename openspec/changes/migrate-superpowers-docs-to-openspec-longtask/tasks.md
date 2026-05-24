@@ -4,6 +4,7 @@
 - [x] 旧三文档只作为迁移来源和核对材料，不再作为后续执行 checklist。
 - [x] `agent-progress.md` 只记录 checkpoint、验证命令和证据路径。
 - [x] `agent-findings.md` 只记录风险、冲突、失败路径和禁止误判。
+- [x] `agent-progress.md` 与 `agent-findings.md` 不得出现新的待执行 checkbox、endpoint backlog、排期队列或“下一批清单”；如发现此类内容，必须先合并回 `tasks.md` 的 §1D 或对应业务章节，未合并前不得作为接力入口。
 - [x] 每次状态变更后必须更新 `agent-progress.md`，并写入 Memorix。
 - [x] 任一任务没有验证证据时不得勾选完成。
 - [x] 临时来源审计已完成并迁入 canonical 文件；后续可执行任务、风险说明、接力 checkpoint 和规范要求必须落入 `tasks.md`、`agent-findings.md`、`agent-progress.md`、`design.md` 或 `specs/**`，不得维护第四份来源覆盖矩阵。
@@ -163,7 +164,53 @@ Task 133 failure handling contract: 任一 required check 失败时，不得勾�
 
 Task 133 no-go: 不得只跑无关命令冒充验证；不得用单一测试替代 browser evidence、DB_READY、真实库样本、写入回滚或 retirement gate；不得全局安装工具或依赖全局 turbo；不得把不可运行原因留空；不得把失败批次写成完成；不得把 OpenSpec strict、diff check、local HTTP 200、contract test、Vitest 或 historical evidence 升级为 production `DB_READY`、真实库样本、shadow-off/fallback、write closure 或 retirement candidate。
 
+## 1D. 2026-05-24 纠偏后的实施优先队列
+
+本节是对 2026-05-21 暂停复盘的任务树纠偏。它不删除历史完成项，也不新增第二任务源；后续首批执行优先从本节选择小批次，再把完成证据回写到对应业务章节。后文旧任务池仅作为对应业务章节和验收口径承接，不按原顺序继续扩张探索。首批活跃队列收敛为约 10 项 checkbox：6 项实施、2 项验证、1 项记录、1 项复核；后续活跃任务池继续按真实 Nitro 迁移实施 55%-60%、验证与证据 20%-25%、必要探索或动态补全 10%-15%、退役治理 5%-10%、历史文档治理 0% 控制。所有新增 checkbox 仍必须遵守 OpenSpec 文件级粒度：`[操作类型] 文件路径 - 具体改动`，比例说明不能替代 file-level 任务格式。
+
+### 1D.1 实施试点批次
+
+- [ ] [修改] `apps/api/server/modules/contract/admin-adapter.ts` - （实施 1/6）选定 `property-manage/contract-manage/type/list` 作为 admin 普通 list 试点，补齐独立 `apps/api` 返回契约、数据来源状态和 adapter 证据；不得夹带 CUD、detail、upload/R2。
+- [ ] [修改] `apps/api/server/shared/runtime/runtime-endpoints.ts` - （实施 2/6）对 `property-manage/contract-manage/type/list`、`/app/workorder/todo/list` 与 `/app/workorder/detail` 对齐 runtime manifest 字段、allowlist、coverage/status 口径和 caller 证据引用；缺口保持 `partial` 或 `unknown-needs-triage`。
+- [ ] [修改] `apps/admin/src/api/property-manage/contract-manage/type/index.ts` - （实施 3/6）复核并按需调整调用端 resolver，使页面请求命中统一 `apps/api`；不得改动同目录其他 contract endpoints。
+- [ ] [新增] `apps/api/server/modules/work-order/legacy-endpoints.ts` - （实施 4/6）为 `/app/workorder/todo/list` 与 `/app/workorder/detail` 新增独立 exact legacy handler，保持旧 App H5 envelope 或写明统一 app legacy contract；不得迁移 create/update/start/complete/audit/cancel 等写入口。
+- [ ] [新增] `apps/api/server/modules/work-order/legacy-adapter.ts` - （实施 5/6）为上述两个 work-order 只读入口补 compat adapter 和数据来源状态，明确只代表只读 exact handler 试点，不代表 `DB_READY` 或旧 app server 退役。
+- [ ] [新增] `apps/api/server/modules/purchase/legacy-adapter.ts` - （实施 6/6）对 `/app/purchase/updatePurchaseApply` 建立默认写入口 guard 或明确 no-go，默认禁止生产写入并返回受控阻断；不得伪造 read-back/rollback。
+- [ ] [验证] `apps/api/tests/legacy/` 与 `apps/api/tests/runtime/` - 为本批 work-order 只读 handler、purchase 写入口 guard、manifest/contract 边界补齐或更新对应 `*.test.ts`，并记录实际运行命令或未运行原因。
+- [ ] [验证] `.tmp/phase7-dev-browser/` - 对本批至少一个 admin list 页面和一个 app 只读页面补 Network 证据；记录 URL、method、status、响应摘要、console 状态和是否命中独立 `apps/api`。
+- [ ] [记录] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md` - 记录本批实施文件、验证命令、证据路径、动态补全原因和下一步，不得新增 checkbox backlog。
+- [ ] [复核] `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md` - 复核本批是否误把 fallback、blocked guard、HTTP 200、`READY_CONFIGURED` 或 Vitest 通过写成 exact migrated、`DB_READY` 或 retirement candidate。
+
+### 1D.2 动态任务补全纪律
+
+动态补全只允许服务于本批 named endpoint 的缺失文件、测试、HTTP/browser/DB evidence 或写入口 guard，不得扩张成新的长期探索清单。
+
+- 动态补全按固定顺序执行：先判断缺项是否属于当前 OpenSpec change；属于当前范围时，先追加或合并到 `tasks.md` 本节或对应业务章节；如果改变行为要求，同步 `specs/**/spec.md`；如果改变技术路线，同步 `design.md`；随后运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`；最后在 `agent-progress.md` 记录 checkpoint，并在 `agent-findings.md` 记录风险或 no-go。
+- `agent-progress.md` 只记录 checkpoint、命令、结果和证据路径；`agent-findings.md` 只记录风险、no-go、失败路径和证据边界；两者都不得承载新的 checkbox backlog。
+- 动态补全后的校验要求按本 change 既有门禁执行；校验失败或未运行时，必须记录原因，且不得勾选相关任务。
+
+### 1D.3 证据术语和状态边界
+
+以下术语只用于本节和后续业务章节回写，不新增 checkbox backlog：
+
+- `exact migrated`：独立 `apps/api` route、registry 或 handler 命中，并有 contract、manifest、caller 和适用验证证据闭环。
+- `fallback-only`：统一 API front door 返回 200，但 body 或行为仍来自 old App/Admin fallback；不得写成独立 handler 迁移完成。
+- `blocked write`：写入口被 guard 或 no-go 受控阻断；只能证明保护生效，不能写成写入迁移完成或生产写入闭环。
+- `DB_READY`：必须有生产 ready/probe 或真实 DB 样本证据；`READY_CONFIGURED`、HTTP 200、Vitest 通过、mock/fake DB 都不能替代。
+- `browser evidence`：真实页面 Network 命中统一 API，并记录 URL、method、status、响应摘要、console 状态和命中的 API base。
+- `retirement candidate`：必须同时满足 exact coverage、caller cutover、fallback/shadow-off、DB/write evidence 和退役账本；单批试点不得直接升级为旧服务可退役。
+
+### 1D.4 后续小批次滚动规则
+
+- 首批完成或阻断后，下一轮不得直接从旧 §2/§3/§4 顺序继续执行；必须先在 §1D 追加新的滚动小批次，并只选择 named endpoint 或明确业务路径。
+- 下一批继续使用约 10 项 checkbox 的比例模板：6 项实施、2 项验证、1 项记录、1 项复核；探索项只能绑定到本批 endpoint 的缺失文件、测试、证据或 guard。
+- 每批开始前必须声明本批 endpoint、owner 文件、目标 `apps/api` route/manifest/adapter/caller 文件、预期测试、DB/浏览器/生产证据需求、不触碰范围和回退/阻断条件。
+- 每批结束必须能回答三个问题：本轮真实迁移了哪个 endpoint，证据证明了什么，哪些旧服务路径仍不能退役。
+- 后续新增 checkbox 必须继续使用 `[操作类型] 文件路径 - 具体改动` 格式；跨多个文件的需求必须拆成多个 file-level 任务后再执行。
+
 ## 2. Admin Legacy Nitro Stream
+
+本节不是后续顺序探索队列；只承接 §1D 当前滚动小批次产生的证据回写、状态修正和阻断记录。未被 §1D 当前批次点名的条目不得因排列顺序被自动执行。
 
 Task 54 mapping note: `admin-api-cutover` 和 `admin-special-cases` 的 Requirement 落点复核必须在 §2/§2A 证明 admin manifest/HTTP gate 最低字段已明文化，包括 `targetClient`、`routeKind`、`sourceKind`、`businessPath`、`oldPath`、`appsApiTarget`、`method`、`responseContract`、`coverageKind`、`targetStatus`、`browserEvidence`、`fallbackEvidence`、`dbReadinessEvidence` 和 `retirementDecision`；缺字段时不得升级 coverage 或退役状态。
 
@@ -286,6 +333,8 @@ Task 54 mapping note: admin caller 与 retirement ledger 复核必须把 manifes
 - [ ] [复核] admin old path exact coverage、resolver 完成、HTTP gate 通过、页面 list 成功均不能单独触发 `apps/admin/server` 删除候选；必须等待 §5 退役门禁。
 
 ## 3. App Legacy Nitro Stream
+
+本节不是后续顺序探索队列；只承接 §1D 当前滚动小批次产生的证据回写、状态修正和阻断记录。未被 §1D 当前批次点名的条目不得因排列顺序被自动执行。
 
 ### 3.1 `/callComponent/**` And Floor Follow-Up
 
@@ -442,6 +491,8 @@ Task 54 mapping note: `app-legacy-cutover` 的收费缴费边界复核必须在�
 - [ ] [汇总] app retirement candidate 行必须逐 endpoint 记录：legacy path、method、old module、caller evidence、target handler/adapter、manifest/allowlist、guard/fallback、dataSourceStatus、browser/HTTP evidence、retirement decision。
 
 ## 4. Unified `apps/api` Runtime And DB Readiness
+
+本节不是后续顺序探索队列；只承接 §1D 当前滚动小批次产生的证据回写、状态修正和阻断记录。未被 §1D 当前批次点名的条目不得因排列顺序被自动执行。
 
 Task 54 mapping note: `db-readiness-and-write-verification` 与 `phase7-evidence-model` 的 Requirement 落点复核必须在 §4/§4C 同时覆盖 `DB_READY`、真实库样本、默认 mutation guard、写入读回回滚和状态升级边界；HTTP 200、`READY_CONFIGURED`、fake DB、mock、fallback 均不得升级为 DB 完成。
 

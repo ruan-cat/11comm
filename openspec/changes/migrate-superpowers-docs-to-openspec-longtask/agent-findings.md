@@ -4,6 +4,18 @@
 
 本文件记录发现、风险、失败路径和不迁移原因，不记录可执行任务清单。
 
+## 2026-05-24 任务比例纠偏发现
+
+本轮纠偏发现，当前后续执行风险不是缺少更多 endpoint 探索，而是探索闭环和证据补强继续占据活跃任务池，导致真实 Nitro 迁移入口不够靠前。新增 `tasks.md` 的 `1D` 区块后，后续小批次应优先围绕 named endpoint 的 handler、adapter、manifest、caller、test、HTTP/browser/DB evidence 推进。
+
+复核边界：`1D.1` 当前只保留 10 项 checkbox，比例为 6 项实施、2 项验证、1 项记录、1 项复核；`1D.2` 只保留动态补全纪律，不再记录 checkbox backlog。后续若发现缺失文件、测试或证据，只能按当前 named endpoint 回写到 `tasks.md` 本节或对应业务章节，不能把 `agent-progress.md` 或本文件变成第二任务树。
+
+二次审计发现：只把首批压成 10 项仍不够，容易让后续代理继续沿旧 §2/§3/§4 顺序探索。已在 `tasks.md` 补强 §1D.3 证据术语、§1D.4 后续小批次滚动规则，并在 §2/§3/§4 章首增加局部门禁。后续执行必须先从 §1D 开批，再把有效事实回写到对应业务章节；不得直接按旧章节排列顺序执行。
+
+证据边界：`1D` 是执行优先队列和动态补全纪律，不代表其中任何 endpoint 已经迁移完成；`docs/reports/2026-05-24-openspec-do-long-task-dynamic-tasks-design.md` 是增强 `ai-plugins` 源技能的实施文档，不是全局技能修改结果；`docs/superpowers/specs/2026-05-24-openspec-task-rebalance-design.md` 是任务树比例纠偏设计，不是新的 OpenSpec change 或第二任务源。
+
+No-go：不得把本轮文档和任务结构调整写成 runtime 迁移、`DB_READY`、shadow-off/fallback 复验、写入口安全放行或旧服务可退役。后续若执行中发现缺失任务，只能回写 `tasks.md`，`agent-progress.md` 与 `agent-findings.md` 仍不得承载 checkbox backlog。
+
 ## Legacy Document Roles
 
 - 三份旧 Superpowers 文档的细目、职责和历史用途已迁入 OpenSpec canonical：`design.md` 记录来源角色与压缩原则，`tasks.md` 记录唯一可执行 backlog，本文件记录历史 provenance、风险和证据索引。

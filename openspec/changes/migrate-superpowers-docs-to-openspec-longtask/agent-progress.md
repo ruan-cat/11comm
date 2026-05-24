@@ -181,6 +181,13 @@
 
 ## Handoff Notes
 
+- 2026-05-24: 按暂停复盘完成任务树纠偏入口设计，新增 `tasks.md` 的 `1D. 2026-05-24 纠偏后的实施优先队列`，将后续活跃小批次压回真实 Nitro 迁移实施；新增 `docs/reports/2026-05-24-openspec-do-long-task-dynamic-tasks-design.md` 与 `docs/superpowers/specs/2026-05-24-openspec-task-rebalance-design.md`，用于指导后续增强 `ai-plugins` 源仓库中的 `openspec` 与 `do-long-task`，未修改任何全局技能目录。
+- 2026-05-24: 纠偏文档与 `tasks.md` 更新后已运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`，结果为 valid；已运行 `git diff --check -- openspec/changes/migrate-superpowers-docs-to-openspec-longtask docs`，无空白错误；已扫描新增设计文档中的全局安装/全局目录关键词，命中项均为禁止性说明。
+- 2026-05-24: 按 `docs/superpowers/specs/2026-05-24-openspec-task-rebalance-design.md` 正式收敛 `tasks.md` 的 `1D` 执行队列。当前 `1D.1` 保持 10 项 checkbox：6 项实施、2 项验证、1 项记录、1 项复核；`1D.2` 改为非 checkbox 的动态任务补全纪律，避免再次形成探索/验证 backlog。该 checkpoint 只代表任务树结构调整，不代表任何 runtime endpoint 已迁移完成。
+- 2026-05-24: 结构调整后复验通过：`openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 返回 valid；对本次涉及的 `tasks.md`、`agent-progress.md`、`agent-findings.md` 和两份新增设计文档分别运行 `git diff --check` 与 `git diff --cached --check`，均无输出；§1D checkbox 统计为 10。
+- 2026-05-24: 按用户质疑重新逐条审计 `docs/superpowers/specs/2026-05-24-openspec-task-rebalance-design.md` 的落实程度，并对 `tasks.md` 做第二轮深度补强：Task Source Rules 增加 `agent-progress.md`/`agent-findings.md` 不得承载 endpoint backlog、排期队列或下一批清单的硬约束；§1D.1 的实施项统一改成 OpenSpec `[操作类型] 文件路径 - 具体改动` 格式并标注 6/2/1/1 比例；§1D.2 固化动态补全 6 步顺序；新增 §1D.3 证据术语和状态边界、§1D.4 后续小批次滚动规则；§2/§3/§4 章首增加“不是顺序探索队列，只承接 §1D 回写”的局部门禁。该补强仍不勾选任何 runtime endpoint。
+- 2026-05-24: 深度补强后复验通过：`openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 返回 valid；`git diff --check` 与 `git diff --cached --check` 对本轮相关文件均无输出；§1D checkbox 统计仍为 10。
+
 - 后续先读 `tasks.md`，再按 checkbox 继续。
 - 旧三文档已删除；后续不要恢复为任务源。若需要追溯原文，只能从 git history 作为 historical source 查询。
 - 当前 OpenSpec 已新增语义转写层；后续仍需运行 strict 校验并继续未完成的 Nitro 合并 backlog。
