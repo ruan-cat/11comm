@@ -593,4 +593,7 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 1. 因此，根据报告 `docs\reports\2026-05-21-openspec-longtask-pause-review.md` 的说明，我们的`openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 任务文件，存在明显的任务权重失衡的问题。探索，排查，验证，补充证据的子任务太多了，这导致无法完成真实有效的 nitro 接口迁移推进。请你适当的缩减，合并，调整关于这些探索验证的子任务权重。尽快将真实的 nitro 迁移改造任务，调整其优先级。
 
-2. 根据报告要求，我要求你同时扫描全局的 `do-long-task` 和 `openspec` 这两款
+2. 根据报告要求，我要求你同时扫描全局的 `do-long-task` 和 `openspec` 这两款全局技能，对 `do-long-task` 增加需要协作的全局技能 `openspec` 。对 `openspec` 和 `do-long-task` 两款技能增加动态增加补全 task.md 任务进度的机制。
+   - 注意，我不允许你直接修改全局文件，而是看 `D:\code\ruan-cat\monorepo\ai-plugins` 目录提供的技能，阅读技能，理解技能，然后在本项目的 docs\reports 内给出一个增强 `openspec` 和 `do-long-task` 两款技能的实施文档。我会按照其他的 AI 按照文档，增强 `openspec` 和 `do-long-task` 这两款技能。最后确保这两个技能未来拥有动态 task.md 任务增加能力。
+
+3. 按照 `docs\reports\2026-05-21-openspec-longtask-pause-review.md` 的建议要求，适当改写 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 的文件层级，用你给出的这个 `纠偏建议` 来改进，优化 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 文档。
