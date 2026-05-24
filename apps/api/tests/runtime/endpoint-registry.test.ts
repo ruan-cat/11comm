@@ -83,7 +83,6 @@ describe("endpoint registry runtime", () => {
 		expect(findEndpointDefinition(registry, "POST", "/app/video.listStaffMonitorMachine")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/video.getPlayVideoUrl")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/notice.listNotices")).toBeTruthy();
-		expect(findEndpointDefinition(registry, "GET", "/app/activities.listActivitiess")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/purchase/updatePurchaseApply")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairDispatch")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/workorder/create")).toBeUndefined();
@@ -94,6 +93,7 @@ describe("endpoint registry runtime", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listResources")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineBmoImpl")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/machine/listMachineRecords")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.listActivitiess")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/activities.saveActivities")).toBeUndefined();
 	});
 });
