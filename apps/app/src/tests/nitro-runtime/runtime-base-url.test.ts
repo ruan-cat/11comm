@@ -143,6 +143,24 @@ describe('phase7 app api shadow base url', () => {
       '/app/video.listStaffMonitorMachine',
       '/app/video.getPlayVideoUrl',
       '/app/notice.listNotices',
+      '/app/activities.listActivitiess',
+      '/app/communitySpace.listCommunitySpaceConfirmOrder',
+      '/app/auditUser.listAuditComplaints',
+      '/app/auditUser.listAuditHistoryComplaints',
+      '/app/complaint.listComplaintEvent',
+      '/app/complaintAppraise.listComplaintAppraise',
+      '/app/contact.listContacts',
+      '/app/contact.getContactDetail',
+      '/app/contact.getContactsByDepartment',
+      '/app/contact.searchContacts',
+      '/app/contact.getDepartments',
+      '/app/contact.getFavoriteContacts',
+      '/app/contact.getEmergencyContacts',
+      '/app/room.queryRooms',
+      '/app/room.queryRoomDetail',
+      '/app/unit.queryUnits',
+      '/app/unit.queryUnitDetail',
+      '/app/owner.queryOwnerAndMembers',
     ])
 
     expect(isPhase2ApiShadowEndpoint('/app/fee.listFee')).toBe(true)
@@ -166,13 +184,35 @@ describe('phase7 app api shadow base url', () => {
     expect(isPhase2ApiShadowEndpoint('/app/video.listStaffMonitorMachine')).toBe(true)
     expect(isPhase2ApiShadowEndpoint('/app/video.getPlayVideoUrl')).toBe(true)
     expect(isPhase2ApiShadowEndpoint('/app/notice.listNotices')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.listActivitiess')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/communitySpace.listCommunitySpaceConfirmOrder')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/room.queryRooms')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/room.queryRoomDetail')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/unit.queryUnits')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/unit.queryUnitDetail')).toBe(true)
+    expect(isPhase2ApiShadowEndpoint('/app/owner.queryOwnerAndMembers')).toBe(true)
     expect(isPhase2ApiShadowEndpoint('/app/ownerRepair.saveOwnerRepair')).toBe(false)
     expect(isPhase2ApiShadowEndpoint('/app/workorder/create')).toBe(false)
     expect(isPhase2ApiShadowEndpoint('/app/workorder/copy/finish')).toBe(false)
     expect(isPhase2ApiShadowEndpoint('/app/visit.auditVisit')).toBe(false)
     expect(isPhase2ApiShadowEndpoint('/app/profile.changeCommunity')).toBe(false)
     expect(isPhase2ApiShadowEndpoint('/app/profile.changePassword')).toBe(false)
-    expect(isPhase2ApiShadowEndpoint('/app/activities.listActivitiess')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.saveActivities')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.updateActivities')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.deleteActivities')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.increaseView')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.likeActivity')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.updateStatus')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.updateLike')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/activities.updateCollect')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/communitySpace.saveCommunitySpaceConfirmOrder')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/complaint')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/complaint.auditComplaint')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/complaintAppraise.replyComplaintAppraise')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/contact.updateOnlineStatus')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/owner.saveRoomOwner')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/owner.editOwner')).toBe(false)
+    expect(isPhase2ApiShadowEndpoint('/app/owner.deleteOwner')).toBe(false)
     expect(isPhase2ApiShadowEndpoint('/callComponent/core/list')).toBe(true)
   })
 
@@ -330,6 +370,14 @@ describe('phase7 app api shadow base url', () => {
     '/app/visit.auditVisit',
     '/app/profile.changeCommunity',
     '/app/profile.changePassword',
+    '/app/activities.saveActivities',
+    '/app/activities.updateActivities',
+    '/app/activities.deleteActivities',
+    '/app/activities.increaseView',
+    '/app/activities.likeActivity',
+    '/app/activities.updateStatus',
+    '/app/activities.updateLike',
+    '/app/activities.updateCollect',
   ])('keeps work-order mutation %s on the legacy runtime when shadow is enabled', (endpoint) => {
     expect(
       prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, {
@@ -349,14 +397,121 @@ describe('phase7 app api shadow base url', () => {
     ).toBe('http://legacy.example.com/app/unknown.endpoint')
   })
 
-  test('keeps activity readonly on the legacy runtime until the activity batch is completed', () => {
+  test('routes activity readonly to apps/api when shadow is enabled', () => {
     expect(
       prependRuntimeBaseUrl('/app/activities.listActivitiess?communityId=COMM_001', {
         ...legacyRuntimeEnv,
         VITE_SERVER_BASEURL: 'http://127.0.0.1:3101',
         VITE_11COMM_API_SHADOW_ENABLE: 'true',
       }),
-    ).toBe('http://127.0.0.1:3101/app/activities.listActivitiess?communityId=COMM_001')
+    ).toBe('http://127.0.0.1:3102/app/activities.listActivitiess?communityId=COMM_001')
+  })
+
+  test('routes appointment readonly list to apps/api while keeping confirm write on legacy runtime', () => {
+    const shadowEnv = {
+      ...legacyRuntimeEnv,
+      VITE_SERVER_BASEURL: 'http://127.0.0.1:3101',
+      VITE_11COMM_API_SHADOW_ENABLE: 'true',
+    }
+
+    expect(prependRuntimeBaseUrl('/app/communitySpace.listCommunitySpaceConfirmOrder?communityId=COMM_001', shadowEnv)).toBe(
+      'http://127.0.0.1:3102/app/communitySpace.listCommunitySpaceConfirmOrder?communityId=COMM_001',
+    )
+    expect(prependRuntimeBaseUrl('/app/communitySpace.saveCommunitySpaceConfirmOrder', shadowEnv)).toBe(
+      'http://127.0.0.1:3101/app/communitySpace.saveCommunitySpaceConfirmOrder',
+    )
+  })
+
+  test('routes complaint readonly paths to apps/api while keeping complaint writes on legacy runtime', () => {
+    const shadowEnv = {
+      ...legacyRuntimeEnv,
+      VITE_SERVER_BASEURL: 'http://127.0.0.1:3101',
+      VITE_11COMM_API_SHADOW_ENABLE: 'true',
+    }
+
+    for (const endpoint of [
+      '/app/auditUser.listAuditComplaints',
+      '/app/auditUser.listAuditHistoryComplaints',
+      '/app/complaint.listComplaintEvent',
+      '/app/complaintAppraise.listComplaintAppraise',
+    ]) {
+      expect(prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, shadowEnv)).toBe(
+        `http://127.0.0.1:3102${endpoint}?communityId=COMM_001`,
+      )
+    }
+
+    for (const endpoint of [
+      '/app/complaint',
+      '/app/complaint.auditComplaint',
+      '/app/complaintAppraise.replyComplaintAppraise',
+    ]) {
+      expect(prependRuntimeBaseUrl(endpoint, shadowEnv)).toBe(`http://127.0.0.1:3101${endpoint}`)
+    }
+  })
+
+  test('routes contact readonly paths to apps/api while keeping online status writes on legacy runtime', () => {
+    const shadowEnv = {
+      ...legacyRuntimeEnv,
+      VITE_SERVER_BASEURL: 'http://127.0.0.1:3101',
+      VITE_11COMM_API_SHADOW_ENABLE: 'true',
+    }
+
+    for (const endpoint of [
+      '/app/contact.listContacts',
+      '/app/contact.getContactDetail',
+      '/app/contact.getContactsByDepartment',
+      '/app/contact.searchContacts',
+      '/app/contact.getDepartments',
+      '/app/contact.getFavoriteContacts',
+      '/app/contact.getEmergencyContacts',
+    ]) {
+      expect(prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, shadowEnv)).toBe(
+        `http://127.0.0.1:3102${endpoint}?communityId=COMM_001`,
+      )
+    }
+
+    expect(prependRuntimeBaseUrl('/app/contact.updateOnlineStatus', shadowEnv)).toBe(
+      'http://127.0.0.1:3101/app/contact.updateOnlineStatus',
+    )
+  })
+
+  test('routes room and unit readonly paths to apps/api when shadow is enabled', () => {
+    const shadowEnv = {
+      ...legacyRuntimeEnv,
+      VITE_SERVER_BASEURL: 'http://127.0.0.1:3101',
+      VITE_11COMM_API_SHADOW_ENABLE: 'true',
+    }
+
+    for (const endpoint of [
+      '/app/room.queryRooms',
+      '/app/room.queryRoomDetail',
+      '/app/unit.queryUnits',
+      '/app/unit.queryUnitDetail',
+    ]) {
+      expect(prependRuntimeBaseUrl(`${endpoint}?communityId=COMM_001`, shadowEnv)).toBe(
+        `http://127.0.0.1:3102${endpoint}?communityId=COMM_001`,
+      )
+    }
+  })
+
+  test('routes owner readonly query to apps/api while keeping owner writes on legacy runtime', () => {
+    const shadowEnv = {
+      ...legacyRuntimeEnv,
+      VITE_SERVER_BASEURL: 'http://127.0.0.1:3101',
+      VITE_11COMM_API_SHADOW_ENABLE: 'true',
+    }
+
+    expect(prependRuntimeBaseUrl('/app/owner.queryOwnerAndMembers?communityId=COMM_001', shadowEnv)).toBe(
+      'http://127.0.0.1:3102/app/owner.queryOwnerAndMembers?communityId=COMM_001',
+    )
+
+    for (const endpoint of [
+      '/app/owner.saveRoomOwner',
+      '/app/owner.editOwner',
+      '/app/owner.deleteOwner',
+    ]) {
+      expect(prependRuntimeBaseUrl(endpoint, shadowEnv)).toBe(`http://127.0.0.1:3101${endpoint}`)
+    }
   })
 
   test('falls back to existing runtime base when shadow is disabled', () => {
@@ -452,6 +607,24 @@ describe('phase7 app api shadow base url', () => {
     )
     expect(prependRuntimeBaseUrl('/app/notice.listNotices', productionEnv)).toBe(
       'https://01s-11-server.ruan-cat.com/app/notice.listNotices',
+    )
+    expect(prependRuntimeBaseUrl('/app/activities.listActivitiess', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/activities.listActivitiess',
+    )
+    expect(prependRuntimeBaseUrl('/app/room.queryRooms', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/room.queryRooms',
+    )
+    expect(prependRuntimeBaseUrl('/app/room.queryRoomDetail', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/room.queryRoomDetail',
+    )
+    expect(prependRuntimeBaseUrl('/app/unit.queryUnits', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/unit.queryUnits',
+    )
+    expect(prependRuntimeBaseUrl('/app/unit.queryUnitDetail', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/unit.queryUnitDetail',
+    )
+    expect(prependRuntimeBaseUrl('/app/owner.queryOwnerAndMembers', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/owner.queryOwnerAndMembers',
     )
   })
 })
