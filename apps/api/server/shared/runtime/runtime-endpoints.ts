@@ -1,9 +1,15 @@
+import { activityLegacyEndpointDefinitions } from "../../modules/activity/legacy-endpoints";
+import { appointmentLegacyEndpointDefinitions } from "../../modules/appointment/legacy-endpoints";
+import { complaintLegacyEndpointDefinitions } from "../../modules/complaint/legacy-endpoints";
+import { contactLegacyEndpointDefinitions } from "../../modules/contact/legacy-endpoints";
 import { feeLegacyEndpointDefinitions } from "../../modules/fee/legacy-endpoints";
 import { floorLegacyEndpointDefinitions } from "../../modules/floor/legacy-endpoints";
 import { noticeLegacyEndpointDefinitions } from "../../modules/notice/legacy-endpoints";
+import { ownerLegacyEndpointDefinitions } from "../../modules/owner/legacy-endpoints";
 import { profileLegacyEndpointDefinitions } from "../../modules/profile/legacy-endpoints";
 import { purchaseLegacyEndpointDefinitions } from "../../modules/purchase/legacy-endpoints";
 import { repairLegacyEndpointDefinitions } from "../../modules/repair/legacy-endpoints";
+import { roomUnitLegacyEndpointDefinitions } from "../../modules/room-unit/legacy-endpoints";
 import { videoLegacyEndpointDefinitions } from "../../modules/video/legacy-endpoints";
 import { visitLegacyEndpointDefinitions } from "../../modules/visit/legacy-endpoints";
 import { workOrderLegacyEndpointDefinitions } from "../../modules/work-order/legacy-endpoints";
@@ -36,6 +42,14 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/fee.saveRoomCreateFee",
 	"/app/ownerRepair.saveOwnerRepair",
 	"/callComponent/ownerRepair.appraiseRepair",
+	"/app/communitySpace.saveCommunitySpaceConfirmOrder",
+	"/app/complaint",
+	"/app/complaint.auditComplaint",
+	"/app/complaintAppraise.replyComplaintAppraise",
+	"/app/contact.updateOnlineStatus",
+	"/app/owner.saveRoomOwner",
+	"/app/owner.editOwner",
+	"/app/owner.deleteOwner",
 	"/app/purchase/updatePurchaseApply",
 ]);
 
@@ -47,6 +61,42 @@ const phase7RepairReadonlyAppShadowUrls = new Set([
 ]);
 
 const runtimeEndpointEntries = [
+	...activityLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: "phase7-activity-readonly",
+		ownerModule: "activity",
+		cutoverStatus: getActivityLegacyCutoverStatus(definition),
+	})),
+	...appointmentLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getAppointmentLegacyPhase(definition),
+		ownerModule: "appointment",
+		cutoverStatus: getAppointmentLegacyCutoverStatus(definition),
+	})),
+	...complaintLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getComplaintLegacyPhase(definition),
+		ownerModule: "complaint",
+		cutoverStatus: getComplaintLegacyCutoverStatus(definition),
+	})),
+	...contactLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getContactLegacyPhase(definition),
+		ownerModule: "contact",
+		cutoverStatus: getContactLegacyCutoverStatus(definition),
+	})),
+	...roomUnitLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: "phase7-room-unit-readonly",
+		ownerModule: "room-unit",
+		cutoverStatus: getRoomUnitLegacyCutoverStatus(definition),
+	})),
+	...ownerLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getOwnerLegacyPhase(definition),
+		ownerModule: "owner",
+		cutoverStatus: getOwnerLegacyCutoverStatus(definition),
+	})),
 	...feeLegacyEndpointDefinitions.map((definition) => ({
 		definition,
 		phase: "phase2-fee-payment-report",
@@ -1005,6 +1055,59 @@ function getFeeLegacyCutoverStatus(definition: EndpointDefinition): EndpointMani
 	return "app-shadow-allowlist";
 }
 
+function getActivityLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	void definition;
+	return "app-shadow-allowlist";
+}
+
+function getAppointmentLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-appointment-guarded-write";
+	}
+
+	return "phase7-appointment-readonly";
+}
+
+function getAppointmentLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getComplaintLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-complaint-guarded-write";
+	}
+
+	return "phase7-complaint-readonly";
+}
+
+function getComplaintLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getContactLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-contact-guarded-write";
+	}
+
+	return "phase7-contact-readonly";
+}
+
+function getContactLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
 function getRepairLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
 	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
 		return "blocked-for-execution";
@@ -1020,6 +1123,27 @@ function getRepairLegacyCutoverStatus(definition: EndpointDefinition): EndpointM
 	}
 
 	return "not-in-app-shadow-allowlist";
+}
+
+function getRoomUnitLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	void definition;
+	return "app-shadow-allowlist";
+}
+
+function getOwnerLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-owner-guarded-write";
+	}
+
+	return "phase7-owner-readonly";
+}
+
+function getOwnerLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
 }
 
 function getFloorLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
