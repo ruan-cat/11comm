@@ -524,7 +524,7 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 我们的本质是改造任务执行与记录的载体，从基于 superpower 的三个 markdown 文件，改造成基于 openspec 的一系列文件。
 
-## 043 <!-- TODO: 长任务 主要通用 codex cli 完成 --> 完成 app 和 admin 项目的独立 nitro 接口服务的迁移与搭建
+## 043 <!-- TODO: 正在持续的完成 app项目基本上完成大部分的迁移了 --> 完成 app 和 admin 项目的独立 nitro 接口服务的迁移与搭建
 
 ```markdown
 /goal 执行 OpenSpec change：`openspec\changes\migrate-superpowers-docs-to-openspec-longtask`。
@@ -598,7 +598,7 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 3. 按照 `docs\reports\2026-05-21-openspec-longtask-pause-review.md` 的建议要求，适当改写 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 的文件层级，用你给出的这个 `纠偏建议` 来改进，优化 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 文档。
 
-### 03 2026-5-25 AI 阶段性中断报告 <!-- TODO: 等待介入和思考 -->
+### 03 2026-5-25 AI 阶段性中断报告 <!-- 已发送指令并推进进度 -->
 
 BLOCKED：已按长任务停止条件收尾。当前 tasks.md 还剩 22 个未完成 checkbox，主要被生产 DB_READY、真实库样本、写入授权/R2 前置、全量页面 Network、以及 task815 全局 fallback/shadow-off drill 阻断。
 
