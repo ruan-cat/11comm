@@ -1,3 +1,29 @@
+## v1.2.2-beta.1
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.1...v1.2.2-beta.1)
+
+### ✨ 新增功能
+
+- **api-app-legacy:** 接入 phase7 app 业务模块运行时 ([459e6ebf](https://github.com/ruan-cat/11comm/commit/459e6ebf))
+- **app-runtime:** 放行 phase7 app 只读 shadow 端点 ([af5672f7](https://github.com/ruan-cat/11comm/commit/af5672f7))
+
+### 🐞 修复缺陷
+
+- **admin-contract:** 统一草稿合同接口基址解析 ([753cb017](https://github.com/ruan-cat/11comm/commit/753cb017))
+
+### 📖 Documentation
+
+- **openspec:** 更新 phase7 长任务进度与阻断记录 ([52319008](https://github.com/ruan-cat/11comm/commit/52319008))
+- **openspec:** 建立旧服务退役台账 ([98f28a60](https://github.com/ruan-cat/11comm/commit/98f28a60))
+
+### ✅ Tests
+
+- **api-app-legacy:** 补齐 phase7 legacy 契约回归 ([72ea39f7](https://github.com/ruan-cat/11comm/commit/72ea39f7))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.2.1
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.1-beta.1...v1.2.1)
