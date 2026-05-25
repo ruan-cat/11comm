@@ -101,6 +101,23 @@ describe("profile legacy endpoints phase7 readonly slice", () => {
 		}
 	});
 
+	test("returns an empty legacy data array for an unknown community keyword", async () => {
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/profile.listCommunities",
+			query: { keyword: "__PROFILE_COMMUNITY_NO_MATCH__" },
+		});
+
+		expect(response).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: [],
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+		expect(response).not.toHaveProperty("timestamp");
+	});
+
 	test("serves attendance records with explicit and default month", async () => {
 		const explicit = await dispatchEndpoint(registry, {
 			method: "GET",
@@ -143,5 +160,56 @@ describe("profile legacy endpoints phase7 readonly slice", () => {
 			data: expect.any(Array),
 		});
 		expect(defaults.data.length).toBeGreaterThan(0);
+	});
+
+	test("keeps attendance compatibility when staffId does not match seeded data", async () => {
+		const baseline = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/profile.listAttendanceRecords",
+			query: { month: "2026-03" },
+		});
+
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/profile.listAttendanceRecords",
+			query: { month: "2026-03", staffId: "__PROFILE_STAFF_NO_MATCH__" },
+		});
+
+		expect(response).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: expect.any(Array),
+		});
+		expect(response.data).toEqual(baseline.data);
+		expect(response.data.length).toBeGreaterThan(0);
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+		expect(response).not.toHaveProperty("timestamp");
+	});
+
+	test("lets POST body override query parameters for attendance records", async () => {
+		const march = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/profile.listAttendanceRecords",
+			query: { month: "2026-03", staffId: "STAFF_001" },
+		});
+
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/profile.listAttendanceRecords",
+			query: { month: "2026-02", staffId: "__PROFILE_STAFF_NO_MATCH__" },
+			body: { month: "2026-03", staffId: "STAFF_001" },
+		});
+
+		expect(response).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: expect.any(Array),
+		});
+		expect(response.data).toEqual(march.data);
+		expect(response.data.length).toBeGreaterThan(0);
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+		expect(response).not.toHaveProperty("timestamp");
 	});
 });

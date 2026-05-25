@@ -122,6 +122,50 @@ describe("video legacy endpoints phase7 readonly slice", () => {
 		}
 	});
 
+	test("returns empty monitor machine pagination for unknown filters without admin envelope fields", async () => {
+		const unknownArea = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/video.listStaffMonitorMachine",
+			query: { page: 1, row: 5, maId: "AREA_UNKNOWN", communityId: "COMM_UNKNOWN" },
+		});
+
+		expect(unknownArea).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				list: [],
+				total: 0,
+				page: 1,
+				pageSize: 5,
+				hasMore: false,
+			},
+		});
+		expect(unknownArea).not.toHaveProperty("success");
+		expect(unknownArea).not.toHaveProperty("message");
+		expect(unknownArea).not.toHaveProperty("timestamp");
+
+		const unknownName = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/video.listStaffMonitorMachine",
+			body: { page: 1, row: 10, machineNameLike: "Device-UNKNOWN" },
+		});
+
+		expect(unknownName).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				list: [],
+				total: 0,
+				page: 1,
+				pageSize: 10,
+				hasMore: false,
+			},
+		});
+		expect(unknownName).not.toHaveProperty("success");
+		expect(unknownName).not.toHaveProperty("message");
+		expect(unknownName).not.toHaveProperty("timestamp");
+	});
+
 	test("returns deterministic compatible play urls with explicit and default machine ids", async () => {
 		const explicit = await dispatchEndpoint(registry, {
 			method: "GET",
@@ -151,5 +195,43 @@ describe("video legacy endpoints phase7 readonly slice", () => {
 				url: expect.stringContaining("machineId=MACHINE_0001"),
 			},
 		});
+	});
+
+	test("keeps play url POST payload override and unknown or empty machine ids compatible", async () => {
+		const unknownMachine = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/video.getPlayVideoUrl",
+			query: { machineId: "MACHINE_0002" },
+			body: { machineId: "MACHINE_UNKNOWN" },
+		});
+
+		expect(unknownMachine).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				url: expect.stringContaining("https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"),
+			},
+		});
+		expect(unknownMachine.data.url).toContain("machineId=MACHINE_UNKNOWN");
+		expect(unknownMachine).not.toHaveProperty("success");
+		expect(unknownMachine).not.toHaveProperty("message");
+		expect(unknownMachine).not.toHaveProperty("timestamp");
+
+		const emptyMachine = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/video.getPlayVideoUrl",
+			body: { machineId: "   " },
+		});
+
+		expect(emptyMachine).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				url: expect.stringContaining("machineId=MACHINE_0001"),
+			},
+		});
+		expect(emptyMachine).not.toHaveProperty("success");
+		expect(emptyMachine).not.toHaveProperty("message");
+		expect(emptyMachine).not.toHaveProperty("timestamp");
 	});
 });

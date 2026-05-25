@@ -8,7 +8,184 @@ import { runtimeEndpointDefinitions, runtimeEndpointManifest } from "../../serve
 const moduleRoot = fileURLToPath(new URL("../../server/modules/", import.meta.url));
 const sharedRuntimeRoot = fileURLToPath(new URL("../../server/shared/runtime/", import.meta.url));
 
-const appLegacyModules = [
+interface AppLegacyModuleFixture {
+	name: string;
+	runtimeName: string;
+	definitionsName: string;
+	ownerModule: string;
+	phase: string;
+	cutoverStatus: string;
+	readonly: boolean;
+	endpoints: readonly string[];
+	notCovered: readonly string[];
+	methodByUrl?: Record<string, string>;
+	phaseByUrl?: Record<string, string>;
+	cutoverStatusByUrl?: Record<string, string>;
+}
+
+const appLegacyModules: readonly AppLegacyModuleFixture[] = [
+	{
+		name: "activity",
+		runtimeName: "Activity",
+		definitionsName: "activityLegacyEndpointDefinitions",
+		ownerModule: "activity",
+		phase: "phase7-activity-readonly",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: ["/app/activities.listActivitiess"],
+		notCovered: [
+			"/app/activities.saveActivities",
+			"/app/activities.updateActivities",
+			"/app/activities.deleteActivities",
+			"/app/activities.increaseView",
+			"/app/activities.likeActivity",
+			"/app/activities.updateStatus",
+			"/app/activities.updateLike",
+			"/app/activities.updateCollect",
+		],
+	},
+	{
+		name: "appointment",
+		runtimeName: "Appointment",
+		definitionsName: "appointmentLegacyEndpointDefinitions",
+		ownerModule: "appointment",
+		phase: "phase7-appointment-readonly",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/communitySpace.listCommunitySpaceConfirmOrder",
+			"/app/communitySpace.saveCommunitySpaceConfirmOrder",
+		],
+		methodByUrl: {
+			"/app/communitySpace.saveCommunitySpaceConfirmOrder": `method: "POST"`,
+		},
+		cutoverStatusByUrl: {
+			"/app/communitySpace.saveCommunitySpaceConfirmOrder": "blocked-for-execution",
+		},
+		phaseByUrl: {
+			"/app/communitySpace.saveCommunitySpaceConfirmOrder": "phase7-appointment-guarded-write",
+		},
+		notCovered: ["db-backed-appointment-data", "appointment-confirm-write-read-back-rollback"],
+	},
+	{
+		name: "complaint",
+		runtimeName: "Complaint",
+		definitionsName: "complaintLegacyEndpointDefinitions",
+		ownerModule: "complaint",
+		phase: "phase7-complaint-readonly",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/auditUser.listAuditComplaints",
+			"/app/auditUser.listAuditHistoryComplaints",
+			"/app/complaint.listComplaintEvent",
+			"/app/complaintAppraise.listComplaintAppraise",
+			"/app/complaint",
+			"/app/complaint.auditComplaint",
+			"/app/complaintAppraise.replyComplaintAppraise",
+		],
+		methodByUrl: {
+			"/app/complaint": `method: "POST"`,
+			"/app/complaint.auditComplaint": `method: "POST"`,
+			"/app/complaintAppraise.replyComplaintAppraise": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/complaint": "phase7-complaint-guarded-write",
+			"/app/complaint.auditComplaint": "phase7-complaint-guarded-write",
+			"/app/complaintAppraise.replyComplaintAppraise": "phase7-complaint-guarded-write",
+		},
+		cutoverStatusByUrl: {
+			"/app/complaint": "blocked-for-execution",
+			"/app/complaint.auditComplaint": "blocked-for-execution",
+			"/app/complaintAppraise.replyComplaintAppraise": "blocked-for-execution",
+		},
+		notCovered: ["db-backed-complaint-data", "complaint-write-read-back-rollback"],
+	},
+	{
+		name: "contact",
+		runtimeName: "Contact",
+		definitionsName: "contactLegacyEndpointDefinitions",
+		ownerModule: "contact",
+		phase: "phase7-contact-readonly",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/contact.listContacts",
+			"/app/contact.getContactDetail",
+			"/app/contact.getContactsByDepartment",
+			"/app/contact.searchContacts",
+			"/app/contact.getDepartments",
+			"/app/contact.getFavoriteContacts",
+			"/app/contact.getEmergencyContacts",
+			"/app/contact.updateOnlineStatus",
+		],
+		methodByUrl: {
+			"/app/contact.updateOnlineStatus": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/contact.updateOnlineStatus": "phase7-contact-guarded-write",
+		},
+		cutoverStatusByUrl: {
+			"/app/contact.updateOnlineStatus": "blocked-for-execution",
+		},
+		notCovered: [
+			"db-backed-contact-data",
+			"contact-update-online-status-read-back-rollback",
+			"natural-app-h5-contact-page-network",
+		],
+	},
+	{
+		name: "room-unit",
+		runtimeName: "RoomUnit",
+		definitionsName: "roomUnitLegacyEndpointDefinitions",
+		ownerModule: "room-unit",
+		phase: "phase7-room-unit-readonly",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/room.queryRooms",
+			"/app/room.queryRoomDetail",
+			"/app/unit.queryUnits",
+			"/app/unit.queryUnitDetail",
+		],
+		notCovered: ["db-backed-room-unit-data", "real-room-unit-primary-keys", "shadow-off-fallback"],
+	},
+	{
+		name: "owner",
+		runtimeName: "Owner",
+		definitionsName: "ownerLegacyEndpointDefinitions",
+		ownerModule: "owner",
+		phase: "phase7-owner-readonly",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/owner.queryOwnerAndMembers",
+			"/app/owner.saveRoomOwner",
+			"/app/owner.editOwner",
+			"/app/owner.deleteOwner",
+		],
+		methodByUrl: {
+			"/app/owner.saveRoomOwner": `method: "POST"`,
+			"/app/owner.editOwner": `method: "POST"`,
+			"/app/owner.deleteOwner": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/owner.saveRoomOwner": "phase7-owner-guarded-write",
+			"/app/owner.editOwner": "phase7-owner-guarded-write",
+			"/app/owner.deleteOwner": "phase7-owner-guarded-write",
+		},
+		cutoverStatusByUrl: {
+			"/app/owner.saveRoomOwner": "blocked-for-execution",
+			"/app/owner.editOwner": "blocked-for-execution",
+			"/app/owner.deleteOwner": "blocked-for-execution",
+		},
+		notCovered: [
+			"db-backed-owner-data",
+			"owner-write-read-back-rollback",
+			"production-app-h5-owner-network",
+			"/app/owner.queryOwnerCars",
+		],
+	},
 	{
 		name: "profile",
 		runtimeName: "Profile",
@@ -110,18 +287,19 @@ describe("app legacy module layering", () => {
 	test.each(appLegacyModules)("%s endpoint definitions keep registration and input merge shape", (module) => {
 		const endpointSource = readFileSync(join(moduleRoot, module.name, "legacy-endpoints.ts"), "utf8");
 		const inputHelperSource = readFileSync(join(sharedRuntimeRoot, "legacy-endpoint-input.ts"), "utf8");
-		const expectedMethod = module.readonly ? `method: ["GET", "POST"]` : `method: "POST"`;
 
 		expect(endpointSource).toContain(`export const ${module.definitionsName}: EndpointDefinition[] = [`);
 		expect(endpointSource).toContain('import { mergeInput } from "../../shared/runtime/legacy-endpoint-input";');
 		for (const url of module.endpoints) {
+			const expectedMethod =
+				module.methodByUrl?.[url] ?? (module.readonly ? `method: ["GET", "POST"]` : `method: "POST"`);
 			expect(endpointSource).toContain(`url: "${url}"`);
+			expect(endpointSource).toContain(expectedMethod);
 		}
 		expect(
 			endpointSource.match(/method:/g),
 			`${module.name} should declare one method field per endpoint`,
 		).toHaveLength(module.endpoints.length);
-		expect(endpointSource.match(new RegExp(escapeRegExp(expectedMethod), "g"))).toHaveLength(module.endpoints.length);
 		expect(endpointSource.match(/mergeInput\(query, body\)/g)).toHaveLength(module.endpoints.length);
 		expect(inputHelperSource).toContain(
 			"export function mergeInput(query: unknown, body: unknown): Record<string, unknown>",
@@ -161,25 +339,26 @@ describe("app legacy module layering", () => {
 
 	test.each(appLegacyModules)(
 		"%s runtime definitions and manifest match the app legacy contract",
-		({ ownerModule, phase, cutoverStatus, readonly, endpoints }) => {
+		({ ownerModule, phase, cutoverStatus, readonly, endpoints, methodByUrl, phaseByUrl, cutoverStatusByUrl }) => {
 			for (const url of endpoints) {
 				const definition = runtimeEndpointDefinitions.find((item) => item.url === url);
 				const manifest = runtimeEndpointManifest.find((item) => item.url === url && item.ownerModule === ownerModule);
+				const expectedMethod = methodByUrl?.[url] === `method: "POST"` ? "POST" : readonly ? ["GET", "POST"] : "POST";
 
 				expect(definition, `${url} should be registered in runtimeEndpointDefinitions`).toMatchObject({
 					url,
-					method: readonly ? ["GET", "POST"] : "POST",
+					method: expectedMethod,
 					handler: expect.any(Function),
 				});
 				expect(manifest, `${url} should be registered in runtimeEndpointManifest`).toMatchObject({
 					url,
-					method: readonly ? ["GET", "POST"] : "POST",
-					phase,
+					method: expectedMethod,
+					phase: phaseByUrl?.[url] ?? phase,
 					ownerModule,
 					targetClient: "app",
 					routeKind: "app-legacy",
 					responseContract: "{ code, msg, data }",
-					cutoverStatus,
+					cutoverStatus: cutoverStatusByUrl?.[url] ?? cutoverStatus,
 				});
 			}
 		},

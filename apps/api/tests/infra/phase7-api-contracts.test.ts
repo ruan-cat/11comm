@@ -9,9 +9,15 @@ import { createContractService } from "../../server/modules/contract/service";
 import { createAdminFeeAdapter } from "../../server/modules/fee/admin-adapter";
 import { createInMemoryFeeRepository } from "../../server/modules/fee/repository";
 import { createFeeService } from "../../server/modules/fee/service";
+import { activityLegacyAdapterEvidence } from "../../server/modules/activity/legacy-adapter";
+import { appointmentLegacyAdapterEvidence } from "../../server/modules/appointment/legacy-adapter";
+import { complaintLegacyAdapterEvidence } from "../../server/modules/complaint/legacy-adapter";
+import { contactLegacyAdapterEvidence } from "../../server/modules/contact/legacy-adapter";
 import { noticeLegacyAdapterEvidence } from "../../server/modules/notice/legacy-adapter";
+import { ownerLegacyAdapterEvidence } from "../../server/modules/owner/legacy-adapter";
 import { profileLegacyAdapterEvidence } from "../../server/modules/profile/legacy-adapter";
 import { purchaseLegacyGuardEvidence } from "../../server/modules/purchase/legacy-adapter";
+import { roomUnitLegacyAdapterEvidence } from "../../server/modules/room-unit/legacy-adapter";
 import { videoLegacyAdapterEvidence } from "../../server/modules/video/legacy-adapter";
 import { visitLegacyAdapterEvidence } from "../../server/modules/visit/legacy-adapter";
 import { workOrderLegacyAdapterEvidence } from "../../server/modules/work-order/legacy-adapter";
@@ -544,6 +550,53 @@ describe("phase7 apps-api dual client contracts", () => {
 			phase: "phase7-notice-readonly",
 			cutoverStatus: "app-shadow-allowlist",
 		});
+		expectManifestEntry("/app/activities.listActivitiess", {
+			method: ["GET", "POST"],
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "activity",
+			phase: "phase7-activity-readonly",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		expectManifestEntry("/app/communitySpace.listCommunitySpaceConfirmOrder", {
+			method: ["GET", "POST"],
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "appointment",
+			phase: "phase7-appointment-readonly",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		expectManifestEntry("/app/communitySpace.saveCommunitySpaceConfirmOrder", {
+			method: "POST",
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "appointment",
+			phase: "phase7-appointment-guarded-write",
+			cutoverStatus: "blocked-for-execution",
+		});
+		expectManifestEntry("/app/owner.queryOwnerAndMembers", {
+			method: ["GET", "POST"],
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "owner",
+			phase: "phase7-owner-readonly",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		for (const url of ["/app/owner.saveRoomOwner", "/app/owner.editOwner", "/app/owner.deleteOwner"]) {
+			expectManifestEntry(url, {
+				method: "POST",
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "owner",
+				phase: "phase7-owner-guarded-write",
+				cutoverStatus: "blocked-for-execution",
+			});
+		}
 		expectManifestEntry("/app/purchase/updatePurchaseApply", {
 			method: "POST",
 			targetClient: "app",
@@ -681,6 +734,154 @@ describe("phase7 apps-api dual client contracts", () => {
 		});
 		expect(response).not.toHaveProperty("success");
 		expect(response).not.toHaveProperty("message");
+	});
+
+	test("room-unit readonly app legacy endpoints return the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/room.queryRooms",
+				query: { page: 1, row: 1, communityId: "COMM_001", unitId: "U_COMM_001_001_01" },
+			},
+			{
+				path: "/app/unit.queryUnits",
+				query: { page: 1, row: 1, communityId: "COMM_001", floorId: "F_COMM_001_001" },
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: {
+					list: expect.any(Array),
+					total: expect.any(Number),
+					page: 1,
+					pageSize: 1,
+				},
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
+
+		for (const request of [
+			{
+				path: "/app/room.queryRoomDetail",
+				query: { roomId: "R_COMM_001_001_01_01" },
+				field: "roomId",
+			},
+			{
+				path: "/app/unit.queryUnitDetail",
+				query: { unitId: "U_COMM_001_001_01" },
+				field: "unitId",
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: expect.objectContaining({
+					[request.field]: expect.any(String),
+				}),
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
+	});
+
+	test("room-unit adapter evidence stays scoped to synthetic readonly compatibility data", () => {
+		expect(roomUnitLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-pilot",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/room.queryRooms",
+				"/app/room.queryRoomDetail",
+				"/app/unit.queryUnits",
+				"/app/unit.queryUnitDetail",
+			],
+			syntheticIdPolicy: "F_/U_/R_ compatibility seed identifiers only",
+		});
+		expect(roomUnitLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining(["db-backed-room-unit-data", "real-room-unit-primary-keys", "shadow-off-fallback"]),
+		);
+	});
+
+	test("owner app legacy endpoints return readonly envelope and guarded write responses", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const list = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/owner.queryOwnerAndMembers",
+			query: { page: 1, row: 1, communityId: "COMM_001" },
+		});
+
+		expect(list).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				list: expect.any(Array),
+				total: expect.any(Number),
+				page: 1,
+				pageSize: 1,
+			},
+		});
+		expect(list).not.toHaveProperty("success");
+		expect(list).not.toHaveProperty("message");
+		expect(list).not.toHaveProperty("timestamp");
+
+		for (const request of [
+			{ path: "/app/owner.saveRoomOwner", body: { communityId: "COMM_001", name: "测试", link: "13900000000" } },
+			{ path: "/app/owner.editOwner", body: { communityId: "COMM_001", memberId: "MEM_0003", name: "测试" } },
+			{ path: "/app/owner.deleteOwner", body: { communityId: "COMM_001", memberId: "MEM_0003" } },
+		]) {
+			const guarded = await dispatchEndpoint(registry, {
+				method: "POST",
+				path: request.path,
+				body: request.body,
+			});
+
+			expect(guarded).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining(request.path.replace("/app/", "")),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+			expect(guarded).not.toHaveProperty("success");
+			expect(guarded).not.toHaveProperty("message");
+		}
+	});
+
+	test("owner adapter evidence separates readonly query from guarded writes", () => {
+		expect(ownerLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-plus-guarded-write",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: ["/app/owner.queryOwnerAndMembers"],
+			guardedEndpoints: ["/app/owner.saveRoomOwner", "/app/owner.editOwner", "/app/owner.deleteOwner"],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
+		});
+		expect(ownerLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"db-backed-owner-data",
+				"owner-write-read-back-rollback",
+				"production-app-h5-owner-network",
+				"/app/owner.queryOwnerCars",
+			]),
+		);
 	});
 
 	test("work-order readonly app legacy endpoint returns the unified code msg data envelope", async () => {
@@ -923,6 +1124,225 @@ describe("phase7 apps-api dual client contracts", () => {
 		);
 	});
 
+	test("activity readonly app legacy endpoint returns the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/activities.listActivitiess",
+			query: { page: 1, row: 1, communityId: "COMM_001" },
+		});
+
+		expect(response).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				activitiess: expect.any(Array),
+				total: expect.any(Number),
+				page: 1,
+				row: 1,
+			},
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+	});
+
+	test("activity readonly adapter evidence stays scoped to exact read handlers", () => {
+		expect(activityLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-pilot",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: ["/app/activities.listActivitiess"],
+		});
+		expect(activityLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"/app/activities.saveActivities",
+				"/app/activities.updateActivities",
+				"/app/activities.deleteActivities",
+				"/app/activities.increaseView",
+				"/app/activities.likeActivity",
+				"/app/activities.updateStatus",
+				"/app/activities.updateLike",
+				"/app/activities.updateCollect",
+				"db-backed-activity-data",
+			]),
+		);
+	});
+
+	test("appointment app legacy endpoints return list envelope and guarded write response", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const list = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/communitySpace.listCommunitySpaceConfirmOrder",
+			query: { page: 1, row: 1, communityId: "COMM_001" },
+		});
+
+		expect(list).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				list: expect.any(Array),
+				total: expect.any(Number),
+				page: 1,
+				pageSize: 1,
+			},
+		});
+		expect(list).not.toHaveProperty("success");
+		expect(list).not.toHaveProperty("message");
+
+		const save = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/communitySpace.saveCommunitySpaceConfirmOrder",
+			body: { timeId: "HEXIAO_100002", communityId: "COMM_001" },
+		});
+
+		expect(save).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining("communitySpace.saveCommunitySpaceConfirmOrder"),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+	});
+
+	test("appointment adapter evidence separates readonly list from guarded write", () => {
+		expect(appointmentLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-plus-guarded-write",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: ["/app/communitySpace.listCommunitySpaceConfirmOrder"],
+			guardedEndpoints: ["/app/communitySpace.saveCommunitySpaceConfirmOrder"],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
+		});
+		expect(appointmentLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining(["db-backed-appointment-data", "appointment-confirm-write-read-back-rollback"]),
+		);
+	});
+
+	test("complaint app legacy endpoints return readonly envelopes and guarded write responses", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{ path: "/app/auditUser.listAuditComplaints", query: { page: 1, row: 1 } },
+			{ path: "/app/auditUser.listAuditHistoryComplaints", query: { page: 1, row: 1 } },
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: expect.any(Object),
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+		}
+
+		const save = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/complaint",
+			body: { typeCd: "809001", complaintName: "测试投诉人", tel: "13800138000", roomId: "ROOM_001", context: "测试" },
+		});
+
+		expect(save).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining("complaint"),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+	});
+
+	test("complaint adapter evidence separates readonly handlers from guarded writes", () => {
+		expect(complaintLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-plus-guarded-write",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/auditUser.listAuditComplaints",
+				"/app/auditUser.listAuditHistoryComplaints",
+				"/app/complaint.listComplaintEvent",
+				"/app/complaintAppraise.listComplaintAppraise",
+			],
+			guardedEndpoints: [
+				"/app/complaint",
+				"/app/complaint.auditComplaint",
+				"/app/complaintAppraise.replyComplaintAppraise",
+			],
+		});
+		expect(complaintLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining(["db-backed-complaint-data", "complaint-write-read-back-rollback"]),
+		);
+	});
+
+	test("contact app legacy endpoints return readonly envelopes and guarded write response", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{ path: "/app/contact.listContacts", query: { page: 1, row: 1 } },
+			{ path: "/app/contact.getDepartments", query: {} },
+			{ path: "/app/contact.getEmergencyContacts", query: {} },
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: expect.any(Object),
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
+
+		const guarded = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/contact.updateOnlineStatus",
+			body: { contactId: "CON_001", isOnline: false },
+		});
+
+		expect(guarded).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining("contact.updateOnlineStatus"),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+	});
+
+	test("contact adapter evidence separates readonly handlers from guarded online status update", () => {
+		expect(contactLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-plus-guarded-write",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/contact.listContacts",
+				"/app/contact.getContactDetail",
+				"/app/contact.getContactsByDepartment",
+				"/app/contact.searchContacts",
+				"/app/contact.getDepartments",
+				"/app/contact.getFavoriteContacts",
+				"/app/contact.getEmergencyContacts",
+			],
+			guardedEndpoints: ["/app/contact.updateOnlineStatus"],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
+		});
+		expect(contactLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"db-backed-contact-data",
+				"contact-update-online-status-read-back-rollback",
+				"natural-app-h5-contact-page-network",
+			]),
+		);
+	});
+
 	test("purchase client-only write gap is guarded without write evidence", async () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
@@ -1016,6 +1436,14 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(urls).not.toContain("/app/visit.auditVisit");
 		expect(urls).not.toContain("/app/profile.changeCommunity");
 		expect(urls).not.toContain("/app/profile.changePassword");
+		expect(urls).not.toContain("/app/activities.saveActivities");
+		expect(urls).not.toContain("/app/activities.updateActivities");
+		expect(urls).not.toContain("/app/activities.deleteActivities");
+		expect(urls).not.toContain("/app/activities.increaseView");
+		expect(urls).not.toContain("/app/activities.likeActivity");
+		expect(urls).not.toContain("/app/activities.updateStatus");
+		expect(urls).not.toContain("/app/activities.updateLike");
+		expect(urls).not.toContain("/app/activities.updateCollect");
 	});
 
 	test("manifest marks high-risk app legacy mutation actions as blocked for execution", () => {
@@ -1026,6 +1454,9 @@ describe("phase7 apps-api dual client contracts", () => {
 			"/app/ownerRepair.saveOwnerRepair",
 			"/callComponent/ownerRepair.appraiseRepair",
 			"/app/purchase/updatePurchaseApply",
+			"/app/owner.saveRoomOwner",
+			"/app/owner.editOwner",
+			"/app/owner.deleteOwner",
 		]) {
 			expectManifestEntry(url, {
 				targetClient: "app",

@@ -221,6 +221,32 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/video.listStaffMonitorMachine");
 		expect(urls).toContain("/app/video.getPlayVideoUrl");
 		expect(urls).toContain("/app/notice.listNotices");
+		expect(urls).toContain("/app/activities.listActivitiess");
+		expect(urls).toContain("/app/communitySpace.listCommunitySpaceConfirmOrder");
+		expect(urls).toContain("/app/communitySpace.saveCommunitySpaceConfirmOrder");
+		expect(urls).toContain("/app/auditUser.listAuditComplaints");
+		expect(urls).toContain("/app/auditUser.listAuditHistoryComplaints");
+		expect(urls).toContain("/app/complaint.listComplaintEvent");
+		expect(urls).toContain("/app/complaintAppraise.listComplaintAppraise");
+		expect(urls).toContain("/app/complaint");
+		expect(urls).toContain("/app/complaint.auditComplaint");
+		expect(urls).toContain("/app/complaintAppraise.replyComplaintAppraise");
+		expect(urls).toContain("/app/contact.listContacts");
+		expect(urls).toContain("/app/contact.getContactDetail");
+		expect(urls).toContain("/app/contact.getContactsByDepartment");
+		expect(urls).toContain("/app/contact.searchContacts");
+		expect(urls).toContain("/app/contact.getDepartments");
+		expect(urls).toContain("/app/contact.getFavoriteContacts");
+		expect(urls).toContain("/app/contact.getEmergencyContacts");
+		expect(urls).toContain("/app/contact.updateOnlineStatus");
+		expect(urls).toContain("/app/room.queryRooms");
+		expect(urls).toContain("/app/room.queryRoomDetail");
+		expect(urls).toContain("/app/unit.queryUnits");
+		expect(urls).toContain("/app/unit.queryUnitDetail");
+		expect(urls).toContain("/app/owner.queryOwnerAndMembers");
+		expect(urls).toContain("/app/owner.saveRoomOwner");
+		expect(urls).toContain("/app/owner.editOwner");
+		expect(urls).toContain("/app/owner.deleteOwner");
 		expect(urls).toContain("/app/purchase/updatePurchaseApply");
 		for (const url of expenseManageAdminListEndpoints) {
 			expect(urls).toContain(url);
@@ -288,6 +314,14 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).not.toContain("/app/visit.auditVisit");
 		expect(urls).not.toContain("/app/profile.changeCommunity");
 		expect(urls).not.toContain("/app/profile.changePassword");
+		expect(urls).not.toContain("/app/activities.saveActivities");
+		expect(urls).not.toContain("/app/activities.updateActivities");
+		expect(urls).not.toContain("/app/activities.deleteActivities");
+		expect(urls).not.toContain("/app/activities.increaseView");
+		expect(urls).not.toContain("/app/activities.likeActivity");
+		expect(urls).not.toContain("/app/activities.updateStatus");
+		expect(urls).not.toContain("/app/activities.updateLike");
+		expect(urls).not.toContain("/app/activities.updateCollect");
 		expect(urls).not.toContain("/app/ownerRepair.listStaffRepairs");
 		expect(urls).not.toContain("/app/resourceStore.listResourceStores");
 		expect(urls).not.toContain("/app/resourceStore.listResources");
@@ -472,6 +506,94 @@ describe("phase7 endpoint manifest", () => {
 					phase: "phase7-notice-readonly",
 					responseContract: "{ code, msg, data }",
 					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/activities.listActivitiess",
+					method: ["GET", "POST"],
+					ownerModule: "activity",
+					phase: "phase7-activity-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/communitySpace.listCommunitySpaceConfirmOrder",
+					method: ["GET", "POST"],
+					ownerModule: "appointment",
+					phase: "phase7-appointment-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/communitySpace.saveCommunitySpaceConfirmOrder",
+					method: "POST",
+					ownerModule: "appointment",
+					phase: "phase7-appointment-guarded-write",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "blocked-for-execution",
+				}),
+				expect.objectContaining({
+					url: "/app/room.queryRooms",
+					method: ["GET", "POST"],
+					ownerModule: "room-unit",
+					phase: "phase7-room-unit-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/room.queryRoomDetail",
+					method: ["GET", "POST"],
+					ownerModule: "room-unit",
+					phase: "phase7-room-unit-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/unit.queryUnits",
+					method: ["GET", "POST"],
+					ownerModule: "room-unit",
+					phase: "phase7-room-unit-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/unit.queryUnitDetail",
+					method: ["GET", "POST"],
+					ownerModule: "room-unit",
+					phase: "phase7-room-unit-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/owner.queryOwnerAndMembers",
+					method: ["GET", "POST"],
+					ownerModule: "owner",
+					phase: "phase7-owner-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/owner.saveRoomOwner",
+					method: "POST",
+					ownerModule: "owner",
+					phase: "phase7-owner-guarded-write",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "blocked-for-execution",
+				}),
+				expect.objectContaining({
+					url: "/app/owner.editOwner",
+					method: "POST",
+					ownerModule: "owner",
+					phase: "phase7-owner-guarded-write",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "blocked-for-execution",
+				}),
+				expect.objectContaining({
+					url: "/app/owner.deleteOwner",
+					method: "POST",
+					ownerModule: "owner",
+					phase: "phase7-owner-guarded-write",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "blocked-for-execution",
 				}),
 				expect.objectContaining({
 					url: "/app/purchase/updatePurchaseApply",
