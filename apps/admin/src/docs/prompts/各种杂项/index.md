@@ -622,11 +622,7 @@ BLOCKED：已按长任务停止条件收尾。当前 tasks.md 还剩 22 个未�
 
 需要用户介入的最小前置：
 
-1. 允许通过 commit/push 或其他方式触发生产重新部署，并为 API 生产环境启用
-   main 分支连接串与 `RUN_PHASE7_DB_READINESS_CHECK=1`。
-2. 明确是否授权受控生产写入窗口，用于 CUD 的 write/read-back/rollback/
-   residual check。
-3. 提供或确认 R2 env、AWS SDK/R2 client、upload session repository 与前端断点
-   续传闭环方案。
-4. task815 还需要新增专门的 fallback/shadow-off drill，证明 fallback 不可用时
-   exact handler 仍由 apps/api 承接。
+1. 允许通过 commit/push 或其他方式触发生产重新部署，并为 API 生产环境启用 main 分支连接串与 `RUN_PHASE7_DB_READINESS_CHECK=1`。
+2. 明确是否授权受控生产写入窗口，用于 CUD 的 write/read-back/rollback/residual check。
+3. 提供或确认 R2 env、AWS SDK/R2 client、upload session repository 与前端断点续传闭环方案。
+4. task815 还需要新增专门的 fallback/shadow-off drill，证明 fallback 不可用时 exact handler 仍由 apps/api 承接。
