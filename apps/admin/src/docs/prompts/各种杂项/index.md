@@ -597,3 +597,36 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
    - 注意，我不允许你直接修改全局文件，而是看 `D:\code\ruan-cat\monorepo\ai-plugins` 目录提供的技能，阅读技能，理解技能，然后在本项目的 docs\reports 内给出一个增强 `openspec` 和 `do-long-task` 两款技能的实施文档。我会按照其他的 AI 按照文档，增强 `openspec` 和 `do-long-task` 这两款技能。最后确保这两个技能未来拥有动态 task.md 任务增加能力。
 
 3. 按照 `docs\reports\2026-05-21-openspec-longtask-pause-review.md` 的建议要求，适当改写 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 的文件层级，用你给出的这个 `纠偏建议` 来改进，优化 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 文档。
+
+### 03 2026-5-25 AI 阶段性中断报告 <!-- TODO: 等待介入和思考 -->
+
+BLOCKED：已按长任务停止条件收尾。当前 tasks.md 还剩 22 个未完成 checkbox，主要被生产 DB_READY、真实库样本、写入授权/R2 前置、全量页面 Network、以及 task815 全局 fallback/shadow-off drill 阻断。
+
+本轮新增阻断复核证据：`.tmp/phase7-dev-browser/2026-05-25-remaining-blockers-ready-fallback-crud-review.md`，并已挂接到：
+
+- `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/tasks.md`
+- `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-progress.md`
+- `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/agent-findings.md`
+
+生产 https://01s-11-server.ruan-cat.com/__nitro/ready 当前仍是 `READY_CONFIGURED`、`probeEnabled=false`、`connected=null`，所以不能把任何生产真实库或退役证据升级为完成。
+
+已完成校验：
+
+- openspec validate migrate-superpowers-docs-to-openspec-longtask --strict 通
+  过
+- git diff --check 通过
+- git diff --cached --check 通过
+- 触达文档中文行门禁通过
+- 已写入 Memorix：#4675
+- 本轮新开的 4 个只读子代理都已关闭
+
+需要用户介入的最小前置：
+
+1. 允许通过 commit/push 或其他方式触发生产重新部署，并为 API 生产环境启用
+   main 分支连接串与 `RUN_PHASE7_DB_READINESS_CHECK=1`。
+2. 明确是否授权受控生产写入窗口，用于 CUD 的 write/read-back/rollback/
+   residual check。
+3. 提供或确认 R2 env、AWS SDK/R2 client、upload session repository 与前端断点
+   续传闭环方案。
+4. task815 还需要新增专门的 fallback/shadow-off drill，证明 fallback 不可用时
+   exact handler 仍由 apps/api 承接。
