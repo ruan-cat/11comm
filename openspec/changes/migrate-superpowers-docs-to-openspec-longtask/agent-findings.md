@@ -1219,4 +1219,395 @@ No-go：不得把 route file 存在、adapter 409、schema table 存在、旧 ad
 
 本轮边界：这只是接口格式和自检机制收敛，不是数据源升级。`profile`、`video`、`visit`、`work-order`、`notice` 仍不是生产 `DB_READY`，`purchase` 仍不能真实写入；本轮也没有完成生产 App H5 Network、真实库样本、shadow-off/fallback、写入读回回滚或旧 app server 退役。
 
-2026-05-24 活动批次暂停发现：目前能确认的只是 `1D.11` 已成为当前唯一接力入口，活动相关的独立 `apps/api/server/modules/activity/*`、运行时清单/注册表/契约闭环、`apps/app/src/http/runtime-base.ts` 放行和 `.tmp/phase7-dev-browser/` 证据仍未补齐；因此不要把现状误判为 `DB_READY`、真实库样本或写入口已放行。下一次接力继续保持中文主导记录，避免再写纯英文日志。
+## 2026-05-24 1D.11 活动只读发现
+
+本批只将具名活动只读端点 `/app/activities.listActivitiess` 升级为独立 `apps/api` 精确覆盖。列表页和详情页仍共用旧路径，其中详情式查询通过 `activitiesId` 参数筛选；但本轮浏览器采证只打开列表页，没有点击卡片或进入详情页，以避免触发旧页面层的 `/app/activities.increaseView` 写入口。
+
+实现边界已经收敛为统一 App legacy 模块格式：`apps/api/server/modules/activity` 下新增 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 七层。兼容种子位于 `repository.ts`，`service.ts` 只暴露查询能力，`legacy-adapter.ts` 负责旧参数归一、`ActivityStatus` 校验、分页默认值和 `{ code, msg, data }` envelope，`legacy-endpoints.ts` 通过 `getActivityRuntime(event).legacyAdapter` 分发并使用共享 `mergeInput(query, body)`，因此 POST body 覆盖 query 的旧兼容规则保持不变。
+
+活动响应保留旧字段名 `activitiess`，没有改成 `activities`。注册表和运行时清单只包含 `/app/activities.listActivitiess` 的 GET/POST，phase 为 `phase7-activity-readonly`，owner 为 `activity`，response contract 为 `{ code, msg, data }`，cutover status 为 `app-shadow-allowlist`。以下写入口没有注册、没有进入 App H5 shadow allowlist，也没有声明 guard 完成：`/app/activities.saveActivities`、`/app/activities.updateActivities`、`/app/activities.deleteActivities`、`/app/activities.increaseView`、`/app/activities.likeActivity`、`/app/activities.updateStatus`、`/app/activities.updateLike`、`/app/activities.updateCollect`。
+
+TDD 红灯证据符合预期：API 目标测试在实现前失败，原因是活动只读端点未注册且 `apps/api/server/modules/activity/*` 不存在；App runtime-base 测试在放行前失败，原因是 `/app/activities.listActivitiess` 在 shadow enabled 时仍路由到旧 runtime。转绿后 API 目标矩阵 5 文件 76 测试通过，App runtime-base 1 文件 94 测试通过，`api` typecheck、`app` type-check、OpenSpec strict 和 diff check 均通过。App runtime-base 测试还显式断言 8 个活动写入口在 shadow enabled 时仍不放行，避免把活动只读批次误扩展成整个 activity 域迁移。
+
+本地 App H5 Network 证据命中独立本地 API，而不是旧 fallback：活动列表页 `http://localhost:3000/#/pages/activity/index?currentCommunityId=COMM_001&evidence=1d11` 自然发起 `GET http://127.0.0.1:3102/app/activities.listActivitiess?page=1&row=10&communityId=COMM_001&status=UPCOMING`，返回 HTTP 200、`x-api-phase=phase3-infra`、`x-request-id=req_0d67a420-3828-4ff3-884c-94ba5f239d16`，响应摘要为 `code=0`、`msg=query success`、`total=2`、首条 `ACT_001 / Garden Yoga Morning / COMM_001 / UPCOMING`。证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d11-activity-readonly-local-app-evidence.md`，响应体、快照和截图分别保存到 `.tmp/phase7-dev-browser/2026-05-24-1d11-activity-list.network-response`、`.tmp/phase7-dev-browser/2026-05-24-1d11-activity-list.snapshot.txt`、`.tmp/phase7-dev-browser/2026-05-24-1d11-activity-list.png`。
+
+页面层残留风险仍存在：活动列表页控制台出现已知 Vue/z-paging scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`，并且页面图片加载失败来自兼容种子中的 `example.test` 图片地址。这些记录为页面层残留风险，不升级为 API handler 失败，因为目标 Network 响应为 HTTP 200 且旧 App envelope 符合预期。
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、Neon main 真实活动样本、DB-backed 活动数据、浏览量/点赞/收藏/状态更新写入口完成、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。本批也不得作为 `/app/activities.increaseView` 的 guard 证据；该写入口只是被负向断言为未迁移、未放行。
+
+## 2026-05-24 Task 203 报表费用汇总只读复核发现
+
+本轮只复核 `property-manage/report-manage/expense-summary-table/list` 的独立 report 语义链路和生产 API partial 证据，不勾选任务。
+
+源码链路结论：当前 `apps/api` 没有把 report-manage 费用汇总别名到 expense-manage。`report-manage/expense-summary-table/list` route 调用 `adminAdapter.listReportExpenseSummaryTables`，service 转发到 `repository.listReportExpenseSummaryTables`，DB repository 查询 `rptExpenseSummaries`；`expense-manage/expense-summary-table/list` route 调用 `adminAdapter.listExpenseSummaryTables`，DB repository 查询 `exExpenseSummaryTables`。runtime manifest 中两条同名业务尾段也分属不同路径和 phase，前端 hook/page caller 分别指向各自 URL。
+
+生产只读采样结论：生产 API server 入口来自 `apps/api/package.json` 的 `homepage`。`GET https://01s-11-server.ruan-cat.com/__nitro/ready` 返回 `requestId=req_970b58f8-efac-41ba-8399-84a9944e6fbd`、`code=READY_CONFIGURED`、`connected=null`、`probeEnabled=false`，不是 `DB_READY`。目标 endpoint `POST https://01s-11-server.ruan-cat.com/api/property-manage/report-manage/expense-summary-table/list` 返回 HTTP 200、`x-request-id=req_4d45e5a6-451c-4525-bca1-a24e8e2cbb2e`、`success=true`、`total=2`，首条包含 `feeItem=物业费`、`currentReceivable=50000.00`、`currentActualReceipt=45000.00` 和 `statisticsTime=2024-01-01`。这些只能证明生产 API 入口当前有非空 report 语义响应，不能在 readiness 仍为 `READY_CONFIGURED` 时升级为 Neon main `DB_READY` 完成。
+
+验证结论：本轮本地语义/清单/契约测试 3 文件 33 测试通过，生产 HTTP gate 过滤运行 report-manage canonical list 目标测试通过。证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-report-expense-summary-production-refresh.md`。
+
+禁止误判：不得把 `READY_CONFIGURED`、生产 API `HTTP 200`、非空响应样本、Vitest、manifest/contract 或生产 HTTP gate 写成 `DB_READY`、真实库样本完整、生产 admin H5 页面 Network、shadow-off/fallback、retirement ledger 或旧服务退役。缺 `RUN_PHASE7_DB_READINESS_CHECK=1` 下的生产 `DB_READY`、Neon main readiness probe、生产 admin H5 自然 Network、shadow-off/fallback 演练和 retirement ledger 之前，Task 203 必须保持未完成。
+
+## 2026-05-24 1D.12 预约核销发现
+
+本批只处理具名预约核销端点 `/app/communitySpace.listCommunitySpaceConfirmOrder` 和 `/app/communitySpace.saveCommunitySpaceConfirmOrder`。列表端点已升级为独立 `apps/api` 精确覆盖；保存端点只收敛为默认业务 guard，不开放真实核销写入。
+
+实现边界已经收敛为统一 App legacy 模块格式：`apps/api/server/modules/appointment` 下新增 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 七层。兼容订单种子位于 `repository.ts`，共 48 条，保留旧 App H5 使用的 `orderId`、`timeId`、`spaceName`、`appointmentDate`、`hours`、`personName`、`personTel`、`createTime` 和 `state` 字段。`service.ts` 只暴露查询与 guard 决策，`legacy-adapter.ts` 负责旧参数归一、分页默认值、`timeId` 筛选和 `{ code, msg, data }` envelope，`legacy-endpoints.ts` 通过 `getAppointmentRuntime(event).legacyAdapter` 分发并使用共享 `mergeInput(query, body)`。
+
+运行时清单和 App H5 shadow 边界已经对齐。预约列表端点注册 GET/POST，phase 为 `phase7-appointment-readonly`，owner 为 `appointment`，response contract 为 `{ code, msg, data }`，cutover status 为 `app-shadow-allowlist`。保存端点只注册 POST，phase 为 `phase7-appointment-guarded-write`，cutover status 为 `blocked-for-execution`，并加入 mutation blocked 集合。App H5 只把预约列表加入 `PHASE2_API_SHADOW_ENDPOINTS`，保存端点在 shadow enabled 时仍走旧 runtime base。
+
+TDD 红灯证据符合预期：API 目标测试在实现前失败，原因是 appointment 精确端点未注册且 `apps/api/server/modules/appointment/*` 不存在；App runtime-base 测试在放行前失败，原因是预约列表路径在 shadow enabled 时仍路由到旧 runtime。转绿后目标 API 矩阵 5 文件 85 测试通过，App appointment runtime-base 1 文件 1 测试通过；`api` typecheck、`app` type-check、OpenSpec strict 和 diff check 均已纳入复验。
+
+本地 App H5 Network 证据命中独立本地 API，而不是旧 fallback：预约管理页 `http://127.0.0.1:3000/#/pages-sub/appointment/index` 自然发起 `GET http://127.0.0.1:3102/app/communitySpace.listCommunitySpaceConfirmOrder?page=1&row=10&communityId=COMM_001`，返回 HTTP 200、`x-api-phase=phase3-infra`、`x-request-id=req_100a3416-c08c-47db-989c-fddc01593e8d`，响应摘要为 `code=0`、`msg=query success`、`total=48`、首条 `ORDER_00001 / HEXIAO_100000 / CONFIRMED`。证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d12-appointment-readonly-local-app-evidence.md`，响应体和截图分别保存到 `.tmp/phase7-dev-browser/2026-05-24-1d12-appointment-local-app-list.network-response` 与 `.tmp/phase7-dev-browser/2026-05-24-1d12-appointment-local-app.png`。
+
+保存端点 guard 只做本地直打验证，没有通过页面点击核销按钮。Node `fetch` 直打 `POST http://127.0.0.1:3102/app/communitySpace.saveCommunitySpaceConfirmOrder` 返回 HTTP 200 的旧兼容 envelope，响应体为 `code=409`、`errorCode=PHASE7_MUTATION_GUARDED`、`data=null`，`x-request-id=req_0cd92683-35cd-439f-ab77-f9237b0baf76`。HTTP 200 不能写成写入成功；本批阻断语义以 envelope 内业务码和 errorCode 为准。
+
+页面层残留风险仍存在：预约管理页控制台出现已知 Vue/z-paging scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`。该问题记录为页面层残留风险，不升级为 API handler 失败，因为目标 Network 响应为 HTTP 200 且旧 App envelope 符合预期。
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、Neon main 真实预约样本、DB-backed 预约数据、真实核销写入完成、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。本地 `/__nitro/ready` 一次返回 `DB_READY` 只能说明本机开发环境配置了数据库探针，不能升级为生产或 appointment 模块的数据源证据。
+
+## 2026-05-24 1D.13 投诉小批次发现
+
+本批只处理具名投诉端点：四个只读入口 `/app/auditUser.listAuditComplaints`、`/app/auditUser.listAuditHistoryComplaints`、`/app/complaint.listComplaintEvent`、`/app/complaintAppraise.listComplaintAppraise` 已升级为独立 `apps/api` 精确覆盖；三个写入口 `/app/complaint`、`/app/complaint.auditComplaint`、`/app/complaintAppraise.replyComplaintAppraise` 只收敛为默认业务 guard，不开放真实投诉写入。
+
+实现边界已经收敛为统一 App legacy 模块格式：`apps/api/server/modules/complaint` 下新增 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 七层。兼容投诉种子位于 `repository.ts`，共 40 条投诉、前 15 条事件和评价，保留旧 App H5 使用的 `complaintId`、`taskId`、`state`、`stateName`、`roomName`、`context`、`eventType`、`score`、`replyContext` 等字段。`service.ts` 只暴露查询与 guard 决策，`legacy-adapter.ts` 负责旧参数归一、分页默认值、`complaintId` 校验和 `{ code, msg, data }` envelope，`legacy-endpoints.ts` 通过 `getComplaintRuntime(event).legacyAdapter` 分发并使用共享 `mergeInput(query, body)`。
+
+运行时清单和 App H5 shadow 边界已经对齐。四个只读端点注册 GET/POST，phase 为 `phase7-complaint-readonly`，owner 为 `complaint`，response contract 为 `{ code, msg, data }`，cutover status 为 `app-shadow-allowlist`。三个写入口只注册 POST，phase 为 `phase7-complaint-guarded-write`，cutover status 为 `blocked-for-execution`，并加入 mutation blocked 集合。App H5 只把四个只读路径加入 `PHASE2_API_SHADOW_ENDPOINTS`，三个写入口在 shadow enabled 时仍走旧 runtime base。
+
+TDD 红灯证据符合预期：API 目标测试在实现前失败，原因是 complaint 精确端点未注册、manifest 缺项且 `apps/api/server/modules/complaint/*` 不存在；App runtime-base 测试在放行前失败，原因是投诉只读路径在 shadow enabled 时仍路由到旧 runtime。转绿后目标 API 矩阵 5 文件 95 测试通过，App complaint runtime-base 1 文件 3 测试通过；`api` typecheck、`app` type-check、OpenSpec strict 和 diff check 均已纳入复验。
+
+本地 App H5 Network 证据命中独立本地 API，而不是旧 fallback。投诉待办页自然发起 `GET http://127.0.0.1:3102/app/auditUser.listAuditComplaints?page=1&row=10&userId=USER_001&storeId=STORE_001&communityId=COMM_001`，返回 HTTP 200、`x-api-phase=phase3-infra`、`x-request-id=req_1c7a0bb5-deff-40b4-9663-bbb7d2d17f71`、`total=40`。投诉已办页自然发起 `GET http://127.0.0.1:3102/app/auditUser.listAuditHistoryComplaints?page=1&row=10&userId=USER_001&storeId=STORE_001&communityId=COMM_001`，返回 HTTP 200、`x-request-id=req_bd34797e-6bdd-47cd-949e-9f21a68eaa5c`、`total=40`。投诉详情页自然发起事件和评价两个请求，分别返回 `req_b31afbd4-311e-4353-b4f1-8159dc229242`、`total=2` 与 `req_a4522030-8153-480e-9a1b-41acf3229578`、`total=1`。证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d13-complaint-readonly-local-app-evidence.md`，响应体、快照和截图均保存到 `.tmp/phase7-dev-browser/`。
+
+写入口 guard 只做本地直打验证，没有通过页面触发投诉提交、审核或评价回复。Node `fetch` 直打三个 POST 写入口均返回 HTTP 200 的旧兼容 envelope，响应体为 `code=409`、`errorCode=PHASE7_MUTATION_GUARDED`、`data=null`，三个 request-id 分别为 `req_f36c7dac-8059-4f0b-a2df-a330ffc160b1`、`req_67af665b-03b1-49be-a3a0-6df19fbf6e85` 和 `req_3cb3bcb5-42d7-451b-b64e-65fdef5da5cc`。HTTP 200 不能写成写入成功；本批阻断语义以 envelope 内业务码和 errorCode 为准。
+
+失败采证路径已经定位：PowerShell `Invoke-WebRequest` 对三个 POST 写入口的首次探针返回 HTTP 500，API dev 日志显示 Nitro dev/undici 在业务 handler 之前因 `Expect` 请求头报 `expect header not supported`。该问题是采证工具请求头与 Nitro dev 转发的兼容问题，不是 complaint handler、adapter 或 guard 决策失败；改用本地 Node `fetch` 后三个 guard 请求均按预期返回业务 `409 PHASE7_MUTATION_GUARDED`。
+
+页面层残留风险仍存在：投诉页面控制台出现已知 Vue/z-paging scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`。投诉详情页自然命中了事件和评价两个只读请求，但旧页面展示层对响应结构的消费仍有残留不一致风险，因此本轮只证明 API Network 和 envelope 正确，不声明详情 UI 全量修复完成。
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、Neon main 真实投诉样本、DB-backed 投诉数据、真实投诉提交/审核/回复完成、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。投诉兼容种子、HTTP 200、Vitest、guard 和本地页面 Network 都只能作为本地 App H5 shadow 与默认业务 guard 证据。
+
+## 2026-05-24 1D.14 通讯录小批次发现
+
+本批只处理具名通讯录端点：七个只读入口 `/app/contact.listContacts`、`/app/contact.getContactDetail`、`/app/contact.getContactsByDepartment`、`/app/contact.searchContacts`、`/app/contact.getDepartments`、`/app/contact.getFavoriteContacts`、`/app/contact.getEmergencyContacts` 已升级为独立 `apps/api` 精确覆盖；写入口 `/app/contact.updateOnlineStatus` 只收敛为默认业务 guard，不开放真实在线状态写入。
+
+实现边界已经收敛为统一 App legacy 模块格式：`apps/api/server/modules/contact` 下新增 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 七层。兼容通讯录种子位于 `repository.ts`，共 30 条 `CON_001` 到 `CON_030` 确定性联系人、8 条固定常用联系人和 6 条紧急联系人，保留旧 App 需要的 `contactId`、`name`、`position`、`department`、`phone`、`email`、`workTime`、`avatar`、`description`、`isOnline` 等字段。`service.ts` 只暴露查询与 guard 决策，`legacy-adapter.ts` 负责旧参数归一、分页默认值、`contactId` 与 `keyword` 校验和 `{ code, msg, data }` envelope，`legacy-endpoints.ts` 通过 `getContactRuntime(event).legacyAdapter` 分发并使用共享 `mergeInput(query, body)`。
+
+运行时清单和 App H5 shadow 边界已经对齐。七个只读端点注册 GET/POST，phase 为 `phase7-contact-readonly`，owner 为 `contact`，response contract 为 `{ code, msg, data }`，cutover status 为 `app-shadow-allowlist`。在线状态写入口只注册 POST，phase 为 `phase7-contact-guarded-write`，cutover status 为 `blocked-for-execution`，并加入 mutation blocked 集合。App H5 只把七个只读路径加入 `PHASE2_API_SHADOW_ENDPOINTS`，`/app/contact.updateOnlineStatus` 在 shadow enabled 时仍走旧 runtime base。
+
+TDD 红灯证据符合预期：API 目标测试在实现前失败，原因是 contact 精确端点未注册、manifest 缺项且 `apps/api/server/modules/contact/*` 不存在；App runtime-base 测试在放行前失败，原因是 contact 只读路径在 shadow enabled 时仍路由到旧 runtime。转绿后 API 目标矩阵 5 文件 104 测试通过，App contact runtime-base 1 文件 8 测试通过；后续仍需最终 typecheck、OpenSpec strict、diff check 和语言门禁收口。
+
+本地扫描结论维持 server-only compatibility/mock 边界：`apps/app/src` 没有正常 `apps/app/src/api/contact.ts` 或业务页面自然调用 `/app/contact.*`，命中项只包含旧 app server endpoint、`apps/app/src/api/mock/contact.mock.ts`、旧 runtime 测试、当前 `apps/api` 测试和本批 App shadow allowlist。因此本批没有自然 App H5 页面 Network 证据，也不能声称 App H5 页面 cutover；证据只能记录本地 API 直打、guard 直打和 App shadow 解析测试。
+
+本地 API 直打证据命中独立本地 API，而不是旧 fallback：七个只读请求均打到 `http://127.0.0.1:3102` 并返回 HTTP 200、`x-api-phase=phase3-infra` 与 `{ code, msg, data }`。关键 request-id 为 list `req_4b056488-a40c-4bac-91c0-e925edf00878`、detail `req_40958d65-8322-4ba6-aa94-3ff96f3ec5ad`、byDepartment `req_2309cd57-92c5-4957-8194-e12f4c9449c4`、search `req_dfbebae7-334a-4d76-a5d4-0ff7c3d5be91`、departments `req_25d60f27-1d42-4d0d-bbdd-0017e72f17fa`、favorite `req_989279b6-5345-446b-9d48-5278de2840bc`、emergency `req_34f64f23-54e2-4f6f-812f-4f4834520a26`；证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d14-contact-readonly-local-api-evidence.md`，响应汇总为 `.tmp/phase7-dev-browser/2026-05-24-1d14-contact-local-api-responses.json`。
+
+写入口 guard 只做本地直打验证，没有执行真实在线状态更新。Node `fetch` 直打 `POST http://127.0.0.1:3102/app/contact.updateOnlineStatus` 返回 HTTP 200 的旧兼容 envelope，响应体为 `code=409`、`errorCode=PHASE7_MUTATION_GUARDED`、`data=null`，`x-request-id=req_b63e016f-e822-48a3-bbea-792ebc12951c`。HTTP 200 不能写成写入成功；本批阻断语义以 envelope 内业务码和 errorCode 为准。
+
+采证噪音与边界：隐藏 PowerShell 启动本地 API 时 stderr 中出现过环境变量赋值语法噪音，但 Nitro dev 随后实际监听 `127.0.0.1:3102` 并完成所有目标请求，因此该噪音不升级为业务 handler 失败。本地 `GET /__nitro/ready` 本次返回 `DB_READY`，只代表本机 dev 探针状态，不能写成通讯录 `DB_READY`、生产 ready、Neon main 真实通讯录样本或 DB-backed contact repository 证据。
+
+禁止误判：不得把本批写成自然 App H5 页面 Network、生产 App H5 Network、通讯录 `DB_READY`、Neon main 真实通讯录样本、DB-backed 通讯录数据、真实在线状态写入完成、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。通讯录兼容种子、HTTP 200、Vitest、guard、App shadow 解析和无自然页面扫描都只能作为本地 exact handler 与默认业务 guard 证据。
+
+## 2026-05-24 1D.15 房屋单元只读小批次发现
+
+本批只处理具名房屋单元只读端点：`/app/unit.queryUnits`、`/app/unit.queryUnitDetail`、`/app/room.queryRooms` 和 `/app/room.queryRoomDetail` 已升级为独立 `apps/api` 精确覆盖。本批没有任何房屋单元写入口，也没有新增 mutation guard。
+
+实现边界已经收敛为统一 App legacy 模块格式：`apps/api/server/modules/room-unit` 下新增 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 七层。兼容房屋单元种子位于 `repository.ts`，覆盖 `COMM_001` 到 `COMM_003` 的楼栋、单元和房屋组合，保留旧 App 需要的 `floorId`、`unitId`、`roomId`、`floorNum`、`unitNum`、`roomNum` 和 `communityId` 字段。`service.ts` 只暴露查询能力，`legacy-adapter.ts` 负责旧参数归一、分页默认值、ID 校验和 `{ code, msg, data }` envelope，`legacy-endpoints.ts` 通过 `getRoomUnitRuntime(event).legacyAdapter` 分发并使用共享 `mergeInput(query, body)`。
+
+运行时清单和 App H5 shadow 边界已经对齐。四个只读端点注册 GET/POST，phase 为 `phase7-room-unit-readonly`，owner 为 `room-unit`，response contract 为 `{ code, msg, data }`，cutover status 为 `app-shadow-allowlist`。App H5 只把这四个房屋单元只读路径加入 `PHASE2_API_SHADOW_ENDPOINTS`，没有放行任何房屋单元写入口。
+
+TDD 红灯证据符合预期：API 目标测试在实现前失败，原因是 room/unit 精确端点未注册、manifest 缺项且 `apps/api/server/modules/room-unit/*` 不存在；App runtime-base 测试在放行前失败，原因是四个房屋单元只读路径在 shadow enabled 时仍路由到旧 runtime。转绿后 API 目标矩阵 5 文件 114 测试通过，App room/unit runtime-base 1 文件 11 测试通过；`api` typecheck、`app` type-check、OpenSpec strict 和 diff check 均已纳入复验。`api` typecheck 曾暴露 `cutoverStatus` 字面量被宽化为 `string`，已通过显式 helper 保持 union 类型。
+
+本地 API 直打证据命中独立本地 API，而不是旧 fallback：四个只读请求均打到 `http://127.0.0.1:3102` 并返回 HTTP 200、`x-api-phase=phase3-infra` 与 `{ code, msg, data }`。关键 request-id 为单元列表 `req_8c763426-b640-49a2-9972-e4418b0d8889`、单元详情 `req_7dfb6574-ca0f-47be-b264-b678121c6c78`、房屋列表 `req_e0fa7355-5278-4094-8fba-ce9e680c0e85`、房屋详情 `req_861c2a18-087c-42ab-8cb8-e2e5adb33adb`；POST body 覆盖 query 的单元列表和房屋列表 request-id 分别为 `req_8d7a3884-c460-415f-a593-d337ab169559` 与 `req_1b614b70-f388-4891-9720-48ff31204c89`。证据汇总为 `.tmp/phase7-dev-browser/2026-05-24-1d15-room-unit-local-api-responses.json`。
+
+本地 App H5 Network 证据命中独立本地 API，而不是旧 fallback。单元列表页自然发起 `/app/unit.queryUnits`，request-id 为 `req_e274f434-ee3d-4bf0-9d79-de73b0dd7eb5`；房屋列表页自然发起 `/app/room.queryRooms`，request-id 为 `req_4a255b65-9977-4034-b4e1-6d23b69398cb`；房屋详情页自然发起 `/app/room.queryRoomDetail`，request-id 为 `req_392331e0-18f9-4d68-ac66-5683927683dd`，并附带发起 `/app/room.queryRooms` 房屋信息查询，request-id 为 `req_5b8aab6d-f193-4ce8-b664-aef11863af4d`。证据摘要、响应体、快照和截图均保存到 `.tmp/phase7-dev-browser/`，摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d15-room-unit-readonly-local-evidence.md`。
+
+自然页面覆盖存在明确边界：`/app/unit.queryUnitDetail` 当前没有自然 App H5 页面直接调用。源码扫描只确认 `apps/app/src/api/unit.ts` 暴露 `getUnitDetail()`，没有找到 Vue 页面直接调用，因此本批不能把单元详情写成自然页面 Network 证据，只能写成本地 API 直打、runtime manifest、契约测试和 App shadow 解析证据。
+
+页面层残留风险仍存在：房屋列表和房屋详情页面控制台出现已知 Vue/z-paging scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`。房屋详情页的 `getRoomInfo()` 还会复用 `/app/room.queryRooms` 并传入 `floorNum`、`unitNum`、`roomNum`，与列表主路径的 `floorId`、`unitId` 参数存在页面层消费差异风险。本批不修改页面契约，也不把该风险升级为 API handler 失败。
+
+本地 ready 语义必须保守解释：本地 `GET /__nitro/ready` 返回 `DB_READY`，request-id 为 `req_8e453a96-7a54-4f2a-945c-65ae4176b0b5`，只说明本机 dev 服务 readiness 探针可用，不能写成生产 `DB_READY`，也不能写成房屋单元 DB-backed repository、Neon main 真实房屋单元样本或真实库主键证据。
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、Neon main 真实房屋单元样本、DB-backed 房屋单元数据、`F_`/`U_`/`R_` 真实数据库主键、下游外键、写入口迁移、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。房屋单元兼容种子、HTTP 200、Vitest、本地页面 Network 和 App shadow 解析都只能作为本地 exact handler 与本地 App H5 shadow 证据。
+
+## 2026-05-24 1D.16 业主资料小批次发现
+
+本批只处理具名 owner 旧 App runtime 端点：只读入口 `/app/owner.queryOwnerAndMembers` 已升级为独立 `apps/api` 精确覆盖；写入口 `/app/owner.saveRoomOwner`、`/app/owner.editOwner`、`/app/owner.deleteOwner` 只收敛为默认业务 guard，不开放真实新增、编辑或删除业主资料。
+
+实现边界已经收敛为统一 App legacy 模块格式：`apps/api/server/modules/owner` 下新增 `types`、`repository`、`service`、`runtime`、`legacy-adapter`、`legacy-endpoints`、`index` 七层。兼容业主种子位于 `repository.ts`，共 36 条确定性 owner/member 记录，保留旧 App 需要的 `memberId`、`ownerId`、`communityId`、`roomId`、`roomName`、`name`、`link`、`idCard`、`address`、`ownerTypeCd`、`ownerTypeName` 等字段。`service.ts` 只暴露查询与 guard 决策，`legacy-adapter.ts` 负责旧参数归一、分页默认值、筛选和 `{ code, msg, data }` envelope，`legacy-endpoints.ts` 通过 `getOwnerRuntime(event).legacyAdapter` 分发并使用共享 `mergeInput(query, body)`。
+
+运行时清单和 App H5 shadow 边界已经对齐。只读端点注册 GET/POST，phase 为 `phase7-owner-readonly`，owner 为 `owner`，response contract 为 `{ code, msg, data }`，cutover status 为 `app-shadow-allowlist`。三个写入口只注册 POST，phase 为 `phase7-owner-guarded-write`，cutover status 为 `blocked-for-execution`，并加入 mutation blocked 集合。App H5 只把 `/app/owner.queryOwnerAndMembers` 加入 `PHASE2_API_SHADOW_ENDPOINTS`，三个写入口在 shadow enabled 时仍走旧 runtime base。
+
+TDD 红灯证据符合预期：API 目标测试在实现前失败，原因是 owner 精确端点未注册、manifest 缺项且 `apps/api/server/modules/owner/*` 不存在；App runtime-base 测试在放行前失败，原因是 owner 只读路径在 shadow enabled 时仍路由到旧 runtime。转绿后 API 目标矩阵 5 文件 121 测试通过，App owner runtime-base 1 文件 10 测试通过；`api` typecheck、`app` type-check、OpenSpec strict 和 diff check 已纳入最终复验队列。
+
+本地 App H5 Network 证据命中独立本地 API，而不是旧 fallback。业主列表页自然发起 `/app/owner.queryOwnerAndMembers`，命中 `http://127.0.0.1:3102` 并返回 HTTP 200；页面快照和截图保存为 `.tmp/phase7-dev-browser/2026-05-24-1d16-owner-list-local-app.txt` 与 `.tmp/phase7-dev-browser/2026-05-24-1d16-owner-list-local-app.png`，证据摘要为 `.tmp/phase7-dev-browser/2026-05-24-1d16-owner-readonly-local-evidence.md`。本地 API 直打覆盖列表、按 `memberId` 详情、`name`、`link`、`roomName` 筛选、POST body 覆盖 query 和空数据路径，响应汇总为 `.tmp/phase7-dev-browser/2026-05-24-1d16-owner-local-api-responses.json`。
+
+写入口 guard 只做本地直打验证，没有通过页面触发真实新增、编辑或删除。Node `fetch` 直打三个 POST 写入口均返回旧兼容 envelope，响应体业务码为 `code=409`、`errorCode=PHASE7_MUTATION_GUARDED`、`data=null`；guard 前后 `MEM_0003` 查询结果保持一致。HTTP 200 或兼容 envelope 不能写成写入成功；本批阻断语义以业务码和 `errorCode` 为准。
+
+页面层残留风险仍存在：业主列表页面控制台出现已知 Vue/z-paging scheduler 错误 `Cannot assign to read only property '_' of object '#<Object>'`。本批只证明目标 Network 请求和旧 envelope 正确，不声明业主列表 UI 渲染层全量修复完成。
+
+本地 ready 语义必须保守解释：本地 `GET /__nitro/ready` 返回 `DB_READY`，只说明本机 dev 服务 readiness 探针可用，不能写成生产 `DB_READY`，也不能写成 owner DB-backed repository、Neon main 真实业主样本或真实库主键证据。
+
+禁止误判：不得把本批写成生产 App H5 Network、生产 `DB_READY`、Neon main 真实业主样本、DB-backed 业主数据、真实业主新增/编辑/删除完成、写入读回回滚、shadow-off/fallback 完成、退役台账完成或旧 app server 退役。业主兼容种子、HTTP 200、Vitest、guard、本地页面 Network 和 App shadow 解析都只能作为本地 exact handler 与默认业务 guard 证据。
+
+## 2026-05-25 §3A.299 fresh scan 发现
+
+本轮只做调用端到目标端的 fresh scan，不实现 `apps/api` 运行时代码。`apps/app/src/api/work-order.ts`、`visit.ts`、`profile.ts`、`video.ts`、`notice.ts`、`repair.ts`、`fee.ts`、`property-application.ts`、`owner.ts`、`room.ts`、`unit.ts` 已可稳定映射到独立 `apps/api` exact handler 或跨模块 `callComponent` 复用；`inspection.ts`、`parking.ts`、`staff.ts` 仍保留 client caller 但在 `apps/api` exact registry 下仍有缺口，且分别牵涉高风险写入口、设备动作和 dynamic route。`contact` 继续保持 server-only compatibility/mock 口径，`mock`、`test`、`foo*`、`login.ts` 不应当当成真实业务 caller。
+禁止误判：不得把这轮 fresh scan 写成生产 App H5 Network、`DB_READY`、shadow-off/fallback 完成、真实库样本、写入闭环、页面全量修复或旧 app server 退役。
+
+## 2026-05-25 §3A.300 fresh scan 发现
+
+本轮只做服务端端点差集分类，不实现 `apps/api` 运行时代码。`work-order`、`visit`、`profile`、`owner`、`room`、`unit`、`fee`、`repair`、`oa-workflow`、`appointment`、`complaint`、`maintenance`、`resource`、`purchase`、`item-release`、`floor`、`meter`、`activity`、`coupon`、`renovation`、`property-application` 都已有客户端调用与服务端 endpoint 证据，属于 both 或跨模块复用；`contact` 与 `test` 继续保持 server-only compatibility/mock 口径；`staff` 必须单列 dynamic route；`inspection`、`parking`、`work-order`、`profile`、`visit` 的写入口不能因为只读或页面命中就被误判为完成。`foo*`、`login.ts`、mock/test 支路也不能当成真实业务 caller。
+禁止误判：不得把这轮差集分类写成生产切流、`DB_READY`、shadow-off/fallback 完成、真实库样本、写入闭环、页面全量修复或旧 app server 退役。
+
+## 2026-05-25 §3A.301 response contract 发现
+
+- `apps/app` 侧 legacy 响应仍由 `successResponse` / `errorResponse` 统一封装，旧 envelope 维持为 `{ success, code, message, data, timestamp }`，错误路径可显式返回 `400` / `404` / `500`，不会自动切成 admin canonical 的 `JsonVO` 形状。
+- `endpoint-registry.ts` 继续把 `query`、`body` 和 path params 合并进 `params`，所以 `GET/POST` 兼容与 POST body 覆盖 query 仍是共享层契约，不是单个模块私货。
+- `work-order`、`visit`、`profile`、`owner`、`room`、`unit` 的测试都在锁定旧 list/detail 结构、分页输入或写后回读；`owner` 还明确验证删除后 `queryAfterDelete.data.list` 为空。
+- `inspection`、`parking` 继续沿用同一套 app legacy envelope，但它们带有更高风险的写入口；`contact` 与 `test` 更接近 compatibility/mock 边界，其中 `test` 明确验证了参数回显和 `code='500'` 的错误路径。
+- 未见 `apps/app/server/modules/**` 改用 `adminSuccess` / `adminFailure`；admin canonical 响应只在 `apps/api` 侧单独存在，不应反写进 app legacy contract。
+- ## 2026-05-25 §3A.303-305 app 端横向验证边界
+
+- `legacy dispatch`、runtime manifest、allowlist 与 guard 的一致性已经在 1D.5-1D.16 的各模块 checkpoint 和 `runtime-evidence-alignment-audit.md` 中被持续要求，并由 `phase7-api-contracts.test.ts` / `endpoint-manifest.test.ts` 作为结构性回归兜底；这类一致性不等于 repository 完成，也不等于生产 `DB_READY`。
+- `server-only` / `client-only` 的横向调查已经分别落到 `.tmp/phase7-dev-browser/2026-05-21-server-only-endpoint-summary.md` 与 `.tmp/phase7-dev-browser/2026-05-21-client-only-gap-exploration.md`，因此可把 303-305 视为分类与边界记录，而不是新增 runtime 采证需求。
+- 这三个任务只解决“不要误删 / 不要忽略”的台账问题，不代表旧服务退役，也不代表 `apps/app/server` 或旧 H5 path 可以删除。
+
+## 2026-05-25 task 306 app retirement ledger baseline 风险边界
+
+本轮新增 [app-retirement-ledger.md](app-retirement-ledger.md) 只是在 `route-inventory.md` 的 App Legacy Explicit Registry 上物化 21 行 baseline，不是 §5 task 339-341 old-service retirement candidate 清单，不是目录级退役门禁通过，不是 `DB_READY`、真实库样本、write/read/rollback、shadow-off/fallback 复验或旧服务可删。
+
+后续若有人把 task 306 误读为旧服务退役完成，应优先回看 ledger 中的保守字段：只读/查询行为 `retirementDecision=keep-source`，写入口行为 `retirementDecision=blocked`，`dataSourceStatus` 只允许保持 `partial-or-mixed` 或 `blocked-for-execution`，`dbReadinessEvidence=READY_CONFIGURED-only`。这些字段共同说明本轮只是 §3A app 端 21 行 ledger baseline，不能据此删除、移动、归档、重命名或清空 `apps/app/server`、`apps/admin/server` 或 `D:\code\ruan-cat\01s-11comm-app`。
+
+## 2026-05-25 task 307/310 apps-api 本地验证边界
+
+本轮本地 `apps/api` 短启、health、ready、build、typecheck 和 test 通过，只能关闭本地运行与 ready 语义边界。`READY_CONFIGURED` 表示配置了数据库 URL 且深度 probe 未开启；它的 `connected=null`、`probeEnabled=false` 明确说明没有真实连接验证，不能写成 `DB_READY`。本地 fake 或占位 DB URL、兼容种子、HTTP 200、Vitest、Nitro build 和 `/app/fee.listFee` 3 条兼容样本都不能写成 Neon main 真实库样本、生产 DB readiness、写入闭环、shadow-off/fallback 或退役证据。
+
+本轮发现 `apps/api/.env` 当前含 `RUN_PHASE7_DB_READINESS_CHECK=1`。在没有真实可用 DB URL 的本地短启里，这会让 `/__nitro/ready` 进入深度探针并返回 `DATABASE_CONNECTION_FAILED`，不能把该 503 误判为服务启动失败，也不能把其与显式 `RUN_PHASE7_DB_READINESS_CHECK=0` 下的 `READY_CONFIGURED` 混写。后续采 ready 证据必须同时记录 `RUN_PHASE7_DB_READINESS_CHECK`、DB URL 是否为脱敏占位、ready code、`connected`、`probeEnabled`。
+
+Windows gotcha：`Start-Process -FilePath pnpm` 可能命中非 Win32 shim，应使用 `pnpm.cmd`；旧版 PowerShell 没有 `Invoke-WebRequest -SkipHttpErrorCheck`，可用 `curl.exe` 采状态；Nitro dev 会留下子进程，停止时必须按端口 owning process 清理，不能只停父进程。
+
+本轮还修复了一个测试断言过期问题：`apps/api/tests/legacy/repair-legacy-endpoints.test.ts` 不应继续否认已合法迁入的 complaint endpoint `/app/auditUser.listAuditComplaints`。该 endpoint 已由 complaint 专项测试、runtime registry 和 manifest 测试正向覆盖；repair 测试应只防止 repair/workorder/resource/machine 等 blocked leftovers 被误注册。
+
+## 2026-05-25 contract upload R2 前置复核边界
+
+本轮只把 R2 前置事实和阻断决策沉淀为证据，不实现上传能力。`apps/api` 仍缺 `@aws-sdk/client-s3`、`@aws-sdk/s3-request-presigner`、R2 client、S3 multipart command、presigner、upload session repository 和断点续传端到端验证。`ctUploadSessions` 与 `ctUploadSessionParts` 已存在于 `apps/type/src/business/property-manage/contract-manage/schema.ts`，但 schema 存在不能替代 `apps/api` repository 写入读回。
+
+当前 `property-manage/contract-manage/upload/{init,sign-part,complete,abort,status}` 继续保持 `blocked-pending-r2-env`。route 壳、前端 shared-upload hook、`R2_*` env 透传、409 阻断响应和 Vitest 通过都不能写成真实 R2 multipart、DB session/part 写入读回、前端断点续传闭环、production HTTP evidence、`DB_READY`、available runtime manifest 或旧服务退役候选。
+
+## 2026-05-25 edge/debug/placeholder route 分类边界
+
+`debug-env.get.ts` 只作为诊断 route 处理，排除业务迁移与退役候选；`j1-dashboard/center/commonmenu/get.ts` 仍是 placeholder 或待决策 route，且前端调用路径不是 `/get`，不能写成 exact route 已迁移；`org-info/tree.post.ts` 虽已进入 `apps/api` manifest 并具备本地 contract/repository 证据，但生产 tree 返回空数组，生产 `org-info/list` 同页有 5 条组织数据，生产 `/__nitro/ready` 仍是 `READY_CONFIGURED`，所以 task 496 不得关闭。
+
+禁止误判：task 515 的分类完成不是 edge route 全量完成，不是生产数据正确性通过，不是 shadow-off/fallback，不是 retirement ledger，也不是 `apps/admin/server` 目录级退役许可。
+
+## 2026-05-25 admin resolver fresh scan 风险
+
+本轮扫描显示 `apps/admin/src/api/**/index.ts` hook index 层没有发现绕过 `resolveAdminApiRequestUrl(...)` 的旧 `/api/**`，但 `apps/admin/src/pages/property-manage/contract-manage/draft-contract/api.ts` 在页面局部 API 中直接定义旧 `/api/property-manage/contract-manage/draft-contract`。该页面属于 `propertyManage.contractManage.draftContract` 业务路径，不能归类为 system、debug、docs 或 test 例外。
+
+因此 admin resolver 完成态必须降级为 regression pending。修复前不得把 task 509、admin resolver 全覆盖、admin shadow-off、production admin H5 evidence 或旧 `apps/admin/server` 退役写成通过。`apps/admin/src/api/auth.ts` 的 `/api/auth/**` 与 OAuth 跳转属于 system/auth 例外，需要单独评审，不混入普通 rank 业务路径完成率。
+
+同日已修复该 `draft-contract` 页面局部 API 回归：`api.ts` 已改用 `resolveAdminApiRequestUrl(...)`，并新增 `tests/api.test.ts` 覆盖 shadow disabled、shadow proxy enabled、proxy disabled + base URL。红灯先证明 shadow 场景仍命中裸旧路径，转绿后目标 Vitest 2 文件 36 测试通过，`admin typecheck` 通过，定向扫描确认旧裸 `BASE_URL` 已无命中。当前禁止误判调整为：可以关闭 task 509 与本条 regression 修复任务，但不能据此关闭 task 521、admin 页面 Network、admin shadow-off/fallback、生产 H5、生产 `DB_READY`、CRUD 写入闭环或旧 `apps/admin/server` 退役。
+
+## 2026-05-25 §4B 测试纪律局部收口边界
+
+本轮只按当前 `apps/api/tests` 与 `apps/app/src/tests` 相关范围关闭测试纪律的一部分。`*.test.ts` 命名、`vitest` 导入、`describe` 与 `test` 标识、写入口 guard 断言、DB repository fake/mock/capture 边界、命令记录和 Vitest 不替代外部证据的红线可以支撑 task 730、731、733、734、736、737。
+
+该记录创建时 task 732 仍未完成，因为 complaint 只读覆盖较完整，但 repair 等 app legacy 只读测试不足以证明所有只读 endpoint 都覆盖 legacy path、method、payload 兼容、response envelope、关键字段映射、空数据和错误路径。后续 task326 专项已补齐该缺口，关闭证据见 `.tmp/phase7-dev-browser/2026-05-25-task326-app-legacy-readonly-test-coverage.md`；task 735 仍未完成，因为本轮不是 admin list/detail/CUD/upload/edge 测试范围隔离的全量专项审计。
+
+禁止误判：Vitest/typecheck/build/OpenSpec strict/diff check 通过不能替代 Chrome 页面证据、Neon main `DB_READY`、真实库样本、写入读回回滚、shadow-off/fallback 或 retirement gate。
+
+## 2026-05-25 task326 app legacy 只读测试覆盖边界
+
+本轮已补齐 task326 / task732 的 app legacy 只读 endpoint 测试覆盖，证据见 `.tmp/phase7-dev-browser/2026-05-25-task326-app-legacy-readonly-test-coverage.md`。新增和更新的测试文件覆盖 `repair`、`complaint`、`profile`、`video`、`fee` 的缺口，并复核既有 `activity`、`appointment`、`callComponent`、`contact`、`floor`、`notice`、`owner`、`room-unit`、`visit`、`work-order` 等测试。验证命令显示 `apps/api` 全量 legacy 加结构回归 20 文件 231 测试通过，`apps/app` legacy runtime 侧 3 文件 10 测试通过。
+
+风险边界：本轮只证明本地 Vitest 覆盖矩阵已经覆盖 legacy path、method、payload 兼容、response envelope、关键字段映射、空数据和错误或兼容路径。测试使用确定性兼容种子与 fallback runtime，不代表生产 `DB_READY`、Neon main 真实库样本、生产 App H5 Network、shadow-off/fallback、写入读回回滚或旧 app server 退役。fee 文件中受控开启写入口兼容形状测试只是保留本地兼容断言，不能升级为真实业务写入完成。
+
+## 2026-05-25 task339 旧服务新增入口回归扫描边界
+
+本轮已完成 task339 的静态回归扫描，证据见 `.tmp/phase7-dev-browser/2026-05-25-task339-old-service-regression-scan.md`。`apps/admin/server` 与 `apps/app/server` 在 unstaged diff、staged diff、工作区状态和未跟踪文件扫描中均无新增入口；子代理复核也确认本轮新增 `/app/**` endpoint 均位于 `apps/api` 的 legacy 兼容入口、manifest/test 或证据，不是旧 `apps/app/server` 新业务入口，`draft-contract` 的 `/api/**` 变更是 `apps/admin/src` 前端 resolver 修复，不是旧 `apps/admin/server` 新入口。
+
+禁止误判：本轮关闭的是“没有新增旧服务入口回归”这一冻结扫描项，不是 old-service retirement candidate 清单，不是 retirement ledger 全覆盖，不是旧服务引用扫描，不是 fallback/shadow-off 复验，不是三端双环境证据，不是生产 `DB_READY`、真实库样本、写入闭环或旧服务删除许可。
+
+## 2026-05-25 task343 旧服务引用扫描边界
+
+本轮已完成 task343 的旧服务引用扫描，证据见 `.tmp/phase7-dev-browser/2026-05-25-task343-old-service-reference-scan.md`。可用子代理报告覆盖 App 前端、统一 API 与配置、文档脚本测试；后台前端子代理未产出报告，主代理已补扫。当前分类结论是：运行时代码中未发现直接字面量引用 `apps/admin/server`、`apps/app/server` 或 `D:\code\ruan-cat\01s-11comm-app`；`apps/api` 未发现直接导入旧服务目录；后台普通业务 hook 未发现未包裹 resolver 的直接旧 `/api/**` 请求；`/api/auth/**` 是 system/auth 例外。
+
+保守风险必须继续保留：`apps/app/src/api/mock` 与 `apps/app/src/tests/nitro-runtime` 仍有相对导入耦合旧 `apps/app/server` 的 Mock/测试代码；`apps/api` 仍保留 legacy fallback base 与 fallback 测试；`apps/app/src/http/runtime-base.ts` 仍保留旧 runtime fallback 和大量未 allowlist 的 `/app/**` 调用；`apps/admin/tests/setup*.ts` 与 `apps/admin/tests/nitro/**` 仍体现旧 admin Nitro 测试体系；`scripts/generate-tasks.ts` 仍会生成面向 `apps/admin/server/api` 的旧任务模板。
+
+禁止误判：task343 只能关闭为“扫描完成并分类”。不得写成旧服务引用清零，不得写成 App 前端旧服务引用已退役，不得写成 fallback/shadow-off 复验完成，不得写成 old-service retirement candidate 或 retirement ledger 完成，也不得据此删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server` 或 `D:\code\ruan-cat\01s-11comm-app`。
+
+## 2026-05-25 task348-349 受保护路径与删除决策边界
+
+本轮已完成 task348 与 task349 的保护/决策记录，证据见 `.tmp/phase7-dev-browser/2026-05-25-task348-349-protected-paths-and-delete-decision.md`。`D:\code\ruan-cat\01s-11comm-app` 继续是永久保留的旧源目录和历史证据来源，只能只读引用、采集迁移证据或记录存在；`apps/admin/server` 与 `apps/app/server` 在 no-go-for-retirement 解除前仍是受保护旧服务目录。
+
+删除、移动、归档、重命名或清空 `apps/admin/server`、`apps/app/server` 或旧源目录不得夹带在 endpoint 迁移任务中。若未来确实要处理旧服务目录，必须发起独立 OpenSpec change 或明确单独评审，并具备回滚方案和用户明确确认。本轮 `openspec list --json` 只显示当前 change 为 in-progress，未发现可承载旧服务目录删除的独立 active change。
+
+禁止误判：task348-349 完成是保护规则和删除决策门禁已落证据，不是旧服务退役许可，不是旧源目录删除许可，不是目录级 cleanup 执行完成，也不能替代 retirement candidate、retirement ledger、fallback/shadow-off、生产 `DB_READY`、真实库样本或写入闭环。
+
+## 2026-05-25 task521 admin caller mapping 边界
+
+本轮已完成 admin caller mapping 静态台账，证据汇总见 `.tmp/phase7-dev-browser/2026-05-25-task521-admin-caller-mapping.md`。四个子代理分片报告共建立 127 行有 hook 或共享调用端的 old `/api/**` 证据，其中 114 行有明确页面入口，5 行是 `contract-manage/upload/*` shared-upload 调用端，8 行有 hook 但未发现页面入口。另有 31 行 inventory route 当前在 `apps/admin/src` 无前端 hook/caller，主要是 `dev-team/config-manage/*` 的 CUD/detail 与 `setting-manage/system-manage/*` 的 CUD；`debug-env` 与 `j1-dashboard/center/commonmenu/get` 继续保持诊断或 placeholder 分类。
+
+禁止误判：task521 完成只代表静态扫描和台账分类完成。它不能替代 Chrome 页面 Network、生产 admin H5、HTTP gate、contract test、真实 CRUD 页面交互、Neon main `DB_READY`、真实库样本、写入读回回滚、shadow-off/fallback 或 retirement ledger。无页面入口的 contract shared/reference hook 和 `operation-team/data-manage/property-company/list` 不得用“页面未访问”跳过；当前无 hook/caller 的 dev/setting CUD inventory rows 也不得被对应 list 页面证据覆盖。
+
+后续自动扫描 gotcha：`report-manage/expense-summary-table` 与 `expense-manage/expense-summary-table` hook 名称相同，必须按目录和业务路径区分；`operation-team/system-manage/community-configuration` 页面使用 alias `useCommunityConfigListQuery`；patrol 的 `useDetailListQuery`、`useItemListQuery` 等名称泛化，必须结合 import 路径；`draft-contract` 的 detail/create/update/delete 位于页面局部 `pages/.../draft-contract/api.ts`，不能只扫描 `apps/admin/src/api/**/index.ts`。
+
+## 2026-05-25 §4A 本地三端证据边界
+
+本轮已关闭 task 316-319，但只代表本地 dev 和本地浏览器证据闭环。`apps/api` 在 3102、`apps/admin` 在 8080、`apps/app` H5 在 3000；admin 通过 `/api-shadow` 指向 3102，app H5 的 shadow allowlist 将 `/app/**` 指向 3102。API browser evidence 覆盖 `GET /__nitro/health`、`GET /__nitro/ready`、`POST /api/property-manage/contract-manage/draft-contract/list` 和 `GET /app/owner.queryOwnerAndMembers`；admin 页面 evidence 覆盖 `draft-contract` 业务页自然发出的 `/api-shadow/.../list`；app 页面 evidence 覆盖 owner list 页面自然发出的 `/app/owner.queryOwnerAndMembers`。
+
+禁止误判：本轮 `RUN_PHASE7_DB_READINESS_CHECK=0`，ready code 是 `READY_CONFIGURED`，`connected=null`、`probeEnabled=false`，不得写成 Neon main `DB_READY` 或真实库样本。admin 页面为了本地采证注入了最小测试登录态，并补充 `roles=["物业团队","admin"]` 才通过路由守卫；这只是本地浏览器上下文，不是认证改造、真实登录链路或生产页面证据。app owner 页面 console 仍有既有 Vue/z-paging 调度错误 `Cannot assign to read only property '_' of object '#<Object>'`，不能写成控制台完全无错误，也不能升级为 API handler 失败。
+
+Windows gotcha：普通 `Start-Process powershell -Command $env:...` 会把 env 赋值切碎，导致 `=true` 或 `true` 被当成命令；本轮最终使用 `-EncodedCommand` 启动三端。PowerShell `Invoke-WebRequest` 直打部分 POST 会触发 Nitro dev/undici `expect header not supported`，Chrome browser fetch 和 admin `/api-shadow` 页面请求均证明目标 handler 可以返回 200，所以该路径只能记录为采证方式问题，不是服务失败。
+
+清理 gotcha：PowerShell 变量名大小写不敏感，`$pid` 等价于内置只读变量 `$PID`，不能作为 `foreach` 循环变量。清理本轮 dev 进程时第一次命令因此没有停止端口；后续改用 `$targetProcessId` 并按命令行归属限定在 `D:\code\ruan-cat\01s-11comm\apps\*` 后，3000、3102、8080 均已无监听残留。
+
+## 2026-05-25 task 314 URL/base 边界风险
+
+本轮已把生产入口、本地 dev base、admin resolver base、app shadow/API base 分开落证据，但这只是 URL/base 归属边界，不是运行状态验证。生产入口只能来自三个 `package.json` 的 `homepage` 字段：admin H5 `https://01s-11comm.ruan-cat.com`、app H5 `https://01s-11-app.ruan-cat.com`、统一 API `https://01s-11-server.ruan-cat.com`；本地 `127.0.0.1` 端口、`/api-shadow` 代理前缀和旧 app fallback `3101` 都不能写成生产入口。
+
+admin resolver 的本地和生产语义必须区分：本地 task316-319 使用 `/api-shadow` 代理到 `http://127.0.0.1:3102`；生产 `.env.production` 使用 `VITE_11COMM_API_USE_PROXY=false` 和 `VITE_11COMM_API_BASE_URL=https://01s-11-server.ruan-cat.com`，因此 `/api-shadow` 不是生产 API 域名。app runtime 的本地和生产语义也必须区分：生产 `VITE_SERVER_BASEURL` 与 `VITE_11COMM_API_BASE_URL` 都指向 `https://01s-11-server.ruan-cat.com`；本地 development-nitro-api 文件里的 `3101` 只是非 allowlist fallback，task316-319 通过进程 env 覆盖 shadow 开启后，allowlist 请求才直连 `3102`。
+
+禁止误判：task 314 完成不能替代生产 API `/__nitro/health`、`/__nitro/ready`、生产 H5 Network、Neon main `DB_READY`、真实库样本、shadow-off/fallback、写入读回回滚或旧服务退役。`READY_CONFIGURED`、HTTP 200、本地页面 Network 和 Vitest 通过都不能升级为这些状态。
+
+## 2026-05-25 task 313 runtime 对齐审计风险
+
+本轮结构性审计证明 manifest、route、adapter 和 tests 有可追踪关系，但不是所有 endpoint 的完成声明。app legacy 走 `nitro.config.ts` 的 `/app/**`、`/callComponent/**` handler 和 `legacy-dispatch` registry；admin canonical 走物理 `routes/api/**/*.ts` route 壳并调用模块 `adminAdapter`。这两条链路不能互相替代。
+
+只读差集显示 `routes/api` 物理文件 160 个、admin manifest URL 142 个，manifest 没有声明不存在的物理 route；但还有 18 个物理 route 未进 manifest。其中 `debug-env`、`j1-dashboard/center/commonmenu/get.ts` 和 5 个 contract upload R2 route 是特例排除，另有 11 个业务 route 必须保持 `partial-manifest-missing`：`/api/dev-team/cache-manage/refresh-cache/list`、`/api/dev-team/menu-manage/catalog/list`、`/api/dev-team/menu-manage/group/list`、`/api/dev-team/menu-manage/item/list`、`/api/setting-manage/organize-manage/data-permission/list`、`/api/setting-manage/organize-manage/org-info/list`、`/api/setting-manage/organize-manage/role-permission/list`、`/api/setting-manage/organize-manage/scheduling-setting/list`、`/api/setting-manage/organize-manage/shift-setting/list`、`/api/setting-manage/organize-manage/staff-info/list`、`/api/setting-manage/organize-manage/working-schedule/list`。这些 route 必须保持 partial 或独立任务状态，不能因 task 313 关闭而写成 cutover 完成。
+
+还有 adapter 层级绕过风险：`/api/property-manage/repairs-manage/return-visit/list` 已进 manifest，也有 admin route 测试，但 route 内部直接调用 `getRepairRuntime(event).service.listOwnerRepairs(...)` 并在 handler 内拼 admin DTO，不是纯 `adminAdapter` 映射。该 endpoint 必须标记为 `partial-adapter-bypass`，不能作为 admin route/adapter 全量严格对齐样板。
+
+禁止误判：`endpoint-manifest.test.ts`、`phase7-api-contracts.test.ts`、`app-legacy-module-layering.test.ts`、`endpoint-registry.test.ts` 通过只能证明结构性约束，不能替代生产 `DB_READY`、真实库样本、生产页面 Network、shadow-off/fallback、写入读回回滚或旧服务退役。manifest 中的 `available-in-apps-api-not-caller-verified` 不能写成页面调用端已验证，`blocked-for-execution` 不能写成写入口完成，`partial-manifest-missing` 或 `partial-adapter-bypass` 不能写成全量对齐。
+
+## 2026-05-25 task 329 admin 测试范围隔离风险
+
+本轮审计只证明 admin 测试文件的范围隔离，不证明业务验收完成。普通 list/read-only 文件如 `fee-admin-endpoints.test.ts`、`report-manage-p1-endpoints.test.ts`、`parking-admin-endpoints.test.ts`、`patrol-admin-endpoints.test.ts`、`repair-admin-endpoints.test.ts` 没有导入 create/update/delete/detail/upload route，只能作为 list/read-only contract、route fallback、adapter failure 或 repository query intent 证据。
+
+detail/CUD 由 `contract-change-draft-crud.test.ts`、`dev-config-manage-*.test.ts`、`setting-system-*.test.ts` 和 `expense-manage-phase5a.test.ts` 等专项文件覆盖；upload/R2 由 `contract-upload-r2-blocked.test.ts` 单独保持阻断；edge/debug/placeholder 由 `setting-organize-edge-routes.test.ts` 单独覆盖。这个分工不能替代页面级新增、编辑、删除、详情弹窗、生产写入窗口、read-back、rollback/cleanup 或 residual check。
+
+payment-like 边界：`payment-details-form/list` 和费用相关 list 仍是 admin canonical 只读 PageDTO 或报表语义，不是 payment mutation、支付回调、费用创建或真实支付写入完成。普通 list test 通过不能升级任何 `blocked-for-execution` 或支付/费用高风险写入口状态。
+
+## 2026-05-25 task540 后台退役 no-go 复核边界
+
+本轮 task540 复核只关闭“不得把局部证据外推为 `apps/admin/server` 删除候选”的规则确认，证据见 `.tmp/phase7-agent-reports/2026-05-25-task540-admin-retirement-no-go-review.md`。`admin old path exact coverage`、resolver/fresh scan 完成、HTTP gate/HTTP 200、页面 list 成功、本地页面 Network 成功、静态 caller map、hook/page caller 分类、runtime manifest、route file、health/ready 和 `READY_CONFIGURED` 都不能替代 §5 退役门禁。
+
+进入旧服务目录删除候选前，仍需 endpoint 级 retirement candidate 清单和 ledger、caller cutover 或无 caller 证明、browser/HTTP 证据、fallback/shadow-off 复验、Neon main `DB_READY`、真实库样本、写入读回回滚或明确不适用说明、三端双环境证据、独立退役复核、回滚方案和用户明确确认。旧服务目录删除、移动、归档、重命名或清空必须走独立 OpenSpec change 或明确单独评审；task540 完成不关闭 §5 的任何未完成项。
+
+## 2026-05-25 task496 edge route 分类收口边界
+
+本轮 task496 只关闭 `org-info/tree`、`debug-env.get`、`j1-dashboard/center/commonmenu/get` 三项的分类和最低证据，不升级生产数据、DB 或退役状态。`org-info/tree` 已迁入 `apps/api` 并有 manifest、contract/repository、本地 admin H5 与生产 admin H5 命中 `apps/api` 的证据，但生产响应仍为 `data=[]`，同页 `org-info/list` 有 5 条组织数据；该差异仍是后续生产数据正确性和真实库样本 blocker。`debug-env.get` 是诊断 route，`j1-dashboard/center/commonmenu/get` 是 placeholder 或待决策 route，二者不进入业务 manifest 或退役候选。
+
+禁止误判：task496 完成不代表 `setting-manage/organize-manage` 全量完成，不代表生产 `DB_READY`、Neon main 真实库样本、shadow-off/fallback、retirement ledger、old-service retirement candidate、三端双环境完整证据或 `apps/admin/server` 删除候选。旧的“生产 tree 为空”阻断仍有效，只是迁移到 §4、§4A、§4C 和 §5 后续任务承接，不再阻断 task496 的分类收口。
+
+## 2026-05-25 task583 写入窗口设计边界
+
+本轮只完成写入窗口设计，不执行真实写入。证据 `.tmp/phase7-dev-browser/2026-05-25-task583-write-window-design.md` 已把 `PHASE7_E2E_*` / `phase7RunId`、可检索 payload 字段、可清理哨兵数据、业务允许范围、读回、回滚或清理、残留检查、guard 恢复和证据模板固化为前置 checklist。
+
+禁止误判：task583 完成不等于授权生产写入，不等于设置 `PHASE7_ALLOW_LEGACY_MUTATIONS=1`，不等于 payment/callable/fee-create 写链路放行，也不等于 `DB_READY`、真实库样本、写入读回回滚、shadow-off/fallback 或旧服务退役。没有用户明确授权、可清理测试数据、回滚方案、残留检查和 guard 恢复证据时，task584 继续保持未完成，高风险写入口继续 blocked。
+
+## 2026-05-25 task584 与 §4C 写入规则收口边界
+
+本轮进一步关闭 task584 与 §4C task773-775，但关闭语义只限禁止执行红线、前置 checklist、高风险对象 blocked 规则和写入证据模板已经落地。`.tmp/phase7-dev-browser/2026-05-25-task583-write-window-design.md` 已说明未取得用户授权、未具备生产 `DB_READY`、可清理测试数据、回滚方案、残留检查和 guard 恢复证据时，不得对支付、催缴、费用创建、开门、维修流转、业主资料或审批流执行真实生产写入。
+
+禁止误判：这些 checkbox 完成不代表任何 endpoint 已经产生真实写入证据，不代表 read-back、rollback/cleanup、residual count 为 0 或 guard-after 已完成。后续如果实际开启写入窗口，仍必须重新按 endpoint 记录完整 evidence；任一步失败时，同批次后续写入必须停止并保持 blocked。
+
+## 2026-05-25 task769-770 Schema 规则边界
+
+本轮关闭 schema 事实源确认和 schema 变更同步规则项。`schema-wiring-audit.md` 只证明当前 DB-backed repository 使用的表能反链到 `apps/type/src/business/**/schema.ts` 的 Drizzle table、Zod schema 和 TypeScript 类型；`schema-exists-not-wired`、`unknown-needs-triage`、`non-db-or-fallback` 等缺口仍保持保守状态。当前没有 `apps/type/src/business/**/schema.ts` 或 `.claude/skills/neon-db-query/SKILL.md` 改动，因此 task770 只是规则已落地、本轮无 schema 变更不适用。
+
+禁止误判：schema 规则关闭不代表 DB-backed endpoint 已经生产可用，不代表 `DB_READY`、真实库样本、写入读回回滚、shadow-off/fallback 或 retirement candidate。后续任何 schema 新增、修改或删除仍必须重新触发 schema 变更同步流程，不能在旧 `apps/admin/server/db/schemas` 新增事实源。
+
+## 2026-05-25 task494 R2 阻断复核
+
+task494 继续保持未完成。当前 409 阻断、manifest 排除、缺 AWS SDK/R2 client/repository 与专项测试通过，只能证明 contract upload 仍处于 `blocked-pending-r2-env`。这类证据是安全阻断，不是上传能力完成。
+
+禁止误判：不得把 `contract-upload-r2-blocked.test.ts` 通过、5 个 route 壳存在、前端 shared-upload hook 存在或 `ctUploadSessions` / `ctUploadSessionParts` schema 存在写成 R2 multipart、DB session/part 写入读回、异常清理、幂等、前端断点续传闭环、生产 HTTP/页面证据、`DB_READY` 或退役条件完成。
+
+## 2026-05-25 DB 证据规则收口边界
+
+task719、777、778 已关闭，但只代表 DB 证据记录规则和验收口径落地。证据见 `.tmp/phase7-dev-browser/2026-05-25-task719-777-778-db-evidence-rules.md`。后续任何 `DB_READY` 记录只能写 env 名、脱敏 host、连接类型、required tables、migration count、ready code 和响应摘要，不能写真实连接串或 secret。只读 endpoint 的真实库样本必须能追到 repository、业务表、查询条件和字段映射；空数组、mock、compat 默认值或 fallback 只能记录为缺口。
+
+禁止误判：这些规则项完成不代表生产 Neon main `DB_READY` 已通过，不代表任何 endpoint 的真实库样本完成，也不代表生产浏览器证据、写入读回回滚、shadow-off/fallback 或旧服务退役。task718 与 task721 仍是实际 DB 验收缺口。
+
+## 2026-05-25 旧服务目录删除候选 no-go 复核边界
+
+task796 与 task797 已关闭，但关闭含义是目录删除候选前置规则已复核，且当前仍不得进入删除候选评审。证据见 `.tmp/phase7-dev-browser/2026-05-25-task796-797-directory-retirement-no-go.md`。`apps/admin/server` 和 `apps/app/server` 仍受保护；只有在全部 endpoint 归类、retirement gate、DB/write/fallback/browser evidence、三端双环境证据、保留清单、回滚方案和独立评审满足后，才允许进入单独删除候选评审。
+
+禁止误判：task796、797 完成不代表旧服务可删，不代表 retirement candidate 清单、retirement ledger、fallback/shadow-off、三端双环境证据、生产 `DB_READY`、真实库样本或写入闭环完成。当前 change 仍不得删除、移动、归档、重命名或清空旧服务目录。
+
+## 2026-05-25 生产 API browser evidence 边界
+
+task747 已关闭，但只代表生产 API server 端的 Chrome DevTools MCP 证据已经采集。证据见 `.tmp/phase7-dev-browser/2026-05-25-production-api-browser-evidence.md`。生产 `health`、`ready` 和 `owner.queryOwnerAndMembers` 均返回 200；ready 仍是 `READY_CONFIGURED`，不是 `DB_READY`；owner 响应中仍含 `mock 业主数据`。
+
+禁止误判：生产 API 200 和非空响应不能替代 Neon main `DB_READY` 或真实库样本。task748 的生产 admin H5 页面 Network 仍未关闭；task749 只关闭生产 App H5 的 owner-list 页面证据，不能替代 admin H5。task718 与 task721 也仍是实际 DB 验收缺口。
+
+## 2026-05-25 生产 App H5 browser evidence 边界
+
+task749 已关闭，但只代表生产 App H5 的一个真实页面 Network 已采集。证据见 `.tmp/phase7-dev-browser/2026-05-25-production-app-h5-browser-evidence.md`。页面为 `#/pages-sub/property/owner-list`，业务请求命中生产 `apps/api` 的 `/app/owner.queryOwnerAndMembers`，未观察到旧 app server fallback 请求。
+
+禁止误判：该响应仍含 `mock 业主数据`，所以不能升级为真实库样本或 Neon main `DB_READY`。本项不代表全部 App H5 页面、全局 shadow-off/fallback、写入口闭环或旧 app server 可退役。
+
+## 2026-05-25 生产 admin H5 当前重采阻断
+
+task748 继续保持未完成。当前 Chrome DevTools MCP 打开 `https://01s-11comm.ruan-cat.com/#/setting-manage/organize-manage/org-info` 后实际进入 `#/login`，Network 只有文档、`platform-config.json` 和 iconify 请求，没有自然触发 org-info 业务 API。截图见 `.tmp/phase7-dev-browser/2026-05-25-production-admin-org-info-blocked.png`。2026-05-21 的 org-info 生产 admin 页面 Network 可作为历史证据参考，但本轮缺当前登录态下的完整页面 Network、控制台摘要和业务请求复采，因此不关闭 task748。
+
+追加阻断：第二次注入采证用浏览器态后仍回到 `#/login`，仍无 org-info 业务 API Network。证据见 `.tmp/phase7-dev-browser/2026-05-25-production-admin-h5-current-blocked.md` 和截图 `.tmp/phase7-dev-browser/2026-05-25-production-admin-org-info-login-after-token-injection.png`。后续关闭 task752 需要可用登录态或其它明确允许的生产 admin H5 采证方式，不能把本轮登录页请求或 2026-05-21 历史证据升级为当前重采通过。
+
+## 2026-05-25 task510 admin shadow-off/fallback 当前复验边界
+
+task510 已关闭，但只代表当前代码级 admin resolver 复验完成。证据见 `.tmp/phase7-dev-browser/2026-05-25-task510-admin-shadow-fallback-current-revalidation.md`。有效复验命令运行 41 个测试文件、308 个测试通过，覆盖 shadow disabled、shadow proxy 和 direct apps/api base 三种解析状态。2026-05-16 旧本地证据只保留为 historical local evidence，不再作为本项关闭依据。
+
+禁止误判：task510 完成不代表生产 admin H5 页面 Network、task802 退役前 fallback/shadow-off 复验、生产 `DB_READY`、真实库样本、写入读回回滚或旧服务退役。后续如果要关闭 task802，仍必须按目标 endpoint 证明关闭旧 fallback 或 shadow off 后仍命中 `apps/api`，并记录页面或 HTTP 实证。
+
+## 2026-05-25 生产 admin H5 当前重采通过
+
+task752 已关闭，前一段登录态阻断记录被本轮当前证据取代。有效证据见 `.tmp/phase7-dev-browser/2026-05-25-production-admin-h5-browser-evidence.md`：生产 admin H5 进入 `#/setting-manage/organize-manage/org-info` 后自然请求生产统一 API 的 `org-info/tree` 与 `org-info/list`，均为 HTTP 200，且响应头包含 `x-api-phase=phase3-infra`。本轮关键修正是按源码确认 `storageLocal()` 直接使用 `localStorage` 原始 key，并同时满足 cookie `multiple-tabs=true` 与 `user-info`，因此页面不再回到登录页。
+
+禁止误判：本项仍只是 production/admin 页面 Network 证据。它不证明生产 Neon main `DB_READY`，不证明真实库样本全量复核，也不证明 fallback/shadow-off 全局复验、写入读回回滚、retirement ledger 或旧服务退役。此前 `.tmp/phase7-dev-browser/2026-05-25-production-admin-h5-current-blocked.md` 保留为失败尝试记录，不再代表当前 task752 状态。
+
+## 2026-05-25 task809 三端双环境汇总边界
+
+task809 已关闭，含义仅为本地 API、本地 admin、本地 app、生产 API、生产 admin、生产 app 六个环境单元均已有 §4A 证据记录。汇总见 `.tmp/phase7-dev-browser/2026-05-25-task809-tri-endpoint-dual-environment-evidence.md`。此前 `task754` 记录的生产 admin H5 阻断是当时状态，已由 task752 当前证据取代。
+
+禁止误判：task809 完成不代表目录级删除门禁通过。生产 API ready 仍是 `READY_CONFIGURED`，owner 生产响应仍有 `mock 业主数据`；task720、task723、task803、task804、task805、task808 和写入闭环仍未完成。旧服务目录仍受保护，不得删除、移动、归档、重命名或清空。
+
+## 2026-05-25 task542 无页面入口后台 endpoint 边界
+
+task542 已按窄口径关闭。证据见 `.tmp/phase7-dev-browser/2026-05-25-task542-no-page-admin-endpoint-disposition.md`，只读复核子代理也确认可关闭。关闭含义是：task521 台账中无页面入口或无 caller 的后台 endpoint 都已有 HTTP gate、contract test、blocked 理由或 exclusion 理由，因此没有被“页面未访问”跳过。
+
+覆盖口径：`property-company/list` 与 7 个 `contract-manage` reference list 有 manifest、contract 和生产 HTTP gate；31 个 dev/setting CUD/detail 行有 manifest、contract 和专项 adapter/repository 测试；5 个 `contract-manage/upload/*` route 保持 `blocked-pending-r2-env`；`debug-env` 和 `j1-dashboard/center/commonmenu/get` 分别保持诊断或 placeholder exclusion。
+
+禁止误判：task542 完成不代表 task508、task540、task541、task543、task803、task804、task805 或 task808 完成。无页面处置证据不能替代 Chrome 页面 Network、真实 CRUD 页面交互、生产写入读回回滚、R2 multipart、生产 Neon main `DB_READY`、真实库样本、shadow-off/fallback、retirement candidate 清单、retirement ledger 或旧服务目录退役。
+
+## 2026-05-25 task544 admin 退役台账边界
+
+task544 已按 admin-only 窄口径关闭。证据见 `admin-retirement-ledger.md`：`route-inventory-details.csv.md` 第一个 CSV 区块继续作为 160 行 admin canonical endpoint 的逐 endpoint 基础身份来源，新台账用确定性 overlay 补齐 task544 要求的 old path、business path、target route、runtime manifest、caller evidence、browser/HTTP evidence、DB/write evidence、fallback/shadow-off evidence 和 retirement decision。
+
+覆盖口径：25 行特殊 endpoint 在台账内逐行列出，包含 7 行 `cut-to-apps-api`、5 行 `contract-manage/upload/*` R2 阻断、1 行 `debug-env` 诊断排除、4 行 dev manifest 缺口、1 行 `j1-dashboard` placeholder、7 行 setting organize manifest 缺口；剩余 135 行 `available-in-apps-api-not-caller-verified` exact old path 由选择器精确匹配基础 inventory 行。全部行只允许 `keep-source`、`blocked` 或保守排除，没有任何 `delete-candidate`。
+
+禁止误判：task544 完成不代表全局 old-service retirement candidate 清单、全局 retirement ledger、debug/test/edge/upload/guarded write 全覆盖、fallback/shadow-off 复验、生产 `DB_READY`、真实库样本、真实写入读回回滚、独立退役评审或旧服务目录删除许可。`task804`、`task805`、`task806` 和 `task809` 仍需按各自范围继续保持未完成。
+
+## 2026-05-25 floor app 专项边界
+
+`/app/floor.queryFloors` 与 `/app/floor.queryFloorDetail` 已按专项口径关闭。证据见 `.tmp/phase7-dev-browser/2026-05-25-task-floor-app-h5-http-and-fallback-evidence.md`。列表端点有生产 App H5 页面 Network，detail 端点没有自然页面 caller，只能使用生产 HTTP gate 的 list-to-detail 回读证据。
+
+关键边界：`DB_*` floorId 是从 `hp_houses` 的 `communityId + buildingNo + floor` 聚合出的兼容 ID，不是真实 floor 专表主键。floor 请求命中统一 API exact registry，因此不走旧 app server fallback；但这只证明 floor 两个 endpoint 的专项 fallback 边界，不是全局退役前 shadow-off/fallback drill。
+
+禁止误判：不得把该专项关闭写成生产 Neon main `DB_READY`、unit/room 下游外键全部完成、app legacy 全量真实库样本完成、全局 fallback/shadow-off 完成或旧 app server 可退役。
+
+## 2026-05-25 task806-task808 全局退役清单边界
+
+task806-task808 已按“保守清单与 ledger 字段物化”关闭。证据见 `old-service-retirement-candidates.md`。该文件以当前 fresh scan 为准，修正了早期 `route-inventory.md` 中 app legacy 21 exact / 193 fallback 的历史快照口径：当前 app 旧 runtime 仍为 214 个 unique endpoint，但 `apps/api` 已有 62 个 exact legacy handler，其中 61 个对应旧 app source，1 个是 client-only guard exact `/app/purchase/updatePurchaseApply`；剩余 `/app/**` fallback-only 为 150 个，另有 3 个 `/test/**` diagnostic。
+
+覆盖口径：admin exact、admin apps-api-only、app exact legacy、app fallback-only、client-only gap、server-only/dynamic/diagnostic、debug/test/edge、upload/R2 和 guarded write 均已有稳定引用或精确 endpoint 清单。task807 的最低字段通过 `old-service-retirement-candidates.md` 的字段投影和 path 清单组合追溯。
+
+禁止误判：该关闭不代表任何 `delete-candidate`。所有行仍保持 `keep-source`、`blocked` 或保守排除。生产 `DB_READY`、真实库样本、写入读回回滚、全局 fallback/shadow-off drill、旧服务引用清零、独立退役评审和旧服务目录删除许可仍未完成。
+
+## 2026-05-25 剩余任务阻断复核
+
+本轮阻断复核证据见 `.tmp/phase7-dev-browser/2026-05-25-remaining-blockers-ready-fallback-crud-review.md`。生产 API 当前仍是 `READY_CONFIGURED`，不是 `DB_READY`；这会阻断 task725、task728，以及所有要求生产 `DB_READY`、真实库样本、非 mock 或非 fallback 的 report/expense、dev/setting 和 contract 证据升级。
+
+admin CUD 与页面证据仍不能关闭：dev-team config、setting system、contract change/draft-contract 当前多为 manifest、adapter 分发、repository 表意图、只读 list HTTP gate 或 resolver 证据；没有生产写入授权、写入窗口、read-back、rollback/cleanup、residual check。`contract-manage/upload/*` 的 409 是安全阻断证据，不是 R2 multipart 完成证据。
+
+task815 仍不能关闭。当前 `legacy-dispatch` 逻辑虽是 registry exact 先于 fallback，但缺一个专门的 runtime drill 来证明旧 fallback 不可用时 exact handler 仍成功、未注册 `/app/**` endpoint 才进入 fallback 或失败。task510、floor 专项和全局 ledger 物化都不能替代全局退役前 fallback/shadow-off 复验。
+
+停止边界：用户目标已有八小时停止条件，且当前不允许 git commit/push，所以无法通过推送触发生产重新部署来打开 `RUN_PHASE7_DB_READINESS_CHECK=1` 并完成生产 `DB_READY`。在用户介入生产 env/deploy、授权可控写入窗口和 R2 前置条件前，不得把剩余 open task 强行勾选。
