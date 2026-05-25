@@ -1,6 +1,7 @@
 import { computed, toValue, type Ref } from "vue";
 import { useMutation, useQuery, type UseMutationReturnType } from "@tanstack/vue-query";
 import { http } from "@/utils/http";
+import { resolveAdminApiRequestUrl } from "@/utils/http/api-base-url";
 import type {
 	ContractDraftDetailVO,
 	DraftContractCreatePayload,
@@ -9,7 +10,7 @@ import type {
 	JsonVO,
 } from "@01s-11comm/type";
 
-const BASE_URL = "/api/property-manage/contract-manage/draft-contract";
+const BASE_URL = resolveAdminApiRequestUrl("/api/property-manage/contract-manage/draft-contract", import.meta.env);
 
 const DETAIL_URL = `${BASE_URL}/detail`;
 const CREATE_URL = `${BASE_URL}/create`;
