@@ -139,6 +139,78 @@ describe("setting-manage system-manage system-config admin endpoints", () => {
 		]);
 	});
 
+	test("adapter trims system-config list filters and drops blank filters", async () => {
+		const { createAdminSettingAdapter } = await import("../../server/modules/setting/admin-adapter");
+		const calls: Record<string, unknown>[] = [];
+		const adapter = createAdminSettingAdapter({
+			listSystemConfig: async (params: Record<string, unknown>) => {
+				calls.push(params);
+				return { list: [], total: 0 };
+			},
+		} as any);
+
+		await adapter.listSystemConfig({
+			pageIndex: 2,
+			pageSize: 7,
+			configKey: " task100.system-config.sentinel ",
+			configType: " runtime ",
+			status: " enabled ",
+		} as any);
+		await adapter.listSystemConfig({
+			pageIndex: 3,
+			pageSize: 8,
+			configKey: " ",
+			configType: "\t",
+			status: "",
+		} as any);
+
+		expect(calls).toEqual([
+			{
+				pageIndex: 2,
+				pageSize: 7,
+				configKey: "task100.system-config.sentinel",
+				configType: "runtime",
+				status: "enabled",
+			},
+			{
+				pageIndex: 3,
+				pageSize: 8,
+			},
+		]);
+	});
+
+	test("repository list filters system-config count and rows with the same where", async () => {
+		const db = createTableCaptureDb();
+		const repository = createDbSettingRepository(db as any);
+
+		await repository.listSystemConfig({
+			pageIndex: 1,
+			pageSize: 10,
+			configKey: "task100.system-config.sentinel",
+			configType: "runtime",
+			status: "enabled",
+		} as any);
+
+		expect(db.whereArgs).toHaveLength(2);
+		expect(db.whereArgs[0]).toBeDefined();
+		expect(db.whereArgs[0]).toBe(db.whereArgs[1]);
+	});
+
+	test("repository ignores blank system-config filters", async () => {
+		const db = createTableCaptureDb();
+		const repository = createDbSettingRepository(db as any);
+
+		await repository.listSystemConfig({
+			pageIndex: 1,
+			pageSize: 10,
+			configKey: " ",
+			configType: "\t",
+			status: "",
+		} as any);
+
+		expect(db.whereArgs).toEqual([undefined, undefined]);
+	});
+
 	test("repository CRUD uses sm_system_configs", async () => {
 		const db = createTableCaptureDb();
 		const repository = createDbSettingRepository(db as any);
@@ -252,6 +324,7 @@ function createTableCaptureDb() {
 	const db = {
 		ops: [] as string[],
 		tables: [] as string[],
+		whereArgs: [] as unknown[],
 		select: vi.fn(() => {
 			db.ops.push("select");
 			return createQuery(db, []);
@@ -275,13 +348,16 @@ function createTableCaptureDb() {
 	return db;
 }
 
-function createQuery(db: { tables: string[] }, result: Record<string, unknown>[]) {
+function createQuery(db: { tables: string[]; whereArgs: unknown[] }, result: Record<string, unknown>[]) {
 	const query = {
 		from: vi.fn((table: unknown) => {
 			db.tables.push(getTableName(table));
 			return query;
 		}),
-		where: vi.fn(() => query),
+		where: vi.fn((whereArg?: unknown) => {
+			db.whereArgs.push(whereArg);
+			return query;
+		}),
 		orderBy: vi.fn(() => query),
 		limit: vi.fn(() => query),
 		offset: vi.fn(async () => result),

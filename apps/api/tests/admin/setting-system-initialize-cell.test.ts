@@ -160,6 +160,76 @@ describe("setting-manage system-manage initialize-cell admin endpoints", () => {
 		expect(db.ops).toEqual(expect.arrayContaining(["select", "insert", "update", "delete"]));
 	});
 
+	test("adapter forwards initialize-cell list filters after trimming blanks", async () => {
+		const { createAdminSettingAdapter } = await import("../../server/modules/setting/admin-adapter");
+		const { createSettingService } = await import("../../server/modules/setting/service");
+		const calls: Record<string, unknown>[] = [];
+		const repository = createNoopSettingRepository();
+		repository.listInitializeCell = async (params: Record<string, unknown>) => {
+			calls.push(params);
+			return { list: [], total: 0 };
+		};
+		const adapter = createAdminSettingAdapter(createSettingService(repository));
+
+		await adapter.listInitializeCell({
+			pageIndex: 2,
+			pageSize: 7,
+			initItem: " building ",
+			initStatus: " pending ",
+		} as any);
+		await adapter.listInitializeCell({
+			pageIndex: 1,
+			pageSize: 20,
+			initItem: "   ",
+			initStatus: "",
+		} as any);
+
+		expect(calls).toEqual([
+			{
+				pageIndex: 2,
+				pageSize: 7,
+				initItem: "building",
+				initStatus: "pending",
+			},
+			{
+				pageIndex: 1,
+				pageSize: 20,
+				initItem: undefined,
+				initStatus: undefined,
+			},
+		]);
+	});
+
+	test("repository applies initialize-cell filters to both count and rows queries", async () => {
+		const db = createTableCaptureDb();
+		const repository = createDbSettingRepository(db as any);
+
+		await repository.listInitializeCell({
+			pageIndex: 1,
+			pageSize: 10,
+			initItem: " building ",
+			initStatus: " pending ",
+		} as any);
+
+		expect(db.whereArgs).toHaveLength(2);
+		expect(db.whereArgs[0]).toBeDefined();
+		expect(db.whereArgs[1]).toBe(db.whereArgs[0]);
+	});
+
+	test("repository ignores blank initialize-cell filters", async () => {
+		const db = createTableCaptureDb();
+		const repository = createDbSettingRepository(db as any);
+
+		await repository.listInitializeCell({
+			pageIndex: 1,
+			pageSize: 10,
+			initItem: "   ",
+			initStatus: "",
+		} as any);
+
+		expect(db.whereArgs).toEqual([undefined, undefined]);
+	});
+
 	test("adapter validates missing id for delete", async () => {
 		const { createAdminSettingAdapter } = await import("../../server/modules/setting/admin-adapter");
 		const { createSettingService } = await import("../../server/modules/setting/service");
@@ -236,6 +306,7 @@ function createTableCaptureDb() {
 	const db = {
 		ops: [] as string[],
 		tables: [] as string[],
+		whereArgs: [] as unknown[],
 		select: vi.fn(() => {
 			db.ops.push("select");
 			return createQuery(db, []);
@@ -259,13 +330,16 @@ function createTableCaptureDb() {
 	return db;
 }
 
-function createQuery(db: { tables: string[] }, result: Record<string, unknown>[]) {
+function createQuery(db: { tables: string[]; whereArgs: unknown[] }, result: Record<string, unknown>[]) {
 	const query = {
 		from: vi.fn((table: unknown) => {
 			db.tables.push(getTableName(table));
 			return query;
 		}),
-		where: vi.fn(() => query),
+		where: vi.fn((condition: unknown) => {
+			db.whereArgs.push(condition);
+			return query;
+		}),
 		orderBy: vi.fn(() => query),
 		limit: vi.fn(() => query),
 		offset: vi.fn(async () => result),

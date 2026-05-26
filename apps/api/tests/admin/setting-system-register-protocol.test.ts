@@ -174,6 +174,78 @@ describe("setting-manage system-manage register-protocol admin endpoints", () =>
 		expect(db.ops).toEqual(expect.arrayContaining(["select", "insert", "update", "delete"]));
 	});
 
+	test("adapter trims and forwards register-protocol list filters", async () => {
+		const { createAdminSettingAdapter } = await import("../../server/modules/setting/admin-adapter");
+		const capturedParams: Record<string, unknown>[] = [];
+		const adapter = createAdminSettingAdapter({
+			...createNoopSettingRepository(),
+			listRegisterProtocol: async (params: Record<string, unknown>) => {
+				capturedParams.push(params);
+				return { list: [], total: 0 };
+			},
+		});
+
+		await adapter.listRegisterProtocol({
+			pageIndex: 2,
+			pageSize: 7,
+			protocolType: " owner ",
+			protocolTitle: " Unique Sentinel ",
+			status: " enabled ",
+		});
+		await adapter.listRegisterProtocol({
+			pageIndex: 1,
+			pageSize: 20,
+			protocolType: "   ",
+			protocolTitle: "",
+			status: "   ",
+		});
+
+		expect(capturedParams).toEqual([
+			{
+				pageIndex: 2,
+				pageSize: 7,
+				protocolType: "owner",
+				protocolTitle: "Unique Sentinel",
+				status: "enabled",
+			},
+			{
+				pageIndex: 1,
+				pageSize: 20,
+				protocolType: undefined,
+				protocolTitle: undefined,
+				status: undefined,
+			},
+		]);
+	});
+
+	test("repository register-protocol list applies shared where filters and ignores blank filters", async () => {
+		const db = createTableCaptureDb();
+		const repository = createDbSettingRepository(db as any);
+
+		await repository.listRegisterProtocol({
+			pageIndex: 1,
+			pageSize: 10,
+			protocolType: " owner ",
+			protocolTitle: " Unique Sentinel ",
+			status: " enabled ",
+		});
+
+		expect(db.whereArgs).toHaveLength(2);
+		expect(db.whereArgs[0]).toBeDefined();
+		expect(db.whereArgs[1]).toBe(db.whereArgs[0]);
+
+		db.whereArgs.length = 0;
+		await repository.listRegisterProtocol({
+			pageIndex: 1,
+			pageSize: 10,
+			protocolType: "   ",
+			protocolTitle: "",
+			status: "   ",
+		});
+
+		expect(db.whereArgs).toEqual([undefined, undefined]);
+	});
+
 	test("adapter validates missing id for delete", async () => {
 		const { createAdminSettingAdapter } = await import("../../server/modules/setting/admin-adapter");
 		const { createSettingService } = await import("../../server/modules/setting/service");
@@ -251,6 +323,7 @@ function createTableCaptureDb() {
 	const db = {
 		ops: [] as string[],
 		tables: [] as string[],
+		whereArgs: [] as unknown[],
 		select: vi.fn(() => {
 			db.ops.push("select");
 			return createQuery(db, []);
@@ -274,13 +347,16 @@ function createTableCaptureDb() {
 	return db;
 }
 
-function createQuery(db: { tables: string[] }, result: Record<string, unknown>[]) {
+function createQuery(db: { tables: string[]; whereArgs: unknown[] }, result: Record<string, unknown>[]) {
 	const query = {
 		from: vi.fn((table: unknown) => {
 			db.tables.push(getTableName(table));
 			return query;
 		}),
-		where: vi.fn(() => query),
+		where: vi.fn((where: unknown) => {
+			db.whereArgs.push(where);
+			return query;
+		}),
 		orderBy: vi.fn(() => query),
 		limit: vi.fn(() => query),
 		offset: vi.fn(async () => result),
