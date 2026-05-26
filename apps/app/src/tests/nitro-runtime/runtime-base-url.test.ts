@@ -627,4 +627,23 @@ describe('phase7 app api shadow base url', () => {
       'https://01s-11-server.ruan-cat.com/app/owner.queryOwnerAndMembers',
     )
   })
+
+  test('routes production app requests through the unified standalone server when shadow is disabled', () => {
+    const productionEnv = {
+      VITE_API_RUNTIME: 'nitro-standalone',
+      VITE_SERVER_BASEURL: 'https://01s-11-server.ruan-cat.com',
+      VITE_11COMM_API_BASE_URL: 'https://01s-11-server.ruan-cat.com',
+      VITE_11COMM_API_SHADOW_ENABLE: 'false',
+    }
+
+    expect(prependRuntimeBaseUrl('/app/floor.queryFloors', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/floor.queryFloors',
+    )
+    expect(prependRuntimeBaseUrl('/app/owner.queryOwnerAndMembers', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/owner.queryOwnerAndMembers',
+    )
+    expect(prependRuntimeBaseUrl('/app/owner.saveRoomOwner', productionEnv)).toBe(
+      'https://01s-11-server.ruan-cat.com/app/owner.saveRoomOwner',
+    )
+  })
 })
