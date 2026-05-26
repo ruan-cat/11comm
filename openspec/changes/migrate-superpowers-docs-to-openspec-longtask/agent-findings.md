@@ -1,5 +1,195 @@
 # 代理发现记录
 
+## 2026-05-26 task102 R2 生产 abort-only 阻断边界
+
+Laplace 只读探索确认，当前 `upload/init`、`sign-part`、`status`、`complete`、`abort` 的公开 API 字段足以设计最小 abort-only 演练，但不适合执行 `complete+cleanup`：代码中没有 `DeleteObjectCommand`，也没有公开删除 completed object 的 API；一旦 complete 成功，后续 `abort` 对 completed session 只会返回 `completed` 状态，不会清理对象。因此生产闭环优先顺序只能是 `health -> ready(DB_READY) -> init -> sign-part -> status -> abort -> status`，且即使 abort-only 成功，也只能证明 R2 control-plane、DB session read-back 和 abort 状态持久化，不能证明 completed object 清理。
+
+本轮实际生产尝试在 `init` 阶段被旧 placeholder 阻断。Vercel CLI 只读确认生产项目存在 R2 env key 与 `RUN_PHASE7_DB_READINESS_CHECK`，但公开 HTTP `POST /api/property-manage/contract-manage/upload/init` 返回 body `success=false`、code `409`，message 仍是旧 hard-block 文案 `R2 upload is blocked in apps/api until R2 env, AWS SDK, upload session repository, and resumable upload verification are migrated.`。同轮 `GET /__nitro/ready` 已返回 `DB_READY`，所以该结果不能写成 DB readiness 缺失，也不能简单写成 R2 secret 缺失；更保守的结论是生产别名当前命中的 runtime 仍是旧 upload block 代码路径，或者生产部署未包含本地 R2 upload-service 改动。
+
+证据文件为 `.tmp/phase7-dev-browser/2026-05-26-task102-r2-production-abort-blocked.md`。本轮没有拉取或输出 Vercel/R2 secret，没有保存完整 signed URL，没有创建 sessionId，没有执行 sign-part/status/abort/complete，没有产生 completed R2 object。
+
+No-go：不得把 Vercel env key 存在、`DB_READY` 或本地 R2 控制面测试写成生产 R2 multipart 可用；不得把旧 409 placeholder 写成生产 upload session read-back、rollback、residual 或页面断点续传完成；task102 必须保持 open。
+
+## 2026-05-26 contract change/draft-contract 删除 payload 契约边界
+
+Hume 只读审计确认 `property-manage/contract-manage/change` 与 `draft-contract` 的 8 个 detail/CUD endpoint 仍不能关闭，但发现一个必须先消除的页面级删除契约缺口：页面和类型侧使用 `{ ids: [...] }` 删除 payload，`apps/api/server/modules/contract/admin-adapter.ts` 原本只读取 `{ id }`。如果不修复，后续真实页面点击删除即使前端发起请求，也无法完成生产 read-back、cleanup 或 residual 闭环。
+
+本轮按窄口径修复该前置缺口：`deleteChange` 与 `deleteDraftContract` 现在通过统一 helper 接受 `{ id }` 或 `{ ids: [id] }`，并对缺失、空数组、空白 id 保持 400 失败边界；`apps/api/tests/admin/contract-change-draft-crud.test.ts` 增加 `{ ids }` 契约测试；`apps/admin/src/pages/property-manage/contract-manage/draft-contract/tests/api.test.ts` 同步使用页面真实的 `{ ids: [...] }` payload。验证结果已回写到 `tasks.md` 与 `agent-progress.md`。
+
+No-go：这不是 task101 的关闭证据。当前仍缺生产 CUD HTTP gate、真实 admin 页面新增/编辑/删除点击证据、`change` 父合同哨兵创建与清理顺序证明、write/read-back/rollback/residual 记录、生产页面 Network、shadow-off/fallback 和 retirement ledger。后续做 contract CUD 生产验收时，仍必须按 `db-readiness-and-write-verification` 的唯一闭环顺序执行。
+
+## 2026-05-26 Neon main 与生产 CUD 规范补强边界
+
+本轮回应用户对 Neon 数据库真实 CUD 测试规范的质疑，复核并补强 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/specs/db-readiness-and-write-verification/spec.md`。Maxwell 只读审计结论为 PASS：现有 requirement 已明确 Neon 真实库验收只能走生产或受控 Vercel `apps/api` runtime 的公开 HTTP endpoint，且生产 CUD 只能经公开 `apps/api` HTTP endpoint 触发业务 handler，不能用 Neon 测试分支、fake DB、直接 DB 脚本、`psql`、Drizzle 临时脚本、import handler/service/repository、HTTP 200 或 Vitest mock 替代。
+
+Dewey 做了最小增量补强：新增“远程 runtime env 未被公开 ready 证明”，明确 `RUN_PHASE7_DB_READINESS_CHECK=1` 只在本机 shell、本地 `.env` 或未命中目标 Vercel runtime 时无效，必须由公开 HTTP `GET /__nitro/ready` 返回 `DB_READY` 证明目标 runtime 生效；新增“已授权写入窗口的逐步证据记录”，即便用户已授权写入窗口，也必须记录 `writeWindow`、`operator`、`phase7RunId`、`requestIdByStep`、`httpStatusByStep` 与 `sanitizedPayloadSummary`，且禁止记录 token、secret、cookie、真实连接串、完整账号凭据或完整生产 payload；新增“无法完成 residual check”，无哨兵字段或无法查残留时保持 blocked；新增“生产 CUD 按唯一闭环顺序执行”，固定为 `health -> ready(DB_READY) -> baseline/guard-before -> 开写入窗口 -> create/update/delete 等公开 HTTP -> read-back -> cleanup/rollback -> residual check -> 关闭窗口/guard-after 或 guard-not-applicable`，任一步失败后不得继续同批其它 endpoint。
+
+验证结果：`openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过。No-go：本轮是规范与接力记录补强，不代表已新执行 Neon main 写入、不代表任何业务 endpoint 新增完成证据、不代表 R2 multipart、生产页面 Network、fallback/shadow-off、retirement ledger 或旧服务目录退役完成。
+
+## 2026-05-26 task815 App shadow-disabled 关闭边界
+
+本轮把 task815 从“runtime fallback-off partial”推进到 App legacy 目标 endpoint 的最小闭环：旧 fallback 不可达时 exact handler 仍由 `apps/api` 承接，且 App H5 production standalone 配置在 `VITE_11COMM_API_SHADOW_ENABLE=false` 时仍将目标请求解析到统一 `apps/api` 生产域。新增测试位于 `apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts`，测试名为 `routes production app requests through the unified standalone server when shadow is disabled`，覆盖 `/app/floor.queryFloors`、`/app/owner.queryOwnerAndMembers` 和 `/app/owner.saveRoomOwner`，并明确 production 的 `VITE_SERVER_BASEURL=https://01s-11-server.ruan-cat.com` 与 legacy local env 的旧 runtime fallback 语义不同。
+
+验证链路分三层：App runtime 单测 `pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/runtime-base-url.test.ts` 通过，1 文件 117 tests passed；API runtime fallback-off 单测 `pnpm -F @01s-11comm/api exec vitest run tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/runtime/legacy-fallback.test.ts tests/runtime/endpoint-registry.test.ts` 通过，3 文件 8 tests passed；生产目标 HTTP gate `$env:RUN_PHASE7_HTTP_TESTS='1'; $env:PHASE7_API_BASE_URL='https://01s-11-server.ruan-cat.com'; pnpm -F @01s-11comm/api exec vitest run tests/http/phase7-gated-http.test.ts -t "serves app legacy floor list and detail DB synthetic id over real HTTP"` 通过，1 个目标测试 passed、24 skipped。
+
+边界必须保守：Ampere 只读复核确认 admin resolver 的 shadow disabled 仍返回 same-origin `/api/**`，不是 `apps/api` base；`apps/admin/vite.config.ts` 也只在 `/api-shadow` proxy 模式下转发。task815 关闭不能写成 admin `property-manage/report-manage/expense-summary-table/list` shadow-off 完成，不能替代 task203，也不能证明生产页面 shadow-off Network、allowlist 全量移除、retirement ledger、旧服务引用清零、独立退役评审或旧服务目录可删除。
+
+## 2026-05-26 task102 R2 multipart 本地控制面完成边界
+
+本轮把 `property-manage/contract-manage/upload/{init,sign-part,complete,abort,status}` 从旧的 hard-block placeholder 推进到 `apps/api` 本地 R2 multipart 控制面。新增 `apps/api/server/shared/runtime/r2-env.ts`、`apps/api/server/shared/runtime/r2-client.ts` 与 `apps/api/server/modules/contract/upload-service.ts`，并在 `contract` service/runtime/admin-adapter/index 与 `runtime-endpoints.ts` 接入；`apps/api/package.json` 与 `pnpm-lock.yaml` 已加入 `@aws-sdk/client-s3` 和 `@aws-sdk/s3-request-presigner`。
+
+实现边界：默认 gateway 使用 AWS SDK v3 的 multipart S3/R2 命令和 presigner；DB repository 落到 `ctUploadSessions` / `ctUploadSessionParts`；`initUpload` 会创建或复用 session，`signPart` 签发 part URL，`getStatus` 同步 R2 parts 到 session parts，`completeUpload` 校验缺失 part 后 complete 并写入 public URL，`abortUpload` 对 completed/aborted 保持幂等。5 个 upload endpoint 进入 runtime manifest，phase 为 `phase7-contract-manage-upload-r2`，status 为 `available-in-apps-api-not-caller-verified`。
+
+验证通过：`RUN_PHASE7_DB_READINESS_CHECK=1 pnpm -F @01s-11comm/api exec vitest run tests/admin/contract-upload-r2-blocked.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/runtime/legacy-fallback.test.ts tests/runtime/endpoint-registry.test.ts` 为 6 文件 50 tests passed；`RUN_PHASE7_DB_READINESS_CHECK=1 pnpm -F @01s-11comm/api exec vitest run tests/admin/contract-change-draft-crud.test.ts tests/http/phase7-gated-http.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts` 为 3 文件 40 tests passed + 1 文件 25 skipped；`RUN_PHASE7_DB_READINESS_CHECK=1 pnpm -F @01s-11comm/api run typecheck` 通过；`openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过。
+
+复核风险已收口：`r2-env.ts` 不再只读 `process.env`，而是按 Cloudflare runtime env、`process.env`、Nitro runtimeConfig 顺序解析；真实 runtime 无 DB URL 时不再用 in-memory upload repository，而是通过受控 `503 upload persistence unavailable` 阻断；终态 session 的 status 不再访问 R2 `ListParts`；`completeUpload` 不再只凭 R2 上存在完整 parts 就接受客户端子集，而是校验提交 parts 覆盖完整 part 序列且 ETag 与 R2 listed parts 完全一致。新增专项测试把这 4 个点固化为 11 个测试，复验专项、组合矩阵、API typecheck、OpenSpec strict 和 diff check 均通过。
+
+No-go：本轮没有拉取或输出 Vercel/R2 secret，没有真实 R2 object 上传、complete、abort，没有生产 upload session DB 写入读回清理，没有生产 admin H5 页面断点续传 Network，没有前端 shared-upload 闭环，没有 R2 residual check，也没有旧服务退役前 shadow-off/fallback/retirement 证据。因此 task102 继续保持未完成，不能写成生产 R2 上传完成、页面上传完成、R2 env 已实证可用或旧服务可退役。
+
+## 2026-05-26 task203/task815 shadow-off 边界复核
+
+本轮正向补强只限于 report hook anti-alias 与 runtime fallback-off 复跑。`apps/admin/src/api/property-manage/report-manage/expense-summary-table/tests/index.test.ts` 新增 helper 后，shadow disabled、shadow proxy、direct apps/api base 三个分支都断言 URL 包含 `/report-manage/expense-summary-table/` 且不包含 `/expense-manage/`；这能防止 report hook alias 到 expense-manage，但不能证明 shadow disabled 命中独立 `apps/api`。
+
+阻断结论更关键：`resolveAdminApiRequestUrl(...)` 在 `VITE_11COMM_API_SHADOW_ENABLE !== "true"` 时直接返回原始 same-origin `/api/**`；`apps/admin/vite.config.ts` 只在 `/api-shadow` proxy 模式下转发到 `VITE_11COMM_API_BASE_URL`；生产 `.env.production` 当前是 shadow enabled + direct `https://01s-11-server.ruan-cat.com`。因此本轮没有证据证明 shadow disabled 下的相对 `/api/**` 会被 rewrite 到独立 `apps/api`。旧 2026-05-21 同域 `/api/property-manage/report-manage/expense-summary-table/list` 返回 legacy/source 字段，继续作为 shadow-off no-go。
+
+验证通过：`pnpm -F @01s-11comm/admin exec vitest run src/api/property-manage/report-manage/expense-summary-table/tests/index.test.ts src/utils/http/tests/api-base-url.test.ts` 为 2 文件 12 tests passed；`pnpm -F @01s-11comm/api exec vitest run tests/admin/report-manage-expense-summary-table.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/runtime/legacy-fallback.test.ts tests/runtime/endpoint-registry.test.ts` 为 4 文件 12 tests passed。证据汇总见 `.tmp/phase7-dev-browser/2026-05-26-task815-shadow-off-boundary-review.md`。
+
+No-go：不得把 hook 单测、resolver 单测、runtime fallback-off 单测、生产 direct API 200、生产 admin H5 shadow-enabled 页面 Network 或旧同域 `/api/**` legacy/source 响应写成 admin shadow-off 或全局退役证据。该 checkpoint 当时不能关闭 task815；后续 task815 只按顶部 App production shadow-disabled 关闭边界窄口径关闭。task203、retirement ledger 和旧服务退役仍不能关闭。
+
+## 2026-05-26 task203 report expense-summary-table 证据升级但不关闭
+
+本轮只把 `property-manage/report-manage/expense-summary-table/list` 的生产 DB 证据从旧 `READY_CONFIGURED` 状态升级为生产 `DB_READY` + report 真实库样本，不勾选 task203。生产 API base 仍以 `apps/api/package.json` 的 `homepage=https://01s-11-server.ruan-cat.com` 为准；`/__nitro/health` requestId `req_7a31b51d-4d88-42c0-bfc6-a9fb896db302`，`/__nitro/ready` requestId `req_8eb18452-937a-43c4-9506-1698d4fc928b`，ready code 为 `DB_READY`，database `connected=true` 且 `probeEnabled=true`。目标 endpoint requestId `req_cbe89838-2ed8-4845-b64d-88e3c4db6528`，返回 `total=2/listCount=2`，首条含 `feeItem=物业费`、`currentReceivable=50000.00`、`currentActualReceipt=45000.00`、`chargeRate=90.00%`、`clearanceRate=90.00%`、`statisticsTime=2024-01-01`。
+
+anti-alias 边界继续成立。Galileo 只读复核确认 report route 调 `adminAdapter.listReportExpenseSummaryTables`，service 转 `repository.listReportExpenseSummaryTables`，repository 读 `rptExpenseSummaries` / `rpt_expense_summaries`；runtime manifest 为 `phase7-report-manage-admin-list` 与 owner `fee-report`；admin hook 使用 `resolveAdminApiRequestUrl` 指向 `/api/property-manage/report-manage/expense-summary-table/list`，页面导入 report hook，不是 expense hook。复跑 `pnpm -F @01s-11comm/api exec vitest run tests/admin/report-manage-expense-summary-table.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/phase7-api-contracts.test.ts tests/modules/fee-db-repository.test.ts` 通过，4 文件 47 tests passed。
+
+本轮随后补齐生产 admin H5 页面自然 Network 证据。生产 admin 入口按 `apps/admin/package.json` 的 `homepage=https://01s-11comm.ruan-cat.com` 读取；主代理在当前本地浏览器上下文中通过项目已有 SSO 参数进入 `#/property-manage/report-manage/expense-summary-table`，只用于触发页面自然请求，不是真实后端登录态证明，未记录完整 token/cookie，采证后已清理临时 localStorage 与 cookie。页面自然发出 `POST https://01s-11-server.ruan-cat.com/api/property-manage/report-manage/expense-summary-table/list`，HTTP 200，`x-request-id=req_046901e9-7301-44a7-adaf-f54bb8c652e1`，`x-api-phase=phase3-infra`；响应为 `success=true/code=200/total=2/pageIndex=1/pageSize=10`，首条含 `feeItem=物业费`、`currentReceivable=50000.00`、`currentActualReceipt=45000.00`、`chargeRate=90.00%`、`clearanceRate=90.00%`、`statisticsTime=2024-01-01`，第二条含 `feeItem=停车费`、`currentReceivable=30000.00`、`currentActualReceipt=28000.00`、`chargeRate=93.33%`、`clearanceRate=93.33%`、`statisticsTime=2024-02-01`。证据汇总见 `.tmp/phase7-dev-browser/2026-05-26-task203-report-expense-summary-admin-h5-network-evidence.md`。
+
+缺口仍然是 task203 的关闭条件：shadow-off/fallback 演练尚未完成；retirement ledger 与旧服务退役前证据尚未补齐。旧 5/21 同域 `/api/property-manage/report-manage/expense-summary-table/list` 响应为 legacy/source 字段，不能当作独立 API report 契约或 shadow-off 成功。本地 5/18 report-manage 七页页面 Network 不包含 `expense-summary-table`，不能补本项页面证据。Popper 子代理只读复核确认，本轮 SSO 触发的页面 Network 只能按 synthetic/local browser session 证据记录，不能写成真实后端鉴权、生产写入或 shadow-off/fallback。
+
+No-go：不得把生产 API `DB_READY`、HTTP 200、Vitest、同域 legacy `/api/...` 响应、SPA HTML 访问、expense-manage 同名页面或无 Network 语义的 `.tmp` artifact 写成 task203 完成、shadow-off/fallback 成功、retirement ledger 完成或旧服务可退役。本轮生产 admin H5 页面 Network 证据只证明当前页面自然请求命中独立 `apps/api`，不得外推为真实后端鉴权、写入闭环、shadow-off/fallback 或退役结论。
+
+## 2026-05-26 system-config 生产 CUD 关闭边界与 no-go
+
+本轮新增证据 artifact 为 `.tmp/phase7-dev-browser/2026-05-26-setting-system-config-cud-evidence.md`，记录生产 `apps/api` 公开 HTTP 的 system-config create、公开 list 全量扫描 read-back、update、旧 `configKey/configValue/configDescription` 清空读回、新 `configKey/configValue/configDescription` 读回、delete 和 residual 0。该证据只支持窄口径关闭 `setting-manage/system-manage/system-config/{list,create,update,delete}`，不代表其它业务模块任务自动完成。
+
+system-config CUD 只覆盖 `smSystemConfigs` / `sm_system_configs`。字段边界是 `configKey` 最长 100 且唯一、`configValue` 文本、`configType` 最长 50、`configDescription` 文本、`status=enabled/disabled`。本轮本地后端已补 `configKey/configType/status` 服务端过滤能力并有红绿测试，但生产预检 requestId `req_2077c83b-a7df-492f-9479-ef634186618c` 证明当前生产部署尚未应用这项本地过滤改动：唯一 `configKey/configType/status` 查询仍返回 `total=1/listCount=1`。因此生产 CUD 读回和残留检查采用公开 HTTP list `pageSize=1000` 全量扫描，再按唯一 `configKey/title`、`configValue`、`description/subtitle` 精确匹配；baseline 和 residual 均证明 `listCount == total == 1`，create/update 窗口内也证明全量扫描覆盖了当时 2 条记录。
+
+成功 runId 为 `syscfg-0526080627-1c2f3c`；`/__nitro/health` requestId `req_fe7aaaa9-0721-4b36-9fb7-c6ffb7ed4054`，`/__nitro/ready` requestId `req_77957d71-0bd0-4e00-b173-d17c68a1a438`，ready code 为 `DB_READY`。CUD requestId 链路为 baseline `req_56f28257-2051-4245-9675-775f23d26835`、create `req_0e3cf905-0350-4f41-b73e-acf40044b7f4`、after-create `req_15774c50-a24c-4285-98f0-04aa36a7c840`、update `req_7259b338-6937-4cd9-b9ae-9418a516ddb9`、after-update `req_2415517a-be8c-4c0d-a2f6-f6faf443d25e`、delete `req_076a2656-5d94-44d3-a858-ce6fac465f15`、residual `req_d05847a8-0a36-425c-86ab-07755b8e7dcb`。早先 runId `syscfg-0526080043-0912af` 同样完成清理，但缺每步响应头 requestId，仅作为 dry run 边界，不作为成功证据主链路。
+
+已知字段边界：生产 list 返回 `description/category` 等展示字段，不一定返回 CUD payload 的 `configDescription/configType` 同名字段；页面映射和生产 read-back 因此显式兼容 `description/category`。不得把本地新增服务端过滤写成生产已部署过滤；不得把全量扫描读回误写成服务端过滤读回。前端页面已从静态展示和模拟保存切换为真实 list/create/update/delete caller；详情因无 detail endpoint 只用当前 row 只读弹窗。
+
+No-go：本轮不关闭 contract、expense、report、R2 或其它 CUD；不代表生产 admin H5 页面真实点击、页面级全局 Network 覆盖、fallback/shadow-off drill、retirement ledger、旧服务目录退役、旧服务删除许可、目录移动、归档或清空许可。
+
+## 2026-05-26 register-protocol 生产 CUD 关闭边界与 no-go
+
+本轮新增证据 artifact 为 `.tmp/phase7-dev-browser/2026-05-26-setting-system-register-protocol-cud-evidence.md`，记录生产 `apps/api` 公开 HTTP 的 register-protocol create、公开 list 全量扫描 read-back、update、旧 `title/content` 清空读回、新 `title/content` 读回、delete 和 residual 0。该证据只支持窄口径关闭 `setting-manage/system-manage/register-protocol/{list,create,update,delete}`，不代表其它 setting system-manage 任务自动完成。
+
+register-protocol CUD 只覆盖 `smRegisterProtocols` / `sm_register_protocols`。字段边界是 `protocolType` 最长 50、`protocolTitle` 最长 200 且必填、`protocolContent` 文本、`version` 最长 20、`status=enabled/disabled`。本轮本地后端已补 `protocolType/protocolTitle/status` 服务端过滤能力并有红绿测试，但生产预检 requestId `req_f9c7636c-63da-4c17-aba4-eb114bdaf88c` 证明当前生产部署尚未应用这项本地过滤改动：唯一 `protocolTitle/protocolType/status` 查询仍返回 `total=2/listCount=2`。因此生产 CUD 读回和残留检查采用公开 HTTP list `pageSize=1000` 全量扫描，再按唯一 `title/content` 精确匹配；baseline 和 residual 均证明 `listCount == total == 2`，create/update 窗口内也证明全量扫描覆盖了当时 3 条记录。
+
+失败尝试边界：runId `regproto-0526072715-e4bf86` 的 create requestId `req_09ec4a42-4afe-4ac9-85d5-1cf2d593272a` 成功写入，但验证脚本错误期待 list 返回 `protocolType`，而生产 list 只返回展示字段 `title/content/version/status`；cleanup requestId `req_8b5a5ccf-7bba-4a15-a791-32fe0d08c9fc` 成功，residual-after-failure requestId `req_8fa7afe4-0e21-4218-979f-cc4dbc8f4dc2` 回到 `total=2/listCount=2` 且哨兵匹配 0。该失败尝试只能作为响应形态和清理边界，不能作为成功 CUD 证据。
+
+已知字段边界：生产 list 响应返回 `title/content/version/status`，不返回 `protocolType/protocolTitle/protocolContent`；不得把本地新增服务端过滤写成生产已部署过滤；不得把全量扫描读回误写成服务端过滤读回。前端页面保留协议展示卡片，同时新增维护入口；表单字段限定为 `protocolType/protocolTitle/protocolContent/version/status`，`title/content` 只在页面和 list 响应映射中作为展示字段。
+
+No-go：本轮不关闭 `system-config`、contract、expense、report、R2 或其它 CUD；不代表生产 admin H5 页面真实点击、页面级全局 Network 覆盖、fallback/shadow-off drill、retirement ledger、旧服务目录退役、旧服务删除许可、目录移动、归档或清空许可。
+
+## 2026-05-26 initialize-cell 生产 CUD 关闭边界与 no-go
+
+本轮新增证据 artifact 为 `.tmp/phase7-dev-browser/2026-05-26-setting-system-initialize-cell-cud-evidence.md`，记录生产 `apps/api` 公开 HTTP 的 initialize-cell create、公开 list 全量扫描 read-back、update、旧 `initItem` 清空读回、新 `initItem` 读回、delete 和 residual 0。该证据只支持窄口径关闭 `setting-manage/system-manage/initialize-cell/{list,create,update,delete}`，不代表其它 setting system-manage 任务自动完成。
+
+initialize-cell CUD 只覆盖 `smInitializeCells` / `sm_initialize_cells`。字段边界是 `initItem` 最长 100 且必填、`initStatus` 最长 50、`configParams` 为 JSON；该表无 FK、无唯一约束、无软删除。本轮本地后端已补 `initItem/initStatus` 服务端过滤能力并有红绿测试，但生产预检 requestId `req_9019c040-fc8e-450d-b17a-bc7e52102575` 证明当前生产部署尚未应用这项本地过滤改动：唯一 `initItem` 查询仍返回 `total=3/listCount=3`。因此生产 CUD 读回和残留检查采用公开 HTTP list `pageSize=1000` 全量扫描，再按唯一 `initItem` 精确匹配；baseline 和 residual 均证明 `listCount == total == 3`，create/update 窗口内也证明全量扫描覆盖了当时 4 条记录。
+
+已知字段边界：当前 repository update 实现只更新 `initItem/initStatus/configParams`，本轮 update 证据也只验证这三个实际字段。不得把本地新增的服务端过滤写成“生产已部署过滤”；不得把全量扫描读回误写成服务端过滤读回。前端页面已从旧的 `communityId/communityName/nearbyLandmark/cityCode/status` 表单收敛到真实 `initItem/initStatus/configParams` 字段，并接入真实 add/detail/edit/delete；format dialog 仍是页面既有格式化确认场景，不作为后端 CUD endpoint 证据。
+
+No-go：本轮不关闭 `register-protocol`、`system-config`、contract、expense、report、R2 或其它 CUD；不代表生产 admin H5 页面真实点击、页面级全局 Network 覆盖、fallback/shadow-off drill、retirement ledger、旧服务目录退役、旧服务删除许可、目录移动、归档或清空许可。
+
+## 2026-05-26 community-configuration 生产 CUD 关闭边界与 no-go
+
+本轮新增证据 artifact 为 `.tmp/phase7-dev-browser/2026-05-26-setting-system-community-configuration-cud-evidence.md`，记录生产 `apps/api` 公开 HTTP 的 community-configuration create、按唯一 `settingName` read-back、update、旧 `settingName` 清空读回、新 `settingName` 读回、delete 和 residual 0。该证据只支持窄口径关闭 `setting-manage/system-manage/community-configuration/{list,create,update,delete}`，不代表其它 setting system-manage 任务自动完成。
+
+community-configuration CUD 只覆盖 `smCommunityConfigurations` / `sm_community_configurations`。该表无 FK、无唯一约束、无软删除，生产验证必须使用唯一 sentinel `settingName` 证明 read-back/residual；不得用 `communityName`、`statusCd`、`csId`、`communityId` 或 `operator` 做 residual，因为当前 list repository 只支持 `settingName` 与 `settingType` 过滤。此前失败尝试 `community-configuration-cud-20260526060013-587cf153` 因哨兵字段过长导致 create `success=false`，无 record id，只有 residual 0 边界价值，不能作为成功写入证据。
+
+已知字段边界：当前 repository update 实现只更新 `communityName/settingName/settingValue/settingType/statusCd/remark/operator`，不会更新 `csId/communityId/createTime/updateTime`；所以本轮 update 证据只验证实际可更新字段，`csId/communityId` 只作为 create 和 create 后 read-back 证据。前端页面已将搜索字段收敛到后端实际支持的 `settingName/settingType`，避免把 `communityName/statusCd` 误写成有效服务端过滤。
+
+No-go：本轮不关闭 `initialize-cell`、`register-protocol`、`system-config`、contract、expense、report、R2 或其它 CUD；不代表生产 admin H5 页面真实点击、页面级全局 Network 覆盖、fallback/shadow-off drill、retirement ledger、旧服务目录退役、旧服务删除许可、目录移动、归档或清空许可。
+
+## 2026-05-26 task815 fallback-off 演练局部证据
+
+`apps/api/tests/runtime/legacy-dispatch-fallback-drill.test.ts` 当前已经补上 task815 要求中的核心 runtime fallback-off 子项：`legacy-dispatch` 先尝试 registry exact handler，只有 registry 404 且路径属于 `/app/**` 或 `/callComponent/**` 时才进入旧 app fallback。测试用 `PHASE7_LEGACY_APP_FALLBACK_BASE_URL=http://127.0.0.1:9` 模拟 fallback 不可达，证明 `/app/floor.queryFloors` 这类已注册 exact endpoint 仍由 `apps/api` 承接并且不会调用 `globalThis.fetch`。
+
+同一测试还用 `/app/task815.unregisteredFallbackProbe` 证明未注册旧 app endpoint 才会尝试 fallback；fallback 不可达后返回 legacy 404 和 `ENDPOINT_NOT_FOUND`，避免把“fallback 不可达”误写成 exact handler 全部可用。
+
+验证通过：`pnpm -F @01s-11comm/api exec vitest run tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/runtime/legacy-fallback.test.ts tests/runtime/endpoint-registry.test.ts` 为 3 文件 8 tests passed；`openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过。探索子代理 Euclid 的结论是 runtime fallback-off 子项 PASS，但 shadow-off 未覆盖。
+
+No-go：本局部 fallback-off 证据单独不能关闭 task815。它不证明 `VITE_11COMM_API_SHADOW_ENABLE=false`、allowlist 移除、页面 Network、生产或本地 HTTP shadow-off 状态下仍命中 `apps/api`；不代表生产 `DB_READY`、真实库样本、写入闭环、retirement ledger、旧服务目录退役或旧服务删除许可。后续 task815 的实际关闭依据是顶部 App production shadow-disabled 关闭边界；旧服务退役仍必须另走独立评审。
+
+## 2026-05-26 change-password 生产 CUD 关闭边界与 no-go
+
+本轮新增证据 artifact 为 `.tmp/phase7-dev-browser/2026-05-26-setting-system-change-password-cud-evidence.md`，记录生产 `apps/api` 公开 HTTP 的 change-password create、按唯一 username read-back、update、旧 username 清空读回、新 username 读回、delete 和 residual 0。该证据只支持窄口径关闭 `setting-manage/system-manage/change-password/{list,create,update,delete}`，不代表其它 setting system-manage 任务自动完成。
+
+change-password CUD 只覆盖 `smChangePasswordRecords` / `sm_change_password_records`。该表无 FK、无唯一约束、无软删除，生产验证必须使用唯一 sentinel `username` 证明 read-back/residual；不得用 `remark` 做 residual，因为 list 不支持按 `remark` 过滤。该 endpoint family 没有 detail endpoint，因此本轮 detail/read-back 语义只能由 list 按唯一 username 承担。
+
+已知字段边界：当前 repository update 实现只更新 `username/realName/department/changeType/status/remark`，不会更新 `changeTime/changeIp/operator`；所以本轮 update 证据只验证实际可更新字段，`changeTime/changeIp/operator` 只作为 create 和 create 后 read-back 证据。不得把这条证据写成所有表字段 update 均已验证。
+
+No-go：本轮不关闭 `community-configuration`、`initialize-cell`、`register-protocol`、`system-config`、contract、expense、report、R2 或其它 CUD；不代表生产 admin H5 页面真实点击、页面级全局 Network 覆盖、fallback/shadow-off drill、retirement ledger、旧服务目录退役、旧服务删除许可、目录移动、归档或清空许可。
+
+## 2026-05-26 type 生产 CUD 关闭边界与 no-go
+
+本轮新增证据 artifact 为 `.tmp/phase7-dev-browser/2026-05-26-dev-team-config-manage-type-cud-evidence.md`，记录生产 `apps/api` 公开 HTTP 的 type create、detail-after-create、update、detail-after-update、delete、delete 后 detail 404 和四类 residual 0。该证据只支持窄口径关闭 `dev-team/config-manage/type/{list,create,detail,update,delete}`，不代表其它任务自动完成。
+
+type CUD 只覆盖 `dtConfigTypes` / `dt_config_types`，不能写成 `dev-team/config-manage` 20 个文件全完成，也不能倒推 center、dictionary、item 之外的其它 dev-team 路径完成。residual 只承认按创建前 typeName/typeCode 和更新后 typeName/typeCode 的四类查询，以及 delete 后 detail 404；不得把既有 list/detail 只读采样或 route/manifest/Vitest 写成生产写入闭环。
+
+No-go：本轮不关闭 setting、contract、expense、report、R2 或其它 CUD；不代表生产 admin H5 页面真实点击、页面级交互证据或全局 Network 覆盖；不关闭 fallback/shadow-off drill，不新增 retirement ledger 通过结论，不代表旧服务目录退役、旧服务删除许可、目录移动、归档或清空许可。
+
+## 2026-05-26 type 前端接线字段漂移发现
+
+本轮探索确认 `dev-team/config-manage/type` 的后端事实源是 `dtConfigTypes` / `dt_config_types`，字段为 `typeName`、`typeCode`、`typeDescription`、`sortOrder`；旧页面和 type 项目类型里仍出现 `dictionaryNumber/dictionaryName/dictionaryType/status/remark` 等前端历史字段，容易把 `dt_config_types` 的 CUD 写成不存在字段。前端接线已在 admin 页面和 caller 局部收敛字段，没有扩大修改 type 项目。
+
+失败编辑子代理留下的 type 静态测试和 resolver 红灯被保留为 TDD 入口，主代理随后补齐 caller、form 和页面 wiring。最终页面只展示和搜索真实字段，form 使用本地 `DictionaryTypeFormData`，不再暴露旧 `status` 或 `remark` 等未落到 `dt_config_types` 的字段。本发现只支持 type 前端 caller/page wiring 的本地收口，不支持 task480 勾选。
+
+No-go：type list/detail 只读生产采样和本地 caller/page tests 不能外推为生产 create/update/delete；没有新的生产 `DB_READY`、type write/read-back/update/read-back/delete 和 residual 0 前，task480 必须保持 open。本轮也不代表生产 admin H5 页面真实点击、fallback/shadow-off drill、retirement ledger、旧服务目录退役或 `dev-team/config-manage` 20 个文件全完成。
+
+## 2026-05-26 item 生产 CUD 关闭边界与 no-go
+
+本轮新增证据 artifact 为 `.tmp/phase7-dev-browser/2026-05-26-dev-team-config-manage-item-cud-evidence.md`，记录生产 `apps/api` 公开 HTTP 的父 dictionary 哨兵、item create、detail-after-create、update、detail-after-update、delete、delete 后 detail 404 和 residual 0。该证据只支持窄口径关闭 `dev-team/config-manage/item/{list,create,detail,update,delete}`，不代表其它任务自动完成。
+
+父 `dictionary-create` 与 `dictionary-delete` 只是为了满足 `dt_dictionary_items.dictionary_id` 非空 FK 和清理 item 哨兵，不能写成 dictionary task 的新增关闭证据，也不能覆盖 dictionary 页面/全局 Network。第一次用 `itemCode` 做 item residual 查询时暴露了后端 `listDictionaryItem` 未按 `itemCode` 过滤的问题，返回全量 15 条；该查询已废弃，不得作为 residual 证据。最终 residual 只承认 delete 后 detail 404、按 `dictionaryId`、按创建前 itemName、按更新后 itemName 查询 item 为 0，以及父 dictionary residual 为 0。
+
+No-go：本轮不关闭 type、center、setting、contract、expense、report、R2 或其它 CUD；不代表生产 admin H5 页面真实点击、页面级交互证据或全局 Network 覆盖；不关闭 fallback/shadow-off drill，不新增 retirement ledger 通过结论，不代表旧服务目录退役、旧服务删除许可、目录移动、归档或清空许可。后续若要优化 item list 的 `itemCode` 过滤，应单独按 API 行为缺陷处理，不能倒写成本轮 residual 证据。
+
+## 2026-05-26 item 前端接线字段漂移发现
+
+本轮探索确认 `dev-team/config-manage/item` 的后端事实源是 `dtDictionaryItems` / `dt_dictionary_items`，而不是旧 `DtConfigItem`；当前 `apps/type/src/business/dev-team/config-manage/item.ts` 仍保留旧 config item 命名，容易误导前端继续使用 `configName/configCode/configType/isEnabled`。本轮只在 admin 页面和 caller 局部收敛字段，没有扩大修改 type 项目，避免把字段事实源迁移做成无关 schema 改造。
+
+前端表单最终使用本地 `DictionaryItemFormData`：`dictionaryId`、`itemName`、`itemCode`、`sortOrder`、`isDefault`。虽然后端 detail/list 同时返回 `itemCode` 与 `itemValue`，repository 的 create/update 实际优先从 `itemCode` 写入 `item_value`，因此页面没有把 `itemValue` 做成独立可编辑字段，避免用户分别填写两个最终落同一列的值。该发现只支持 item 前端 caller/page wiring 的本地收口，不支持 task478 勾选。
+
+No-go：dictionary 关闭时创建和删除过的辅助 item 仍不能作为 item task 关闭证据；item list/detail 只读生产采样和本地 caller/page tests 不能外推为生产 create/update/delete；没有新的生产 `DB_READY`、父 dictionary 哨兵、item write/read-back/update/read-back/delete、父 dictionary cleanup 和 residual 0 前，task478 必须保持 open。本轮也不代表生产 admin H5 页面真实点击、fallback/shadow-off drill、retirement ledger 或旧服务目录退役。
+
+## 2026-05-26 dictionary CUD/FK 关闭边界与 no-go
+
+本轮新增证据 artifact 为 `.tmp/phase7-dev-browser/2026-05-26-dev-team-config-manage-dictionary-cud-fk-evidence.md`，记录生产 `apps/api` 公开 HTTP 的 dictionary create、detail-after-create、update、detail-after-update、含子项时 FK 阻断、清理和 residual 0。该证据只支持窄口径关闭 `dev-team/config-manage/dictionary/{list,create,detail,update,delete}`，不代表其它任务自动完成。
+
+辅助 `item-create` 与 `item-delete` 只是为了制造和清理 dictionary 子项 FK 场景，不能关闭 `dev-team/config-manage/item/{list,create,detail,update,delete}`，也不能写成 item 生产 CUD 闭环。该证据来自生产公开 HTTP，不代表生产 admin H5 页面真实点击、页面级交互证据或全局 Network 覆盖；也不能外推到 `type`、`center`、`setting`、`contract`、`expense`、`report`、R2 multipart 或其它 CUD。
+
+本轮不关闭 fallback/shadow-off drill，不新增 retirement ledger 通过结论，不代表旧服务目录退役、旧服务删除许可、目录移动、归档或清空许可。`dictionary-delete-with-child-blocked` 返回 HTTP 200 且 body `success=false`、code `500`、message 包含 `dt_dictionary_items_dictionary_id_dt_dictionaries_id_fk`，这是预期负向 FK 证据；但它不代表错误响应契约已经优化，也不代表后续不需要单独设计更友好的业务错误响应。
+
+## 2026-05-26 dictionary helper 运行时兼容性边界
+
+本轮最小修复把 `getCurrentDictionaryFormData()` 改为先读取 `dictionaryFormInstance.value?.formComputed`，再通过 `typeof formComputed === "object"` 与 `"value" in formComputed` 兼容 `ComputedRef` 和 Vue 父组件实例上已自动解包的对象，最终统一 `cloneDeep(payload)` 为 `DictionaryFormData`；`doBeforeClose`、取消按钮和提交仍共用该 helper。本轮只修复 dictionary helper 的运行时兼容性，不改变 task474 的 open 状态，也不触碰 task344、R2、retirement 或任何 checkbox。
+
+## 2026-05-26 dictionary doBeforeClose 解包复核
+
+本轮复核发现 dictionary 页面在 `doBeforeClose` 和取消按钮中把 `dictionaryFormInstance.value?.formComputed` 这个 `ComputedRef` 直接传给 `useDoBeforeClose`，而提交按钮虽然临时判断了 `.value`，但没有与关闭和取消共用同一条表单数据快照路径。修复后 `getCurrentDictionaryFormData()` 成为唯一读取点：先兼容 `ComputedRef` 与已解包对象，再立即 `cloneDeep(payload)` 为 `DictionaryFormData | undefined`，分别供 `useDoBeforeClose` 和 create/update payload 使用。
+
+静态测试已收紧为块级断言：helper 块必须包含 `DictionaryFormData | undefined`、`typeof formComputed === "object"`、`"value" in formComputed` 和 `cloneDeep(payload)`；`doBeforeClose`、取消按钮和提交按钮块必须调用 `getCurrentDictionaryFormData()`，并且不得直接出现 `dictionaryFormInstance.value?.formComputed` 或 raw `formComputed.value` 解包逻辑。本发现只覆盖 dictionary 表单快照解包缺陷，不访问生产、不执行真实 CUD、不修改 task344、R2、retirement 或 checkbox。
+
+## 2026-05-26 dictionary 前端 caller 收口边界
+
+本轮只补 `dev-team/config-manage/dictionary` 前端 caller 与页面 wiring，不构成 task474/Task 93 关闭依据。`apps/admin/src/api/dev-team/config-manage/dictionary/index.ts` 已补齐 list/detail/create/update/delete，全部使用 `resolveAdminApiRequestUrl`；`detail` 为 GET，create/update/delete 为 POST。`apps/admin/src/pages/dev-team/config-manage/dictionary/index.vue` 已把 add/edit/info/delete 接到真实 caller：add 调 `createDictionary` 后刷新，edit 先 `getDictionaryDetail` 再调 `updateDictionary` 后刷新，info 只读详情且不提交，delete 经确认后调 `deleteDictionary` 并刷新。
+
+字段边界：dictionary 底层 `dt_dictionaries` 和当前 API 写入链路没有 `isEnabled/status`，因此本轮不实现 toggle，表单和搜索都不暴露启停字段；页面列按类型和返回字段使用 `dictionaryDescription`，不再使用不存在的 `description`、`itemCount`、`creator` 或 `createdBy`。新增 `apps/admin/src/pages/dev-team/config-manage/dictionary/tests/page-api-wiring.test.ts` 使用块级静态检查具体函数和 submit handler，避免只扫全文件字符串。
+
+验证边界：admin 指定 Vitest 先红后绿，最终 2 文件 19 tests passed；API 指定 Vitest 为 3 文件 40 tests passed；admin typecheck 第二次通过。保留风险：没有访问生产，未执行生产 create/update/delete，未做受控写入-读回-回滚，未验证有子项时 FK 阻止删除，未补生产 admin H5 全局 Network，也不关闭 task344、R2、retirement ledger、旧服务退役或其它 CUD。探索代理结论仍然生效：不能仅靠前端 caller wiring 勾选 dictionary checkbox。
+
 本文中“后续”“仍需”“必须”“待归类”或 endpoint 相关表述只表示风险、禁止误判、冲突口径或历史事实边界，不构成执行顺序、endpoint backlog 或任务源；可执行项一律以 `tasks.md` 未完成 checkbox 为准。
 
 本文件记录发现、风险、失败路径和不迁移原因，不记录可执行任务清单。
@@ -63,8 +253,8 @@ No-go：不得把本轮文档和任务结构调整写成 runtime 迁移、`DB_RE
 - 旧三文档曾由用户手动恢复用于核对；2026-05-20 已在完成核心语义转写、引用扫描和 OpenSpec 入口收敛后删除。删除只代表文档载体退场，不代表 `apps/admin/server`、`apps/app/server` 或旧 app 源目录退役。
 - 旧矩阵存在冲突口径：同一文件既写 admin old path exact coverage 155/155，又在末尾风险中残留“未覆盖 exact legacy path 约 51 个”的旧说法。后续必须 fresh scan 后更新事实，不得直接照抄旧数字。
 - 后续接力必须同时看 admin legacy stream、app legacy stream、unified `apps/api` runtime stream、retirement gate stream。
-- 生产 `DB_READY` 仍未闭环。
-- 真实库样本复核仍未闭环。
+- 生产 `DB_READY` 已于 2026-05-26 基于 `.tmp/phase7-dev-browser/2026-05-26-neon-main-db-ready-cud-evidence.md` 关闭 task309；关闭范围只覆盖生产 API server 的 Neon main readiness，不代表任一业务 endpoint 自动完成。
+- 关键只读真实库样本已于 2026-05-26 基于同一证据关闭 task312；关闭范围只覆盖 `report expense summary`、`org-info list` 与 `floor list` 三个关键样本，不代表全量 admin/app endpoint 真实库样本完成。
 - shadow-off/fallback 页面演练仍未闭环。
 - 真实页面 CRUD/交互证据仍未闭环。
 - `property-manage/contract-manage` 12 个普通 list endpoint 已由 task77-task80 补本地 runtime manifest/contract/gated HTTP test 条目；upload/R2、写入、删除、detail 和页面/生产证据继续单独评审。
@@ -1608,6 +1798,52 @@ task806-task808 已按“保守清单与 ledger 字段物化”关闭。证据�
 
 admin CUD 与页面证据仍不能关闭：dev-team config、setting system、contract change/draft-contract 当前多为 manifest、adapter 分发、repository 表意图、只读 list HTTP gate 或 resolver 证据；没有生产写入授权、写入窗口、read-back、rollback/cleanup、residual check。`contract-manage/upload/*` 的 409 是安全阻断证据，不是 R2 multipart 完成证据。
 
-task815 仍不能关闭。当前 `legacy-dispatch` 逻辑虽是 registry exact 先于 fallback，但缺一个专门的 runtime drill 来证明旧 fallback 不可用时 exact handler 仍成功、未注册 `/app/**` endpoint 才进入 fallback 或失败。task510、floor 专项和全局 ledger 物化都不能替代全局退役前 fallback/shadow-off 复验。
+当时 task815 仍不能关闭。2026-05-25 的状态是：`legacy-dispatch` 逻辑虽是 registry exact 先于 fallback，但缺一个专门的 runtime drill 来证明旧 fallback 不可用时 exact handler 仍成功、未注册 `/app/**` endpoint 才进入 fallback 或失败。后续 2026-05-26 已补 runtime fallback-off 与 App production shadow-disabled 窄口径证据并关闭 task815；该历史阻断仍不能替代 admin shadow-off、全局退役前复验或旧服务目录退役结论。
 
 停止边界：用户目标已有八小时停止条件，且当前不允许 git commit/push，所以无法通过推送触发生产重新部署来打开 `RUN_PHASE7_DB_READINESS_CHECK=1` 并完成生产 `DB_READY`。在用户介入生产 env/deploy、授权可控写入窗口和 R2 前置条件前，不得把剩余 open task 强行勾选。
+
+## 2026-05-26 接力授权后的风险边界
+
+本轮用户已授权生产 DB readiness env、CUD 写入窗口和 task815 fallback/shadow-off drill，但授权变化不等于验证完成。后续证据不得记录真实连接串、token、cookie、secret、完整账号凭据或可复用生产写入 payload；`DB_READY` 证据仍只能记录 env 名、脱敏 host、连接类型、required tables、migration count、ready code 和响应摘要。
+
+禁止误判：`READY_CONFIGURED` 不等于 `DB_READY`，HTTP 200、生产已部署、env 已配置或 `RUN_PHASE7_DB_READINESS_CHECK=1` 已允许配置，都不能替代 `/__nitro/ready` 返回 `DB_READY` 的实证。task309 只有在使用 main 分支连接串且受控 env 生效后，生产 ready 响应明确为 `DB_READY`，才允许进入完成判断。
+
+写入口边界：任何 CUD 写入口必须逐 endpoint 记录 guard-before、controlled write、read-back、rollback/cleanup、residual check 和 guard-after；任一环节失败时，同批后续写入必须停止，并保持 blocked 或 partial。费用、支付、开门、维修流转、业主资料、审批流等高风险对象仍不得因为用户授权而跳过可清理哨兵数据、回滚方案和残留检查。
+
+真实库样本边界：task312 不能用空数组、mock、compat 默认值、fallback response 或页面非空列表替代。只读 endpoint 必须证明 repository 读取到真实业务表，并完成字段映射；证据应能区分生产 API 可达、生产页面 Network、真实 DB 样本和 legacy fallback。
+
+fallback/shadow-off 边界：task344 不能用纯 Vitest、task510 的 admin resolver 测试、floor 专项边界、旧本地证据或全局 ledger 物化替代。退役前 drill 必须按目标 endpoint 证明关闭旧 fallback 或 shadow off 后仍命中 `apps/api`，并提供生产或页面级证据；只有旧本地证据时必须标记 stale 或重采。
+
+## 2026-05-26 Neon 真实库验收与 CUD 规范补齐
+
+本轮用户指出主代理已经完成生产 Neon DB_READY、真实库样本和生产 CUD 窄口径测试，但 OpenSpec spec 中缺“Neon 数据库测试流程操作规范”和“唯一的 Neon 数据库测试方式”。编辑子代理 F 只补规范和证据摘要，不改运行时代码，不读取或输出 secret，不执行 git commit/push。
+
+唯一验收方式：Neon 真实库验收只能通过生产或受控 Vercel `apps/api` runtime 的公开 HTTP endpoint，使用 Neon main 分支连接串并通过受控 env 注入；必须先确认 `RUN_PHASE7_DB_READINESS_CHECK=1` 生效，且 `/__nitro/ready` 明确返回 `DB_READY`。Neon 测试分支、local fake DB、in-memory fallback、直接 DB 脚本、`psql`、Drizzle 临时脚本、未部署本地连接、import handler/service/repository、`READY_CONFIGURED`、HTTP 200 或 Vitest mock 都不能替代，也不能关闭 `DB_READY`、真实库样本、写入闭环或退役门禁。
+
+本轮生产事实见 `.tmp/phase7-dev-browser/2026-05-26-neon-main-db-ready-cud-evidence.md`：API 项目 `11comm-nitro-server` 已配置 `RUN_PHASE7_DB_READINESS_CHECK=1` 并 redeploy；生产 `/__nitro/ready` 返回 `DB_READY`，required tables 为 `cm_communities`、`ex_expense_items`、`ex_house_charges`、`hp_houses`、`rpt_expense_summaries`、`rpt_payment_details`，migrations 为 `2/2`。只读样本包括 `report expense summary` 读取 `rpt_expense_summaries`、`org-info list` 读取 setting repository、`floor list` 读取 `hp_houses` 聚合。该事实不得泄漏连接串、token、cookie、secret 或可复用凭据。
+
+CUD 规范边界：生产 CUD 只能选择低风险、可构造哨兵、可 read-back、可 rollback/cleanup、可 residual check 的 endpoint，并且只能通过公开 `apps/api` HTTP endpoint 触发业务 handler。禁止直接写数据库、直接调用 handler/service/repository、import 运行时代码、运行一次性 DB 脚本或绕过公开 HTTP 路径改数据。费用、支付、开门、维修流转、业主资料、审批流等破坏性业务对象继续默认禁止作为生产 CUD 测试对象；任一步失败时必须立即停止同批后续写入，优先清理和查残留。证据只允许保留 request id、HTTP 状态码和脱敏响应摘要，不得保留 token、cookie、secret、完整账号凭据、真实连接串或可复用生产 payload。
+
+本轮 CUD 窄口径事实：`/api/dev-team/config-manage/center/*` 通过公开生产 `apps/api` HTTP endpoint 写入 `dt_configs`，runId 为 `phase7-e2e-20260526010206-f1ae4a0b`；baseline list total 为 0，create/read/update/read/delete 成功，delete 后 detail 返回 404，residual total 为 0。该低风险配置 endpoint 没有单独 mutation guard，本轮证据必须记录为 `guard-not-applicable`，不得把 baseline total 0 写成高风险 guard 生效。该证据只能支持 `dev-team/config-manage/center` 低风险哨兵写入闭环，不得外推到费用、支付、开门、维修流转、业主资料、审批流、R2 multipart、全局 fallback/shadow-off 或旧服务退役。
+
+任务状态边界：本轮只基于既有生产证据关闭 task309 与 task312，不把全量剩余项全部勾选。task309 的关闭含义是生产公开 HTTP `/__nitro/ready` 已返回 `DB_READY`，并记录 required tables 与 migration count；task312 的关闭含义是三个关键只读样本能证明真实业务表或 repository 读取、非空响应和字段映射。task344、R2 multipart、其它真实 CUD 页面交互、retirement candidate、retirement ledger 和旧服务目录删除许可仍不得因本轮关闭自动完成。
+
+## 2026-05-26 task309 与 task312 关闭边界
+
+关闭依据：只读取 `.tmp/phase7-dev-browser/2026-05-26-neon-main-db-ready-cud-evidence.md` 及 OpenSpec canonical 文件，未发起新的生产请求、未写入生产、未读取或输出 secret。该证据显示 API 项目 `11comm-nitro-server` 已配置 `RUN_PHASE7_DB_READINESS_CHECK=1` 并 redeploy，生产 `/__nitro/ready` 返回 `DB_READY`，required tables 覆盖 `cm_communities`、`ex_expense_items`、`ex_house_charges`、`hp_houses`、`rpt_expense_summaries`、`rpt_payment_details`，migrations 为 `2/2`。
+
+真实库样本边界：task312 只按关键样本关闭，样本包括 `report expense summary` 读取 `rpt_expense_summaries`、`org-info list` 读取 setting repository、`floor list` 读取 `hp_houses` 聚合；这些样本均记录 HTTP 200、非空数量和字段摘要。该关闭不能外推为所有 admin/app 只读 endpoint 均已通过真实库样本，也不能替代页面级 Network、fallback/shadow-off drill 或退役评审。
+
+CUD 证据边界：同一 artifact 中的 CUD 证据只支持 `/api/dev-team/config-manage/center/*` 到 `dt_configs` 的低风险哨兵闭环，runId 为 `phase7-e2e-20260526010206-f1ae4a0b`，且 guard 状态应记录为 `guard-not-applicable`。该证据不得外推到费用、支付、开门、维修流转、业主资料、审批流、R2 multipart、全局 fallback/shadow-off 或旧服务目录退役。
+
+## 2026-05-26 center 前端 caller 收口边界
+
+关闭依据：本轮只修改 center 前端 API、页面、弹窗、表单默认值、窄口径测试和 OpenSpec 记录，不访问生产、不 commit/push、不修改 task344。`apps/admin/src/api/dev-team/config-manage/center/index.ts` 已让 list/detail/create/update/delete 全部走 `resolveAdminApiRequestUrl`；页面 detail/copy/toggle/delete 和 add/edit/copy 弹窗提交已接真实 caller 并刷新列表；info 模式显式不提交。
+
+探索反馈处理：`page-api-wiring.test.ts` 已改为正则匹配多行 `openDialog` 对象，避免依赖单行字符串；页面不再给 `mapDetailToListItem` 注入不存在的 `creator` 字段，展示列改为 `createdBy`；`components/form.ts` 的 `defaultForm.configType` 已改为选项值 `system`；ReDialog 继续使用 `hideFooter`，没有新增不确定的 `show` 字段。
+
+保留风险：该关闭只覆盖 `dev-team/config-manage/center` 前端 caller 与既有生产 `dt_configs` 低风险哨兵 CUD 闭环。task344 fallback/shadow-off drill、R2 multipart、其它生产 CUD、生产 admin H5 全局页面 Network、retirement ledger、旧服务目录退役和删除许可仍不得由本轮外推关闭。
+
+## 2026-05-26 center diff 与 task309/task312 归因修正
+
+本轮复核意见修复确认：前一轮复核代理把 task309/task312 关闭误归因到 center diff，这是错误归因。实际 task309/task312 是上一轮 Neon main `/__nitro/ready` 返回 `DB_READY`、真实库只读样本与受控 HTTP 证据检查点关闭；center diff 只支持 `dev-team/config-manage/center` 的前端 caller 与低风险 `dt_configs` 哨兵 CUD 边界。本轮 center 只新增并关闭 center task470，不关闭 task344；剩余 open list 仍包含 task344 fallback/shadow-off drill、R2 multipart、其它真实 CUD 页面交互、retirement ledger 与旧服务目录退役等后续项。
