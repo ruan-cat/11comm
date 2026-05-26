@@ -259,8 +259,8 @@ export function createAdminContractAdapter(service: ContractService) {
 			const result = await service.updateChange(input);
 			return adminSuccess(result, "更新成功");
 		},
-		async deleteChange(input: { id?: string }): Promise<JsonVO<unknown>> {
-			const id = input.id;
+		async deleteChange(input: DeletePayload): Promise<JsonVO<unknown>> {
+			const id = getDeleteId(input);
 			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
 			await service.deleteChange(id);
 			return adminSuccess(null, "删除成功");
@@ -281,44 +281,47 @@ export function createAdminContractAdapter(service: ContractService) {
 			const result = await service.updateDraftContract(input);
 			return adminSuccess(result, "更新成功");
 		},
-		async deleteDraftContract(input: { id?: string }): Promise<JsonVO<unknown>> {
-			const id = input.id;
+		async deleteDraftContract(input: DeletePayload): Promise<JsonVO<unknown>> {
+			const id = getDeleteId(input);
 			if (!id) return { success: false, code: 400, message: "缺少 id 参数", data: null };
 			await service.deleteDraftContract(id);
 			return adminSuccess(null, "删除成功");
 		},
 
 		async uploadInit(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			void input;
-			return contractUploadBlocked();
+			return service.uploadInit(input as any);
 		},
 		async uploadSignPart(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			void input;
-			return contractUploadBlocked();
+			return service.uploadSignPart(input as any);
 		},
 		async uploadComplete(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			void input;
-			return contractUploadBlocked();
+			return service.uploadComplete(input as any);
 		},
 		async uploadAbort(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			void input;
-			return contractUploadBlocked();
+			return service.uploadAbort(input as any);
 		},
 		async uploadStatus(input: Record<string, unknown>): Promise<JsonVO<unknown>> {
-			void input;
-			return contractUploadBlocked();
+			return service.uploadStatus(input as any);
 		},
 	};
 }
 
-function contractUploadBlocked(): JsonVO<null> {
-	return {
-		success: false,
-		code: 409,
-		message:
-			"R2 upload is blocked in apps/api until R2 env, AWS SDK, upload session repository, and resumable upload verification are migrated.",
-		data: null,
-	};
+type DeletePayload = {
+	id?: unknown;
+	ids?: unknown;
+};
+
+function getDeleteId(input: DeletePayload): string | undefined {
+	const id = normalizeDeleteId(input.id);
+	if (id) return id;
+	if (!Array.isArray(input.ids)) return undefined;
+	return normalizeDeleteId(input.ids[0]);
+}
+
+function normalizeDeleteId(value: unknown): string | undefined {
+	if (value === undefined || value === null) return undefined;
+	const id = String(value).trim();
+	return id === "" ? undefined : id;
 }
 
 function toNumber(value: unknown, fallback: number): number {

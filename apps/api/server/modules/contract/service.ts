@@ -1,4 +1,14 @@
 import type { ContractRepository } from "./repository";
+import { createContractUploadService } from "./upload-service";
+import type {
+	UploadAbortInput,
+	UploadCompleteInput,
+	UploadInitInput,
+	UploadSignPartInput,
+	UploadStatusInput,
+} from "./upload-service";
+
+type ContractUploadService = ReturnType<typeof createContractUploadService>;
 
 export interface ContractService {
 	listArchive: ContractRepository["listArchive"];
@@ -23,9 +33,18 @@ export interface ContractService {
 	getDraftContractDetail: ContractRepository["getDraftContractDetail"];
 	updateDraftContract: ContractRepository["updateDraftContract"];
 	deleteDraftContract: ContractRepository["deleteDraftContract"];
+	// upload/R2
+	uploadInit: (input: UploadInitInput) => ReturnType<ContractUploadService["initUpload"]>;
+	uploadStatus: (input: UploadStatusInput) => ReturnType<ContractUploadService["getStatus"]>;
+	uploadSignPart: (input: UploadSignPartInput) => ReturnType<ContractUploadService["signPart"]>;
+	uploadComplete: (input: UploadCompleteInput) => ReturnType<ContractUploadService["completeUpload"]>;
+	uploadAbort: (input: UploadAbortInput) => ReturnType<ContractUploadService["abortUpload"]>;
 }
 
-export function createContractService(repository: ContractRepository): ContractService {
+export function createContractService(
+	repository: ContractRepository,
+	uploadService: ContractUploadService = createContractUploadService(),
+): ContractService {
 	return {
 		listArchive: (params) => repository.listArchive(params),
 		listAttachment: (params) => repository.listAttachment(params),
@@ -47,5 +66,10 @@ export function createContractService(repository: ContractRepository): ContractS
 		getDraftContractDetail: (id) => repository.getDraftContractDetail(id),
 		updateDraftContract: (data) => repository.updateDraftContract(data),
 		deleteDraftContract: (id) => repository.deleteDraftContract(id),
+		uploadInit: (input) => uploadService.initUpload(input),
+		uploadStatus: (input) => uploadService.getStatus(input),
+		uploadSignPart: (input) => uploadService.signPart(input),
+		uploadComplete: (input) => uploadService.completeUpload(input),
+		uploadAbort: (input) => uploadService.abortUpload(input),
 	};
 }

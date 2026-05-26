@@ -687,6 +687,36 @@ const adminCanonicalEndpointManifestEntries: RuntimeEndpointManifestItem[] = [
 		"available-in-apps-api-not-caller-verified",
 	),
 	createAdminManifestEntry(
+		"/api/property-manage/contract-manage/upload/init",
+		"phase7-contract-manage-upload-r2",
+		"contract",
+		"available-in-apps-api-not-caller-verified",
+	),
+	createAdminManifestEntry(
+		"/api/property-manage/contract-manage/upload/sign-part",
+		"phase7-contract-manage-upload-r2",
+		"contract",
+		"available-in-apps-api-not-caller-verified",
+	),
+	createAdminManifestEntry(
+		"/api/property-manage/contract-manage/upload/complete",
+		"phase7-contract-manage-upload-r2",
+		"contract",
+		"available-in-apps-api-not-caller-verified",
+	),
+	createAdminManifestEntry(
+		"/api/property-manage/contract-manage/upload/abort",
+		"phase7-contract-manage-upload-r2",
+		"contract",
+		"available-in-apps-api-not-caller-verified",
+	),
+	createAdminManifestEntry(
+		"/api/property-manage/contract-manage/upload/status",
+		"phase7-contract-manage-upload-r2",
+		"contract",
+		"available-in-apps-api-not-caller-verified",
+	),
+	createAdminManifestEntry(
 		"/api/property-manage/contract-manage/expire/list",
 		"phase7-contract-manage-admin-list",
 		"contract",
