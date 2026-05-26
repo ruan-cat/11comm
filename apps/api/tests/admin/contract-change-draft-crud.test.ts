@@ -217,6 +217,44 @@ describe("property-manage contract-manage change and draft-contract admin CRUD e
 			code: 400,
 			data: null,
 		});
+		await expect(adapter.deleteChange({ id: "  " } as any)).resolves.toMatchObject({
+			success: false,
+			code: 400,
+			data: null,
+		});
+		await expect(adapter.deleteDraftContract({ ids: [] } as any)).resolves.toMatchObject({
+			success: false,
+			code: 400,
+			data: null,
+		});
+		await expect(adapter.deleteDraftContract({ ids: ["  "] } as any)).resolves.toMatchObject({
+			success: false,
+			code: 400,
+			data: null,
+		});
+	});
+
+	test("adapter accepts ids payload for deleting change and draft-contract", async () => {
+		const { createAdminContractAdapter } = await import("../../server/modules/contract/admin-adapter");
+		const deleteChange = vi.fn(async () => true);
+		const deleteDraftContract = vi.fn(async () => true);
+		const adapter = createAdminContractAdapter({
+			...createNoopContractRepository(),
+			deleteChange,
+			deleteDraftContract,
+		} as any);
+
+		await expect(adapter.deleteChange({ ids: ["CHANGE_001"] } as any)).resolves.toMatchObject({
+			success: true,
+			code: 200,
+		});
+		expect(deleteChange).toHaveBeenCalledWith("CHANGE_001");
+
+		await expect(adapter.deleteDraftContract({ ids: ["CONTRACT_DRAFT_001"] } as any)).resolves.toMatchObject({
+			success: true,
+			code: 200,
+		});
+		expect(deleteDraftContract).toHaveBeenCalledWith("CONTRACT_DRAFT_001");
 	});
 });
 

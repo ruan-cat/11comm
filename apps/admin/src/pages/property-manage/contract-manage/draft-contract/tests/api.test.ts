@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
 	useMutation: vi.fn((options) => options),
 }));
 
+/** 从 mutation hook mock 中取出真实提交函数，验证 create/update/delete 的目标端点。 */
 function getMutationFn<TPayload>(callIndex: number) {
 	const options = mocks.useMutation.mock.calls[callIndex]?.[0] as
 		| { mutationFn?: (payload: TPayload) => Promise<unknown> }
@@ -29,6 +30,7 @@ vi.mock("@tanstack/vue-query", () => ({
 	useQuery: vi.fn((options) => options),
 }));
 
+/** 每个用例单独注入 shadow API 环境，确保 resolver 不受上一轮测试环境污染。 */
 async function importDraftContractApi(env: Record<string, string>) {
 	vi.unstubAllEnvs();
 	vi.resetModules();
@@ -82,7 +84,7 @@ describe("draft-contract page api resolver", () => {
 			contractName: "updated-contract",
 		});
 		mod.useDraftContractDeleteMutation();
-		await getMutationFn<{ id: string }>(2)({ id: "DRAFT_001" });
+		await getMutationFn<{ ids: string[] }>(2)({ ids: ["DRAFT_001"] });
 
 		expect(mocks.httpPost).toHaveBeenNthCalledWith(
 			1,
@@ -102,7 +104,7 @@ describe("draft-contract page api resolver", () => {
 		expect(mocks.httpPost).toHaveBeenNthCalledWith(
 			4,
 			"/api-shadow/api/property-manage/contract-manage/draft-contract/delete",
-			{ data: { id: "DRAFT_001" } },
+			{ data: { ids: ["DRAFT_001"] } },
 		);
 	});
 
