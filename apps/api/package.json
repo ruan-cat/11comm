@@ -26,6 +26,8 @@
 	},
 	"dependencies": {
 		"@01s-11comm/type": "workspace:^",
+		"@aws-sdk/client-s3": "^3.1045.0",
+		"@aws-sdk/s3-request-presigner": "^3.1045.0",
 		"@neondatabase/serverless": "^0.10.4",
 		"consola": "^3.4.2",
 		"drizzle-orm": "0.42.0",
