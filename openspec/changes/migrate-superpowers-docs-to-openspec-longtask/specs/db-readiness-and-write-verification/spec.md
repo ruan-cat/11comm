@@ -14,6 +14,25 @@ Phase7 DB readiness 必须使用 Neon main 分支连接串完成。不得默认�
 - **WHEN** `/__nitro/ready` 返回 `READY_CONFIGURED`、`DATABASE_CONFIG_MISSING`、`DATABASE_CONNECTION_FAILED`、`DATABASE_SCHEMA_MISSING`、`DATABASE_MIGRATIONS_NOT_READY`、503 或任何非 `DB_READY`
 - **THEN** 必须记录失败原因，所有相关 endpoint 的 `dbReadinessEvidence` 保持 incomplete，不得进入退役候选
 
+### Requirement: 唯一允许的 Neon 真实库验收方式
+
+Neon 真实库验收 MUST 只能通过生产或受控 Vercel `apps/api` runtime 的公开 HTTP endpoint 执行，最小验收入口为 `GET /__nitro/health` 与 `GET /__nitro/ready`，业务样本再调用公开业务 endpoint。runtime MUST 使用 Neon main 分支连接串，并且只通过受控 env 注入；执行前必须确认 `RUN_PHASE7_DB_READINESS_CHECK=1` 已在目标 runtime 生效，且 `/__nitro/ready` 明确返回 `DB_READY`。不得用 Neon 测试分支、local fake DB、in-memory fallback、直接数据库脚本、`psql`、Drizzle 临时脚本、未部署的本地连接、import handler/service/repository、`READY_CONFIGURED`、HTTP 200、Vitest mock 或任何绕过 `apps/api` runtime 公开 HTTP 路径的方式替代真实库验收。文档不得记录 secret、真实连接串、token、cookie、完整账号凭据或可复用生产 payload；只允许记录 env 名、脱敏 host、连接类型、request id、HTTP 状态码、ready code、required tables、migration count、响应摘要和 artifact path。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
+
+#### Scenario: 生产或受控 Vercel runtime 通过 Neon 验收
+
+- **WHEN** 生产或受控 Vercel `apps/api` runtime 已通过 env 注入 Neon main 分支连接串，`RUN_PHASE7_DB_READINESS_CHECK=1` 已生效，且公开 HTTP `GET /__nitro/ready` 返回 `DB_READY`
+- **THEN** OpenSpec 可以记录脱敏的 Neon 真实库 readiness 证据，包括 env 名、脱敏 host、连接类型、request id、HTTP 状态码、required tables、migration count、ready code、响应摘要和 artifact path；仍不得自动升级任一业务 endpoint
+
+#### Scenario: 远程 runtime env 未被公开 ready 证明
+
+- **WHEN** `RUN_PHASE7_DB_READINESS_CHECK=1` 只在本机 shell、本地 `.env`、本地 dev server 或未指向目标 Vercel `apps/api` runtime 的环境中设置，或没有通过公开 HTTP `GET /__nitro/ready` 返回 `DB_READY` 证明目标 runtime 已生效
+- **THEN** 该证据必须记录为 invalid-for-db-ready；不得把本机环境变量、部署配置截图、HTTP 200 或 `READY_CONFIGURED` 当作 Neon 真实库 readiness，相关 endpoint 保持 blocked 或 incomplete
+
+#### Scenario: 非唯一验收路径被提出
+
+- **WHEN** 证据来自 Neon 测试分支、local fake DB、in-memory fallback、直接数据库脚本、`psql`、Drizzle 临时脚本、未部署本地连接、import handler/service/repository、直接 repository 调用、`READY_CONFIGURED`、HTTP 200、Vitest mock 或绕过 `apps/api` runtime 公开 HTTP endpoint 的检查
+- **THEN** 该证据必须记录为 invalid-for-db-ready，不能关闭 `DB_READY`、真实库样本、写入读回回滚或退役门禁任务
+
 ### Requirement: Neon 与 Drizzle 使用规范
 
 统一 `apps/api` 的数据库访问必须以 Neon main 分支和 Drizzle ORM 为基准。后续迁移不得把 Neon 测试分支、临时本地连接、本地 fake DB、旧 admin 私有 schema 或旧 app in-memory 数据源写成生产数据库能力；不得在文档、日志或证据中泄漏真实连接串。涉及表结构或运行时 schema 时，必须以 `apps/type/src/business/**/schema.ts` 的 Trinity Pattern 作为事实源，并通过 `@01s-11comm/type` 共享表、Zod schema 和类型。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
@@ -56,10 +75,39 @@ Phase7 写入验收必须使用唯一 `PHASE7_E2E_*` 或 `phase7RunId` 标记，
 - **WHEN** 写入口在 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 窗口内执行
 - **THEN** 必须记录脱敏 request、response、读回方式、回滚结果、残留检查、guard 恢复证据和执行时间
 
+#### Scenario: 已授权写入窗口的逐步证据记录
+
+- **WHEN** 用户已明确授权生产写入窗口并允许在 Neon main 上执行低风险 CUD 验收
+- **THEN** 仍必须逐次记录 `writeWindow`、`operator`、`phase7RunId`、`requestIdByStep`、`httpStatusByStep` 与 `sanitizedPayloadSummary`；不得记录 token、secret、cookie、真实连接串、完整账号凭据或完整生产 payload
+
 #### Scenario: 没有可承载 `phase7RunId` 的字段
 
 - **WHEN** endpoint payload 没有 remark、description、title、name、外部单号、测试手机号或其它可检索字段承载标记
 - **THEN** 该 endpoint 必须保持 `blocked-for-execution`，不得强行写入不可追踪数据
+
+#### Scenario: 无法完成 residual check
+
+- **WHEN** endpoint 没有可追踪哨兵字段、无法按 `phase7RunId` 或等价标记查询残留、或无法证明 cleanup/rollback 后无残留
+- **THEN** 该 endpoint 必须保持 blocked，不得以授权窗口、人工确认或单次成功响应替代 residual check，也不得强行执行 CUD
+
+### Requirement: 生产 CUD 只能通过公开 apps/api HTTP endpoint
+
+生产 CUD 真实测试 MUST 只允许通过公开 `apps/api` HTTP endpoint 触发业务 handler，不得直接写数据库、直接调用 handler、service 或 repository、import 运行时代码、运行一次性 DB 脚本、后台手改数据或绕过公开 HTTP 路径修改数据。候选 endpoint 必须低风险、可构造哨兵数据、可 read-back、可 rollback/cleanup、可 residual check，且每次只能执行窄口径 CUD 闭环。费用、支付、开门、维修流转、业主资料、审批流等破坏性业务对象默认禁止作为生产 CUD 测试对象。任一步失败时，必须立即停止同批后续写入，先清理、查残留并记录 guard 或 baseline 状态。证据 MUST 按每一步记录 request id、HTTP 状态码和脱敏响应摘要。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
+
+#### Scenario: 低风险 CUD 端点完成闭环
+
+- **WHEN** 低风险 endpoint 经公开 `apps/api` HTTP endpoint 完成 baseline 或 guard-before、create、read-back、update、read-back、delete 或 cleanup、delete 后校验、residual check 与 guard-after 或 guard-not-applicable 说明
+- **THEN** 可以记录该 endpoint 的生产 CUD 窄口径证据；证据必须包含 endpoint、环境、HTTP method、request id、HTTP 状态码、phase7RunId、写入目标、读回查询、清理结果、残留数量、guard 或 baseline 状态和 artifact path
+
+#### Scenario: 生产 CUD 按唯一闭环顺序执行
+
+- **WHEN** 执行生产 CUD 验收
+- **THEN** 必须按 `health -> ready(DB_READY) -> baseline/guard-before -> 开写入窗口 -> create/update/delete 等公开 HTTP -> read-back -> cleanup/rollback -> residual check -> 关闭窗口/guard-after 或 guard-not-applicable` 的唯一闭环顺序执行；不得并行批量写入，不得在任一步失败后继续写同批其它 endpoint
+
+#### Scenario: CUD 测试试图绕过业务 handler
+
+- **WHEN** CUD 证据来自直接数据库写入、直接 handler 调用、直接 service 调用、直接 repository 调用、import 运行时代码、临时 DB 脚本、后台手改数据或任何绕过公开 `apps/api` HTTP endpoint 的方式
+- **THEN** 该证据无效，相关 endpoint 保持 blocked 或 partial，不能升级写入口、真实库样本或退役状态
 
 ### Requirement: 默认 Guard 验证
 
@@ -86,7 +134,7 @@ Phase7 写入验收必须使用唯一 `PHASE7_E2E_*` 或 `phase7RunId` 标记，
 
 ### Requirement: Neon main 接力 checklist
 
-Neon main 验收 MUST 保留旧计划的接力 checklist：不使用 Neon 测试分支；DB deep readiness 使用 main 分支连接串且只通过环境变量注入；`RUN_PHASE7_DB_READINESS_CHECK=1` 后 `/__nitro/ready` 必须返回 `DB_READY`；写入口默认先证明 `409 PHASE7_MUTATION_GUARDED`；写入窗口仅在 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 下临时开放；payload 必须带 `PHASE7_E2E_*` 或 `phase7RunId`；必须读回、回滚/清理、残留检查和 guard 恢复；任何残留、清理失败或 guard 未恢复都停止同批次后续写入。
+Neon main 验收 MUST 保留旧计划的接力 checklist：不使用 Neon 测试分支；DB deep readiness 使用 main 分支连接串且只通过环境变量注入；`RUN_PHASE7_DB_READINESS_CHECK=1` 后公开 HTTP `GET /__nitro/ready` 必须返回 `DB_READY`；高风险写入口默认先证明 `409 PHASE7_MUTATION_GUARDED`；高风险写入窗口仅在 `PHASE7_ALLOW_LEGACY_MUTATIONS=1` 下临时开放；低风险公开管理配置类哨兵 endpoint 只有在明确用户授权写入窗口、可追踪、可读回、可清理且可查残留时才可执行，并且必须把无单独 mutation guard 写成 `guard-not-applicable`，不得把 baseline total 0 误写成高风险 guard 生效；payload 必须带 `PHASE7_E2E_*` 或 `phase7RunId`；必须读回、回滚/清理、残留检查和 guard 或 baseline 状态记录；任何残留、清理失败或 guard 未恢复都停止同批次后续写入。
 
 #### Scenario: 执行 Neon main 只读验收
 
@@ -100,7 +148,7 @@ Neon main 验收 MUST 保留旧计划的接力 checklist：不使用 Neon 测试
 
 ### Requirement: 写入证据模板
 
-任何写入口升级前，`writeReadRollbackEvidence` 必须能追溯到固定字段：endpoint、phase7RunId、databaseTarget、connectionEvidence、healthEvidence、readyEvidence、baselineEvidence、guardBefore、writeWindow、writeRequest、writeResponse、readBackMethod、readBackResult、rollbackMethod、rollbackResult、residualCheck、guardAfter、operator、timestamp、artifactPath。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
+任何写入口升级前，`writeReadRollbackEvidence` 必须能追溯到固定字段：endpoint、phase7RunId、databaseTarget、connectionEvidence、healthEvidence、readyEvidence、baselineEvidence、guardBefore、writeWindow、writeRequest、writeResponse、readBackMethod、readBackResult、rollbackMethod、rollbackResult、residualCheck、guardAfter 或 guardNotApplicable、requestIdByStep、httpStatusByStep、sanitizedPayloadSummary、operator、timestamp、artifactPath。`writeRequest`、`writeResponse` 与 `sanitizedPayloadSummary` 只能保留脱敏摘要，禁止记录 token、cookie、secret、完整账号凭据、真实连接串、密码、可复用生产 payload 或完整敏感业务对象。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
 
 #### Scenario: 证据字段不完整
 
@@ -109,7 +157,7 @@ Neon main 验收 MUST 保留旧计划的接力 checklist：不使用 Neon 测试
 
 ### Requirement: 禁止真实业务破坏性写入
 
-Phase7 不得修改真实缴费、真实支付、真实开门、真实维修流转、真实业主资料或无法恢复的真实业务对象作为测试。若业务无法构造可清理哨兵数据，必须保持 blocked。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
+Phase7 不得修改真实缴费、真实支付、真实开门、真实维修流转、真实业主资料、真实审批流或无法恢复的真实业务对象作为测试。若业务无法构造可清理哨兵数据，必须保持 blocked。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
 
 #### Scenario: endpoint 只能修改真实业务对象
 
