@@ -1,3 +1,50 @@
+## v1.2.2-beta.2
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.2-beta.1...v1.2.2-beta.2)
+
+### ✨ 新增功能
+
+- **api-contract:** 接入合同附件 R2 上传服务 ([84ef0574](https://github.com/ruan-cat/11comm/commit/84ef0574))
+- **api-setting:** 完善系统管理写入适配 ([c06f404d](https://github.com/ruan-cat/11comm/commit/c06f404d))
+- **admin-config:** 接入配置管理真实接口 ([027e56e3](https://github.com/ruan-cat/11comm/commit/027e56e3))
+- **admin-setting:** 接入系统管理真实接口 ([c6f8c6d6](https://github.com/ruan-cat/11comm/commit/c6f8c6d6))
+
+### 🦄 代码重构
+
+- **record-bug-fix-memory:** ⚠️ 拆分事故记忆为双层存储 ([917a19ae](https://github.com/ruan-cat/11comm/commit/917a19ae))
+
+### 📖 Documentation
+
+- **ai-memory:** 同步根级 AI 记忆文件 ([3967e24c](https://github.com/ruan-cat/11comm/commit/3967e24c))
+- **openspec:** 补充 Neon 读写验证规范 ([ee5a1db0](https://github.com/ruan-cat/11comm/commit/ee5a1db0))
+- **openspec:** 记录长任务接力进度 ([b5238dcb](https://github.com/ruan-cat/11comm/commit/b5238dcb))
+
+### 🏡 Chore
+
+- **prompt,admin:** 格式化。 ([0f683bd0](https://github.com/ruan-cat/11comm/commit/0f683bd0))
+- **prompt,admin:** 继续推进进度。 ([a1c3a694](https://github.com/ruan-cat/11comm/commit/a1c3a694))
+
+### ✅ Tests
+
+- **api-contract:** 补充上传与草稿删除验证 ([ba5b0145](https://github.com/ruan-cat/11comm/commit/ba5b0145))
+- **api-setting:** 补充系统管理写入用例 ([a59934c0](https://github.com/ruan-cat/11comm/commit/a59934c0))
+- **runtime:** 覆盖 fallback 关闭与地址解析 ([26aa009f](https://github.com/ruan-cat/11comm/commit/26aa009f))
+- **admin-config:** 补充配置管理接线验证 ([794328b9](https://github.com/ruan-cat/11comm/commit/794328b9))
+- **admin-setting:** 补充系统管理接线验证 ([8af18109](https://github.com/ruan-cat/11comm/commit/8af18109))
+- **admin-report:** 补充报表 shadow 边界验证 ([057eb37e](https://github.com/ruan-cat/11comm/commit/057eb37e))
+
+### 🔧 更新配置
+
+- **api:** 忽略 Vercel 本地目录 ([bf8c322c](https://github.com/ruan-cat/11comm/commit/bf8c322c))
+
+#### ⚠️ Breaking Changes
+
+- **record-bug-fix-memory:** ⚠️ 拆分事故记忆为双层存储 ([917a19ae](https://github.com/ruan-cat/11comm/commit/917a19ae))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.2.2-beta.1
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.1...v1.2.2-beta.1)
