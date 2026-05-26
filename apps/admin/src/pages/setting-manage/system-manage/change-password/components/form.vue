@@ -3,7 +3,7 @@ import { cloneDeep } from "@pureadmin/utils";
 import { computed, ref, useTemplateRef } from "vue";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
-import type { ChangePasswordRecordFormProps } from "./form";
+import type { ChangePasswordRecordFormData, ChangePasswordRecordFormProps } from "./form";
 import type { FieldValues, PlusColumn } from "plus-pro-components";
 import type { PlusFormRules } from "@/config/constant";
 import { usePlusFormReset } from "@/composables/use-plus-form-reset";
@@ -11,12 +11,12 @@ import {
 	changePasswordRecordDepartmentOptions,
 	changePasswordRecordStatusOptions,
 	changePasswordRecordTypeOptions,
-	type ChangePasswordRecord,
 } from "@01s-11comm/type";
 
 const props = defineProps<ChangePasswordRecordFormProps>();
 const { locale } = useI18nConfig();
 
+/** 正式接口保留中文业务枚举值，翻译只发生在选项 label 和表格展示层。 */
 function translateFromRecord(record: Record<string, string>, value?: string | null) {
 	if (!value) {
 		return "";
@@ -96,14 +96,17 @@ const translatedStatusOptions = computed(() =>
 	})),
 );
 
-const defaultValues = props.defaultValues as FieldValues & ChangePasswordRecord;
+const defaultValues = props.defaultValues as FieldValues & ChangePasswordRecordFormData;
 const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
-const form = ref(cloneDeep(props.form) as FieldValues & ChangePasswordRecord);
+/** cloneDeep 初始化弹窗表单，避免 PlusForm 编辑过程直接污染列表行或 defaultValues。 */
+const form = ref(cloneDeep(props.form) as FieldValues & ChangePasswordRecordFormData);
+/** 暴露给弹窗关闭前比较和 CUD payload 读取，保持和 PlusForm 当前值同步。 */
 const formComputed = computed(() => form.value);
 
+/** 表单列配置依赖 locale 与 mode 重新计算，确保切换语言和只读详情弹窗时同步刷新。 */
 const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("settingManage.systemManage.changePassword.fields.recordId")),
@@ -118,6 +121,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		prop: "username",
 		valueType: "input",
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
 		},
 	},
@@ -126,6 +130,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		prop: "realName",
 		valueType: "input",
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
 		},
 	},
@@ -135,6 +140,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "select",
 		options: translatedDepartmentOptions.value,
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
 		},
 	},
@@ -143,6 +149,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		prop: "changeTime",
 		valueType: "date-picker",
 		fieldProps: {
+			disabled: props.mode === "info",
 			type: "datetime",
 			valueFormat: "YYYY-MM-DD HH:mm:ss",
 			format: "YYYY-MM-DD HH:mm:ss",
@@ -154,6 +161,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		prop: "changeIp",
 		valueType: "input",
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
 		},
 	},
@@ -163,6 +171,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "select",
 		options: translatedChangeTypeOptions.value,
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
 		},
 	},
@@ -171,6 +180,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		prop: "operator",
 		valueType: "input",
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
 		},
 	},
@@ -180,6 +190,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		valueType: "select",
 		options: translatedStatusOptions.value,
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
 		},
 	},
@@ -188,12 +199,14 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		prop: "remark",
 		valueType: "textarea",
 		fieldProps: {
+			disabled: props.mode === "info",
 			rows: 3,
 			clearable: true,
 		},
 	},
 ]);
 
+/** 校验文案在 computed 内生成，避免语言切换后仍保留旧 locale 的提示。 */
 const plusFormRules = computed<PlusFormRules>(() => {
 	const usernameLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.username"));
 	const realNameLabel = transformI18n($t("settingManage.systemManage.changePassword.fields.realName"));

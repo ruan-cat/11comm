@@ -1,157 +1,76 @@
 <script lang="ts" setup>
+import { cloneDeep } from "@pureadmin/utils";
 import { computed, ref, useTemplateRef } from "vue";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useI18nConfig } from "@/composables/use-i18n-config";
-import { type InitializeCommunityFormProps } from "./form";
-import { type InitializeCommunityFormVO, statusOptions } from "@01s-11comm/type";
-
-type InitializeCommunityFormModel = FieldValues &
-	InitializeCommunityFormVO & {
-		communityId?: string;
-		communityName?: string;
-		nearbyLandmark?: string;
-		cityCode?: string;
-		status?: string;
-	};
+import type { InitializeCellFormData, InitializeCommunityFormProps } from "./form";
 
 const props = defineProps<InitializeCommunityFormProps>();
+const { locale } = useI18nConfig();
 
-function translateStatusLabel(value?: string | null) {
-	if (value === "启用") {
-		return transformI18n($t("settingManage.systemManage.initializeCell.options.statuses.enabled"));
-	}
-	if (value === "禁用") {
-		return transformI18n($t("settingManage.systemManage.initializeCell.options.statuses.disabled"));
-	}
-	return value ?? "";
+function createRequiredMessage(fieldLabel: string) {
+	return locale.value === "en" ? `Please enter ${fieldLabel}` : `请输入${fieldLabel}`;
 }
 
-const defaultValues = props.defaultValues as InitializeCommunityFormModel;
+function createLengthMessage(fieldLabel: string, min: number, max: number) {
+	return locale.value === "en"
+		? `${fieldLabel} length must be between ${min} and ${max} characters`
+		: `${fieldLabel}长度应在 ${min} 到 ${max} 个字符之间`;
+}
+
+const defaultValues = props.defaultValues as FieldValues & InitializeCellFormData;
 const plusFormInstance = useTemplateRef("plusFormRef");
 
 usePlusFormReset(plusFormInstance);
 
-const form = ref(cloneDeep(props.form) as InitializeCommunityFormModel);
+/** cloneDeep 初始化弹窗表单，避免 PlusForm 编辑过程直接污染列表行或 defaultValues。 */
+const form = ref(cloneDeep(props.form) as FieldValues & InitializeCellFormData);
+/** 暴露给弹窗关闭前比较和 CUD payload 读取，保持和 PlusForm 当前值同步。 */
 const formComputed = computed(() => form.value);
 
-const translatedStatusOptions = computed(() =>
-	statusOptions.map((item) => ({
-		...item,
-		label: translateStatusLabel(String(item.value)),
-	})),
-);
-
+/** 表单列配置依赖 locale 与 mode 重新计算，configParams 在表单内保持字符串编辑形态。 */
 const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
-		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.communityId")),
-		prop: "communityId",
+		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.initItem")),
+		prop: "initItem",
 		valueType: "input",
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
-			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.communityId")),
 		},
 	},
 	{
-		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.communityName")),
-		prop: "communityName",
+		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.initStatus")),
+		prop: "initStatus",
 		valueType: "input",
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
-			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.communityName")),
 		},
 	},
 	{
-		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.nearbyLandmark")),
-		prop: "nearbyLandmark",
-		valueType: "input",
+		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.configParams")),
+		prop: "configParams",
+		valueType: "textarea",
 		fieldProps: {
+			disabled: props.mode === "info",
 			clearable: true,
-			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.nearbyLandmark")),
-		},
-	},
-	{
-		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.cityCode")),
-		prop: "cityCode",
-		valueType: "input",
-		fieldProps: {
-			clearable: true,
-			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.cityCode")),
-		},
-	},
-	{
-		label: transformI18n($t("settingManage.systemManage.initializeCell.fields.status")),
-		prop: "status",
-		valueType: "select",
-		options: translatedStatusOptions.value,
-		fieldProps: {
-			clearable: true,
-			filterable: true,
-			placeholder: transformI18n($t("settingManage.systemManage.initializeCell.placeholders.status")),
+			rows: 4,
 		},
 	},
 ]);
 
-const plusFormRules = computed<PlusFormRules>(() => ({
-	communityId: [
-		{
-			required: true,
-			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.communityIdRequired")),
-			trigger: "blur",
-		},
-		{
-			min: 2,
-			max: 50,
-			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.communityIdLength")),
-			trigger: "blur",
-		},
-	],
-	communityName: [
-		{
-			required: true,
-			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.communityNameRequired")),
-			trigger: "blur",
-		},
-		{
-			min: 2,
-			max: 100,
-			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.communityNameLength")),
-			trigger: "blur",
-		},
-	],
-	nearbyLandmark: [
-		{
-			required: true,
-			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.nearbyLandmarkRequired")),
-			trigger: "blur",
-		},
-		{
-			min: 2,
-			max: 100,
-			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.nearbyLandmarkLength")),
-			trigger: "blur",
-		},
-	],
-	cityCode: [
-		{
-			required: true,
-			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.cityCodeRequired")),
-			trigger: "blur",
-		},
-		{
-			min: 2,
-			max: 100,
-			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.cityCodeLength")),
-			trigger: "blur",
-		},
-	],
-	status: [
-		{
-			required: true,
-			message: transformI18n($t("settingManage.systemManage.initializeCell.validation.statusRequired")),
-			trigger: "change",
-		},
-	],
-}));
+/** 校验文案在 computed 内生成，避免语言切换后仍保留旧 locale 的提示。 */
+const plusFormRules = computed<PlusFormRules>(() => {
+	const initItemLabel = transformI18n($t("settingManage.systemManage.initializeCell.fields.initItem"));
+
+	return {
+		initItem: [
+			{ required: true, message: createRequiredMessage(initItemLabel), trigger: "blur" },
+			{ min: 1, max: 100, message: createLengthMessage(initItemLabel, 1, 100), trigger: "blur" },
+		],
+	};
+});
 
 defineExpose({
 	plusFormInstance,

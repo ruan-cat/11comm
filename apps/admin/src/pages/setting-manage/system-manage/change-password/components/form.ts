@@ -1,12 +1,20 @@
-import type { ChangePasswordRecordFormVO } from "@01s-11comm/type";
 import { type Mode } from "@/composables/use-mode";
 
-// ==================== 表单类型定义 ====================
+/** 密码修改记录弹窗表单字段，只保留 sm_change_password_records 真实可写字段。 */
+export interface ChangePasswordRecordFormData {
+	username: string;
+	realName: string;
+	department: string;
+	changeTime: string;
+	changeIp: string;
+	changeType: string;
+	operator: string;
+	status: string;
+	remark: string;
+}
 
-// ==================== 默认表单值 ====================
-
-/** 默认表单 @description 对外导出用于其他场景使用 */
-export const defaultForm: ChangePasswordRecordFormVO = {
+/** 密码修改记录默认值，字段边界需与新增/编辑接口接收的表单 payload 保持一致。 */
+export const defaultForm: ChangePasswordRecordFormData = {
 	username: "",
 	realName: "",
 	department: "",
@@ -18,18 +26,16 @@ export const defaultForm: ChangePasswordRecordFormVO = {
 	remark: "",
 };
 
-// ==================== 表单 Props 类型 ====================
-
 /**
  * 密码修改记录表单 props
  * @description
- * 为了避免全局类型冲突 故设计较长的类型名称
+ * form/defaultValues 共同服务弹窗提交、重置和关闭前脏数据判断；info 模式只读展示。
  */
 export interface ChangePasswordRecordFormProps {
-	/** 表单数据 */
-	form: ChangePasswordRecordFormVO;
-	/** 表单组件重置时默认使用的对象 */
-	defaultValues: ChangePasswordRecordFormVO;
-	/** 表单模式 */
+	/** 弹窗表单数据，新增来自 defaultForm，详情/编辑来自列表行转换结果。 */
+	form: ChangePasswordRecordFormData;
+	/** 表单组件重置和关闭前比较使用的基准值。 */
+	defaultValues: ChangePasswordRecordFormData;
+	/** 表单模式，info 模式下字段统一只读且页面隐藏提交区。 */
 	mode?: Mode;
 }
