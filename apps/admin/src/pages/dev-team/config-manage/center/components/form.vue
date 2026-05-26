@@ -8,6 +8,7 @@ import { type ConfigCenterFormProps } from "./form";
 const props = defineProps<ConfigCenterFormProps>();
 const { locale } = useI18nConfig();
 
+/** 配置类型选项的 i18n key 映射，option.value 保持接口枚举值不变。 */
 const configTypeLabelKeyMap = {
 	system: $t("devTeam.configManage.center.form.options.system"),
 	business: $t("devTeam.configManage.center.form.options.business"),
@@ -19,6 +20,7 @@ const configTypeLabelKeyMap = {
 	file: $t("devTeam.configManage.center.form.options.file"),
 } as const;
 
+/** 状态选项的 i18n key 映射，提交给接口的仍是 enabled/disabled。 */
 const statusLabelKeyMap = {
 	enabled: $t("devTeam.configManage.center.form.options.enabled"),
 	disabled: $t("devTeam.configManage.center.form.options.disabled"),
@@ -46,9 +48,12 @@ const defaultValues = props.defaultValues as FieldValues & ConfigCenterFormVO;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
+/** 克隆 props.form 后再交给 PlusForm，避免弹窗内编辑直接污染列表行对象。 */
 const form = ref(cloneDeep(props.form) as FieldValues & ConfigCenterFormVO);
+/** 暴露给弹窗关闭前比较和提交 payload 读取，保持和 PlusForm 当前值同步。 */
 const formComputed = computed(() => form.value);
 
+/** 动态生成选项 label，确保切换语言后 select 文案刷新但 value 不被翻译。 */
 const translatedConfigTypeOptions = computed(() =>
 	configTypeOptions.map((option) => ({
 		...option,
@@ -56,6 +61,7 @@ const translatedConfigTypeOptions = computed(() =>
 	})),
 );
 
+/** 动态生成状态 label，避免把中文状态写回表单 payload。 */
 const translatedStatusOptions = computed(() =>
 	configStatusOptions.map((option) => ({
 		...option,

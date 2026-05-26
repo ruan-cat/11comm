@@ -1,59 +1,47 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
-import type { ConfigItemFormVO } from "@01s-11comm/type";
 import { $t, transformI18n } from "@/plugins/i18n";
-import { ConfigItemFormProps } from "./form";
-import { configItemTypeOptions, itemEnableStatusOptions } from "@01s-11comm/type";
-import { useI18nConfig } from "@/composables/use-i18n-config";
+import { type ConfigItemFormProps, type DictionaryItemFormData } from "./form";
 
 const props = defineProps<ConfigItemFormProps>();
-const { locale } = useI18nConfig();
 
-const configItemTypeLabelKeyMap = {
-	system: "devTeam.configManage.item.form.options.system",
-	business: "devTeam.configManage.item.form.options.business",
-	api: "devTeam.configManage.item.form.options.api",
-	database: "devTeam.configManage.item.form.options.database",
-	cache: "devTeam.configManage.item.form.options.cache",
-	log: "devTeam.configManage.item.form.options.log",
-	security: "devTeam.configManage.item.form.options.security",
-	notification: "devTeam.configManage.item.form.options.notification",
-} as const;
-
-const enableStatusLabelKeyMap = {
-	enabled: "devTeam.configManage.item.form.options.enabled",
-	disabled: "devTeam.configManage.item.form.options.disabled",
-} as const;
-
-const defaultValues = props.defaultValues as FieldValues & ConfigItemFormVO;
+const defaultValues = props.defaultValues as FieldValues & DictionaryItemFormData;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-const toRefForm = cloneDeep(props.form) as FieldValues & ConfigItemFormVO;
-const form = ref(toRefForm);
+/** 克隆 props.form 后再交给 PlusForm，避免弹窗内编辑直接污染列表行对象。 */
+const form = ref(cloneDeep(props.form) as FieldValues & DictionaryItemFormData);
 
+/** 暴露给弹窗关闭前比较和提交 payload 读取，保持和 PlusForm 当前值同步。 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
-const translatedConfigItemTypeOptions = computed(() =>
-	configItemTypeOptions.map((option) => ({
-		...option,
-		label: transformI18n($t(configItemTypeLabelKeyMap[String(option.value) as keyof typeof configItemTypeLabelKeyMap])),
-	})),
-);
-
-const translatedItemEnableStatusOptions = computed(() =>
-	itemEnableStatusOptions.map((option) => ({
-		...option,
-		label: transformI18n($t(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap])),
-	})),
-);
+/** 是否默认项的 select 展示中文 label，但提交给接口的 isDefault 仍是 boolean。 */
+const booleanOptions = computed(() => [
+	{
+		label: transformI18n($t("devTeam.menuManage.item.form.options.yes")),
+		value: true,
+	},
+	{
+		label: transformI18n($t("devTeam.menuManage.item.form.options.no")),
+		value: false,
+	},
+]);
 
 const plusFormColumns = computed<PlusColumn[]>(() => [
 	{
+		label: transformI18n($t("devTeam.configManage.dictionary.fields.dictionaryCode")),
+		prop: "dictionaryId",
+		valueType: "input",
+		fieldProps: {
+			clearable: true,
+		},
+		required: true,
+	},
+	{
 		label: transformI18n($t("devTeam.configManage.item.fields.configName")),
-		prop: "configItemName",
+		prop: "itemName",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -62,7 +50,7 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 	},
 	{
 		label: transformI18n($t("devTeam.configManage.item.fields.configCode")),
-		prop: "configItemCode",
+		prop: "itemCode",
 		valueType: "input",
 		fieldProps: {
 			clearable: true,
@@ -70,55 +58,32 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		required: true,
 	},
 	{
-		label: transformI18n($t("devTeam.configManage.item.fields.configType")),
-		prop: "configItemType",
+		label: transformI18n($t("devTeam.configManage.center.fields.sortOrder")),
+		prop: "sortOrder",
+		valueType: "input-number",
+		fieldProps: {
+			min: 0,
+			step: 1,
+		},
+	},
+	{
+		label: transformI18n($t("devTeam.menuManage.item.fields.isCached")),
+		prop: "isDefault",
 		valueType: "select",
-		options: translatedConfigItemTypeOptions.value,
-		fieldProps: {
-			clearable: true,
-			filterable: true,
-		},
+		options: booleanOptions.value,
 		required: true,
-	},
-	{
-		label: transformI18n($t("devTeam.configManage.item.fields.configValue")),
-		prop: "configItemValue",
-		valueType: "input",
-		fieldProps: {
-			clearable: true,
-		},
-		required: true,
-	},
-	{
-		label: transformI18n($t("devTeam.configManage.item.fields.description")),
-		prop: "configItemDescription",
-		valueType: "input",
-		fieldProps: {
-			clearable: true,
-		},
-	},
-	{
-		label: transformI18n($t("devTeam.configManage.item.fields.isEnabled")),
-		prop: "isEnabled",
-		valueType: "select",
-		options: translatedItemEnableStatusOptions.value,
-		fieldProps: {
-			clearable: true,
-		},
-		required: true,
-	},
-	{
-		label: transformI18n($t("devTeam.configManage.center.fields.remark")),
-		prop: "remark",
-		valueType: "input",
-		fieldProps: {
-			clearable: true,
-		},
 	},
 ]);
 
 const plusFormRules = computed<PlusFormRules>(() => ({
-	configItemName: [
+	dictionaryId: [
+		{
+			required: true,
+			message: transformI18n($t("devTeam.configManage.dictionary.form.validation.selectDictionaryType")),
+			trigger: "blur",
+		},
+	],
+	itemName: [
 		{
 			required: true,
 			message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemName")),
@@ -131,7 +96,7 @@ const plusFormRules = computed<PlusFormRules>(() => ({
 			trigger: "blur",
 		},
 	],
-	configItemCode: [
+	itemCode: [
 		{
 			required: true,
 			message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemCode")),
@@ -147,33 +112,6 @@ const plusFormRules = computed<PlusFormRules>(() => ({
 			pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
 			message: transformI18n($t("devTeam.configManage.item.form.validation.configItemCodePattern")),
 			trigger: "blur",
-		},
-	],
-	configItemType: [
-		{
-			required: true,
-			message: transformI18n($t("devTeam.configManage.item.form.validation.selectConfigItemType")),
-			trigger: "change",
-		},
-	],
-	configItemValue: [
-		{
-			required: true,
-			message: transformI18n($t("devTeam.configManage.item.form.validation.enterConfigItemValue")),
-			trigger: "blur",
-		},
-		{
-			min: 1,
-			max: 500,
-			message: transformI18n($t("devTeam.configManage.item.form.validation.configItemValueLength")),
-			trigger: "blur",
-		},
-	],
-	isEnabled: [
-		{
-			required: true,
-			message: transformI18n($t("devTeam.configManage.item.form.validation.selectIsEnabled")),
-			trigger: "change",
 		},
 	],
 }));

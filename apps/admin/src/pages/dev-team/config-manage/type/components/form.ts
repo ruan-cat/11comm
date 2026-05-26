@@ -1,35 +1,34 @@
 /**
  * @file 字典类型表单类型定义
- * @description Dictionary type form types
+ * @description 表单字段必须对齐 dt_config_types 接口允许写入的字段。
  */
 
 import { type Mode } from "@/composables/use-mode";
-import type { DictionaryTypeFormVO } from "@01s-11comm/type";
 
-/** 默认表单 Default form */
-export const defaultForm: DictionaryTypeFormVO = {
-	dictionaryNumber: "",
-	dictionaryName: "",
-	dictionaryType: "",
-	dictionaryCategory: "业务字典",
-	dataType: "字符串",
-	defaultValue: "",
-	isRequired: "否",
-	validationRule: "",
-	displayOrder: 0,
-	status: "启用",
-	remark: "",
+export interface DictionaryTypeFormData {
+	/** 类型名称，对应字典类型接口的 typeName。 */
+	typeName: string;
+	/** 类型编码，对应字典类型接口的 typeCode。 */
+	typeCode: string;
+	/** 类型描述，对应字典类型接口的 typeDescription。 */
+	typeDescription: string;
+	/** 排序值，提交前保持 number，避免接口收到输入框字符串。 */
+	sortOrder: number;
+}
+
+/** 字典类型默认表单，字段集合必须和 DictionaryTypeFormData 保持一致。 */
+export const defaultForm: DictionaryTypeFormData = {
+	typeName: "",
+	typeCode: "",
+	typeDescription: "",
+	sortOrder: 0,
 };
 
-/**
- * 字典类型表单 props
- * @description Dictionary type form props
- */
 export interface DictionaryTypeFormProps {
-	/** 表单数据 Form data */
-	form: DictionaryTypeFormVO;
-	/** 表单组件重置时默认使用的对象 Default values for form reset */
-	defaultValues: DictionaryTypeFormVO;
-	/** 表单模式 Form mode */
+	/** 弹窗当前表单数据，新增/编辑提交时会原样组装为字典类型接口 payload。 */
+	form: DictionaryTypeFormData;
+	/** 表单组件重置和关闭前比较使用的基准值，需要和打开弹窗时的初始 form 保持一致。 */
+	defaultValues: DictionaryTypeFormData;
+	/** 弹窗模式，info 模式只读展示并隐藏提交区域。 */
 	mode?: Mode;
 }

@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref, useTemplateRef } from "vue";
-import type { DictionaryFormVO } from "@01s-11comm/type";
+import { dictionaryTypeOptions } from "@01s-11comm/type";
 import { $t, transformI18n } from "@/plugins/i18n";
-import { DictionaryFormProps } from "./form";
-import { dictionaryTypeOptions, enableStatusOptions } from "@01s-11comm/type";
-import { useI18nConfig } from "@/composables/use-i18n-config";
+import { DictionaryFormProps, type DictionaryFormData } from "./form";
 
 const props = defineProps<DictionaryFormProps>();
-const { locale } = useI18nConfig();
 
+/** 字典类型选项的 i18n key 映射，option.value 保持接口枚举值不变。 */
 const dictionaryTypeLabelKeyMap = {
 	system: "devTeam.configManage.dictionary.form.options.system",
 	business: "devTeam.configManage.dictionary.form.options.business",
@@ -17,33 +15,24 @@ const dictionaryTypeLabelKeyMap = {
 	config: "devTeam.configManage.dictionary.form.options.config",
 } as const;
 
-const enableStatusLabelKeyMap = {
-	enabled: "devTeam.configManage.dictionary.form.options.enabled",
-	disabled: "devTeam.configManage.dictionary.form.options.disabled",
-} as const;
-
-const defaultValues = props.defaultValues as FieldValues & DictionaryFormVO;
+const defaultValues = props.defaultValues as FieldValues & DictionaryFormData;
 const plusFormInstance = useTemplateRef("plusFormRef");
 usePlusFormReset(plusFormInstance);
 
-const toRefForm = cloneDeep(props.form) as FieldValues & DictionaryFormVO;
+/** 克隆 props.form 后再交给 PlusForm，避免弹窗内编辑直接污染列表行对象。 */
+const toRefForm = cloneDeep(props.form) as FieldValues & DictionaryFormData;
 const form = ref(toRefForm);
 
+/** 暴露给弹窗关闭前比较和提交 payload 读取，保持和 PlusForm 当前值同步。 */
 const formComputed = computed(() => {
 	return form.value;
 });
 
+/** 动态生成字典类型 label，避免把翻译后的中文写回 dictionaryType。 */
 const translatedDictionaryTypeOptions = computed(() =>
 	dictionaryTypeOptions.map((option) => ({
 		...option,
 		label: transformI18n($t(dictionaryTypeLabelKeyMap[String(option.value) as keyof typeof dictionaryTypeLabelKeyMap])),
-	})),
-);
-
-const translatedEnableStatusOptions = computed(() =>
-	enableStatusOptions.map((option) => ({
-		...option,
-		label: transformI18n($t(enableStatusLabelKeyMap[String(option.value) as keyof typeof enableStatusLabelKeyMap])),
 	})),
 );
 
@@ -84,16 +73,6 @@ const plusFormColumns = computed<PlusColumn[]>(() => [
 		fieldProps: {
 			clearable: true,
 		},
-	},
-	{
-		label: transformI18n($t("devTeam.configManage.dictionary.fields.isEnabled")),
-		prop: "isEnabled",
-		valueType: "select",
-		options: translatedEnableStatusOptions.value,
-		fieldProps: {
-			clearable: true,
-		},
-		required: true,
 	},
 	{
 		label: transformI18n($t("devTeam.configManage.center.fields.remark")),
@@ -141,13 +120,6 @@ const plusFormRules = computed<PlusFormRules>(() => ({
 		{
 			required: true,
 			message: transformI18n($t("devTeam.configManage.dictionary.form.validation.selectDictionaryType")),
-			trigger: "change",
-		},
-	],
-	isEnabled: [
-		{
-			required: true,
-			message: transformI18n($t("devTeam.configManage.dictionary.form.validation.selectIsEnabled")),
 			trigger: "change",
 		},
 	],

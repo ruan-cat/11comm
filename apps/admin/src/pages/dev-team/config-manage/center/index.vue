@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 definePage({
 	meta: {
-		// 配置中心
+		/** 配置中心 */
 		title: "devTeam.configManage.center.pageTitle",
 		icon: "mdi:cog",
 		roles: ["开发团队"],
@@ -11,6 +11,7 @@ definePage({
 
 import { computed, ref } from "vue";
 import { cloneDeep } from "@pureadmin/utils";
+import { ElMessage, ElMessageBox } from "element-plus";
 import {
 	type ConfigCenterListItem,
 	type ConfigCenterQueryParams,
@@ -19,7 +20,12 @@ import {
 } from "@01s-11comm/type";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { openDialog } from "./components/dialog";
-import { useConfigCenterListQuery } from "@/api/dev-team/config-manage/center";
+import {
+	deleteConfigCenter,
+	getConfigCenterDetail,
+	updateConfigCenter,
+	useConfigCenterListQuery,
+} from "@/api/dev-team/config-manage/center";
 import { useI18nConfig } from "@/composables/use-i18n-config";
 
 const { locale, createHeaderRenderer, plusSearchButtonTexts, searchProps } = useI18nConfig();
@@ -72,6 +78,7 @@ const translatedStatusOptions = computed(() =>
 	})),
 );
 
+/** 搜索默认值与正式列表接口参数保持一致，重置时用 cloneDeep 恢复空查询。 */
 const plusSearchModelRef: FieldValues & Partial<ConfigCenterQueryParams> = {
 	configName: "",
 	configType: "",
@@ -92,6 +99,7 @@ const {
 	handleCurrentPageChange,
 } = useConfigCenterListQuery(plusSearchDefaultValues);
 
+/** 搜索栏选项只翻译 label，提交给正式 API 的 configType/status 仍保留原始枚举值。 */
 const plusSearchColumns = computed<PlusColumn[]>(() => [
 	{
 		label: transformI18n($t("devTeam.configManage.center.fields.configName")),
@@ -198,7 +206,7 @@ const columns = computed<TableColumnList>(() => [
 	},
 	{
 		headerRenderer: createHeaderRenderer(transformI18n($t("devTeam.configManage.center.fields.creator"))),
-		prop: "creator",
+		prop: "createdBy",
 		width: 100,
 	},
 	{
@@ -214,35 +222,105 @@ const pureTableBarProps = computed<PureTableBarProps>(() => ({
 	columns: columns.value,
 }));
 
-function viewDetails(row: ConfigCenterListItem) {
-	console.log(transformI18n($t("devTeam.configManage.center.logs.viewDetails")), row);
+/** 详情、复制、删除都只向接口传 id，避免把列表行的展示字段误当查询条件。 */
+function toDetailPayload(row: ConfigCenterListItem) {
+	return {
+		id: row.id,
+	};
 }
 
-function copyConfig(row: ConfigCenterListItem) {
-	console.log(transformI18n($t("devTeam.configManage.center.logs.copyConfig")), row);
+/** 后端详情可能返回空值或历史状态值，列表和表单统一收敛为当前前端支持的状态枚举。 */
+function normalizeStatus(status: unknown): ConfigCenterListItem["status"] {
+	return status === "disabled" ? "disabled" : "enabled";
 }
 
-function toggleStatus(row: ConfigCenterListItem) {
-	console.log(transformI18n($t("devTeam.configManage.center.logs.toggleStatusAction")), row);
-	const newStatus = row.status === "enabled" ? "disabled" : "enabled";
-	console.log(
-		`${transformI18n($t("devTeam.configManage.center.logs.toggleStatus"))}: ${row.configName}, ${row.status} -> ${newStatus}`,
-	);
+/** 详情接口是弹窗数据源，这里补齐列表/表单依赖的空值边界，避免 PlusForm 收到 undefined。 */
+function mapDetailToListItem(detail: Record<string, unknown>): ConfigCenterListItem {
+	return {
+		...(detail as ConfigCenterListItem),
+		configName: String(detail.configName || ""),
+		configType: String(detail.configType || ""),
+		configKey: String(detail.configKey || ""),
+		configValue: String(detail.configValue || ""),
+		defaultValue: String(detail.defaultValue || ""),
+		configDescription: String(detail.configDescription || ""),
+		status: normalizeStatus(detail.status),
+		sortOrder: Number(detail.sortOrder || 0),
+		remark: String(detail.remark || ""),
+		createTime: String(detail.createTime || ""),
+		updateTime: String(detail.updateTime || ""),
+	};
 }
 
-function deleteConfig(row: ConfigCenterListItem) {
-	console.log(transformI18n($t("devTeam.configManage.center.logs.deleteConfig")), row);
-	console.log(
-		`${transformI18n($t("devTeam.configManage.center.logs.confirmDelete"))}: ${row.configName} (${row.configKey})`,
-	);
+async function viewDetails(row: ConfigCenterListItem) {
+	const response = await getConfigCenterDetail(toDetailPayload(row));
+	const detail = response.data;
+	if (!detail) {
+		return;
+	}
+
+	openDialog({
+		mode: "info",
+		/** info 模式只使用详情接口返回值展示，弹窗内部会隐藏 footer，不允许提交。 */
+		row: mapDetailToListItem(detail as Record<string, unknown>),
+	});
+}
+
+async function copyConfig(row: ConfigCenterListItem) {
+	const response = await getConfigCenterDetail(toDetailPayload(row));
+	const detail = response.data;
+	if (!detail) {
+		return;
+	}
+
+	openDialog({
+		mode: "add",
+		/** 复制新增以详情接口结果为来源，但提交时不带原 id。 */
+		row: mapDetailToListItem(detail as Record<string, unknown>),
+		onSubmitted: doFetch,
+	});
+}
+
+async function toggleStatus(row: ConfigCenterListItem) {
+	const nextStatus = row.status === "enabled" ? "disabled" : "enabled";
+	/** 启停只提交 id 与目标状态，成功后刷新列表同步正式接口返回值。 */
+	await updateConfigCenter({
+		id: row.id,
+		status: nextStatus,
+	});
+	ElMessage.success(transformI18n($t("devTeam.configManage.center.logs.toggleStatus")));
+	await doFetch();
+}
+
+async function deleteConfig(row: ConfigCenterListItem) {
+	try {
+		await ElMessageBox.confirm(
+			`${transformI18n($t("devTeam.configManage.center.logs.confirmDelete"))}: ${row.configName} (${row.configKey})`,
+			transformI18n($t("common.buttons.del")),
+			{
+				type: "warning",
+				confirmButtonText: transformI18n($t("common.buttons.pureConfirm")),
+				cancelButtonText: transformI18n($t("common.buttons.cancel")),
+			},
+		);
+	} catch {
+		return;
+	}
+
+	/** 删除接口 payload 只允许 id，不能把整行配置值提交给删除接口。 */
+	await deleteConfigCenter({
+		id: row.id,
+	});
+	ElMessage.success(transformI18n($t("common.buttons.del")));
+	await doFetch();
 }
 
 function exportConfig() {
-	console.log(transformI18n($t("devTeam.configManage.center.logs.exportConfig")));
+	/** 预留导出入口，当前只补注释不改变空实现。 */
 }
 
 function importConfig() {
-	console.log(transformI18n($t("devTeam.configManage.center.logs.importConfig")));
+	/** 预留导入入口，当前只补注释不改变空实现。 */
 }
 </script>
 
@@ -261,7 +339,7 @@ function importConfig() {
 
 		<PureTableBar :="pureTableBarProps" @refresh="doFetch">
 			<template #buttons>
-				<ElButton type="primary" @click="openDialog({ mode: 'add' })">
+				<ElButton type="primary" @click="openDialog({ mode: 'add', onSubmitted: doFetch })">
 					{{ transformI18n($t("common.buttons.add")) }}
 				</ElButton>
 				<ElButton type="info" @click="exportConfig">
@@ -285,7 +363,7 @@ function importConfig() {
 						<ElButton type="primary" @click="viewDetails(row)">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>
-						<ElButton type="warning" @click="openDialog({ mode: 'edit', row })">
+						<ElButton type="warning" @click="openDialog({ mode: 'edit', row, onSubmitted: doFetch })">
 							{{ transformI18n($t("common.buttons.edit")) }}
 						</ElButton>
 						<ElButton type="info" @click="copyConfig(row)">
