@@ -553,7 +553,19 @@ export function createDbSettingRepository(db: DbType): SettingRepository {
 		async listInitializeCell(
 			params: ListInitializeCellParams,
 		): Promise<{ list: AdminInitializeCellListItem[]; total: number }> {
-			const countResult = await db.select({ total: sql<number>`count(*)` }).from(smInitializeCells);
+			const conditions = [];
+			if (params.initItem?.trim()) {
+				conditions.push(like(smInitializeCells.initItem, `%${params.initItem.trim()}%`));
+			}
+			if (params.initStatus?.trim()) {
+				conditions.push(eq(smInitializeCells.initStatus, params.initStatus.trim()));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(smInitializeCells)
+				.where(where);
 
 			const rows = await db
 				.select({
@@ -565,6 +577,7 @@ export function createDbSettingRepository(db: DbType): SettingRepository {
 					updateTime: smInitializeCells.updateTime,
 				})
 				.from(smInitializeCells)
+				.where(where)
 				.orderBy(desc(smInitializeCells.createTime))
 				.limit(params.pageSize)
 				.offset((params.pageIndex - 1) * params.pageSize);
@@ -585,7 +598,25 @@ export function createDbSettingRepository(db: DbType): SettingRepository {
 		async listRegisterProtocol(
 			params: ListRegisterProtocolParams,
 		): Promise<{ list: AdminRegisterProtocolListItem[]; total: number }> {
-			const countResult = await db.select({ total: sql<number>`count(*)` }).from(smRegisterProtocols);
+			const protocolType = params.protocolType?.trim();
+			const protocolTitle = params.protocolTitle?.trim();
+			const status = params.status?.trim();
+			const conditions = [];
+			if (protocolType) {
+				conditions.push(eq(smRegisterProtocols.protocolType, protocolType));
+			}
+			if (protocolTitle) {
+				conditions.push(like(smRegisterProtocols.protocolTitle, `%${protocolTitle}%`));
+			}
+			if (status) {
+				conditions.push(eq(smRegisterProtocols.status, status as "enabled" | "disabled"));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(smRegisterProtocols)
+				.where(where);
 
 			const rows = await db
 				.select({
@@ -599,6 +630,7 @@ export function createDbSettingRepository(db: DbType): SettingRepository {
 					updateTime: smRegisterProtocols.updateTime,
 				})
 				.from(smRegisterProtocols)
+				.where(where)
 				.orderBy(desc(smRegisterProtocols.createTime))
 				.limit(params.pageSize)
 				.offset((params.pageIndex - 1) * params.pageSize);
@@ -620,7 +652,25 @@ export function createDbSettingRepository(db: DbType): SettingRepository {
 		async listSystemConfig(
 			params: ListSystemConfigParams,
 		): Promise<{ list: AdminSystemConfigListItem[]; total: number }> {
-			const countResult = await db.select({ total: sql<number>`count(*)` }).from(smSystemConfigs);
+			const configKey = params.configKey?.trim();
+			const configType = params.configType?.trim();
+			const status = params.status?.trim();
+			const conditions = [];
+			if (configKey) {
+				conditions.push(eq(smSystemConfigs.configKey, configKey));
+			}
+			if (configType) {
+				conditions.push(eq(smSystemConfigs.configType, configType));
+			}
+			if (status) {
+				conditions.push(eq(smSystemConfigs.status, status as "enabled" | "disabled"));
+			}
+
+			const where = conditions.length > 0 ? and(...conditions) : undefined;
+			const countResult = await db
+				.select({ total: sql<number>`count(*)` })
+				.from(smSystemConfigs)
+				.where(where);
 
 			const rows = await db
 				.select({
@@ -634,6 +684,7 @@ export function createDbSettingRepository(db: DbType): SettingRepository {
 					updateTime: smSystemConfigs.updateTime,
 				})
 				.from(smSystemConfigs)
+				.where(where)
 				.orderBy(desc(smSystemConfigs.createTime))
 				.limit(params.pageSize)
 				.offset((params.pageIndex - 1) * params.pageSize);

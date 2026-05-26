@@ -1,5 +1,7 @@
 /** 设置管理模块 - 类型定义 */
 
+import type { SmRegisterProtocolQueryParams } from "@01s-11comm/type";
+
 // --- DataPermission / smDataPermissions + smRoles ---
 
 export interface AdminDataPermissionListItem {
@@ -214,6 +216,8 @@ export interface AdminInitializeCellListItem {
 export interface ListInitializeCellParams {
 	pageIndex: number;
 	pageSize: number;
+	initItem?: string;
+	initStatus?: string;
 }
 
 // --- RegisterProtocol / smRegisterProtocols ---
@@ -228,7 +232,10 @@ export interface AdminRegisterProtocolListItem {
 	updateTime: string;
 }
 
-export interface ListRegisterProtocolParams {
+export interface ListRegisterProtocolParams extends Pick<
+	SmRegisterProtocolQueryParams,
+	"protocolType" | "protocolTitle" | "status"
+> {
 	pageIndex: number;
 	pageSize: number;
 }
@@ -261,4 +268,7 @@ export interface AdminSystemConfigListItem {
 export interface ListSystemConfigParams {
 	pageIndex: number;
 	pageSize: number;
+	configKey?: string;
+	configType?: string;
+	status?: string;
 }

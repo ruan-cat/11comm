@@ -219,10 +219,17 @@ export function createAdminSettingAdapter(service: SettingService) {
 			pageIndex?: number;
 			page?: number;
 			pageSize?: number;
+			initItem?: string;
+			initStatus?: string;
 		}): Promise<JsonVO<PageDTO<AdminInitializeCellListItem>>> {
 			const pageIndex = toNumber(input.pageIndex ?? input.page ?? 1, 1);
 			const pageSize = toNumber(input.pageSize, 20);
-			const result = await service.listInitializeCell({ pageIndex, pageSize });
+			const result = await service.listInitializeCell({
+				pageIndex,
+				pageSize,
+				initItem: blankToUndefined(input.initItem),
+				initStatus: blankToUndefined(input.initStatus),
+			});
 			return adminSuccess({
 				list: result.list,
 				total: result.total,
@@ -236,10 +243,19 @@ export function createAdminSettingAdapter(service: SettingService) {
 			pageIndex?: number;
 			page?: number;
 			pageSize?: number;
+			protocolType?: string;
+			protocolTitle?: string;
+			status?: string;
 		}): Promise<JsonVO<PageDTO<AdminRegisterProtocolListItem>>> {
 			const pageIndex = toNumber(input.pageIndex ?? input.page ?? 1, 1);
 			const pageSize = toNumber(input.pageSize, 20);
-			const result = await service.listRegisterProtocol({ pageIndex, pageSize });
+			const result = await service.listRegisterProtocol({
+				pageIndex,
+				pageSize,
+				protocolType: blankToUndefined(input.protocolType),
+				protocolTitle: blankToUndefined(input.protocolTitle),
+				status: blankToUndefined(input.status),
+			});
 			return adminSuccess({
 				list: result.list,
 				total: result.total,
@@ -253,10 +269,19 @@ export function createAdminSettingAdapter(service: SettingService) {
 			pageIndex?: number;
 			page?: number;
 			pageSize?: number;
+			configKey?: string;
+			configType?: string;
+			status?: string;
 		}): Promise<JsonVO<PageDTO<AdminSystemConfigListItem>>> {
 			const pageIndex = toNumber(input.pageIndex ?? input.page ?? 1, 1);
 			const pageSize = toNumber(input.pageSize, 20);
-			const result = await service.listSystemConfig({ pageIndex, pageSize });
+			const result = await service.listSystemConfig({
+				pageIndex,
+				pageSize,
+				configKey: blankToUndefined(input.configKey),
+				configType: blankToUndefined(input.configType),
+				status: blankToUndefined(input.status),
+			});
 			return adminSuccess({
 				list: result.list,
 				total: result.total,
