@@ -1,6 +1,6 @@
 # 基础设施配置参考 (Infrastructure Configuration Reference)
 
-本参考文档规定了项目基础设施（特别是 `apps/type` 和 `apps/admin`）的配置标准。
+本参考文档规定了项目基础设施（特别是 `apps/type`、`apps/api` 和 `apps/admin`）的配置标准。
 
 ## `apps/type` 配置
 
@@ -22,9 +22,11 @@
 
 ## 数据库 Schema 配置 (Drizzle)
 
-- **配置文件**：位于 `apps/admin` 目录下的 `drizzle.config.ts`。
-- **Schema 路径**：指向 `apps/type/src/index.ts`。
-- **输出目录**：迁移文件生成到 `apps/admin/server/db/migrations`。
+- **Schema 事实源**：所有 Drizzle Table、Zod Schema 和 TypeScript 类型定义位于 `apps/type/src/business/**/schema.ts`，不得恢复 `apps/admin/server/db/schemas` 作为权威来源。
+- **配置文件**：位于 `apps/api` 目录下的 `drizzle.config.ts`。
+- **Schema 路径**：显式指向 `apps/type/src/common/enums.ts` 与 `apps/type/src/business/**/schema.ts`。
+- **输出目录**：迁移文件生成到 `apps/api/drizzle`。
+- **命令入口**：`db:*` 脚本、Neon readiness/drift 诊断与受控迁移执行归 `apps/api`；`apps/admin` 旧 DB 入口只作为 legacy source 或兼容参考。
 
 ## 环境一致性 (Environment Consistency)
 
