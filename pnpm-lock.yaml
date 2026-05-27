@@ -716,9 +716,15 @@ importers:
         specifier: 3.0.1-alpha.2
         version: 3.0.1-alpha.2(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@vercel/blob@1.0.2)(chokidar@5.0.0)(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))(lru-cache@11.3.6)(rolldown@1.0.0)(rollup@4.60.3)(vite@7.3.3(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4))
     devDependencies:
+      "@dotenvx/dotenvx":
+        specifier: ^1.65.0
+        version: 1.65.0
       "@types/node":
         specifier: ^24.12.3
         version: 24.12.3
+      drizzle-kit:
+        specifier: ^0.30.6
+        version: 0.30.6
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
