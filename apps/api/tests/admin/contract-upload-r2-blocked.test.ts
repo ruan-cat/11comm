@@ -200,10 +200,11 @@ describe("property-manage contract-manage upload R2 controls", () => {
 			},
 		});
 		expect(retryComplete).toMatchObject({ success: true, data: { status: "completed" } });
-		expect(abortCompleted).toMatchObject({ success: true, data: { status: "completed" } });
+		expect(abortCompleted).toMatchObject({ success: true, data: { status: "aborted" } });
 		expect(gateway.createMultipartUpload).toHaveBeenCalledTimes(1);
 		expect(gateway.completeMultipartUpload).toHaveBeenCalledTimes(1);
 		expect(gateway.abortMultipartUpload).not.toHaveBeenCalled();
+		expect(gateway.deleteObject).toHaveBeenCalledTimes(1);
 	});
 
 	test("upload service reads R2 bucket and public url from Cloudflare runtime env", async () => {
@@ -425,6 +426,86 @@ describe("property-manage contract-manage upload R2 controls", () => {
 		expect(gateway.completeMultipartUpload).toHaveBeenCalledTimes(1);
 	});
 
+	test("aborting a completed upload deletes the completed object instead of aborting multipart", async () => {
+		const repository = createInMemoryUploadRepository();
+		await repository.createSession(
+			uploadSessionFixture({
+				id: "00000000-0000-4000-8000-000000000117",
+				status: "completed",
+				uploadedPartsCount: 1,
+				objectEtag: "etag-complete",
+				publicUrl: "https://files.example.com/completed.pdf",
+				completedAt: "2026-05-26T00:10:00.000Z",
+			}),
+		);
+		await repository.replaceUploadedParts("00000000-0000-4000-8000-000000000117", [
+			{ partNumber: 1, etag: "etag-1", partSize: 10 },
+		]);
+		const gateway = createGatewayFixture();
+		const service = createContractUploadService({
+			repository,
+			gateway,
+			now: () => "2026-05-26T00:20:00.000Z",
+		});
+
+		const response = await service.abortUpload({ sessionId: "00000000-0000-4000-8000-000000000117" });
+		const session = await repository.getSession("00000000-0000-4000-8000-000000000117");
+		const partsAfterAbort = await repository.listUploadedParts("00000000-0000-4000-8000-000000000117");
+		const statusAfterAbort = await service.getStatus({ sessionId: "00000000-0000-4000-8000-000000000117" });
+
+		expect(response).toMatchObject({ success: true, data: { status: "aborted" } });
+		expect(session).toMatchObject({
+			status: "aborted",
+			uploadedPartsCount: 0,
+			objectEtag: null,
+			publicUrl: null,
+			completedAt: null,
+			updatedAt: "2026-05-26T00:20:00.000Z",
+		});
+		expect(partsAfterAbort).toEqual([]);
+		expect(statusAfterAbort).toMatchObject({
+			success: true,
+			data: {
+				status: "aborted",
+				uploadedParts: [],
+				uploadedPartsCount: 0,
+				missingPartNumbers: [1, 2],
+				publicUrl: null,
+			},
+		});
+		expect(gateway.deleteObject).toHaveBeenCalledWith(expect.objectContaining({ status: "completed" }));
+		expect(gateway.deleteObject).toHaveBeenCalledTimes(1);
+		expect(gateway.abortMultipartUpload).not.toHaveBeenCalled();
+	});
+
+	test("aborting an unfinished upload still aborts multipart without deleting an object", async () => {
+		const repository = createInMemoryUploadRepository();
+		await repository.createSession(
+			uploadSessionFixture({
+				id: "00000000-0000-4000-8000-000000000118",
+				status: "uploading",
+				uploadedPartsCount: 1,
+			}),
+		);
+		const gateway = createGatewayFixture();
+		const service = createContractUploadService({
+			repository,
+			gateway,
+			now: () => "2026-05-26T00:20:00.000Z",
+		});
+
+		const response = await service.abortUpload({ sessionId: "00000000-0000-4000-8000-000000000118" });
+		const session = await repository.getSession("00000000-0000-4000-8000-000000000118");
+
+		expect(response).toMatchObject({ success: true, data: { status: "aborted" } });
+		expect(session).toMatchObject({
+			status: "aborted",
+			updatedAt: "2026-05-26T00:20:00.000Z",
+		});
+		expect(gateway.abortMultipartUpload).toHaveBeenCalledTimes(1);
+		expect(gateway.deleteObject).not.toHaveBeenCalled();
+	});
+
 	test("routes dispatch upload requests through the contract runtime adapter", async () => {
 		setDatabaseUrlForInjectedRuntime();
 		mockedReadBody
@@ -538,6 +619,7 @@ function createGatewayFixture(uploadedParts: UploadPartState[] = []): UploadGate
 	signPart: ReturnType<typeof vi.fn>;
 	completeMultipartUpload: ReturnType<typeof vi.fn>;
 	abortMultipartUpload: ReturnType<typeof vi.fn>;
+	deleteObject: ReturnType<typeof vi.fn>;
 } {
 	return {
 		createMultipartUpload: vi.fn(async (session: UploadSessionRecord) => ({ uploadId: `${session.id}-upload-id` })),
@@ -550,6 +632,7 @@ function createGatewayFixture(uploadedParts: UploadPartState[] = []): UploadGate
 		})),
 		completeMultipartUpload: vi.fn(async () => ({ objectEtag: "etag-complete" })),
 		abortMultipartUpload: vi.fn(async () => undefined),
+		deleteObject: vi.fn(async () => undefined),
 	};
 }
 

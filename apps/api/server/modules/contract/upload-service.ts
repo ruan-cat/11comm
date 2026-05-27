@@ -2,6 +2,7 @@ import {
 	AbortMultipartUploadCommand,
 	CompleteMultipartUploadCommand,
 	CreateMultipartUploadCommand,
+	DeleteObjectCommand,
 	ListPartsCommand,
 	UploadPartCommand,
 } from "@aws-sdk/client-s3";
@@ -81,6 +82,7 @@ export interface UploadGateway {
 		parts: UploadPartState[],
 	): Promise<{ objectEtag: string | null }>;
 	abortMultipartUpload(session: UploadSessionRecord): Promise<void>;
+	deleteObject(session: UploadSessionRecord): Promise<void>;
 }
 
 export interface UploadInitInput {
@@ -499,6 +501,14 @@ function createDefaultGateway(event?: H3Event | Record<string, any>): UploadGate
 				}),
 			);
 		},
+		async deleteObject(session) {
+			await client.send(
+				new DeleteObjectCommand({
+					Bucket: bucketName,
+					Key: session.r2ObjectKey,
+				}),
+			);
+		},
 	};
 }
 
@@ -843,7 +853,18 @@ export function createContractUploadService(
 				if (!session) {
 					return createResponse(404, "upload session not found", null, { success: false });
 				}
-				if (session.status !== "completed" && session.status !== "aborted") {
+				if (session.status === "completed") {
+					await getGateway().deleteObject(session);
+					await repository.replaceUploadedParts(session.id, []);
+					await repository.updateSession(session.id, {
+						status: "aborted",
+						uploadedPartsCount: 0,
+						objectEtag: null,
+						publicUrl: null,
+						completedAt: null,
+						updatedAt: now(),
+					});
+				} else if (session.status !== "aborted") {
 					await getGateway().abortMultipartUpload(session);
 					await repository.updateSession(session.id, {
 						status: "aborted",
