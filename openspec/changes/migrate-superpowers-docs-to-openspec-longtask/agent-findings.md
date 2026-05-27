@@ -1,5 +1,131 @@
 # 代理发现记录
 
+## 2026-05-27 前驱排雷与风险控制规范已补强
+
+本轮按 agent team 只读排查结论补强 OpenSpec，而不是推进生产写入。新增风险控制集中在 `tasks.md` 的 `§4D.0`、`§4D` 和 `§4E`，并同步到 `design.md`、`db-readiness-and-write-verification`、`unified-nitro-api-consolidation` 与 `admin-special-cases` specs。后续推进 goal 的安全顺序必须是：先完成工作区/OpenSpec/生产 baseline/R2 cleanup/CORS 等前驱 gate，再迁移 Drizzle 运维入口到 `apps/api`，再重试 task101/task102，最后才处理页面 CRUD 和退役门禁。
+
+关键风险已经写成硬规则：`openspec status isComplete=true` 不能代表任务完成；`ct_contracts` 的 `missing FROM-clause entry` 在只读 drift 证明前不能直接当成 Neon schema 缺失；`apps/api` 的 DB 写库命令必须 fail closed，不能使用 dummy URL；迁移目录必须原样承接 SQL、snapshot 和 `meta/_journal.json`；task101 的 `change/list` baseline 未通过时不得开 CUD 写入窗口；task102 的 completed cleanup/residual 未通过时不得继续增加生产 R2 残留；server-side multipart drill 不能替代浏览器 CORS 和 shared-upload 页面闭环。
+
+本轮没有关闭任何 runtime checkbox，没有执行 `migrate`、`push`、生产 CUD、R2 写入或旧服务退役。后续若发现本轮新增的前驱 gate 与执行需求冲突，必须先更新 OpenSpec 规范并通过 strict 校验，不得在聊天或临时报告中绕开。
+
+## 2026-05-27 当前剩余 4 项的阻断关系
+
+本轮剩余项已经收敛为 4 个 checkbox：task101、task102、真实 CRUD 页面级证据、每个 admin detail/create/update/delete 分项验收。后两个不是独立的新缺口，而是依赖 task101 与 task102 的生产写入、读回、回滚、残留和页面交互闭环；在 task101/task102 未放行前，不得用 list 页面 Network、HTTP gate、Vitest、manifest/contract 或 partial evidence 代替。
+
+task101 的阻断点是生产 `change/list` baseline 仍失败，最新只读 evidence 仍显示 `missing FROM-clause entry for table "ct_contracts"`。task102 的阻断点是生产 completed cleanup/residual 失败，以及本地 admin shared-upload 页面浏览器直传被 R2 CORS 预检缺少 `Access-Control-Allow-Origin` 阻断。继续推进必须先解决这两个外部状态或部署配置问题，再重新走受控写入窗口。
+
+## 2026-05-27 task102 shared-upload 页面触达控制面但被 R2 CORS 阻断
+
+James 只读复核确认 task102 不能关闭：生产 completed cleanup/residual、生产或页面断点续传完整闭环、前端 shared-upload 完整交互、R2 residual、shadow-off/fallback 与 retirement ledger 仍缺。主代理随后补了本地 admin 页面证据，见 `.tmp/phase7-dev-browser/2026-05-27-task102-shared-upload-local-browser-blocked.md`。本地起草合同新增弹窗的附件上传区可以加入哨兵文件并进入 `queued / 1 个缺片`，点击“开始”后页面经 `/api-shadow` 命中本地 `apps/api` 的 `upload/init`、`upload/status` 和 `upload/sign-part`，均返回 HTTP 200。
+
+新阻断点在浏览器直传层：`PUT <redacted signed R2 URL>` 被 CORS 预检拦截，console 报告缺少 `Access-Control-Allow-Origin`，UI 转为 `failed / 1 个缺片`。点击“移除”后页面调用本地 `upload/abort` HTTP 200，队列清空。这证明前端页面能触达 shared-upload 控制面和失败后 abort 局部路径，但不能证明 `complete`、断点续传完整闭环、生产 R2 CORS 配置、生产 completed cleanup/residual、retirement ledger 或旧服务退役。证据不得记录完整 signed URL、object key、uploadId、签名参数、token、cookie、Authorization、数据库连接串、secret、完整请求体或完整响应体。
+
+## 2026-05-27 task101 最新只读 precheck 仍阻断 CUD 写入窗口
+
+本轮在 admin route 页面/无页面入口证据闭合后，重新执行 task101 生产只读 precheck，证据见 `.tmp/phase7-dev-browser/2026-05-27-task101-contract-change-draft-list-production-readonly-precheck.md`。生产 `GET /__nitro/ready` 已返回 `DB_READY`，说明当前阻断不在 readiness。`change/list` 只读请求仍返回 `success=false/code=500`，message 为 `missing FROM-clause entry for table "ct_contracts"`；`draft-contract/list` 同样只读请求返回 `success=true/code=200/total=0/listCount=0`。
+
+Dewey 只读审计确认 `change` 与 `draft-contract` 的 8 个 route、页面入口和 API hook 都存在，且具备低风险 CUD 候选形态；但生产验收必须先通过 `health -> ready(DB_READY) -> draft-contract/list baseline -> change/list baseline`。当前 `change/list` baseline 仍失败，因此不得继续执行 `change` 或 `draft-contract` 的 create/detail/update/delete。8 个 endpoint 当前没有显式 mutation guard，后续若 baseline 放行，只能记录 `guard-not-applicable` 加 residual list 0，不能写成 guard restored。长期证据只保存 requestId、状态、只读 payload 摘要和错误信息，不保存完整响应体、token、cookie、Authorization、数据库连接串或任何 secret。
+
+## 2026-05-27 admin route 页面/无页面入口证据已窄口径闭合
+
+本轮补齐 8 个 `no-page-api-only` admin list 的生产只读 HTTP 样本，证据见 `.tmp/phase7-dev-browser/2026-05-27-no-page-admin-list-production-readonly-samples.md`。生产 `GET /__nitro/ready` 返回 `DB_READY` 后，对 `operation-team/data-manage/property-company/list` 与 `contract-manage/{archive,attachment,clause,print,review,second-party,template}/list` 执行只读分页 POST，8/8 均为 HTTP 200、`success=true`、`x-api-phase=phase3-infra`。Halley 复核确认：结合 Task 588 已确认的 46 个 `has-page-entry` 页面 Network 证据，以及 Task 542 已关闭的 no-page endpoint 处置口径，`tasks.md` 中“有页面入口 admin route 页面 Network；无独立页面入口补 HTTP gate 或 contract evidence”的 checkbox 可以按窄口径关闭。
+
+边界必须保持清楚：这只是页面入口/无页面入口分类证据闭环，不是业务写入闭环。它不代表真实 CRUD 页面级证据，不代表每个 detail/create/update/delete endpoint 的 CUD write/read-back/rollback/residual，不代表 task101 contract change/draft CUD，不代表 task102 R2 multipart/cleanup/residual，不代表 shadow-off/fallback、retirement ledger 或旧服务退役完成。新增 evidence 只保存 endpoint、分页摘要、requestId、状态、total/listCount 和首行字段名；不保存 token、cookie、Authorization、数据库连接串、secret、完整 signed/public URL、完整响应体或完整业务行值。
+
+## 2026-05-27 task102 生产 complete 成功但 cleanup/residual 阻断
+
+本轮按用户授权的写入窗口执行 task102 生产公开 HTTP + R2 complete/cleanup 演练，证据见 `.tmp/phase7-dev-browser/2026-05-27-task102-r2-production-complete-cleanup-partial.md`。生产 `GET /__nitro/ready` 返回 `DB_READY`，随后 `upload/init` 创建 session `0da26065-b653-409c-8ffe-9a473693616b`，`upload/sign-part` 返回签名 URL 但长期证据只记录存在、长度和过期秒数，真实 `PUT signed URL` 返回 HTTP 200 且 ETag present，`upload/complete` 返回 `completed`，complete 后 public HEAD 为 HTTP 200。
+
+阻断点在 completed session cleanup：第一次 `upload/abort` 作为 cleanup 返回 HTTP 200 和 `abort upload ok`，但响应与后续 status 均显示 session 仍为 `completed`；cleanup 后 `uploadedPartsCount=1`、publicUrl 仍存在，旧 public HEAD 仍为 HTTP 200。追加 retry abort 后，retry status 仍为 `completed`、uploadedPartsCount `1`、publicUrl present。源码本地分支已经有 completed abort 删除对象并清空 parts 的测试保护，但生产 runtime 当前行为没有体现该 cleanup 语义。
+
+No-go：task102 只能升级为“生产真实 R2 multipart 单分片 complete 路径成立，但 completed cleanup/residual 阻断”。不得勾选 task102，不得写成生产 R2 对象已删除、DB session 已回滚、页面 shared-upload 断点续传闭环完成、shadow-off/fallback 完成、retirement ledger 可关闭或旧服务可退役。长期 evidence 不得记录完整 signed URL、完整 public URL、object key、ETag 值、token、cookie、Authorization、数据库连接串、R2/AWS secret、完整 payload 或完整响应体。
+
+## 2026-05-27 task101 生产只读 precheck 仍阻断
+
+用户确认生产环境已更新后，本轮再次执行 task101 只读 precheck，证据见 `.tmp/phase7-dev-browser/2026-05-27-task101-contract-change-list-production-readonly-precheck.md`。生产 `GET /__nitro/health` 返回 HTTP 200、requestId `req_b78f9fcb-a5ca-44d6-940c-a6f057163f91`；生产 `GET /__nitro/ready` 返回 HTTP 200、requestId `req_38cd70a5-cf63-4309-a1fd-23233d15f611`，`code=DB_READY`，database connected true，probeEnabled true。随后 `POST /api/property-manage/contract-manage/change/list` 只带分页和不存在的 `contractNumber=phase7-nonexistent-contract-number-probe`，HTTP 200，requestId `req_880c2b54-2512-4ff9-b9ef-1268025843aa`，`x-api-phase=phase3-infra`，body 仍为 `success=false/code=500`，message 为 `missing FROM-clause entry for table "ct_contracts"`。
+
+No-go：当前阻断不是 `DB_READY`，而是生产仍未体现本地 `listChange` count join 修复。不得打开 task101 写入窗口，不得继续 `change` 或 `draft-contract` CUD，不得把此前 detail-after-delete 404 写成完整 residual，不得把本轮只读 precheck 写成 admin H5 页面真实点击 Network 或 task101 完成。长期 artifact 不保存 token、cookie、Authorization、数据库连接串、完整 payload、完整响应体或任何 secret 值。
+
+## 2026-05-27 dev config 与 setting system 页面 Network 局部证据边界
+
+本轮补齐 `dev-team/config-manage/{center,dictionary,item,type}/list` 与 `setting-manage/system-manage/{change-password,community-configuration,initialize-cell,register-protocol,system-config}/list` 的本地 admin H5 页面 Network，证据汇总为 `.tmp/phase7-dev-browser/2026-05-27-task540-dev-config-setting-system-local-admin-network-9of9.md`，脱敏 JSON 摘要为 `.tmp/phase7-dev-browser/2026-05-27-task540-dev-config-setting-system-local-admin-network-records.json`。九个页面均经 `/api-shadow` 命中本地独立 `apps/api`，响应为 HTTP 200，`x-api-phase=phase3-infra`；本地 `/__nitro/ready` 已返回 `DB_READY`。
+
+No-go：这只证明 local/admin/page/network partial。长期 artifact 只保留请求体、字段名、分页摘要、requestId 和命中事实，不保存 token、cookie、Authorization、数据库连接串、页面截图、完整快照、人员行值、配置行值、协议正文、系统配置值或完整响应体。`retirement-ledger-overlays/2026-05-27-dev-config-setting-system-local-admin-page-network-overlay.md` 只把对应 9 行投影为本地 browserEvidence，`retirementDecision=keep-source` 不变；不得据此关闭 task540/task588，也不得写成生产 admin H5、生产真实库样本、shadow-off/fallback、真实 CRUD/detail/create/update/delete、R2 multipart、完整 retirement gate 或旧服务退役完成。
+
+## 2026-05-26 dev-team refresh-cache 页面 Network 局部证据边界
+
+本轮补齐 `dev-team/cache-manage/refresh-cache/list` 的本地 admin H5 页面 Network，证据汇总为 `.tmp/phase7-dev-browser/2026-05-26-dev-team-cache-refresh-local-admin-network.md`。页面入口为 `apps/admin/src/pages/dev-team/cache-manage/refresh-cache/index.vue`，通过 `useRefreshCacheListQuery` 调用 `apps/admin/src/api/dev-team/cache-manage/refresh-cache/index.ts`，并经 `resolveAdminApiRequestUrl` 在本地 shadow proxy 环境下转成 `/api-shadow/api/dev-team/cache-manage/refresh-cache/list`。
+
+No-go：这只是 local/admin/page/network partial。`route-inventory-details.csv.md` 的对应行仍保持 `manifest-missing`，不能因页面 Network 而升级 runtime manifest；`admin-retirement-ledger.md` 也只把页面证据字段从 pending 改成本地 partial，`shadow-off pending` 和 `keep-source` 不变。本轮没有点击“刷新缓存”按钮，不能写成真实缓存刷新动作、生产 admin H5、生产真实库样本、shadow-off/fallback、真实 CUD/detail、R2 或退役证据，因此 task540 继续 open。
+
+## 2026-05-26 dev-team menu 页面 Network 局部证据边界
+
+本轮补齐 `dev-team/menu-manage/{catalog,group,item}/list` 的本地 admin H5 页面 Network，证据汇总为 `.tmp/phase7-dev-browser/2026-05-26-dev-team-menu-local-admin-network-3of3.md`。三页均有明确页面入口和 caller：`apps/admin/src/pages/dev-team/menu-manage/{catalog,group,item}/index.vue` 通过对应 `useMenu*ListQuery` 调用 `apps/admin/src/api/dev-team/menu-manage/{catalog,group,item}/index.ts`，并经 `resolveAdminApiRequestUrl` 在本地 shadow proxy 环境下转成 `/api-shadow/api/dev-team/menu-manage/<endpoint>/list`。
+
+No-go：这只是 local/admin/page/network partial。`route-inventory-details.csv.md` 的三行仍保持 `manifest-missing`，不能因页面 Network 而升级 runtime manifest；`admin-retirement-ledger.md` 也只把页面证据字段从 pending 改成本地 partial，`shadow-off pending` 和 `keep-source` 不变。本轮没有生产 admin H5、生产真实库样本、shadow-off/fallback、真实 CUD/detail、R2 或退役证据，因此 task540 继续 open。
+
+## 2026-05-26 task101 提交后生产只读探针仍阻断
+
+本轮在提交阶段后继续 goal，按用户要求先做生产只读前置探针，未执行写入。生产 `GET /__nitro/health` 返回 HTTP 200，requestId `req_9664d5c7-357b-4d36-aaad-4c60f1053341`；`GET /__nitro/ready` 返回 HTTP 200，requestId `req_f1a15203-d8de-4591-a180-c42d592fcb71`，code 为 `DB_READY`，database connected true，probeEnabled true。随后 `POST /api/property-manage/contract-manage/change/list` 仅带分页和不存在的 `contractNumber=phase7-nonexistent-contract-number-probe`，HTTP 200，requestId `req_3d9edc5c-8237-4ea3-9eba-2bed68fba98a`，`x-api-phase=phase3-infra`，body 仍为 `success=false/code=500`，message 为 `missing FROM-clause entry for table "ct_contracts"`。
+
+No-go：当前阻断不是 `DB_READY`，而是生产仍未体现本地 `listChange` count join 修复。不得打开 task101 写入窗口，不得重复执行 change/draft CUD，不能把此前 detail-after-delete 404 写成完整 residual，也不能把公开 HTTP 层局部证据写成 admin H5 页面真实点击 Network。task101 继续保持 open。
+
+## 2026-05-26 task102 R2 本地 complete cleanup 成功边界
+
+本轮新增 `.tmp/phase7-dev-browser/2026-05-26-task102-r2-local-complete-cleanup-success.md`，记录本地真实 HTTP/R2 complete 后 cleanup drill。有效范围是本地 API `http://127.0.0.1:3102`、`RUN_PHASE7_DB_READINESS_CHECK=1`、ready 为 `DB_READY` 的环境；`apps/api/.env.local` 只作为本地运行来源记录，不写入任何 env 值。链路证明 `init`、`sign-part`、PUT signed URL、`complete`、complete 后 public HEAD、abort cleanup、cleanup 后 status 和旧 public HEAD 都可形成一条本地残留清理证据：PUT 为 HTTP 200 且 ETag present，complete 后 public HEAD 为 200，cleanup 后 status 为 `aborted`、publicUrl absent、uploadedParts `0`、missing `1`，旧 public HEAD 为 404。
+
+失败路径也需要保留：第一次 init 因非 UUID `bizId` 校验失败，没有 session 和残留；第一次完成态清理验证中对象已删但 parts 仍为 `1`、missing 为 `0`，不能作为通过证据，直到补 `replaceUploadedParts([])` 后才达到最终 residual 结果。
+
+No-go：本地 complete cleanup 成功不能关闭 task102。它不能替代生产 complete、生产或 admin 页面断点续传 Network、前端 shared-upload 完整闭环、生产 cleanup/residual、shadow-off/fallback、retirement ledger 或旧服务退役证据。证据不得记录 token、secret、DB URL、cookie、Authorization、完整 signed URL 或完整 public URL。
+
+## 2026-05-26 本轮复核 no-go 合并记录
+
+主代理本轮只读复探生产 `POST https://01s-11-server.ruan-cat.com/api/property-manage/contract-manage/change/list`，payload 只包含分页字段和不存在的 `contractNumber=phase7-nonexistent-contract-number-probe`，未写入任何数据。结果为 HTTP 200，requestId `req_c9e62100-4d0d-4560-9979-fc8f308a9a59`，`x-api-phase=phase3-infra`，body 摘要仍是 `success=false/code=500`，message 为 `missing FROM-clause entry for table "ct_contracts"`。
+
+No-go：生产仍未包含本地 join 修复，task101 不得继续 CUD 写入。Huygens/Nietzsche 只读复核结论保持保守：task101、task102、task540、task541、task588、task589 均不能因 partial evidence 关闭。
+
+## 2026-05-26 R2 complete 与残留清理阻断
+
+Lovelace/Huygens R2 审计确认：当前公开 upload API 支持 complete 业务路径，但没有 complete 后清理 R2 object 的安全 rollback/residual 路径；`upload-service.ts` 没有 `DeleteObjectCommand`，`abortUpload` 对 completed session 不清理对象。因此 abort-only 只能证明控制面、`DB_READY`、session 写入读回、签名 URL 存在和 abort 终态读回，不能证明真实 multipart complete、completed object cleanup、页面断点续传或 R2 residual。
+
+No-go：不得把 abort-only 成功写成 task102 完成；不得建议直接新增公开 cleanup/delete endpoint。若要补 cleanup，必须作为单独 OpenSpec 决策、运维清理方案或 lifecycle 清理方案处理。
+
+2026-05-26 后续更新：本地代码已补 `DeleteObjectCommand` 和 completed abort 后的 `replaceUploadedParts([])`，并通过本地真实 R2 complete cleanup drill 证明对象与 parts 残留可清理。该覆盖只在本地 `apps/api` 3102 成立，仍不能替代生产 complete、生产 cleanup/residual 或 admin 页面 shared-upload 证据。
+
+## 2026-05-26 admin list Network partial 分类边界
+
+Schrodinger 分类报告已生成：`.tmp/phase7-agent-reports/2026-05-26-admin-list-network-remaining-classification.md`。报告确认 report/expense/contract partial 不能外推全局 list Network。后续 Einstein/Mencius/Meitner 复核补充 `.tmp/phase7-agent-reports/2026-05-26-contract-list-seven-page-entry-classification.md`，确认 `contract-manage` 的 `archive/list`、`attachment/list`、`clause/list`、`print/list`、`review/list`、`second-party/list`、`template/list` 这 7 个普通 list 均没有独立三级页面入口，也没有 `apps/admin/src/pages/property-manage/contract-manage/**` 页面 caller；它们不应继续算作页面 Network 缺口，只能按 admin API hook/resolver 测试存在、`phase7-contract-manage-admin-list` manifest/contract/HTTP gate 已分类记录。
+
+No-go：这 7 个无页面入口的 contract list 后续应补 API HTTP gate、生产 API 只读采样、`DB_READY` 和真实库样本，只有未来新增真实页面 caller 时才补页面 Network；其它 `operation`、`community`、`house-property`、`parking`、`patrol`、`repair` 等 list 仍不能由本轮 partial 外推。无页面入口的 CUD/detail/upload/R2 仍按 HTTP/contract 或 blocked 分类；本轮 partial 不关闭 task540、task541、task588 或 task589。
+
+## 2026-05-26 task101 生产只读复探仍阻断
+
+本轮在 contract list 本地页面 Network partial 记录完成后，再次对生产 `change/list` 做无写入只读复探。生产 `POST /api/property-manage/contract-manage/change/list` 使用不存在的 `contractNumber=phase7-nonexistent-contract-number-probe`，HTTP 200，requestId 为 `req_8608684c-a418-40d5-9e4a-5997354d3093`，`x-api-phase=phase3-infra`，body 仍为 `success=false/code=500`，message 为 `missing FROM-clause entry for table "ct_contracts"`。
+
+No-go：生产未包含本地 `listChange` count join 修复前，不得继续 task101 写入重试；不得把此前 `draft-contract` 和 `change` 的 detail/delete-after-detail 404 写成完整 residual；不得把本地页面 list Network 证据写成 CUD 页面交互。task101 仍需等待生产修复部署，并补 `change/list` baseline/list-after-create/residual-list 与 admin H5 页面真实新增、编辑、删除或详情弹窗 Network 后才能关闭。
+
+## 2026-05-26 contract-manage 5 个 list 本地页面 Network 边界
+
+本轮新增的 `contract-manage/{type,first-party,expire,draft-contract,change}/list` 页面证据只来自本地 admin H5。有效采证环境是 `apps/admin` 端口 `8084` 通过 `/api-shadow` proxy 转发到本地 `apps/api` 端口 `3102`；生产 admin H5 本轮仍因登录态不足停留在登录页，`8083` direct-base 方案因浏览器 CORS 失败，二者都不能作为通过证据。
+
+证据文件为 `.tmp/phase7-dev-browser/2026-05-26-contract-list-local-admin-page-network-evidence.md`，对应 overlay 为 `retirement-ledger-overlays/2026-05-26-contract-list-local-admin-page-network-overlay.md`。5 个页面自然请求均为 POST 200，并记录业务路径、触发动作、Network URL、响应摘要、console 摘要、`x-request-id` 与 `x-api-phase=phase3-infra`。长期 artifact 只保留 request body、response body、snapshot 和脱敏摘要；不得补写登录凭据头、数据库连接串、secret、完整签名 URL 或完整生产 payload。
+
+No-go：该证据不能关闭 task101，因为它不覆盖 `change` 与 `draft-contract` 的 8 个 detail/CUD、页面点击新增/编辑/删除、write/read-back/rollback/residual；不能关闭 task102，因为它与 R2 multipart、complete、shared-upload 断点续传无关；不能关闭 task540/task588 全局页面 Network，因为它只覆盖 5 个 contract list；不能关闭 task541/task589 分项验收；不能写成生产 admin H5、生产 `DB_READY`、shadow-off/fallback、retirement ledger 完成、`apps/admin/server` 可删或目录级退役许可。
+
+## 2026-05-26 task101 生产只读探针阻断边界
+
+task102 生产 abort-only drill 已证明生产 upload 控制面命中新实现，但这不代表 contract change CUD 修复已部署。主代理随后只执行 `change/list` 只读探针，使用不存在的 `contractNumber=phase7-nonexistent-contract-number-probe`，生产仍返回 HTTP 200 envelope 内 `success=false/code=500`，message 为 `missing FROM-clause entry for table "ct_contracts"`，requestId 为 `req_4bd84a6b-342b-4b8b-bc92-c84c3fa0b41f`。
+
+No-go：生产未修复前不得重复执行 task101 写入重试；此前 `draft-contract` 和 `change` 的 create/detail/update/delete/delete-after-detail 证据不能替代 `change/list` baseline/list-after-create/residual-list。task101 仍需等待本地 `listChange` count join 修复部署，并补 admin H5 页面真实点击 Network 后才能关闭。
+
+## 2026-05-26 task102 R2 生产 abort-only 成功边界
+
+本轮重新尝试 task102 的生产公开 HTTP abort-only 演练，证据文件为 `.tmp/phase7-dev-browser/2026-05-26-task102-r2-production-abort-only-success.md`。生产 `/__nitro/ready` 返回 `DB_READY`；`upload/init` 创建 session `007f08b4-4d2f-4f54-9afc-8327eb8a8fe6`；`upload/sign-part` 返回签名 URL，但证据只记录 signed URL 存在、长度和过期秒数，不保存完整 URL；`upload/status` 在 abort 前读回 `uploading`、uploadedPartsCount `0`、missing part `1`；`upload/abort` 成功；abort 后 `upload/status` 读回 `aborted`、uploadedPartsCount `0`、missing part `1`、publicUrl absent。
+
+有效升级范围：该证据可以证明当前生产部署已经命中新 R2 控制面，且公开 HTTP 路径能完成 session 创建、签名、状态读回、abort rollback 和终态读回。旧的 hard-block 记录仍保留为历史时间线，但不再代表当前生产行为。
+
+No-go：本轮没有执行 `PUT signedUrl`，没有调用 `complete`，没有产生 completed R2 object，没有完成浏览器页面 shared-upload 断点续传 Network，也没有 completed object 的清理或强 residual 证明。因此 task102 仍必须保持 open；不得把 abort-only 成功写成真实 R2 multipart 上传完成、完整页面上传闭环、complete 可清理、旧服务可退役或 R2 residual 全量完成。证据不得记录 token、cookie、Authorization、secret、连接串、完整 signed URL 或完整生产 payload。
+
 ## 2026-05-26 task102 R2 生产 abort-only 阻断边界
 
 Laplace 只读探索确认，当前 `upload/init`、`sign-part`、`status`、`complete`、`abort` 的公开 API 字段足以设计最小 abort-only 演练，但不适合执行 `complete+cleanup`：代码中没有 `DeleteObjectCommand`，也没有公开删除 completed object 的 API；一旦 complete 成功，后续 `abort` 对 completed session 只会返回 `completed` 状态，不会清理对象。因此生产闭环优先顺序只能是 `health -> ready(DB_READY) -> init -> sign-part -> status -> abort -> status`，且即使 abort-only 成功，也只能证明 R2 control-plane、DB session read-back 和 abort 状态持久化，不能证明 completed object 清理。
@@ -1847,3 +1973,211 @@ CUD 证据边界：同一 artifact 中的 CUD 证据只支持 `/api/dev-team/con
 ## 2026-05-26 center diff 与 task309/task312 归因修正
 
 本轮复核意见修复确认：前一轮复核代理把 task309/task312 关闭误归因到 center diff，这是错误归因。实际 task309/task312 是上一轮 Neon main `/__nitro/ready` 返回 `DB_READY`、真实库只读样本与受控 HTTP 证据检查点关闭；center diff 只支持 `dev-team/config-manage/center` 的前端 caller 与低风险 `dt_configs` 哨兵 CUD 边界。本轮 center 只新增并关闭 center task470，不关闭 task344；剩余 open list 仍包含 task344 fallback/shadow-off drill、R2 multipart、其它真实 CUD 页面交互、retirement ledger 与旧服务目录退役等后续项。
+
+## 2026-05-26 task476 本地页面 Network 局部证据边界
+
+本轮 `property-manage/expense-manage` 先补齐 3 个 list endpoint 的本地 admin H5 页面 Network 证据：`cancel-fee/list`、`discount-apply/list`、`expense-summary-table/list`；随后同轮继续补齐剩余 11 个 endpoint，形成 14/14 本地页面 Network 覆盖。页面均通过本地 `apps/admin` 的 `/api-shadow` 代理访问本地 `apps/api`，响应头含 `x-api-phase=phase3-infra`，可证明本地 shadow proxy 命中独立 `apps/api`；但这只能作为 task476 的本地页面 Network checkpoint，不能证明生产 admin H5、生产真实库样本、shadow-off/fallback 或退役链路已经完成。
+
+证据完整性边界：只读复核子代理确认 14 个 endpoint 均已有成组 `.network-request`、`.network-response`、`-page.snapshot.txt` 与 `-page.png` 文件，响应均为 `success=true/code=200`；这些证据可以记为本地页面 Network 子项完成，但不得关闭 `task476`、`task537` 或 `task570`。`cancel-fee` 的 `.snapshot.txt` 内容偏弱，只记录 RootWebArea URL，因此该页面的渲染事实需要与截图、request body、response body 和汇总 artifact 一起解读；后续不能单独用这个 snapshot 文件证明完整页面交互。主代理已在 `.tmp/phase7-dev-browser/2026-05-26-task476-expense-local-admin-network-14of14.md` 中补齐 Network URL、method、HTTP status、`x-request-id`、console 摘要和是否命中 `apps/api`，后续引用应优先引用该 14/14 汇总，而不是只引用裸 request/response 文件。
+
+敏感信息边界：`.network-request` 文件只保存请求体，没有保存 header；完整 DevTools 输出曾包含本地临时 `Authorization` 与 cookie 值，它们是本轮临时注入的浏览器登录态，不是真实生产凭据。后续进度摘要只允许记录 endpoint、状态码、`x-request-id`、`x-api-phase` 与脱敏响应摘要，不应复制完整 header、cookie 或 token。此前本地 `.env` 读取曾暴露真实连接串到工具输出，后续任何 artifact、进度记录或最终回复都不得复述该连接串。
+
+复核边界：Kant 子代理在只读复核中确认 request/response 未发现 token、cookie、Authorization、Bearer、数据库连接串、password、secret、api-key 等凭据；但 `overdue-payment-information` 的 response 中存在样例姓名和手机号字段。后续引用该证据时只应使用 total/listCount、字段类别和脱敏摘要，不应在进度记录、最终回复或额外 artifact 中复制完整姓名、手机号或完整响应体。
+
+No-go：不得把 14/14 的本地页面 Network 写成 task476 总体完成；不得把本地 `DB_READY` 写成生产 `DB_READY`；不得把本地 shadow-enabled 代理证据写成生产 admin H5、逐 endpoint Neon main 真实库样本、shadow-off/fallback drill、retirement ledger、真实 CUD 页面交互、R2 multipart 或旧服务目录可退役。
+
+## 2026-05-26 task476 生产 DB_READY 采样阻断
+
+本轮尝试按只读方式补 `property-manage/expense-manage` 14 个 Phase7 list 的生产 `DB_READY` 下逐 endpoint Neon main 真实库样本，但生产 ready 前置探针未成功。生产 API base 仍以 `apps/api/package.json` 的 `homepage` 为准，当前为 `https://01s-11-server.ruan-cat.com`；Archimedes 子代理对 `GET /__nitro/ready` 使用 `Invoke-WebRequest`、`curl.exe` 与 `curl.exe -4` 均超时，未取得 HTTP status、requestId、ready code、database connected 或 probeEnabled。按本 change 的 Neon 验收规范，未确认 `DB_READY` 时不得继续把业务 endpoint 采样写成真实库样本，因此本轮没有对 14 个 list endpoint 发起生产 POST。
+
+阻断报告见 `.tmp/phase7-agent-reports/2026-05-26-task476-production-api-db-ready-samples-draft.md`。Pasteur 子代理只读复核确认该报告完整列出 14 个 endpoint，且未发现 token、cookie、Authorization、Bearer、数据库连接串、password、secret、api-key、完整手机号或完整响应体；报告只能证明生产 DB_READY 采样前置检查被阻断，不能支撑 task476 完成。
+
+No-go：不得把 ready 超时写成 `DB_READY` 失败或成功；不得把 2026-05-20 的历史生产 API 200、本地 14/14 页面 Network、HTTP gate、Vitest 或源码链路外推成生产 `DB_READY` 下逐 endpoint Neon main 真实库样本；不得替代生产 admin H5 页面 Network、fallback/shadow-off drill、retirement ledger、真实 CUD 页面交互或旧服务退役。
+
+## 2026-05-26 task476 生产 DB_READY 只读样本边界
+
+初次短超时只代表采样窗口不足，不能写成生产 `DB_READY` 失败。主代理随后使用 60 秒窗口重试 `GET /__nitro/ready`，取得 HTTP 200、`requestId=req_75c441c7-868e-4cf6-829f-a54536a8788f`、`success=true`、`ready=true`、`code=DB_READY`、`database.connected=true`、`database.probeEnabled=true`，Drizzle migrations `2/2`。在该前置事实之后，4 个分片子代理完成 `property-manage/expense-manage` Phase7 14 个 list 的生产 API 只读采样，合并报告见 `.tmp/phase7-agent-reports/2026-05-26-task476-production-api-db-ready-samples.md`。
+
+Ramanujan 子代理只读复核确认：合并报告覆盖 14/14 endpoint，且每条均记录 HTTP status、`x-request-id`、`x-api-phase`、`success/code`、`total/listCount`；报告未发现实际 token、cookie、Authorization、Bearer、数据库连接串、password、secret、api-key、完整手机号、完整姓名、地址或完整响应体。关键词命中只来自“未记录”脱敏声明或字段名，`ownerName`、`phoneNumber`、`name` 等仅作为字段名存在，不是字段值。
+
+证据支撑边界：本轮可以支撑 task476 的“生产 API DB_READY 下逐 endpoint Neon main 真实库只读样本”子项。该证据仍不能支撑生产 admin H5 页面 Network、fallback/shadow-off drill、retirement ledger、真实 CUD 页面交互、R2 multipart 或旧服务退役。task476 总体完成仍必须等待剩余证据，不得因为生产 API 14/14 只读样本而勾选。
+
+## 2026-05-26 task476 生产页面 Network 脱敏边界
+
+本轮生产 admin H5 页面自然 Network 已补 14/14，汇总见 `.tmp/phase7-dev-browser/2026-05-26-task476-expense-prod-admin-network-14of14.md`。证据证明 14 个生产 admin hash route 均能自然触发 `POST https://01s-11-server.ruan-cat.com/api/property-manage/expense-manage/<endpoint>/list`，且均返回 HTTP 200、`x-api-phase=phase3-infra`、`success=true/code=200`。每个 endpoint 的 `.network-response` 已改写为脱敏摘要，只保留 total、listCount、firstRowFieldNames 和个人信息字段名，不保存列表行值或完整响应体。
+
+复核边界：Herschel 子代理确认该批证据可以支撑生产 admin H5 页面 Network 子项，但逐 endpoint 原始 HTTP status 与 header 主要依赖汇总记录，`.network-request` 与 `.network-response` 本身只保存请求体和脱敏响应摘要。代表性 snapshot/png 曾包含生产业务表格值，因此主代理已删除这些页面截图与完整 snapshot，避免把生产业务正文、姓名或手机号作为长期 artifact 保存。批量导航文件也已脱敏为 route、href 与 title。
+
+No-go：该证据不能替代生产 API DB_READY 只读样本之外的任何真实 CUD、fallback/shadow-off drill、retirement ledger、R2 multipart 或旧服务退役。后续引用生产页面证据时应引用汇总报告和脱敏 response summary，不应复原或重新写入完整列表行值、token、cookie、Authorization header、完整手机号、完整姓名或地址。
+
+## 2026-05-26 task476 fallback 与退役台账最终边界
+
+本轮新增边界 artifact 见 `.tmp/phase7-dev-browser/2026-05-26-task476-fallback-retirement-boundary.md`。Helmholtz 只读复核与 Darwin 边界记录一致：task476 已有本地页面 Network 14/14、生产 `apps/api` `DB_READY` 只读样本 14/14、生产 admin H5 页面 Network 14/14、runtime manifest、contract、HTTP gate 与 expense/report 同名隔离证据，但这些证据只关闭对应子项，不关闭 task476 总体。
+
+关键禁止误判：`legacy-dispatch-fallback-drill.test.ts` 与 task815 关闭证据只覆盖 app legacy `/app/**` fallback-off 语义，不覆盖 admin canonical `/api/property-manage/**`。admin resolver 复跑通过只能证明 `VITE_11COMM_API_SHADOW_ENABLE=false` 时 URL 保持 same-origin `/api/**`，不能证明请求实际命中独立 `apps/api`。生产 admin H5 14/14 页面 Network 当前是 direct apps/api 或 shadow-enabled 语义，不是 shadow-off 语义。
+
+退役台账边界：`route-inventory-details.csv.md` 第 78-82、88、91-98 行已经覆盖 task476 的 14 个基础行，`admin-retirement-ledger.md` baseline 可按 overlay 投影到 `keep-source` 和 fallback pending；但在取得 14/14 admin shadow-off/fallback drill 前，不能把 `fallbackEvidence` 从 pending 升级，也不能把任何一行写成 `delete-candidate`、退役完成或旧服务目录可删。
+
+本轮新跑验证说明：admin resolver 6 文件 51 tests passed，api fallback/registry 3 文件 8 tests passed。测试通过只支撑代码语义边界，不等于页面或生产 shadow-off 实证。
+
+## 2026-05-26 task208/task210 生产证据升级边界
+
+本轮为 `property-manage/report-manage` 的 11 个 list endpoint 补了两类生产证据：生产 `DB_READY` 前置下的只读 API 样本，以及生产 admin H5 页面自然 Network。证据分别见 `.tmp/phase7-agent-reports/2026-05-26-task208-210-report-manage-production-api-db-ready-samples.md` 和 `.tmp/phase7-dev-browser/2026-05-26-task208-210-report-manage-prod-admin-network-11of11.md`。
+
+有效升级范围：task208 P1 四端点和 task210 剩余七页均已有 `DB_READY` 绑定的生产只读样本，且均已有生产 admin H5 页面自然请求命中独立 `apps/api` 的页面 Network 证据。所有 response 文件均已改写为脱敏摘要，只保留 total、listCount、字段名和个人信息字段名，不保留列表行值或完整响应体；批量导航文件也只保留 route、href 和 title。
+
+保留缺口：task208 仍缺本地 admin H5 四页面的严格页面 Network artifact；task208 与 task210 都仍缺 admin shadow-off/fallback drill 与 retirement ledger overlay。task815 app fallback-off 证据、admin resolver same-origin `/api/**` 测试、生产 direct apps/api 页面 Network 与 baseline ledger 都不能写成 admin shadow-off 或旧服务退役完成。
+
+敏感信息边界：DevTools 工具输出曾显示采证用临时 Authorization header，但落盘 `.network-request` 只保存 request body；本轮新增长期 artifact 不得记录 token、cookie、连接串、完整手机号、完整姓名、地址或完整响应体。后续引用只能使用脱敏汇总和 request id。
+
+## 2026-05-26 task208 本地页面 Network 边界
+
+本轮为 task208 的 P1 四端点补齐本地 admin H5 严格页面 Network 证据，证据见 `.tmp/phase7-dev-browser/2026-05-26-task208-local-admin-network-4of4.md`。有效升级范围仅限本地 `apps/admin` 页面在 shadow-enabled 代理模式下自然触发 `/api-shadow` 请求，并命中本地独立 `apps/api`，四个 endpoint 均为 HTTP 200、`x-api-phase=phase3-infra` 与 `success=true/code=200`。
+
+失败尝试边界：第一次在同一 SPA 实例内连续切换 hash route 时，Vue Router 出现 `parentNode` 错误，未采到业务 API；该记录只能作为失败路径，不能补充任何 endpoint 的 Network 通过证据。
+
+仍保留的缺口：本地 shadow-enabled 页面 Network 不等于 admin shadow-off/fallback drill，也不能把 `/api-shadow` 代理成功写成旧服务 fallback 不可用时仍命中独立 `apps/api`。退役台账 overlay 仍未完成，task208 继续 open；task815 的 app fallback-off 证据仍不能外推到 admin canonical `/api/property-manage/**`。
+
+敏感信息边界：落盘 request/response 只保留请求字段名、分页参数、分页摘要、字段名和已脱敏的首行个人信息字段值；本轮长期 artifact 不保留凭据类字段、连接串、完整响应体、完整手机号、完整姓名或地址。后续引用应使用脱敏汇总，不回放 DevTools 原始头部输出。
+
+## 2026-05-26 admin report/expense shadow-off 与退役 overlay 关闭边界
+
+本轮主代理补齐 admin shadow-off/fallback drill 后，task203、task208、task210 与 task476 可按窄口径关闭。证据 artifact 为 `.tmp/phase7-dev-browser/2026-05-26-admin-report-expense-shadow-off-fallback-drill.json`。本地 API 为 `http://127.0.0.1:3102`，本地 admin 为 `http://127.0.0.1:8080`；admin 开关为 `VITE_11COMM_API_SHADOW_ENABLE=false`、`VITE_11COMM_API_STANDALONE_ENABLE=true`、`VITE_11COMM_API_USE_PROXY=false`、`VITE_11COMM_API_BASE_URL=http://127.0.0.1:3102`，API 端启用 `RUN_PHASE7_DB_READINESS_CHECK=1`。本地 `/__nitro/ready` 返回 HTTP 200、`DB_READY`、`database.connected=true`、`probeEnabled=true`、migrations `2/2`。
+
+有效升级范围：26/26 个页面自然 XHR 通过，实际 URL 均为 `http://127.0.0.1:3102/api/property-manage/...`，未出现 `/api-shadow`，也未回落到 `http://127.0.0.1:8080/api/...`。任务拆分为 task203 1/1、task208 4/4、task210 7/7、task476 14/14；task476 endpoint 列表严格跟随 `route-inventory-details.csv.md`，包含 `expense-summary-table/list`，排除 `house-charge/list`。Resolver 复验命令 `pnpm -F @01s-11comm/admin exec vitest run src/utils/http/tests/api-base-url.test.ts src/api/property-manage/report-manage/tests/phase7-standalone-resolver.test.ts src/api/property-manage/expense-manage/tests/phase7-standalone-resolver.test.ts` 通过，3 文件 38 tests passed。
+
+退役台账 overlay 已新增到 `retirement-ledger-overlays/2026-05-26-admin-report-expense-shadow-off-fallback-overlay.md`，覆盖 route inventory lines 78-82、88、91-98、126-134、136-138。该 overlay 只把 `shadowOffFallbackEvidence` 从 pending 升级为本次 artifact 引用；所有行仍保持 `retirementDecision=keep-source`，`deleteCandidate=false`。
+
+禁止误判：task203、task208、task210 与 task476 的关闭只代表对应 endpoint 的页面 Network、`DB_READY` 只读样本、shadow-off/fallback drill 与 overlay 子项闭环。不得写成旧 `apps/admin/server` 可删、目录级删除许可、真实 CUD、R2 multipart、全局 task802/815 目录级退役完成，也不得记录 token、cookie、Authorization、数据库连接串、完整手机号、完整姓名、地址或完整响应体。
+
+## 2026-05-26 task101 contract CUD 阻断边界
+
+本轮生产公开 HTTP CUD 尝试只允许作用于 runId `phase7-task101-20260526-213102-8529` 的唯一草稿合同哨兵和关联合同变更哨兵。实际结果显示，`draft-contract` 的 create/detail/update/delete、`change` 的 create/detail/update/delete 均可通过公开生产 `apps/api` HTTP 执行，且两个对象删除后 detail 均返回 404；但 `change/list` 在生产中使用 `contractNumber` 过滤时返回 `missing FROM-clause entry for table "ct_contracts"`，导致 baseline、list-after-create 与 residual-list 都不能作为通过证据。
+
+已修复但未部署的本地缺陷：`apps/api/server/modules/contract/repository.ts` 的 `listChange` count query 已补 `ctContracts` join，避免过滤条件引用 `ct_contracts` 时缺 FROM；`createChange` 也已保留 `contractId` 优先，并在缺失 `contractId` 但有 `contractNumber` 时解析 `ct_contracts.id`，用于后续 admin 页面真实新增路径。验证通过：`pnpm -F @01s-11comm/api exec vitest run tests/admin/contract-change-draft-crud.test.ts` 为 1 文件 7 tests passed，`pnpm -F @01s-11comm/api run typecheck` 通过。
+
+No-go：生产尚未部署本地修复前，task101 不能关闭；detail-after-delete 404 不能替代 `change/list` residual；公开 HTTP 证据不能替代 admin H5 页面真实点击 Network。`draft-contract` 页面 payload 使用 `contractAmount`，而后端当前持久化字段为 `amount`，后续页面级证据不得写成金额字段已经按页面字段完整持久化，除非另行修正并验证。证据不得记录完整 payload、token、cookie、Authorization、数据库连接串、完整手机号、完整姓名、地址或完整响应体。
+
+## 2026-05-26 admin list 页面入口 catalog 边界
+
+本轮新增 `.tmp/phase7-agent-reports/2026-05-26-admin-list-page-entry-remaining-catalog.md`，只作为 task540/task588 的静态分类事实源。该报告不产生页面 Network、生产 `DB_READY`、真实库样本、写入回滚、R2 或旧服务退役结论。
+
+分类结果：46 个剩余 list 属于 `has-page-entry`，后续仍需真实 admin H5 页面访问产生 Chrome DevTools MCP Network；8 个属于 `no-page-api-only`，包括 `operation-team/data-manage/property-company/list` 与 `contract-manage/archive`、`attachment`、`clause`、`print`、`review`、`second-party`、`template` 的 7 个普通 list。
+
+误判红线：`operation-team/data-manage/property-company/list` 没有 `propertyCompany` 三级 route key、独立页面目录或页面 caller；`contract-manage` 7 个普通 list 也没有独立三级页面入口。它们不能继续写成页面 Network 缺口，只能补 HTTP gate、生产 API 只读样本、`DB_READY` 与真实库样本。
+
+后续采证建议：下一批只从 `has-page-entry` 中选择 `parking-manage/carport-apply/list`、`carport-info/list`、`owner-vehicle/list`；`parking-lot/list` 可作为候补，不要一次性扩大首批页面数量。裸 request/response、HTTP gate、Vitest、生产 API 只读样本和 `DB_READY` 都不能替代严格页面 Network。
+
+## 2026-05-26 parking-manage 本地页面 Network 脱敏边界
+
+本轮按 catalog 建议补了 `parking-manage/carport-apply/list`、`carport-info/list`、`owner-vehicle/list` 的本地 admin H5 页面 Network，汇总见 `.tmp/phase7-dev-browser/2026-05-26-task540-parking-local-admin-network-3of4.md`。三个页面均通过本地 `apps/admin` 的 `/api-shadow` 命中本地独立 `apps/api`，HTTP status 为 200，`x-api-phase=phase3-infra`。
+
+有效升级范围：这 3 个 endpoint 已具备 task588 字段要求中的业务路由、触发动作、Network URL、method、status、响应摘要、console 摘要和 `apps/api` 命中证据。Console 未见 error，仅见 Vue Router `next()` deprecation 与菜单图标 warning。
+
+脱敏边界：DevTools 原始工具输出曾显示本地临时 Authorization header 与 cookie，但长期 evidence 文件没有保存这些 header。`.network-request` 只保存请求体；`.network-response` 只保留 `success/code/total/listCount/pageIndex/pageSize/firstRowFieldNames`；snapshot 只保留路由、标题和 UI 渲染事实。本轮敏感扫描未在长期 request/response/snapshot 中发现实际 token、cookie、Authorization、DB URL、完整姓名、完整车牌或完整响应体。
+
+No-go：本 checkpoint 只覆盖 `parking-manage` 3/4 的本地 shadow-enabled 页面 Network，不覆盖 `parking-lot/list`、生产 admin H5、生产 `DB_READY` 真实库样本、shadow-off/fallback drill、retirement ledger、真实 CRUD/detail/create/update/delete、R2 multipart 或旧服务退役。不得把该局部证据写成 task540/task588 完成。
+
+## 2026-05-26 parking-manage 本地页面 Network 4/4 边界
+
+本轮继续补齐 `parking-manage/parking-lot/list`，增量汇总见 `.tmp/phase7-dev-browser/2026-05-26-task540-parking-local-admin-network-4of4.md`。与前一 `3/4` checkpoint 合并后，`parking-manage` 四个有页面入口 list 均已有本地 shadow-enabled admin H5 页面 Network。
+
+有效升级范围：`parking-lot/list` 页面自然请求为 `POST http://127.0.0.1:8084/api-shadow/api/property-manage/parking-manage/parking-lot/list`，HTTP 200，`x-api-phase=phase3-infra`，requestId `req_7015af9b-be18-4898-82d0-123aefc87d9a`，响应摘要 `total/listCount=1/1`。Console 未见 error，仅见 Vue Router `next()` deprecation 与菜单图标 warning。
+
+脱敏边界：`parking-lot.network-request` 只保留筛选请求体；`parking-lot.network-response` 只保留 `success/code/total/listCount/pageIndex/pageSize/firstRowFieldNames` 与 redacted 占位；snapshot 只保留路由、标题和 UI 渲染事实。敏感扫描未发现实际 token、cookie、Authorization、DB URL、连接串、完整停车场行值或完整响应体。
+
+No-go：`parking-manage` 4/4 只能减少本地列表页面 Network 缺口，不能外推到其它模块 list、生产 admin H5、生产 `DB_READY` 真实库样本、shadow-off/fallback、retirement ledger、真实 CRUD/detail/create/update/delete、R2 multipart 或旧服务退役。task540/task588 仍保持 open。
+
+## 2026-05-26 patrol-manage 本地页面 Network 3/6 边界
+
+本轮补齐 `patrol-manage/item/list`、`path/list`、`plan/list` 的本地 admin H5 页面 Network，汇总见 `.tmp/phase7-dev-browser/2026-05-26-task540-patrol-local-admin-network-3of6.md`。三个页面均通过本地 `apps/admin` 的 `/api-shadow` 命中本地独立 `apps/api`，HTTP status 为 200，`x-api-phase=phase3-infra`。
+
+有效升级范围：这 3 个 endpoint 已具备 task588 字段要求中的业务路由、触发动作、Network URL、method、status、响应摘要、console 摘要和 `apps/api` 命中证据。Console 未见 error，仅见 Vue Router `next()` deprecation 与菜单图标 warning。
+
+脱敏边界：DevTools 原始工具输出曾显示本地临时 Authorization header 与 cookie，但长期 evidence 文件没有保存这些 header。`.network-request` 只保存请求体；`.network-response` 只保留 `success/code/total/listCount/pageIndex/pageSize/firstRowFieldNames`；snapshot 只保留路由、标题和 UI 渲染事实。本轮敏感扫描未在长期 request/response/snapshot 中发现实际 token、cookie、Authorization、DB URL、完整巡检项目、完整路线、完整计划行值或完整响应体。
+
+No-go：本 checkpoint 只覆盖 `patrol-manage` 3/6 的本地 shadow-enabled 页面 Network，不覆盖 `detail/list`、`point/list`、`task/list`、生产 admin H5、生产 `DB_READY` 真实库样本、shadow-off/fallback drill、retirement ledger、真实 CRUD/detail/create/update/delete、R2 multipart 或旧服务退役。不得把该局部证据写成 task540/task588 完成。
+
+## 2026-05-26 patrol-manage 本地页面 Network 6/6 边界
+
+本轮继续补齐 `patrol-manage/detail/list`、`point/list`、`task/list`，增量汇总见 `.tmp/phase7-dev-browser/2026-05-26-task540-patrol-local-admin-network-6of6.md`。与前一 `3/6` checkpoint 合并后，`patrol-manage` 六个有页面入口 list 均已有本地 shadow-enabled admin H5 页面 Network。Leibniz 只读复核 PASS。
+
+有效升级范围：三个增量页面均通过本地 `apps/admin` 的 `/api-shadow` 命中本地独立 `apps/api`，HTTP status 为 200，`x-api-phase=phase3-infra`。requestId 分别为 `req_0f1ec44b-1774-43a9-bb4d-2f31cef27415`、`req_2973c90b-0a73-43f8-a200-62abe6467957`、`req_4e0e93c2-2fd0-4ad5-bb48-9eace5a2d46b`，响应摘要分别为 `total/listCount=2/2`、`3/3`、`2/2`。Console 未记录阻断性业务错误。
+
+脱敏边界：`detail/point/task` 的长期 request/response/snapshot 只保留请求体、字段名、分页摘要、路由和 UI 渲染事实。原始响应里的巡检点位、人员、路线、计划、位置和完整行值已从长期 artifact 移除；后续引用只能引用脱敏汇总、requestId、HTTP 状态和字段集。
+
+No-go：`patrol-manage` 6/6 只减少 task540/task588 中本地 list 页面 Network 的剩余缺口，不能外推到其它模块 list、生产 admin H5、生产真实库样本、shadow-off/fallback、retirement ledger、真实 CRUD/detail/create/update/delete、R2 multipart 或旧服务退役。task540/task588 仍保持 open。
+
+## 2026-05-26 repairs-manage 本地页面 Network 7/7 边界
+
+本轮补齐 `repairs-manage/repairs-setting/list`、`phone-report-repairs/list`、`issues/list`、`repairs-todo/list`、`repairs-have-done/list`、`return-visit/list`、`mandatory-return-issue/list` 的本地 admin H5 页面 Network，汇总见 `.tmp/phase7-dev-browser/2026-05-26-task540-repairs-local-admin-network-7of7.md`。七个页面均通过本地 `apps/admin` 的 `/api-shadow` 命中本地独立 `apps/api`，HTTP status 为 200，`x-api-phase=phase3-infra`。
+
+有效升级范围：这 7 个 endpoint 已具备 task588 字段要求中的业务路由、触发动作、Network URL、method、status、响应摘要、console 摘要和 `apps/api` 命中证据。Console error 逐页检查均未见阻断性错误。请求 id 分别为 `req_ab6640b3-fa88-4336-8b71-791bd0287f1c`、`req_2cdf35b8-9c73-4f71-a75a-0d8f57bf6218`、`req_ef12dd9c-3e52-4ab7-b4fa-f5995376790a`、`req_b8983c7c-66dc-4804-8b6c-de00cb85ed6f`、`req_511a592f-81a3-4d6a-bc28-904df7d29a30`、`req_90037675-f477-453d-8314-7307804aafa2`、`req_bd4babc3-c54d-45f3-b881-80aa63db57c1`。
+
+脱敏边界：目标 7 个 `.network-request` 仅保留分页和空筛选字段；7 个 `.network-response` 只保留 `success/code/total/listCount/pageIndex/pageSize/firstRowFieldNames`；7 个 snapshot 只保留路由、页面渲染和自然请求事实。Mendel 复核指出的同前缀 raw snapshot `.tmp/phase7-dev-browser/2026-05-26-task540-repairs-issues-page.raw-snapshot.txt` 已删除，避免保留报修工单号、手机号、人员、位置和完整行值。
+
+No-go：本 checkpoint 只覆盖 `repairs-manage` 7/7 的本地 shadow-enabled 页面 Network。页面上存在新增、编辑、删除按钮不等于 CUD endpoint 已验收；Franklin 只读探索确认当前 repairs-manage 只看到 list hook/route，未发现专用 detail/create/update/delete API hook 或 `apps/api` route，因此不得写成 CUD 覆盖。该证据也不覆盖生产 admin H5、生产真实库样本、shadow-off/fallback、retirement ledger、R2 multipart、repair adapter 分层完全退役或旧服务退役。task540/task588 仍保持 open。
+
+## 2026-05-26 community-manage 本地页面 Network 7/7 边界
+
+本轮补齐 `community-manage/my/list`、`building-space-structure-diagram/list`、`handing-business/list`、`house-decoration/list`、`notice/list`、`parking-space-structure-diagram/list`、`property-register/list` 的本地 admin H5 页面 Network，汇总见 `.tmp/phase7-dev-browser/2026-05-26-task540-community-local-admin-network-7of7.md`，脱敏 JSON 摘要见 `.tmp/phase7-dev-browser/2026-05-26-task540-community-local-admin-network-records.json`。Planck 静态探索确认 7 个候选均为 `has-page-entry`，0 个 `no-page-api-only`。
+
+有效升级范围：七个页面均通过本地 `apps/admin` 的 `/api-shadow` 命中本地独立 `apps/api`，HTTP status 均为 200，`x-api-phase=phase3-infra`，响应摘要均为 `total/listCount=3/3`。本地 API 为 `http://127.0.0.1:3102`，启用 `RUN_PHASE7_DB_READINESS_CHECK=1`；health 返回 HTTP 200、`status=ok`、`phase=phase3-infra`、requestId `req_266b67f2-812a-481e-9ef5-bfa8ecf4f861`；ready 返回 HTTP 200、`success=true`、`ready=true`、`code=DB_READY`、requestId `req_7ef3ccd4-5abb-4c17-a203-01fc96489902`。DevTools Network 请求列表交叉确认 reqid `748/760/768/776/784/792/800` 均为目标 POST 200。Console 未见阻断性 error，仅见 Vue Router `next()` deprecated warning 2 次。
+
+脱敏边界：raw `my/list` response 曾被替换成脱敏摘要；最终长期 artifact 不保留完整响应体。`.tmp/phase7-dev-browser/2026-05-26-task540-community-local-admin-network-records.json` 只含 endpoint、URL、method、status、requestId、`x-api-phase` 与分页/字段摘要，不保留 token、cookie、Authorization、DB URL、完整手机号、姓名、地址、身份证号或完整响应体。
+
+No-go：本 checkpoint 只覆盖 `community-manage` 7/7 的本地 shadow-enabled 页面 Network。不得外推为生产 admin H5、生产真实库样本、shadow-off/fallback、retirement ledger、真实 CRUD/detail/create/update/delete、R2 multipart 或旧服务退役。task540/task588 仍保持 open，因为 `operation-team`、`house-property` 等剩余 `has-page-entry` list 尚未全部采证，detail/create/update/delete 分项也仍需单独验收或保持 blocked。
+
+## 2026-05-26 house-property-manage 本地页面 Network 10/10 边界
+
+本轮补齐 `house-property-manage/house/list`、`invoice/list`、`invoice-title/list`、`owner-account/list`、`owner-information/list`、`owner-member/list`、`owners-committee/list`、`reserve-venue/list`、`reserve-venue-order/list`、`site-management/list` 的本地 admin H5 页面 Network，汇总见 `.tmp/phase7-dev-browser/2026-05-26-task540-house-property-local-admin-network-10of10.md`，脱敏 JSON 摘要见 `.tmp/phase7-dev-browser/2026-05-26-task540-house-property-local-admin-network-records.json`。Rawls 静态探索确认 10 个候选均为 `has-page-entry`，0 个 `no-page-api-only`。
+
+有效升级范围：十个页面均通过本地 `apps/admin` 的 `/api-shadow` 命中本地独立 `apps/api`，HTTP status 均为 200，`x-api-phase=phase3-infra`。本地 API 为 `http://127.0.0.1:3102`，启用 `RUN_PHASE7_DB_READINESS_CHECK=1`；health 返回 HTTP 200、`status=ok`、`phase=phase3-infra`、requestId `req_266b67f2-812a-481e-9ef5-bfa8ecf4f861`；ready 返回 HTTP 200、`success=true`、`ready=true`、`code=DB_READY`、requestId `req_7ef3ccd4-5abb-4c17-a203-01fc96489902`。响应摘要分别为 `house=3/3`、`invoice=2/2`、`invoice-title=2/2`、`owner-account=3/3`、`owner-information=3/3`、`owner-member=3/3`、`owners-committee=3/3`、`reserve-venue=2/2`、`reserve-venue-order=2/2`、`site-management=3/3`。DevTools Network 请求列表交叉确认 reqid `808/816/824/832/840/848/856/864/872/880` 均为目标 POST 200。Console 未见阻断性 error，仅见 Vue Router `next()` deprecated warning 2 次。
+
+脱敏边界：页面快照曾显示完整姓名、手机号、身份证、住址等业务值，主代理没有保存 snapshot；最终长期 artifact 不保留完整响应体。`.tmp/phase7-dev-browser/2026-05-26-task540-house-property-local-admin-network-records.json` 只含 endpoint、URL、method、status、requestId、`x-api-phase` 与分页/字段摘要，不保留 token、cookie、Authorization、DB URL、完整个人信息、完整住址、完整业务行值或完整响应体。
+
+No-go：本 checkpoint 只覆盖 `house-property-manage` 10/10 的本地 shadow-enabled 页面 Network。不得外推为生产 admin H5、生产真实库样本、shadow-off/fallback、retirement ledger、真实 CRUD/detail/create/update/delete、R2 multipart 或旧服务退役。task540/task588 仍保持 open，因为 `operation-team` 等剩余 `has-page-entry` list 尚未全部采证，detail/create/update/delete 分项也仍需单独验收或保持 blocked。
+
+## 2026-05-26 operation-team 本地页面 Network 12/12 边界
+
+本轮补齐 `operation-team/report-configuration/report-group/list`、`data-manage/community-information/list`、`data-manage/property-management-company/list`、`merchant-manage/merchant-admin/list`、`merchant-manage/merchant-info/list`、`report-configuration/report-component/list`、`report-configuration/report-info/list`、`system-manage/change-password/list`、`system-manage/community-configuration/list`、`system-manage/initialize-cell/list`、`system-manage/register-protocol/list`、`system-manage/system-config/list` 的本地 admin H5 页面 Network，汇总见 `.tmp/phase7-dev-browser/2026-05-26-task540-operation-team-local-admin-network-12of12.md`，脱敏 JSON 摘要见 `.tmp/phase7-dev-browser/2026-05-26-task540-operation-team-local-admin-network-records.json`。
+
+有效升级范围：十二个页面均通过本地 `apps/admin` 的 `/api-shadow` 命中本地独立 `apps/api`，HTTP status 均为 200，`x-api-phase=phase3-infra`。本地 API 为 `http://127.0.0.1:3102`，启用 `RUN_PHASE7_DB_READINESS_CHECK=1`；health 返回 HTTP 200、`status=ok`、`phase=phase3-infra`、requestId `req_266b67f2-812a-481e-9ef5-bfa8ecf4f861`，ready 返回 HTTP 200、`success=true`、`ready=true`、`code=DB_READY`、requestId `req_7ef3ccd4-5abb-4c17-a203-01fc96489902`。响应摘要分别为 `report-group=3/3`、`community-information=3/3`、`property-management-company=3/3`、`merchant-admin=3/3`、`merchant-info=3/3`、`report-component=3/3`、`report-info=3/3`、`change-password=2/2`、`community-configuration=3/3`、`initialize-cell=3/3`、`register-protocol=2/2`、`system-config=1/1`。DevTools Network 请求列表交叉确认 reqid `748/762/770/778/786/794/802/807/815/823/831/839` 均为目标 POST 200；Console 未见阻断性 error，仅见 Vue Router `next()` deprecated warning 2 次。
+
+失败尝试边界：初次采集 `report-group` 时，页面 meta 需要 `roles: ["开发团队"]`，隔离登录态角色不足导致 403 或目标请求缺失。后续用 clean isolated context 写入 `物业团队`、`运营团队`、`开发团队`、`admin` 角色后重新采集成功。该失败属于权限上下文问题，不是 endpoint 缺口。
+
+静态分类边界：`operation-team/data-manage/property-company/list` 是 `no-page-api-only`，不得写成页面 Network 缺口；该无页面项继续按 API HTTP gate、生产只读样本、`DB_READY` 与真实库样本分类。
+
+No-go：本 checkpoint 只覆盖 `operation-team` 12/12 的本地 shadow-enabled 页面 Network。不得外推为生产 admin H5、生产真实库样本、shadow-off/fallback、retirement ledger、真实 CRUD/detail/create/update/delete 或旧服务退役。task540 仍保持 open；task588 需由 46/46 全局页面入口复核决定。
+
+## 2026-05-26 task588 全局页面 list Network 窄口径关闭边界
+
+Newton 只读复核确认 remaining catalog 的 46 个 `has-page-entry` 页面 list 均已有 Markdown 页面 Network 证据：`operation-team` 12/12、`community-manage` 7/7、`house-property-manage` 10/10、`parking-manage` 4/4、`patrol-manage` 6/6、`repairs-manage` 7/7。每个模块证据均包含业务路由、触发动作、Network URL、method、status、响应摘要、console 摘要和是否命中 `apps/api`，且本地 admin 均通过 `/api-shadow` 命中本地独立 `apps/api`，响应含 `x-api-phase=phase3-infra`。
+
+关闭边界：task588 只代表“每个有页面入口的 admin list endpoint”页面 Network 字段集闭环。8 个 `no-page-api-only` 不计入页面 Network 待补项，包括 `operation-team/data-manage/property-company/list` 和 `contract-manage/archive/list`、`attachment/list`、`clause/list`、`print/list`、`review/list`、`second-party/list`、`template/list`。这些无页面项后续仍按 API HTTP gate、生产 API 只读样本、`DB_READY` 与真实库样本升级。
+
+禁止误判：task588 关闭不关闭 task540、task565、task619，也不代表生产 admin H5、shadow-off/fallback、真实 CRUD/detail/create/update/delete、R2 multipart、retirement ledger、旧服务引用清零或旧服务退役完成。
+
+## 2026-05-26 生产 DB_READY 已通过但 contract CUD 仍阻断
+
+生产 `apps/api` 的 `GET /__nitro/ready` 已返回 `DB_READY`，说明用户开启的 `RUN_PHASE7_DB_READINESS_CHECK=1` 已在目标 runtime 生效。本轮只读证据为：health HTTP 200、requestId `req_232425f4-c301-4e6d-9d4a-14dd6530a516`；ready HTTP 200、requestId `req_f0722a3d-ce05-4bb5-8293-ee9a8cb699f6`，body 摘要为 `success=true`、`ready=true`、`code=DB_READY`、`database.connected=true`、`probeEnabled=true`。
+
+阻断点仍在 `contract-manage/change/list` 的生产只读过滤探针。主代理调用生产 `POST /api/property-manage/contract-manage/change/list`，payload 只含分页字段和不存在的 `contractNumber=phase7-nonexistent-contract-number-probe`；结果 HTTP 200、requestId `req_0eae0fdc-419c-427b-97aa-02ff04008169`、`x-api-phase=phase3-infra`，body 摘要仍为 `success=false/code=500`，message 为 `missing FROM-clause entry for table "ct_contracts"`。
+
+执行边界：生产 ready 通过不能替代 contract CUD 前置读探。只要 `change/list` 过滤读探仍失败，task101 不得开 create/update/delete 写入窗口，不得执行写入读回回滚残留检查，也不得写成真实 CUD 完成。当前本地代码已有 `listChange` count join 修复和测试覆盖，但生产返回仍说明目标 runtime 尚未具备该修复或存在等价部署差异，后续需在生产只读探针通过后再继续 CUD。
+
+## 2026-05-26 setting organize 与 expense phase5a 页面 Network 边界
+
+本轮补齐 `setting-manage/organize-manage` 六个 list 与 `expense-manage` 两个 phase5a list 的本地页面 Network，汇总见 `.tmp/phase7-dev-browser/2026-05-26-task540-setting-expense-local-admin-network-8of8.md`，脱敏 JSON 摘要见 `.tmp/phase7-dev-browser/2026-05-26-task540-setting-expense-local-admin-network-records.json`。八个页面均在本地 `apps/admin=http://127.0.0.1:8084` 中通过 `/api-shadow` 命中本地独立 `apps/api=http://127.0.0.1:3102`，HTTP 200 且 `x-api-phase=phase3-infra`；本地 ready 为 `DB_READY`，requestId `req_f7815ae3-dc0b-4159-b4bb-e65791c1c687`。
+
+有效升级范围仅限 `admin-retirement-ledger.md` 中对应 8 行的 browser evidence：`data-permission/list`、`role-permission/list`、`scheduling-setting/list`、`shift-setting/list`、`staff-info/list`、`working-schedule/list`、`expense-item-setting/list` 与 `house-charge/list`。其中 `staff-info` 与 `working-schedule` 存在人员、联系方式、排班等敏感业务字段，本轮不保存页面截图或完整快照；长期 response 只保留字段名、分页摘要、requestId 和命中事实。
+
+禁止误判：本证据不能替代 runtime manifest、contract test、生产 admin H5、生产真实库样本、shadow-off/fallback drill、真实 CRUD/detail/create/update/delete、R2 multipart、retirement ledger 完整退役门禁或旧服务目录可删结论。`retirementDecision` 必须继续保持 `keep-source`，task540 也不能仅凭该 8/8 局部证据关闭。
+
+## 2026-05-27 Drizzle 运维入口 B 方案边界
+
+用户已选择 B 方案：`apps/type` 保持 Drizzle Table、Zod Schema 和 TypeScript Type 的唯一事实源，`apps/api` 接管 Drizzle Kit 配置、迁移目录、`db:*` 脚本、Neon readiness 与 drift 诊断，`apps/admin` 旧 DB 入口只作为兼容或退役对象。本轮发现并记录的现状边界是：当前仓库仍有 `apps/admin/drizzle.config.ts`、`apps/admin/drizzle/**` 和 admin 侧 `db:*` 脚本，`apps/api` 尚未完成权威 DB 运维入口接管，因此不能写成 B 方案已实施完成。
+
+保守 C 执行边界：任何生产 schema 问题必须先走只读 drift/readiness 诊断，记录目标 runtime、`DB_READY`、脱敏 host、migration count、required tables、目标表、关键列、索引或约束摘要和 artifact path；没有 drift 证据时，应优先调查 query、部署或运行时差异。`ct_contracts` 的 `missing FROM-clause entry for table "ct_contracts"` 在 drift 证明前只能归类为 runtime query、部署差异或 schema drift 待诊断，不能直接推导为需要新增 Neon 字段或表。
+
+R2 证据边界同步补强：浏览器 direct PUT 被 CORS 预检阻断时，只能记录为 control-plane 可达但 browser PUT blocked；server-side multipart drill 可以验证 `apps/api` 控制面、R2 对象、DB session 和 residual，但不能替代 admin 页面 shared-upload、浏览器 CORS 或断点续传完整闭环。

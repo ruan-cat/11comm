@@ -626,3 +626,17 @@ BLOCKED：已按长任务停止条件收尾。当前 tasks.md 还剩 22 个未�
 2. 明确是否授权受控生产写入窗口，用于 CUD 的 write/read-back/rollback/residual check。
 3. 提供或确认 R2 env、AWS SDK/R2 client、upload session repository 与前端断点续传闭环方案。
 4. task815 还需要新增专门的 fallback/shadow-off drill，证明 fallback 不可用时 exact handler 仍由 apps/api 承接。
+
+### 04 2026-5-27 AI 的阶段性中断报告 <!-- TODO: -->
+
+当前阻断原因：
+
+- task101：生产 change/list baseline 仍返回 missing FROM-clause entry for table "ct_contracts"，不能开启生产 CUD 写入窗口。
+- task102：生产 completed cleanup/residual 仍失败；本地页面 R2 浏览器直传被 CORS 预检阻断。
+- 真实 CRUD 页面级证据、每个 admin detail/create/update/delete 分项验收都依赖 task101/task102 的写入、读回、回滚、残留和页面交互闭环，当前不能用 partial evidence 替代关闭。
+
+---
+
+1. 为什么 `ct_contracts` 有问题？你没办法增加，修改，更新生产环境的 neon 数据库字段么？我们 admin 项目提供了 neon 数据库的 drizzle 更新能力，请你用这个能力去更新 neon 数据库，自己处理好字段和数据库表的问题。这个问题不应该跟我说需要我人工干预。
+   - 另外，你需要在 openspec\changes\migrate-superpowers-docs-to-openspec-longtask 的 spec 内，增加说明清楚如何用 drizzle 来更新 neon 数据库表，并更新对应 schema 架构的规范。这个东西早就准备好了，你看看本项目的项目级别 skills，和 openspec 的历史 spec 规范。
+2. 本地页面 R2 浏览器直传被 CORS 预检阻断。那就换一种方式来完成 R2 文件分片请求的测试。之前 admin 项目不是已经把这部分的接口给做好了吗？你直接迁移整合不行么？admin 项目已经完成过复杂的，基于 cloudflare R2 的文件分片上传的接口开发，和生产环境接口的部署了。你认真学习代码，做好迁移和自测就行。那为什么之前弄这个文件分片上传开发的时候，没有说遇到跨域的问题呢？
