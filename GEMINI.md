@@ -515,7 +515,7 @@ openspec validate {任务名称} --strict
 
 1. 你**必须**主动更新 `.claude/skills/neon-db-query/SKILL.md` 文件内的数据库表清单
 2. 确保该清单与实际代码保持一致
-3. 如有 schema 结构变更，需要运行 `pnpm -F @01s-11comm/type db:generate` 生成迁移文件
+3. 如有 schema 结构变更，schema 仍在 `apps/type` 维护，但迁移文件生成必须通过 `pnpm -F @01s-11comm/api db:generate` 执行，由 `apps/api` 的 Drizzle 配置读取 `apps/type` schema 并输出到 `apps/api/drizzle/**`；禁止再把 type 子包命令当作迁移入口。
 
 ### 10.4. Schema 编写标准
 
