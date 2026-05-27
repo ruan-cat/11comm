@@ -86,6 +86,9 @@ interface ImportMetaEnv {
 
 	/** Phase6 是否启用局部 shadow API 接入 */
 	VITE_11COMM_API_SHADOW_ENABLE?: `${boolean}`;
+
+	/** Phase7 shadow-off/fallback drill 或最终切换时，是否直连独立 apps/api */
+	VITE_11COMM_API_STANDALONE_ENABLE?: `${boolean}`;
 }
 
 interface ImportMeta {

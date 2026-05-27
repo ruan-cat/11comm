@@ -84,6 +84,38 @@ describe("admin api base url strategy", () => {
 		).toBe("/api/property-manage/expense-manage/house-charge/list");
 	});
 
+	test("resolves module request urls through the standalone apps/api base url when shadow is disabled", () => {
+		expect(
+			resolveAdminApiRequestUrl("/api/property-manage/expense-manage/house-charge/list", {
+				VITE_11COMM_API_SHADOW_ENABLE: "false",
+				VITE_11COMM_API_STANDALONE_ENABLE: "true",
+				VITE_11COMM_API_BASE_URL: "http://127.0.0.1:3102",
+			}),
+		).toBe("http://127.0.0.1:3102/api/property-manage/expense-manage/house-charge/list");
+	});
+
+	test("keeps shadow proxy strategy when shadow and standalone flags are both enabled", () => {
+		expect(
+			resolveAdminApiRequestUrl("/api/property-manage/expense-manage/house-charge/list", {
+				VITE_11COMM_API_SHADOW_ENABLE: "true",
+				VITE_11COMM_API_STANDALONE_ENABLE: "true",
+				VITE_11COMM_API_USE_PROXY: "true",
+				VITE_11COMM_API_PROXY_PREFIX: "/api-shadow",
+				VITE_11COMM_API_BASE_URL: "http://127.0.0.1:3102",
+			}),
+		).toBe("/api-shadow/api/property-manage/expense-manage/house-charge/list");
+	});
+
+	test("keeps module request urls on legacy relative api paths when standalone apps/api base url is empty", () => {
+		expect(
+			resolveAdminApiRequestUrl("/api/property-manage/expense-manage/house-charge/list", {
+				VITE_11COMM_API_SHADOW_ENABLE: "false",
+				VITE_11COMM_API_STANDALONE_ENABLE: "true",
+				VITE_11COMM_API_BASE_URL: "",
+			}),
+		).toBe("/api/property-manage/expense-manage/house-charge/list");
+	});
+
 	test("resolves module request urls through the admin shadow proxy when enabled", () => {
 		expect(
 			resolveAdminApiRequestUrl("/api/property-manage/expense-manage/house-charge/list", {
