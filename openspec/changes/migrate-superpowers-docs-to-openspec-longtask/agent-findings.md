@@ -1,5 +1,13 @@
 # 代理发现记录
 
+## 2026-05-27 task1005 独立复核关闭边界
+
+本轮复核只能关闭 OpenSpec 记录项 task1005，不代表生产或运行时状态升级。可关闭依据是：`specs/db-readiness-and-write-verification/spec.md` 已明确 `apps/type` 是 schema 事实源，`apps/api` 是 Drizzle Kit、迁移目录、`db:*`、Neon readiness 与 drift 诊断归属，`apps/admin` 只能作为 legacy source、兼容转发或退役对象；`tasks.md` §4D 已把 Drizzle 接管记录、工具链测试和 no-go 边界写成唯一任务源；当前配置也与该口径一致，`apps/api/drizzle.config.ts` 只扫描 `apps/type` schema 且 fail-closed，`apps/api/package.json` 持有 package-local Drizzle 脚本，admin 侧 DB 入口降级为 legacy notice。
+
+本轮没有执行生产请求、没有运行 `db:generate`、`db:migrate`、`db:push`、没有写 Neon/R2，也没有修改运行时代码。复核子代理指出 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 仍保留 type 子包迁移生成旧入口；主线程已改为 `pnpm -F @01s-11comm/api db:generate`，并明确 `apps/type` 只负责 schema 事实源，迁移生成与输出归属 `apps/api`。`openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 已通过，语言门禁抽查未发现本轮新增纯英文记录。
+
+No-go：task1005 关闭不能外推为 task987-task989 已完成，不能证明生产只读 drift 已跑完，不能证明 Neon main 需要迁移或已迁移，不能证明 `ct_contracts` 生产错误已分类或修复，不能打开 task101/task102 写入窗口，不能关闭 R2 completed cleanup/residual、浏览器 CORS、页面 shared-upload、页面 CRUD、retirement ledger 或旧服务退役。
+
 ## 2026-05-27 Drizzle 归属审计边界
 
 task345-347 已按审计口径关闭，但这不是 B 方案实现完成。当前事实是：`apps/admin` 仍持有 `drizzle.config.ts`、`drizzle/**`、`db:*` 脚本和 `drizzle-kit`；`apps/api` 还没有 Drizzle Kit 配置、迁移目录、`db:*` 脚本或 package-local `drizzle-kit`。`apps/admin/drizzle/**` 迁移历史目前只有 `0000_fearless_shinko_yamashiro` 与 `0001_bright_thaddeus_ross` 两个 SQL、两个 snapshot 和 `_journal.json`，`apps/api/server/db/readiness.ts` 期望 migration count 为 `2`，并按 `drizzle` 优先、`public` 兜底读取 `__drizzle_migrations`。`apps/api` runtime DB URL 解析缺配置时会 fail closed；`apps/admin/server/utils/vercel-env.ts#getDatabaseUrl()` 缺配置时返回 dummy URL，后续 `apps/api` Drizzle CLI 严禁复用该逻辑。后续 task348-350/356 仍必须实现并验证 `apps/api` 接管，不能把本轮审计关闭写成生产 drift 已诊断、`ct_contracts` 已修复、task101/task102 可写入或旧服务可退役。
