@@ -192,6 +192,43 @@ describe("property-manage contract-manage change and draft-contract admin CRUD e
 		expect(db.ops).toEqual(expect.arrayContaining(["select", "insert", "update", "delete"]));
 	});
 
+	test("repository createChange resolves contractId from ct_contracts by contractNumber", async () => {
+		const db = createTableCaptureDb({
+			selectRows: [{ id: "CONTRACT_RESOLVED_001" }],
+		});
+		const repository = createDbContractRepository(db as any);
+
+		await repository.createChange({
+			contractNumber: "CT-2026-001",
+			changeType: "amount",
+			changeReason: "price changed",
+		});
+
+		expect(db.tables).toEqual(expect.arrayContaining(["ct_contracts", "ct_changes"]));
+		expect(db.insertedValues).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					contractId: "CONTRACT_RESOLVED_001",
+					changeType: "amount",
+					changeReason: "price changed",
+				}),
+			]),
+		);
+	});
+
+	test("repository listChange joins ct_contracts for contract filters in count and rows queries", async () => {
+		const db = createTableCaptureDb();
+		const repository = createDbContractRepository(db as any);
+
+		await repository.listChange({
+			pageIndex: 1,
+			pageSize: 10,
+			contractNumber: "P7-T101-DRAFT-001",
+		});
+
+		expect(db.joinTables.filter((table) => table === "ct_contracts")).toHaveLength(2);
+	});
+
 	test("adapter validates missing id for detail and delete", async () => {
 		const { createAdminContractAdapter } = await import("../../server/modules/contract/admin-adapter");
 		const { createContractService } = await import("../../server/modules/contract/service");
@@ -333,18 +370,20 @@ function draftContractFixture(overrides: Record<string, unknown> = {}) {
 	};
 }
 
-function createTableCaptureDb() {
+function createTableCaptureDb(options: { selectRows?: Record<string, unknown>[] } = {}) {
 	const db = {
 		ops: [] as string[],
 		tables: [] as string[],
+		joinTables: [] as string[],
+		insertedValues: [] as Record<string, unknown>[],
 		select: vi.fn(() => {
 			db.ops.push("select");
-			return createQuery(db, []);
+			return createQuery(db, options.selectRows ?? []);
 		}),
 		insert: vi.fn((table: unknown) => {
 			db.ops.push("insert");
 			db.tables.push(getTableName(table));
-			return createWriteQuery([writeFixtureForTable(table)]);
+			return createWriteQuery([writeFixtureForTable(table)], db.insertedValues);
 		}),
 		update: vi.fn((table: unknown) => {
 			db.ops.push("update");
@@ -360,13 +399,17 @@ function createTableCaptureDb() {
 	return db;
 }
 
-function createQuery(db: { tables: string[] }, result: Record<string, unknown>[]) {
+function createQuery(db: { tables: string[]; joinTables: string[] }, result: Record<string, unknown>[]) {
 	const query = {
 		from: vi.fn((table: unknown) => {
 			db.tables.push(getTableName(table));
 			return query;
 		}),
 		where: vi.fn(() => query),
+		leftJoin: vi.fn((table: unknown) => {
+			db.joinTables.push(getTableName(table));
+			return query;
+		}),
 		orderBy: vi.fn(() => query),
 		limit: vi.fn(() => query),
 		offset: vi.fn(async () => result),
@@ -376,9 +419,12 @@ function createQuery(db: { tables: string[] }, result: Record<string, unknown>[]
 	return query;
 }
 
-function createWriteQuery(result: Record<string, unknown>[]) {
+function createWriteQuery(result: Record<string, unknown>[], insertedValues?: Record<string, unknown>[]) {
 	const query = {
-		values: vi.fn(() => query),
+		values: vi.fn((value: Record<string, unknown>) => {
+			insertedValues?.push(value);
+			return query;
+		}),
 		set: vi.fn(() => query),
 		where: vi.fn(() => query),
 		returning: vi.fn(async () => result),

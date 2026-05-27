@@ -204,6 +204,7 @@ export function createDbContractRepository(db: DbType): ContractRepository {
 			const countResult = await db
 				.select({ total: sql<number>`count(*)` })
 				.from(ctChanges)
+				.leftJoin(ctContracts, eq(ctChanges.contractId, ctContracts.id))
 				.where(where);
 			const rows = await db
 				.select({
@@ -621,10 +622,13 @@ export function createDbContractRepository(db: DbType): ContractRepository {
 		},
 		// change CRUD
 		async createChange(data: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+			const contractId = data.contractId
+				? String(data.contractId)
+				: await resolveContractIdByContractNumber(data.contractNumber);
 			const [row] = await db
 				.insert(ctChanges)
 				.values({
-					contractId: String(data.contractId || ""),
+					contractId,
 					changeType: data.changeType ? String(data.changeType) : null,
 					changeReason: data.changeReason ? String(data.changeReason) : null,
 					changeContent: data.changeContent ? String(data.changeContent) : null,
@@ -766,6 +770,18 @@ export function createDbContractRepository(db: DbType): ContractRepository {
 			return result.length > 0;
 		},
 	}) satisfies Partial<ContractRepository>;
+
+	async function resolveContractIdByContractNumber(value: unknown): Promise<string> {
+		if (!value) return "";
+		const contractNumber = String(value).trim();
+		if (!contractNumber) return "";
+		const [contract] = await db
+			.select({ id: ctContracts.id })
+			.from(ctContracts)
+			.where(eq(ctContracts.contractNumber, contractNumber))
+			.limit(1);
+		return contract?.id ? String(contract.id) : "";
+	}
 }
 
 class InMemoryContractRepository implements ContractRepository {
