@@ -6,7 +6,7 @@ license: MIT
 
 # Nitro API 开发技能 (Nitro API Development)
 
-本技能指导在 `apps/admin/server` 目录下使用 **Nitro** 框架开发服务端 API。
+本技能指导在 `apps/api/server` 目录下使用 **Nitro** 框架开发服务端 API。旧 `apps/admin/server` 仅作为 legacy source 或兼容参考，不再作为长期权威服务端与 DB 运维入口。
 
 ## 1. 核心原则 (Core Principles)
 
@@ -18,10 +18,10 @@ license: MIT
 
 ## 2. 开发工作流 (Development Workflow)
 
-1.  **定义路由 (Define Route)**: 在 `apps/admin/server/api/` 创建文件。文件路径即 API 路由 (例如 `api/users.ts` -> `/api/users`)。
+1.  **定义路由 (Define Route)**: 在 `apps/api/server/routes/api/` 创建文件。文件路径即 API 路由 (例如 `api/users.post.ts` -> `/api/users`)。旧 `apps/admin/server/api/` 只用于对照 legacy source。
 2.  **实现处理器 (Implement Handler)**: 使用 `defineHandler` 定义处理函数，**必须**使用 `try-catch` 包裹。
 3.  **导入类型约束 (Import Types)**: **必须**导入 `import type { JsonVO } from "@01s-11comm/type"`（列表接口额外导入 `PageDTO`）。
-4.  **查询数据库 (Query Database)**: 导入 `db`（`server/db`）与 schema（`@01s-11comm/type`）。
+4.  **查询数据库 (Query Database)**: 通过 `useDb(event)` 获取 Drizzle 实例，并从 `@01s-11comm/type` 导入 schema。
 5.  **返回数据 (Return Data)**: 确保返回对象严格符合 `JsonVO<T>` 结构（`{ success, code, message, data }`）。
 
 ## 3. 参考文档 (References)
