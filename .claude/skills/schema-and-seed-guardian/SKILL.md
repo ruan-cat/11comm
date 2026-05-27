@@ -9,6 +9,7 @@ description: 当你修改数据库结构或种子生成脚本时，请务必阅�
 >
 > - **旧位置 (Legacy)**: `apps/admin/server/db/schemas` - 仅供只读参考，新 Schema 应在 `apps/type/src/business/{domain}/{module}/schema.ts` 中创建
 > - **新位置 (Active)**: `apps/type/src/business/**/schema.ts` - **所有新 Schema 必须在此创建**
+> - **迁移入口 (Active)**: Drizzle Kit 配置、`drizzle/**` 迁移目录、`db:*` 脚本、Neon readiness/drift 诊断和受控迁移执行归 `apps/api`；`apps/admin` 只作为 legacy source 或兼容参考。
 >
 > **重要**: 当你需要添加新列或新表时，应在 `apps/type/src/business/{domain}/{module}/schema.ts` 中创建 Zod Schema + Drizzle Table。
 
@@ -80,5 +81,7 @@ import { isNull } from "drizzle-orm";
 
 #### 规范 4: 命令使用
 
-- `pnpm db:seed` — TRUNCATE CASCADE 全部表 → 重新填充数据
-- `pnpm db:reset` — DROP 全部表 → 清除迁移 → 从 schema 重建 → 填充数据
+- `pnpm -F @01s-11comm/api db:generate` — 从 `apps/type` schema 生成 Drizzle 迁移
+- `pnpm -F @01s-11comm/api db:migrate` — 通过统一 API 子包执行受控迁移
+
+以上迁移命令应通过 `apps/api` 的 DB 运维入口执行。历史 `apps/admin` seed/reset 脚本若仍存在，只能按 legacy source 或兼容路径处理；在 `apps/api` 提供专门 seed/reset 能力前，不得把 admin seed/reset 误写成新的长期权威项目。

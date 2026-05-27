@@ -73,10 +73,10 @@ schema.ts → module/index.ts → domain/index.ts → business/index.ts → src/
 ### 2.4. 数据库迁移
 
 ```bash
-pnpm -F @01s-11comm/admin db:generate
+pnpm -F @01s-11comm/api db:generate
 ```
 
-检查生成的 `apps/admin/drizzle/xxxx_*.sql` 迁移文件内容是否正确。
+检查生成的 `apps/api/drizzle/xxxx_*.sql` 迁移文件内容是否正确。`apps/type` 只负责 schema 单一事实源；Drizzle Kit 配置、`drizzle/**` 迁移目录、`db:*` 脚本、Neon readiness/drift 诊断和受控迁移执行归 `apps/api`。`apps/admin` 的旧入口仅作为 legacy source 或兼容参考，不再作为长期权威项目。
 
 ### 2.5. 技能文档
 
@@ -87,7 +87,7 @@ pnpm -F @01s-11comm/admin db:generate
 
 ### 2.6. 后端 API 接口
 
-**文件**: `apps/admin/server/api/{业务路径}/*.ts`
+**文件**: `apps/api/server/routes/api/{业务路径}/*.ts`（旧 `apps/admin/server/api/{业务路径}/*.ts` 仅作 legacy source 对照）
 
 |         变更点          |                                   说明                                    |
 | :---------------------: | :-----------------------------------------------------------------------: |
@@ -97,13 +97,13 @@ pnpm -F @01s-11comm/admin db:generate
 
 ### 2.7. 种子数据
 
-**文件**: `apps/admin/server/db/seed/modules/{module}.seed.ts`
+**文件**: `apps/admin/server/db/seed/modules/{module}.seed.ts`（当前 seed source 仍在旧目录时仅作兼容维护；不要把它扩展为新的长期 DB 运维入口）
 
 - 在对应 seed 模块的 `seed(db)` 函数中添加新表的 `db.insert(table).values([...])`
 - 数据直接使用 Drizzle Insert 类型，TypeScript 编译器会检查字段匹配
 - 使用 `sid(scope, key)` 生成确定性 UUID
 - 如果是全新领域，创建新的 `.seed.ts` 文件并在 `_registry.ts` 中注册
-- 运行 `pnpm db:seed` 验证数据填充
+- 在 `apps/api` 提供专门 seed 能力前，使用现有 legacy seed 脚本验证数据填充，并在任务记录中标明兼容边界
 
 ### 2.8. 前端列表页面
 
