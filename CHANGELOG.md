@@ -1,3 +1,34 @@
+## v1.2.2-beta.3
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.2-beta.2...v1.2.2-beta.3)
+
+### ✨ 新增功能
+
+- 支持 admin shadow-off 直连独立 API ([b4204976](https://github.com/ruan-cat/11comm/commit/b4204976))
+
+### 🐞 修复缺陷
+
+- 修复合同变更列表查询与新增关联 ([1ddb0078](https://github.com/ruan-cat/11comm/commit/1ddb0078))
+- 清理已完成的合同上传对象残留 ([430f15eb](https://github.com/ruan-cat/11comm/commit/430f15eb))
+
+### 📖 Documentation
+
+- 记录 Phase7 页面证据与退役台账 ([7b6d1b48](https://github.com/ruan-cat/11comm/commit/7b6d1b48))
+- ⚠️ 固化 Phase7 前驱排雷门禁 ([1450bcc3](https://github.com/ruan-cat/11comm/commit/1450bcc3))
+- 记录 Phase7 接力风险与提示词 ([bcc919de](https://github.com/ruan-cat/11comm/commit/bcc919de))
+
+### ✅ Tests
+
+- 补齐报表与费用独立 API 解析验证 ([7e8ef749](https://github.com/ruan-cat/11comm/commit/7e8ef749))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️ 固化 Phase7 前驱排雷门禁 ([1450bcc3](https://github.com/ruan-cat/11comm/commit/1450bcc3))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.2.2-beta.2
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.2-beta.1...v1.2.2-beta.2)
