@@ -55,22 +55,28 @@
 
 ### 数据库迁移
 
-使用 Drizzle ORM 进行数据库版本管理：
+数据库表定义仍以 `apps/type` 为唯一事实源；Drizzle Kit 配置、迁移目录和 Neon 运维入口已迁到 `apps/api`：
 
 ```bash
 # 生成迁移文件
-pnpm db:generate
+pnpm -F @01s-11comm/api db:generate
 
 # 执行迁移
-pnpm db:migrate
+pnpm -F @01s-11comm/api db:migrate
 
-# 推送 schema 变更（开发环境）
-pnpm db:push
+# 启动 Drizzle Studio
+pnpm -F @01s-11comm/api db:studio
+```
 
-# 填充种子数据（TRUNCATE + 重新插入）
+`apps/admin` 中仍保留 `db:*` 脚本，但它们会先输出 `legacy-db` 提示，再转到 `db:legacy:*` 兼容脚本。新迁移、生产 schema 修复、Neon readiness/drift 诊断不要从 admin 入口执行。
+
+历史 seed/reset 仍在 admin 旧目录中维护，当前仅作为 legacy 兼容路径：
+
+```bash
+# 填充种子数据（legacy 兼容路径）
 pnpm db:seed
 
-# 核弹级重置（DROP 全部表 → 重建 → 填充数据）
+# 重置种子数据（legacy 兼容路径）
 pnpm db:reset
 ```
 
@@ -160,24 +166,26 @@ ls .output/server/index.mjs  # 服务端入口文件
 
 ### 5. Drizzle ORM 数据库命令
 
-|        命令        |                      说明                       |
-| :----------------: | :---------------------------------------------: |
-| `pnpm db:generate` | 生成数据库迁移文件（根据 schema 变更生成 SQL）  |
-| `pnpm db:migrate`  |         执行数据库迁移（应用迁移文件）          |
-|   `pnpm db:push`   |  推送 schema 变更到数据库（开发环境快速同步）   |
-|  `pnpm db:studio`  |   启动 Drizzle Studio（可视化数据库管理界面）   |
-|   `pnpm db:drop`   |            删除迁移文件（谨慎使用）             |
-|   `pnpm db:seed`   |      TRUNCATE 全部表数据，重新填充种子数据      |
-|  `pnpm db:reset`   | 核弹级重置：DROP 全部表 → 重建表结构 → 填充数据 |
+|                 命令                  |                           说明                           |
+| :-----------------------------------: | :------------------------------------------------------: |
+| `pnpm -F @01s-11comm/api db:generate` |        从 `apps/type` schema 生成 `apps/api` 迁移        |
+| `pnpm -F @01s-11comm/api db:migrate`  |          通过 `apps/api` 执行受控 Drizzle 迁移           |
+|   `pnpm -F @01s-11comm/api db:push`   |       应急 schema 同步入口，需先记录风险和回滚边界       |
+|  `pnpm -F @01s-11comm/api db:studio`  |              启动 Drizzle Studio 检查数据库              |
+|          `pnpm db:generate`           | admin legacy 兼容入口，会先提示改用 `apps/api` 权威入口  |
+|           `pnpm db:migrate`           |      admin legacy 兼容入口，不作为长期生产迁移入口       |
+|            `pnpm db:push`             |    admin legacy 兼容入口，不作为默认 schema 修复手段     |
+|            `pnpm db:seed`             |   admin legacy seed 兼容脚本，用于旧 seed source 维护    |
+|            `pnpm db:reset`            | admin legacy reset 兼容脚本，谨慎用于旧 seed source 维护 |
 
 #### 5.1 种子数据命令详细说明
 
-项目使用 **Direct Seed** 架构，Seed 模块直接使用 Drizzle ORM Insert 类型定义数据，无中间 SQL 文件层。详细使用指南请参阅：[种子数据命令使用指南](./src/docs/guides/seed-commands.md)
+项目历史 seed 使用 **Direct Seed** 架构，Seed 模块直接使用 Drizzle ORM Insert 类型定义数据，无中间 SQL 文件层。当前 seed/reset 仍属于 admin legacy source 维护范围；新迁移与 Neon 运维入口仍以 `apps/api` 为准。详细使用指南请参阅：[种子数据命令使用指南](./src/docs/guides/seed-commands.md)
 
-|      命令       |                                            说明                                            |
-| :-------------: | :----------------------------------------------------------------------------------------: |
-| `pnpm db:seed`  |   TRUNCATE CASCADE 清空全部表 → 按依赖顺序重新填充数据。适用于 seed 数据变更、表结构未变   |
-| `pnpm db:reset` | DROP 全部表 → 清除迁移历史 → 从 schema 重推表结构 → 填充数据。适用于 schema 变更后从零重建 |
+|      命令       |                                    说明                                    |
+| :-------------: | :------------------------------------------------------------------------: |
+| `pnpm db:seed`  |   admin legacy seed 兼容脚本，会先提示 DB 运维权威入口已迁到 `apps/api`    |
+| `pnpm db:reset` | admin legacy reset 兼容脚本；执行前必须确认只处理旧 seed source 的维护场景 |
 
 ### 6. 环境变量命令
 
