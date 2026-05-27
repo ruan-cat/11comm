@@ -4,20 +4,22 @@
 
 ## 概述
 
-项目使用 Direct Seed 架构管理数据库种子数据。Seed 模块直接使用 Drizzle ORM 的 Insert 类型定义数据，通过 `db.insert()` 直接插入数据库，无中间 SQL 文件层。
+项目历史上使用 Direct Seed 架构管理数据库种子数据。Seed 模块直接使用 Drizzle ORM 的 Insert 类型定义数据，通过 `db.insert()` 直接插入数据库，无中间 SQL 文件层。
+
+当前数据库 schema 迁移和 Neon 运维入口已经迁到 `apps/api`。本指南只说明 admin legacy seed source 的兼容维护方式；新迁移、生产 schema 修复、readiness/drift 诊断必须从 `apps/api` 入口推进。
 
 ## 命令
 
-### `pnpm db:seed` — 数据重填
+### `pnpm db:seed` — legacy 数据重填
 
 在现有数据库结构上重新填充数据：
 
 1. TRUNCATE CASCADE 清空全部表数据
 2. 按依赖顺序逐模块插入数据
 
-适用场景：修改了 seed 数据内容，但表结构没有变化。
+适用场景：只维护旧 seed source 的数据内容，且表结构没有变化。该命令会先输出 `legacy-db` 提示，不是长期 DB 运维权威入口。
 
-### `pnpm db:reset` — 核弹级重置
+### `pnpm db:reset` — legacy 重置
 
 从零重建整个数据库：
 
@@ -26,7 +28,7 @@
 3. 从 schema 重新推送表结构（drizzle-kit push）
 4. 填充全部种子数据
 
-适用场景：修改了 schema 表结构，想要完全从零开始。
+适用场景：仅限明确旧 seed source 维护需要。schema 表结构变更应先走 `apps/api` 的 `db:generate`、SQL 审查和受控 `db:migrate` 流程，不要把 admin reset 当作长期 schema 运维入口。
 
 ## 文件结构
 
@@ -65,10 +67,10 @@ Runner 会自动按依赖顺序执行，无需手动管理。
 ## 新增表的 Seed 数据流程
 
 1. 在 `apps/type` 中定义 schema（Trinity Pattern）
-2. 运行 `pnpm -F @01s-11comm/type db:generate` 生成迁移
-3. 运行 `pnpm db:push` 或 `pnpm db:migrate` 推送到数据库
+2. 运行 `pnpm -F @01s-11comm/api db:generate` 生成迁移
+3. 审查 `apps/api/drizzle/**` 中生成的 SQL，再运行 `pnpm -F @01s-11comm/api db:migrate`
 4. 在对应的 `.seed.ts` 模块中添加 `db.insert(table).values([...])`
-5. 运行 `pnpm db:seed` 验证
+5. 按 legacy 边界运行 `pnpm db:seed` 验证
 
 如果是全新领域，创建新的 `.seed.ts` 文件并在 `_registry.ts` 中注册。
 
