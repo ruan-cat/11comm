@@ -99,15 +99,15 @@ apps/type/
 
 ## 6. 与数据库工具链的关系
 
-表定义 lives in **`apps/type`**，Drizzle Kit 配置 lives in **`apps/admin`**：
+表定义 lives in **`apps/type`**，Drizzle Kit 配置与迁移执行入口 lives in **`apps/api`**：
 
-- **配置**：`apps/admin/drizzle.config.ts` 中 `schema` 显式包含本包的 `src/common/enums.ts` 与 `src/business/**/schema.ts`（Glob），确保枚举与各模块表一并被 Kit 扫描。
-- **迁移产物**：`out` 当前为 `apps/admin/drizzle`（以该文件为准；若团队改目录需同步更新本文档）。
-- **常用命令**（在 **`apps/admin`** 下执行，而非本包）：
+- **配置**：`apps/api/drizzle.config.ts` 中 `schema` 显式包含本包的 `src/common/enums.ts` 与 `src/business/**/schema.ts`（Glob），确保枚举与各模块表一并被 Kit 扫描。
+- **迁移产物**：`out` 当前为 `apps/api/drizzle`（以该文件为准；若团队改目录需同步更新本文档）。
+- **常用命令**（在 **`apps/api`** 下执行，而非本包；`apps/admin` 仅保留旧兼容入口，不再作为长期权威项目）：
 
   ```bash
-  pnpm -F @01s-11comm/admin db:generate   # 生成迁移
-  pnpm -F @01s-11comm/admin db:migrate    # 执行迁移
+  pnpm -F @01s-11comm/api db:generate   # 生成迁移
+  pnpm -F @01s-11comm/api db:migrate    # 执行迁移
   ```
 
 修改或新增 `apps/type` 内 schema 后，请同步遵循 **schema-change-sync** 技能：类型、迁移、接口、页面、种子与文档的一致性检查。
