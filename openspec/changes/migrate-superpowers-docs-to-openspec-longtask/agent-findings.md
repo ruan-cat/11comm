@@ -1,5 +1,9 @@
 # 代理发现记录
 
+## 2026-05-27 Drizzle 归属审计边界
+
+task345-347 已按审计口径关闭，但这不是 B 方案实现完成。当前事实是：`apps/admin` 仍持有 `drizzle.config.ts`、`drizzle/**`、`db:*` 脚本和 `drizzle-kit`；`apps/api` 还没有 Drizzle Kit 配置、迁移目录、`db:*` 脚本或 package-local `drizzle-kit`。`apps/admin/drizzle/**` 迁移历史目前只有 `0000_fearless_shinko_yamashiro` 与 `0001_bright_thaddeus_ross` 两个 SQL、两个 snapshot 和 `_journal.json`，`apps/api/server/db/readiness.ts` 期望 migration count 为 `2`，并按 `drizzle` 优先、`public` 兜底读取 `__drizzle_migrations`。`apps/api` runtime DB URL 解析缺配置时会 fail closed；`apps/admin/server/utils/vercel-env.ts#getDatabaseUrl()` 缺配置时返回 dummy URL，后续 `apps/api` Drizzle CLI 严禁复用该逻辑。后续 task348-350/356 仍必须实现并验证 `apps/api` 接管，不能把本轮审计关闭写成生产 drift 已诊断、`ct_contracts` 已修复、task101/task102 可写入或旧服务可退役。
+
 ## 2026-05-27 §4D.0 前驱门当前 open checkbox 口径
 
 本轮恢复 goal 后重新读取当前工作树，`openspec list --json` 与 `openspec instructions apply --change migrate-superpowers-docs-to-openspec-longtask --json` 的起始口径为 `354/387`，剩余 `33` 项。关闭 task339 与 task340 后，本轮复核 `tasks.md` checkbox 统计为 open `31`、done `356`。`agent-progress.md` 中更早出现的“16 个 open checkbox”或“4 类 runtime open”是历史 checkpoint 口径，发生在 §4D/§4E 新增前驱任务之前，不得作为当前完成度、归档或退役依据。后续接力必须重新读取 `tasks.md` 或 OpenSpec JSON，而不是沿用旧 progress 摘要里的数字。
