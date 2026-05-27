@@ -1,3 +1,45 @@
+## v1.2.2-beta.4
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.2-beta.3...v1.2.2-beta.4)
+
+### 📖 Documentation
+
+- **openspec:** 记录长任务前驱门进度 ([c65fd2ba](https://github.com/ruan-cat/11comm/commit/c65fd2ba))
+- **openspec:** 记录 Drizzle 接管前置审计边界 ([70068ef1](https://github.com/ruan-cat/11comm/commit/70068ef1))
+- **type:** 同步 Drizzle 迁移入口说明 ([d0eacb1d](https://github.com/ruan-cat/11comm/commit/d0eacb1d))
+- **skills:** 规范 schema 变更迁移入口 ([e27311a6](https://github.com/ruan-cat/11comm/commit/e27311a6))
+- **type-project:** 更新基础设施 Drizzle 参考 ([eb86a7ad](https://github.com/ruan-cat/11comm/commit/eb86a7ad))
+- **nitro:** 指向 api 子包服务端入口 ([cf3f2e1f](https://github.com/ruan-cat/11comm/commit/cf3f2e1f))
+- **admin:** ⚠️ 将数据库运维入口改为 api ([09adaacc](https://github.com/ruan-cat/11comm/commit/09adaacc))
+- **env:** ⚠️ 标注 api 数据库命令边界 ([a9c95785](https://github.com/ruan-cat/11comm/commit/a9c95785))
+- **schema:** ⚠️ 将 schema 工作流迁移到 api ([6ed18677](https://github.com/ruan-cat/11comm/commit/6ed18677))
+- **seed:** 收窄 admin seed 兼容说明 ([6d9838a3](https://github.com/ruan-cat/11comm/commit/6d9838a3))
+- **openspec:** 记录 Drizzle 接管任务进度 ([1cb0d35e](https://github.com/ruan-cat/11comm/commit/1cb0d35e))
+- **ai-memory:** ⚠️ 将迁移生成入口切换到 api ([0b13ce03](https://github.com/ruan-cat/11comm/commit/0b13ce03))
+- **openspec:** 关闭 Drizzle 接管复核记录 ([4c71ca37](https://github.com/ruan-cat/11comm/commit/4c71ca37))
+
+### ✅ Tests
+
+- **api:** 覆盖 Drizzle 配置接管约束 ([d683ee3e](https://github.com/ruan-cat/11comm/commit/d683ee3e))
+
+### 🔧 更新配置
+
+- **api:** 增加 Drizzle Kit 运维入口 ([72ed6f4b](https://github.com/ruan-cat/11comm/commit/72ed6f4b))
+- **api:** 承接 Drizzle 迁移历史 ([53ff8731](https://github.com/ruan-cat/11comm/commit/53ff8731))
+- **admin:** ⚠️ 降级 admin DB 运维入口为兼容路径 ([1154d0de](https://github.com/ruan-cat/11comm/commit/1154d0de))
+
+#### ⚠️ Breaking Changes
+
+- **admin:** ⚠️ 将数据库运维入口改为 api ([09adaacc](https://github.com/ruan-cat/11comm/commit/09adaacc))
+- **env:** ⚠️ 标注 api 数据库命令边界 ([a9c95785](https://github.com/ruan-cat/11comm/commit/a9c95785))
+- **schema:** ⚠️ 将 schema 工作流迁移到 api ([6ed18677](https://github.com/ruan-cat/11comm/commit/6ed18677))
+- **ai-memory:** ⚠️ 将迁移生成入口切换到 api ([0b13ce03](https://github.com/ruan-cat/11comm/commit/0b13ce03))
+- **admin:** ⚠️ 降级 admin DB 运维入口为兼容路径 ([1154d0de](https://github.com/ruan-cat/11comm/commit/1154d0de))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.2.2-beta.3
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.2-beta.2...v1.2.2-beta.3)
