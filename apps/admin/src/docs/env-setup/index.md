@@ -127,12 +127,14 @@ jobs:
 
 ## 5. 相关命令
 
-|       命令       |    位置    |         说明         |
-| :--------------: | :--------: | :------------------: |
-| `pnpm env:pull`  | apps/admin | 拉取 Vercel 环境变量 |
-|  `pnpm db:push`  | apps/admin | 推送 Schema 到数据库 |
-| `pnpm db:studio` | apps/admin | 启动 Drizzle Studio  |
-|  `pnpm deploy`   |   根目录   |  部署项目到 Vercel   |
+|                 命令                  |    位置    |                          说明                          |
+| :-----------------------------------: | :--------: | :----------------------------------------------------: |
+|            `pnpm env:pull`            | apps/admin |     拉取 admin Vercel 环境变量，不作为 DB 迁移入口     |
+| `pnpm -F @01s-11comm/api db:generate` |  apps/api  |       从 `apps/type` schema 生成 `apps/api` 迁移       |
+| `pnpm -F @01s-11comm/api db:migrate`  |  apps/api  |         通过 `apps/api` 执行受控 Drizzle 迁移          |
+|  `pnpm -F @01s-11comm/api db:studio`  |  apps/api  |             启动 Drizzle Studio 检查数据库             |
+|            `pnpm db:push`             | apps/admin | legacy 兼容入口，会提示改用 `apps/api`，不作为默认修复 |
+|             `pnpm deploy`             |   根目录   |                   部署项目到 Vercel                    |
 
 ## 6. 故障排查
 
