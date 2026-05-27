@@ -50,7 +50,51 @@ Neon 真实库验收 MUST 只能通过生产或受控 Vercel `apps/api` runtime 
 #### Scenario: 需要新增或修改数据库 schema
 
 - **WHEN** 迁移发现必须新增、修改或删除业务 schema
-- **THEN** 必须先进入独立 schema 变更流程，更新 `apps/type/src/business/**/schema.ts`、相关导出、迁移文件和 schema 记忆清单；本 OpenSpec 载体迁移不能夹带数据库 schema 改动
+- **THEN** 必须先进入独立 schema 变更流程，更新 `apps/type/src/business/**/schema.ts`、相关导出、迁移文件和 schema 记忆清单；普通 endpoint 或文档载体迁移不能夹带未声明的数据库 schema 改动，若本 change 的 §4D 明确列出 Drizzle/Neon 工具链任务，则必须按该任务和本 spec 的保守只读 drift 规则推进
+
+### Requirement: Drizzle Kit 与 Neon schema 变更流程归属
+
+Drizzle Kit 配置、迁移输出目录、`db:*` 脚本、Neon readiness 与 drift 诊断 MUST 归属 `apps/api`。`apps/type` MUST 继续作为 schema 事实源，只提供 Drizzle Table、Zod Schema 与 TypeScript Type；`apps/admin` 的旧 Drizzle 配置、迁移目录和 DB 脚本只能作为 legacy source、兼容转发或退役对象，不得作为后续生产 schema 运维权威。
+
+#### Scenario: 执行前驱排雷 gate
+
+- **WHEN** 后续代理准备执行 Drizzle/Neon 工具链迁移、生产 schema 诊断或任何生产 CUD 写入
+- **THEN** 必须先记录工作区状态、OpenSpec open checkbox 状态、目标 runtime、`DB_READY` 只读证据、目标 endpoint baseline、R2 cleanup/residual blocker 和本轮预计写入范围；任一前驱 gate 未通过时不得执行 `migrate`、`push`、生产 CUD 或 R2 新写入
+
+#### Scenario: 工作区存在既有暂存改动
+
+- **WHEN** `git status --short` 显示本轮开始前已有暂存或未暂存改动
+- **THEN** 必须把这些改动视为用户或上一轮工作，记录本轮只会触达的文件范围；不得通过重置、覆盖、重新暂存或混合提交来清理不属于本轮的改动
+
+#### Scenario: OpenSpec artifact 完整但 tasks 未完成
+
+- **WHEN** `openspec status --change ... --json` 返回 `isComplete=true`，但 `openspec instructions apply --change ... --json` 或 `tasks.md` 仍显示 open checkbox
+- **THEN** 必须以 `tasks.md` open checkbox 作为真实任务状态；不得归档 change、不得声称 runtime 迁移完成、不得退役旧服务目录
+
+#### Scenario: 执行保守 C 只读 drift 诊断
+
+- **WHEN** 生产 endpoint、ready probe 或 schema 对账暴露 Neon 结构疑似漂移
+- **THEN** 必须先从 `apps/api` 入口执行只读诊断，记录目标 runtime、`RUN_PHASE7_DB_READINESS_CHECK=1` 生效证据、`DB_READY`、脱敏 host、migration count、required tables、目标表、关键列、索引或约束摘要和 artifact path；诊断期间不得执行 `push`、`migrate`、seed reset、truncate、直接写库或生产业务 CUD
+
+#### Scenario: 迁移目录和 migration table 归属变化
+
+- **WHEN** 将 `apps/admin/drizzle/**` 承接到 `apps/api/drizzle/**`
+- **THEN** 必须原样保留 SQL 文件、snapshot、`meta/_journal.json`、迁移顺序和 migration table/schema 读取口径；不得漏迁 meta、改写 SQL 语义、改变 migration table/schema 或让 readiness 与 Drizzle Kit 读取不同迁移历史
+
+#### Scenario: Drizzle CLI 环境变量缺失
+
+- **WHEN** `apps/api` 的 `db:generate`、`db:migrate`、`db:push`、`db:studio` 或 drift 检查命令缺少真实 DB URL
+- **THEN** 写库命令必须 fail closed 并输出可脱敏诊断；不得返回 dummy URL、不得连接不明数据库、不得让 runtime 使用 A 库而 Drizzle CLI 迁移 B 库
+
+#### Scenario: drift 诊断确认需要迁移
+
+- **WHEN** 只读诊断确认 Neon main、`apps/type` schema 与 `apps/api` migration 目录之间存在真实 drift
+- **THEN** 必须从 `apps/api` 运行迁移生成或等价命令，人工审查 SQL 与风险，再按受控 `apps/api` 迁移入口执行；`db:push` 只能作为明确记录风险、原因和回滚边界的应急路径，不能作为默认生产修复方式
+
+#### Scenario: `ct_contracts` 报错需要分类
+
+- **WHEN** 生产 endpoint 返回 `missing FROM-clause entry for table "ct_contracts"` 或等价 SQL 运行时错误
+- **THEN** 必须先归类为 runtime query、部署差异或 schema drift 待诊断；只有只读 drift 证据证明表、字段、索引或迁移状态缺失时，才允许进入 schema 变更流程，不得直接新增字段、直接改 Neon 或跳过公开 `apps/api` HTTP 证据
 
 ### Requirement: DB 证据与业务 endpoint 证据分离
 

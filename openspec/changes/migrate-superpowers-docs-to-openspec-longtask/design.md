@@ -50,7 +50,7 @@ apps/admin 与 apps/app 共同消费统一 API
 **Non-Goals:**
 
 - 不实现新的 API route、repository、service、adapter 或 frontend resolver。
-- 不修改数据库 schema、Drizzle migration、Neon 配置或 R2 配置。
+- 本载体迁移阶段不直接修改数据库 schema、Drizzle migration、Neon 配置或 R2 配置；若后续任务需要调整 Drizzle/Neon 工具链，必须以本 change 新增的独立 `apps/api` 接管任务、保守只读 drift 诊断和验证闭环为前提。
 - 不改变 admin/app 运行时行为、部署地址、环境变量或 package dependency。
 - 不在本 change 中退役 `apps/admin/server`、`apps/app/server` 或 `D:\code\ruan-cat\01s-11comm-app`。
 - 不把 `apps/admin/server` 或 `apps/app/server` 描述为长期目标 API；它们只是迁移来源、兼容参考、fallback/rollback 证据或受保护旧路径。
@@ -86,6 +86,16 @@ apps/admin 与 apps/app 共同消费统一 API
 补充 `unified-nitro-api-consolidation` 作为上层 capability。它承接旧总设计中的“唯一 Nitro API 服务放在 `apps/api`”“admin 和 app 都通过配置指向 `apps/api`”“`apps/admin/server` 与 `apps/app/server` 只作为迁移来源或临时兼容层”的目标架构。
 
 Phase7 的状态矩阵和 batch 计划必须挂在这个 capability 下面解释：admin old path coverage、app legacy allowlist、DB_READY、fallback、write/read/rollback 和 retirementDecision 都是判断旧 Nitro 职责能否清退的证据字段，而不是互相独立的文档栏目。
+
+### Decision 2B: Drizzle 运维入口归属 apps/api
+
+用户在 2026-05-27 选择 B 方案：schema ownership 与 migration operation ownership 分离。`apps/type` 继续作为 Drizzle Table、Zod Schema 和 TypeScript Type 的唯一事实源，保持 `apps/type/src/business/**/schema.ts` 的 Trinity Pattern，不把表定义复制到 `apps/api`，也不恢复 `apps/admin/server/db/schemas` 作为事实源。
+
+`apps/api` 作为统一 Nitro runtime，应接管 Drizzle Kit 配置、迁移输出目录、`db:generate`、`db:migrate`、`db:push`、`db:studio` 或等价脚本、Neon readiness/drift 诊断和生产 schema 变更入口。`apps/admin` 侧已有的 `drizzle.config.ts`、`drizzle/` 和 `db:*` 脚本只能作为迁移来源、兼容转发或退役提示，后续不得继续被写成长期 DB 运维权威。
+
+该决策采用保守 C 执行策略：生产问题先做只读 drift/readiness 诊断，核对目标 runtime、`DB_READY`、迁移记录、required tables、目标表与关键列、索引或约束摘要；只有确认 schema drift 后，才从 `apps/api` 生成迁移、人工审查 SQL，再按受控命令迁移。`db:push` 不能作为默认生产修复手段，只能在明确记录 drift 原因、风险和回滚边界时作为应急路径。
+
+`ct_contracts` 相关生产错误在 drift 证明前必须先归类为 runtime query 或部署差异症状。类似 `missing FROM-clause entry for table "ct_contracts"` 的错误不能直接推导为“需要新增字段或表”，也不能绕过公开 `apps/api` HTTP、Drizzle query 审查和只读 drift 证据去改 Neon schema。
 
 ### Decision 3: Keep Tasks Executable And File-Level
 
@@ -143,22 +153,23 @@ OpenSpec `tasks.md` 必须保留未完成项，覆盖以下仍需推进的工作
 
 ## Migration Mapping
 
-| 旧内容来源                                                                | 迁移目标                                                                                 | 说明                                                                                                                                      |
-| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| 旧总设计的目标架构、Phase1-Phase7 阶段链、唯一 `apps/api` 决策            | `specs/unified-nitro-api-consolidation/spec.md`、`design.md`                             | 保留“admin/app 两套旧 Nitro 责任合并到独立 apps/api，再清退旧服务责任”的主线                                                              |
-| 矩阵字段定义与禁止误判规则                                                | `specs/phase7-evidence-model/spec.md`                                                    | 保留状态字段、证据字段和升级门槛                                                                                                          |
-| Admin 旧路径覆盖、resolver 状态、页面/HTTP gate 证据                      | `specs/admin-api-cutover/spec.md`、`tasks.md`、`agent-progress.md`                       | 只迁移续跑所需当前状态，不继续维护大表流水                                                                                                |
-| `contract-manage` upload/R2、写入、detail 分流                            | `specs/admin-special-cases/spec.md`、`tasks.md`                                          | 防止被普通 list 批次吞掉                                                                                                                  |
-| App legacy `/app/**`、`/callComponent/**`、client/server gap              | `specs/app-legacy-cutover/spec.md`、`tasks.md`                                           | 保留 triage 和 guard 要求                                                                                                                 |
-| Neon main `DB_READY` 与写入闭环流程                                       | `specs/db-readiness-and-write-verification/spec.md`、`design.md`                         | 保留不使用 Neon 测试分支的项目决策                                                                                                        |
-| Vitest、typecheck、HTTP gate、运行时证据边界                              | `specs/vitest-and-runtime-verification/spec.md`、`tasks.md`、`agent-progress.md`         | 明确何时写 Vitest、怎么写、写到哪个包，以及测试不能替代 DB_READY 或退役证据                                                               |
-| Chrome MCP、本地三 dev、三个生产入口验收                                  | `specs/browser-and-environment-verification/spec.md`、`tasks.md`、`agent-progress.md`    | 明确 admin H5、app H5、API server 在 local-dev 和 production 的浏览器/Network 证据矩阵                                                    |
-| Agent Team 分工、batch 0-8、每批固定流程、完成定义与复核清单              | `specs/agent-team-batch-execution/spec.md`、`tasks.md`、`agent-progress.md`、`design.md` | 承接旧计划的执行组织方式；Batch 0-8 在长期结构中不再作为独立计划表维护，而是映射为 app/admin/runtime/DB/retirement backlog 与批次执行纪律 |
-| Phase1.1 文档治理、skills/AI 记忆、Memorix 项目身份、敏感信息和字符集规则 | `specs/source-history-and-memory-governance/spec.md`、`design.md`、`agent-findings.md`   | 承接旧总设计的任务记录和记忆保全规则，防止格式迁移后记忆丢失                                                                              |
-| 三份旧文档当前章节、git history、Memorix 编号、`.tmp` 证据 artifact       | `design.md`、`agent-findings.md`、`agent-progress.md`                                    | 保留来源角色、历史检索线索和必要 evidence 索引；历史 evidence 不自动升级为当前完成事实                                                    |
-| 旧服务 no-go、受保护路径、旧文档删除前提                                  | `specs/retirement-gate-and-archive/spec.md`、`tasks.md`                                  | 文档迁移不等于旧服务退役                                                                                                                  |
-| 批次 0-8 和子代理执行纪律                                                 | `tasks.md`、`agent-progress.md`                                                          | 转成文件级任务和进度 checkpoint                                                                                                           |
-| 历史快照和 Memorix 编号                                                   | `agent-findings.md`、必要时迁移索引                                                      | 只保留检索线索和当前续跑相关事实                                                                                                          |
+| 旧内容来源                                                                | 迁移目标                                                                                                         | 说明                                                                                                                                      |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 旧总设计的目标架构、Phase1-Phase7 阶段链、唯一 `apps/api` 决策            | `specs/unified-nitro-api-consolidation/spec.md`、`design.md`                                                     | 保留“admin/app 两套旧 Nitro 责任合并到独立 apps/api，再清退旧服务责任”的主线                                                              |
+| 矩阵字段定义与禁止误判规则                                                | `specs/phase7-evidence-model/spec.md`                                                                            | 保留状态字段、证据字段和升级门槛                                                                                                          |
+| Admin 旧路径覆盖、resolver 状态、页面/HTTP gate 证据                      | `specs/admin-api-cutover/spec.md`、`tasks.md`、`agent-progress.md`                                               | 只迁移续跑所需当前状态，不继续维护大表流水                                                                                                |
+| `contract-manage` upload/R2、写入、detail 分流                            | `specs/admin-special-cases/spec.md`、`tasks.md`                                                                  | 防止被普通 list 批次吞掉                                                                                                                  |
+| App legacy `/app/**`、`/callComponent/**`、client/server gap              | `specs/app-legacy-cutover/spec.md`、`tasks.md`                                                                   | 保留 triage 和 guard 要求                                                                                                                 |
+| Neon main `DB_READY` 与写入闭环流程                                       | `specs/db-readiness-and-write-verification/spec.md`、`design.md`                                                 | 保留不使用 Neon 测试分支的项目决策                                                                                                        |
+| Drizzle Kit、迁移目录、`db:*` 脚本和 Neon drift/readiness 运维入口        | `specs/unified-nitro-api-consolidation/spec.md`、`specs/db-readiness-and-write-verification/spec.md`、`tasks.md` | `apps/type` 继续作为 schema 事实源，`apps/api` 接管迁移执行与只读 drift 诊断，`apps/admin` 旧入口进入兼容或退役路径                       |
+| Vitest、typecheck、HTTP gate、运行时证据边界                              | `specs/vitest-and-runtime-verification/spec.md`、`tasks.md`、`agent-progress.md`                                 | 明确何时写 Vitest、怎么写、写到哪个包，以及测试不能替代 DB_READY 或退役证据                                                               |
+| Chrome MCP、本地三 dev、三个生产入口验收                                  | `specs/browser-and-environment-verification/spec.md`、`tasks.md`、`agent-progress.md`                            | 明确 admin H5、app H5、API server 在 local-dev 和 production 的浏览器/Network 证据矩阵                                                    |
+| Agent Team 分工、batch 0-8、每批固定流程、完成定义与复核清单              | `specs/agent-team-batch-execution/spec.md`、`tasks.md`、`agent-progress.md`、`design.md`                         | 承接旧计划的执行组织方式；Batch 0-8 在长期结构中不再作为独立计划表维护，而是映射为 app/admin/runtime/DB/retirement backlog 与批次执行纪律 |
+| Phase1.1 文档治理、skills/AI 记忆、Memorix 项目身份、敏感信息和字符集规则 | `specs/source-history-and-memory-governance/spec.md`、`design.md`、`agent-findings.md`                           | 承接旧总设计的任务记录和记忆保全规则，防止格式迁移后记忆丢失                                                                              |
+| 三份旧文档当前章节、git history、Memorix 编号、`.tmp` 证据 artifact       | `design.md`、`agent-findings.md`、`agent-progress.md`                                                            | 保留来源角色、历史检索线索和必要 evidence 索引；历史 evidence 不自动升级为当前完成事实                                                    |
+| 旧服务 no-go、受保护路径、旧文档删除前提                                  | `specs/retirement-gate-and-archive/spec.md`、`tasks.md`                                                          | 文档迁移不等于旧服务退役                                                                                                                  |
+| 批次 0-8 和子代理执行纪律                                                 | `tasks.md`、`agent-progress.md`                                                                                  | 转成文件级任务和进度 checkpoint                                                                                                           |
+| 历史快照和 Memorix 编号                                                   | `agent-findings.md`、必要时迁移索引                                                                              | 只保留检索线索和当前续跑相关事实                                                                                                          |
 
 ## Source Provenance Architecture
 
@@ -221,6 +232,14 @@ Phase1-Phase7 在 OpenSpec 中解释为统一 Nitro API 合并的阶段链：Pha
 - 子代理并行误改同一文件 -> 实施阶段按 disjoint write set 分派，主代理负责整合 `tasks.md`。
 - 把文档迁移误读为旧服务退役 -> specs 明确 no-go-for-retirement 和受保护路径。
 - 旧数字过期 -> 所有计数以“文档口径/快照”标记，实际执行前必须重新扫描。
+- `openspec status` 误导完成态 -> `isComplete=true` 只表示 artifacts 完整；后续完成、归档、旧服务退役只能看 `tasks.md` open checkbox、`openspec instructions apply` 进度和对应证据。
+- Drizzle 迁移历史分裂 -> `apps/admin/drizzle/**` 迁入 `apps/api/drizzle/**` 时必须原样承接 SQL、snapshot、`meta/_journal.json`、migration table/schema 读取口径和 production migration count；漏 meta 或改变 migration table 都会让 readiness 与 Drizzle Kit 看到不同历史。
+- DB env fail-open -> `apps/api` 的写库命令必须在缺少真实 DB URL 时 fail closed；不能沿用会返回 dummy URL 的逻辑，也不能让 runtime 和 Drizzle CLI 指向不同数据库。
+- `ct_contracts` 误判为 schema 缺失 -> `missing FROM-clause entry for table "ct_contracts"` 优先按 query join 或部署差异排查；只有只读 drift 证据证明表、列、索引或 migration 缺失时才进入 schema 变更。
+- task101 写入前置不足 -> `change/list` baseline 未通过时继续生产 CUD 会失去 residual list 依据，可能留下不可确认的 `change` 或 `draft-contract` 测试数据。
+- task102 R2 残留扩大 -> completed cleanup/residual 未通过时继续生产 R2 写入会增加公开对象或 upload session 残留；应先修复 cleanup 并用极小 drill 证明旧对象不可访问。
+- 浏览器 CORS 与 server-side drill 混淆 -> server-side multipart drill 不能证明浏览器 `OPTIONS/PUT` 可用，也不能替代 shared-upload 页面断点续传闭环。
+- 既有暂存区混杂 -> 后续实施前必须记录 `git status` 和本轮写入范围，避免把上一轮代码修复、OpenSpec 文档和新 Drizzle 迁移混成不可复核变更。
 
 ## Migration Plan
 
@@ -228,6 +247,10 @@ Phase1-Phase7 在 OpenSpec 中解释为统一 Nitro API 合并的阶段链：Pha
    1.1. 完成一次性来源审计，确认旧三文档、三文件 git history、Memorix 编号和证据 artifact 已落入 canonical 工件；审计完成后删除临时审计文件，不再把它作为长期维护文件。
 2. 运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`。
 3. 用 `tasks.md` 承接旧三文档中的未来执行任务，并保持未完成项直到 runtime 证据闭环。
+   3.0. 在任何生产写入、Drizzle 迁移或 R2 重试前执行前驱排雷 gate：记录工作区状态、OpenSpec open checkbox、目标生产 `health/ready`、`change/list` baseline、R2 cleanup/residual 和浏览器 CORS 当前状态；任一 gate 失败时只更新 blocker，不进入写入或迁移。
+   3.1. 按 B 方案新增 Drizzle 运维入口迁移计划，先把 `apps/admin` 旧 Drizzle 入口盘点为 legacy source，再由 `apps/api` 承接配置、迁移目录、脚本和 Neon readiness/drift 诊断。
+   3.2. 按保守 C 策略执行生产 schema 问题诊断：先只读 drift/readiness，后审查迁移 SQL，再执行受控迁移；没有 drift 证据时优先修复 query、部署或运行时差异。
+   3.3. task101 只能在 `health -> ready(DB_READY) -> draft-contract/list -> change/list` 全部通过后执行窄口径 CUD；task102 只能在 completed cleanup/residual 通过后继续生产 R2，并单独补浏览器 CORS 与 shared-upload 页面闭环。
 4. 建立稳定迁移索引或 canonical 入口说明。
 5. 更新直接引用旧三文档的 prompt、计划、报告或相关 docs。
 6. 运行旧路径引用扫描。

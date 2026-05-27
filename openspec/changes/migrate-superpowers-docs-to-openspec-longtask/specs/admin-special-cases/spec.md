@@ -28,9 +28,48 @@ Contract upload 5 个接口迁移前必须完成独立 R2 评审。评审必须�
 - **WHEN** 真正实施 contract upload 迁移
 - **THEN** 必须证明 init、sign-part、complete、status、abort 的旧契约兼容、R2 multipart 行为、DB session/part 写入、异常清理、重复调用幂等和前端断点续传 hook 切流
 
+#### Scenario: complete 后 cleanup 与 residual 验证
+
+- **WHEN** contract upload 通过 signed URL 上传分片并调用 complete 生成 completed object
+- **THEN** 必须证明 complete 后对象可按脱敏方式验证存在，并且 cleanup 或 abort cleanup 后 MUST 证明 public URL 不再暴露、uploaded parts 已清空、missing parts 回到预期值、旧对象 HEAD 不再可访问；没有 cleanup/residual 证据时不得关闭 upload/R2 迁移任务
+
+#### Scenario: 生产 completed cleanup 仍有残留
+
+- **WHEN** 生产 complete 后调用 cleanup 或 abort 返回成功但 session 仍为 `completed`、uploadedParts 仍存在、public URL 仍可访问或旧对象 HEAD 仍返回 200
+- **THEN** 必须把 task102 保持 blocked，并停止新增生产 R2 写入；后续只能先修复和复验 cleanup/residual，不得继续用更多生产对象验证页面上传或断点续传
+
+#### Scenario: 本地 production env 不等于生产证据
+
+- **WHEN** 本地 `apps/api` dev runtime 使用从 Vercel production env 拉取的本地环境文件完成 R2 drill
+- **THEN** 该证据 MUST 只记录为本地 runtime 真实 R2 验证；除非另有生产公开 HTTP 或 admin 页面上传组件 Network 同步完成同一链路，否则不得替代生产 complete、生产 cleanup/residual 或前端 shared-upload 断点续传证据
+
+### Requirement: R2 浏览器直传与 server-side drill 边界
+
+Contract upload 的浏览器直传链路与 server-side multipart drill MUST 分层记录。浏览器 shared-upload 断点续传闭环需要 admin 页面真实触发 `init`、`status`、`sign-part`，并由浏览器对 signed URL 发起 R2 `PUT`；R2 bucket CORS 必须允许目标 origin 的预检和上传响应。server-side drill 可以验证 `apps/api` 控制面、R2 multipart、DB session 和 cleanup 行为，但不能替代浏览器 CORS 与 shared-upload 页面证据。
+
+#### Scenario: 浏览器直传被 CORS 预检阻断
+
+- **WHEN** admin 页面已经拿到 signed URL，但浏览器 `OPTIONS` 或 `PUT` 被 R2 CORS 缺少 `Access-Control-Allow-Origin` 阻断
+- **THEN** 只能记录为 `control-plane-ok / browser-put-blocked` 或等价 partial evidence；不得把它写成 R2 multipart 页面闭环完成，也不得据此否定 `apps/api` 的 init、sign、status 或 DB session 控制面能力
+
+#### Scenario: R2 bucket CORS 修复后重试页面上传
+
+- **WHEN** 后续代理调整或确认 R2 bucket CORS 后重试 admin shared-upload
+- **THEN** 必须重新采集浏览器 `OPTIONS`、`PUT`、response header、断点续传状态、complete、cleanup/residual 和页面 Network；不得沿用 CORS 修复前的页面 partial 证据直接关闭 task102
+
+#### Scenario: 使用 server-side multipart drill
+
+- **WHEN** 后续代理使用 Node、服务端请求或等价非浏览器方式执行 `init -> sign-part -> PUT signed URL -> status -> complete -> public HEAD -> cleanup/abort -> residual HEAD`
+- **THEN** 可以作为 R2 控制面、对象写入、DB session 读回和 residual check 证据；但必须单独标记为 server-side drill，不能关闭浏览器 shared-upload 断点续传、页面 Network、R2 CORS 或旧服务退役任务
+
 ### Requirement: Admin CUD 与 Detail 的真实数据闭环
 
 Admin create、update、delete、detail 端点必须证明真实数据源、读回、回滚或清理、残留检查和 fallback/shadow 行为。InMemory fallback、mock response 或 route coverage 不足以升级为 DB 完成。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
+
+#### Scenario: Contract change baseline 未通过
+
+- **WHEN** `property-manage/contract-manage/change/list` 在生产只读 baseline 中返回 `missing FROM-clause entry for table "ct_contracts"` 或其它业务失败
+- **THEN** 不得开启 `change` 或 `draft-contract` 的生产 CUD；必须先修复并证明 `health -> ready(DB_READY) -> draft-contract/list -> change/list` 只读链路全部通过
 
 #### Scenario: Create 或 Update endpoint 接入 Drizzle
 

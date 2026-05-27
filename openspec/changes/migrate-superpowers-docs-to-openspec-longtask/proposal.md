@@ -17,6 +17,7 @@ Phase7 不是孤立的 endpoint 统计任务。它服务于更上层的核心迁
 - 明确区分四条状态流：admin legacy Nitro stream、app legacy Nitro stream、unified `apps/api` runtime stream、retirement gate stream。
 - 保留 Phase7 证据语义，包括 endpoint 覆盖、页面证据、fallback 证据、DB readiness 证据、写入/读回/回滚证据和退役决策。
 - 将 admin 切流、admin 特殊端点、app legacy 切流、Neon main 验收、旧服务退役门禁重写为 delta specs。
+- 追加 B 方案数据库运维边界：`apps/type` 继续作为 Drizzle Table、Zod Schema 与 TypeScript Type 的唯一事实源；`apps/api` 接管 Drizzle Kit 配置、迁移目录、`db:*` 脚本、Neon readiness 与 drift 诊断；`apps/admin` 的旧 DB 入口只能作为兼容或退役来源。
 - 保留未来执行细则：`property-manage/contract-manage` 12 个普通 list endpoint、admin CRUD/页面证据、app `/callComponent/**`、floor、repair、fee/report、guarded writes、剩余 app modules、Neon main `DB_READY`、retirement gate。
 - 在 change 目录内新增 `agent-progress.md` 和 `agent-findings.md`，用于可恢复进度和发现记录，但不创建第二套任务清单。
 - 完成一次性来源覆盖审计，把旧三文档当前章节、git 历史、Memorix 编号和关键证据 artifact 映射到 OpenSpec 落点；长期价值内容已迁入 canonical 文件，不再保留独立来源覆盖矩阵作为后续执行入口。
@@ -63,4 +64,5 @@ Phase7 不是孤立的 endpoint 统计任务。它服务于更上层的核心迁
   - `agent-progress.md` 记录 checkpoint 和验证结果。
   - `agent-findings.md` 记录风险、过期事实、冲突和失败假设。
   - 会话开始必须搜索 Memorix；修改状态后必须更新 Memorix。
+  - 后续 schema 或迁移执行必须从 `apps/api` 的 Drizzle 运维入口推进，并先走保守只读 drift/readiness 诊断；不得把 `apps/admin` 的旧 `db:*` 入口继续写成长期权威。
 - 本 OpenSpec 迁移不应改变生产代码、运行时 API 行为、数据库 schema、前端行为、部署目标或 package dependency。

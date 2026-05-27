@@ -14,6 +14,30 @@
 - **WHEN** 记录迁移目标架构
 - **THEN** 必须写明 `apps/admin` 与 `apps/app` 共同消费 `apps/api`，`apps/type` 是 Schema、Zod、Drizzle、TypeScript 类型的共享事实来源
 
+### Requirement: Drizzle 迁移能力由 apps/api 承接
+
+统一 `apps/api` 目标架构必须包含数据库运维入口。`apps/type` MUST 继续作为 Drizzle Table、Zod Schema 与 TypeScript Type 的唯一事实源；`apps/api` MUST 成为 Drizzle Kit 配置、迁移输出目录、`db:*` 脚本、Neon readiness 和 drift 诊断的长期权威入口；`apps/admin` 的旧 Drizzle 入口只能作为 compatibility、legacy source 或 retirement source，不得继续被描述为生产 DB 运维权威。
+
+#### Scenario: 按 B 方案推进数据库运维归属
+
+- **WHEN** 后续任务推进 Drizzle/Neon 工具链迁移
+- **THEN** 必须采用 schema ownership 与 migration operation ownership 分离：`apps/type` 只维护 schema 事实源，`apps/api` 负责 Drizzle Kit、迁移目录、`db:*` 命令、readiness 和 drift；不得把 schema 复制到 `apps/api`，不得恢复 `apps/admin/server/db/schemas`，不得把 `apps/admin` 继续写成长期权威
+
+#### Scenario: 需要生成或执行 schema 迁移
+
+- **WHEN** 后续任务需要根据 `apps/type/src/business/**/schema.ts` 生成或执行 Drizzle migration
+- **THEN** 必须从 `apps/api` 入口读取 `apps/type` schema 并输出到 `apps/api` 归属的迁移目录；不得把 schema 复制到 `apps/api`，不得继续以 `apps/admin` 作为主迁移项目
+
+#### Scenario: admin 旧 db 入口仍存在
+
+- **WHEN** 仓库中仍存在 `apps/admin/drizzle.config.ts`、`apps/admin/drizzle/**` 或 admin 侧 `db:*` 脚本
+- **THEN** OpenSpec 必须把它们标记为旧来源、兼容转发或退役对象；任何新迁移、drift 诊断、生产 readiness 或 schema 变更证据都不得继续引用它们作为权威入口
+
+#### Scenario: 生产 endpoint 报错疑似数据库问题
+
+- **WHEN** 生产 `apps/api` endpoint 返回 SQL 错误，例如 `missing FROM-clause entry for table "ct_contracts"`
+- **THEN** 必须先按 runtime query、部署差异和只读 drift 三类排查；只有只读 drift 证据证明 schema 或 migration 历史缺失时，才允许进入 schema 变更流程
+
 ### Requirement: Admin 与 App 两条旧 Nitro 源流独立跟踪
 
 本变更必须分别跟踪 admin legacy Nitro stream 与 app legacy/mock Nitro stream。`apps/admin/server/api/**` 是 admin 旧 Nitro 源流；`apps/app/server/modules/**/endpoints.ts` 与旧项目 `D:\code\ruan-cat\01s-11comm-app` 是 app 旧 Nitro 源流。任一源流的完成进度都不得推导另一源流完成。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
@@ -157,3 +181,8 @@ Phase2 MUST 被解释为最小可运行 `apps/api` shadow service 加 fee/paymen
 
 - **WHEN** 后续任务准备评估旧服务退役
 - **THEN** 必须同时检查 admin legacy stream、app legacy stream、unified `apps/api` runtime stream 和 retirement gate stream
+
+#### Scenario: Runtime 写入闭环被前置 gate 阻断
+
+- **WHEN** task101 的 `change/list` baseline、task102 的 completed cleanup/residual、浏览器 R2 CORS 或页面 shared-upload 闭环任一前置门未通过
+- **THEN** 只能记录 partial 或 blocked evidence；不得用 list、HTTP gate、Vitest、server-side drill 或 route manifest 关闭真实 CRUD 页面级证据、upload 页面闭环或旧服务退役门禁
