@@ -1,5 +1,9 @@
 # 代理发现记录
 
+## 2026-05-27 §4D.0 前驱门当前 open checkbox 口径
+
+本轮恢复 goal 后重新读取当前工作树，`openspec list --json` 与 `openspec instructions apply --change migrate-superpowers-docs-to-openspec-longtask --json` 的起始口径为 `354/387`，剩余 `33` 项。关闭 task339 与 task340 后，本轮复核 `tasks.md` checkbox 统计为 open `31`、done `356`。`agent-progress.md` 中更早出现的“16 个 open checkbox”或“4 类 runtime open”是历史 checkpoint 口径，发生在 §4D/§4E 新增前驱任务之前，不得作为当前完成度、归档或退役依据。后续接力必须重新读取 `tasks.md` 或 OpenSpec JSON，而不是沿用旧 progress 摘要里的数字。
+
 ## 2026-05-27 前驱排雷与风险控制规范已补强
 
 本轮按 agent team 只读排查结论补强 OpenSpec，而不是推进生产写入。新增风险控制集中在 `tasks.md` 的 `§4D.0`、`§4D` 和 `§4E`，并同步到 `design.md`、`db-readiness-and-write-verification`、`unified-nitro-api-consolidation` 与 `admin-special-cases` specs。后续推进 goal 的安全顺序必须是：先完成工作区/OpenSpec/生产 baseline/R2 cleanup/CORS 等前驱 gate，再迁移 Drizzle 运维入口到 `apps/api`，再重试 task101/task102，最后才处理页面 CRUD 和退役门禁。

@@ -964,8 +964,10 @@ Task 777-778 / 773-775 spec hardening update (2026-05-26): 本轮按用户对 Ne
 
 ### 4D.0 前驱排雷 gate
 
-- [ ] [前驱] 工作区与暂存区保护 - 在实施 Drizzle/Neon 或 runtime 写入前记录 `git status --short`、限定 `git diff --cached --stat` 与本轮预计写入文件；若发现既有暂存改动与本轮目标混杂，必须在 `agent-progress.md` 记录边界，避免覆盖、撤销或重新暂存用户/上一轮改动。
-- [ ] [前驱] OpenSpec 状态判定 - 同时运行或记录 `openspec list --json`、`openspec instructions apply --change migrate-superpowers-docs-to-openspec-longtask --json` 和本文件 open checkbox 数；不得用 `openspec status --change ... --json` 的 `isComplete=true` 作为完成、归档或旧服务退役依据。
+- [x] [前驱] 工作区与暂存区保护 - 在实施 Drizzle/Neon 或 runtime 写入前记录 `git status --short`、限定 `git diff --cached --stat` 与本轮预计写入文件；若发现既有暂存改动与本轮目标混杂，必须在 `agent-progress.md` 记录边界，避免覆盖、撤销或重新暂存用户/上一轮改动。
+      Task 339 前驱证据（2026-05-27）：本轮启动 §4D.0 前驱 gate 时 `git status --short` 无输出，`git diff --cached --stat` 无输出，说明工作区与暂存区均干净。预计写入范围限定为 `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/tasks.md`、`agent-progress.md` 和必要的 `agent-findings.md`，不触碰运行时代码、不运行生产请求、不执行 Drizzle 迁移、不写 Neon/R2、不做 git commit 或 push；因此不存在既有暂存改动与本轮目标混杂的问题。
+- [x] [前驱] OpenSpec 状态判定 - 同时运行或记录 `openspec list --json`、`openspec instructions apply --change migrate-superpowers-docs-to-openspec-longtask --json` 和本文件 open checkbox 数；不得用 `openspec status --change ... --json` 的 `isComplete=true` 作为完成、归档或旧服务退役依据。
+      Task 340 前驱证据（2026-05-27）：`openspec list --json` 显示本 change `status=in-progress`、`completedTasks=354`、`totalTasks=387`；`openspec instructions apply --change migrate-superpowers-docs-to-openspec-longtask --json` 显示 `progress.total=387`、`progress.complete=354`、`progress.remaining=33`；本轮关闭本项前对 `tasks.md` 的 checkbox 统计为 open `33`、done `354`。同时 `openspec status --change migrate-superpowers-docs-to-openspec-longtask --json` 返回的 `isComplete=true` 只解释为 artifacts 文件完整，不得作为 tasks 全部完成、归档、旧服务退役或生产验证完成依据。
 - [ ] [前驱] 生产只读 baseline - 按 `apps/api/package.json#homepage` 读取生产 API 地址，执行 `health -> ready(DB_READY) -> draft-contract/list baseline -> change/list baseline`；只有 `change/list` 返回业务成功且可用于 residual list 时，task101 才允许进入生产 CUD 写入窗口。
 - [ ] [前驱] `ct_contracts` 错误分类 - 若 `change/list` 仍返回 `missing FROM-clause entry for table "ct_contracts"`，必须先复核本地 query、生产部署差异、公开 HTTP requestId 和只读 drift 摘要；没有 drift 证据前不得新增字段、直接改 Neon、运行 `db:push` 或把该错误写成 schema 缺失。
 - [ ] [前驱] R2 cleanup/residual baseline - 在 task102 继续生产写入前，必须先证明当前生产 completed cleanup 能删除 upload session 或使状态进入预期终态，并证明 public object HEAD 不再可访问；若旧 completed object 仍 HEAD 200 或 session 仍 `completed`，只能记录为 residual blocker。
