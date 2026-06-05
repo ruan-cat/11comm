@@ -1,3 +1,34 @@
+## v1.2.2-beta.5
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.2-beta.4...v1.2.2-beta.5)
+
+### 🐞 修复缺陷
+
+- **admin:** 收敛自动路由与登录令牌写入 ([ef99971c](https://github.com/ruan-cat/11comm/commit/ef99971c))
+
+### 🦄 代码重构
+
+- **admin-api:** 收敛空查询参数类型 ([015e5a3e](https://github.com/ruan-cat/11comm/commit/015e5a3e))
+- **admin-ui:** 清理表单与页面层类型噪音 ([c36f26fc](https://github.com/ruan-cat/11comm/commit/c36f26fc))
+- **admin-shared:** 清理公共工具未使用引用 ([437f8cfc](https://github.com/ruan-cat/11comm/commit/437f8cfc))
+
+### 📖 Documentation
+
+- **openspec:** 记录 Phase7 最终验证与退役边界 ([64af91e6](https://github.com/ruan-cat/11comm/commit/64af91e6))
+
+### 🔨 构建相关
+
+- **admin:** 清理构建插件未使用导入 ([c84f43db](https://github.com/ruan-cat/11comm/commit/c84f43db))
+
+### ✅ Tests
+
+- **admin:** 稳定默认 Vitest 运行边界 ([34cb4c99](https://github.com/ruan-cat/11comm/commit/34cb4c99))
+- **admin:** 清理旧 API smoke 测试导入 ([6ba45c83](https://github.com/ruan-cat/11comm/commit/6ba45c83))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.2.2-beta.4
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.2-beta.3...v1.2.2-beta.4)
