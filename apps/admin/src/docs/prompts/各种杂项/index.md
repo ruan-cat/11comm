@@ -224,7 +224,7 @@ overrides:
 }
 ```
 
-## 019 <!-- TODO: --> 阅读每一个页面，检查代码写法是否正常，是否有需要微调的部分
+## 019 <!-- 已放弃 --> 阅读每一个页面，检查代码写法是否正常，是否有需要微调的部分
 
 认真的，人工的阅读每一个页面，看清楚这些页面的基础功能是否正常。
 
@@ -524,7 +524,7 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 我们的本质是改造任务执行与记录的载体，从基于 superpower 的三个 markdown 文件，改造成基于 openspec 的一系列文件。
 
-## 043 <!-- TODO: 正在持续的完成 app项目基本上完成大部分的迁移了 --> 完成 app 和 admin 项目的独立 nitro 接口服务的迁移与搭建
+## 043 <!-- 正在持续的完成 app项目基本上完成大部分的迁移了 --> 完成 app 和 admin 项目的独立 nitro 接口服务的迁移与搭建
 
 ```markdown
 /goal 执行 OpenSpec change：`openspec\changes\migrate-superpowers-docs-to-openspec-longtask`。
@@ -641,7 +641,7 @@ BLOCKED：已按长任务停止条件收尾。当前 tasks.md 还剩 22 个未�
    - 另外，你需要在 openspec\changes\migrate-superpowers-docs-to-openspec-longtask 的 spec 内，增加说明清楚如何用 drizzle 来更新 neon 数据库表，并更新对应 schema 架构的规范。这个东西早就准备好了，你看看本项目的项目级别 skills，和 openspec 的历史 spec 规范。
 2. 本地页面 R2 浏览器直传被 CORS 预检阻断。那就换一种方式来完成 R2 文件分片请求的测试。之前 admin 项目不是已经把这部分的接口给做好了吗？你直接迁移整合不行么？admin 项目已经完成过复杂的，基于 cloudflare R2 的文件分片上传的接口开发，和生产环境接口的部署了。你认真学习代码，做好迁移和自测就行。那为什么之前弄这个文件分片上传开发的时候，没有说遇到跨域的问题呢？
 
-### 05 <!-- TODO: --> 最终全面评估是否可以删除 旧 apps/admin/server 和 apps/app/server 两个 nitro 接口是否可以删除掉
+### 05 <!-- 已完成评估，准备继续拓展长任务清单，继续推进 --> 最终全面评估是否可以删除 旧 apps/admin/server 和 apps/app/server 两个 nitro 接口是否可以删除掉
 
 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 说代表的长任务，现在已经基本上是全部执行完毕了。但是我不清楚你的执行情况，是否有遗漏和缺漏。
 
@@ -654,3 +654,9 @@ BLOCKED：已按长任务停止条件收尾。当前 tasks.md 还剩 22 个未�
 初步调研结论：
 
 admin 仍有 legacy db/seed、nitro config、drizzle compatibility、R2/upload 源依赖；app 仍有 legacy-dispatch、Nitro build、mock/test 对 `server/modules/**` 的直接依赖，以及 fallback-only 路径阻断。
+
+---
+
+我需要你设计一个能够被 codex goal 完整执行的长任务。并扫清，解决掉上述的问题，最后达到可以安全删除 app 和 admin 内置的 nitro 接口，确保独立的 api 项目能够同时支撑两个前端项目。
+
+我觉得本质上是 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 这个长任务没做好。你应该继续让这个长任务，拓展，补全 task 任务清单，然后继续推进剩余的任务。最终达到可以安全删除 app 和 admin 项目内部的 nitro 接口的目的。
