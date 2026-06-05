@@ -8,7 +8,7 @@ describe("常用功能接口测试", () => {
 			onSuccess(data) {
 				console.warn("获取常用功能菜单成功", printFormat(data));
 			},
-			onError(error) {},
+			onError() {},
 		});
 
 		// 主动的做接口请求 从回调函数内获取返回值 或者直接使用解构出来的响应式 data 对象

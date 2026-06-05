@@ -1,12 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import {
-	getContractPartyaNameList,
-	deleteContractPartya,
-	getContractPartyaList,
-	addContractPartya,
-	updateContractPartya,
-} from "./index";
+import { deleteContractPartya, addContractPartya, updateContractPartya } from "./index";
 
 describe("j6/合同管理/合同甲方", () => {
 	// 警告 该接口 未开发完成

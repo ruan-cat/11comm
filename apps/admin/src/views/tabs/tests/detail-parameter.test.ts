@@ -1,9 +1,5 @@
 import { describe, expect, test } from "vitest";
-import {
-	createDetailTagTitle,
-	isDetailRouteParameter,
-	normalizeDetailRouteParameter,
-} from "../detail-parameter";
+import { createDetailTagTitle, isDetailRouteParameter, normalizeDetailRouteParameter } from "../detail-parameter";
 
 describe("detail-parameter", () => {
 	test("将详情页参数归一化为字符串参数", () => {

@@ -3,7 +3,7 @@ import { queryAnalysisArrearsBasic } from "./index";
 
 describe("queryAnalysisArrearsBasic 接口测试", () => {
 	it("基础调用", async () => {
-		const { execute, data } = queryAnalysisArrearsBasic({
+		const { execute } = queryAnalysisArrearsBasic({
 			pageIndex: 1,
 			pageSize: 10,
 			communityId: "2024022643710121",
@@ -13,7 +13,7 @@ describe("queryAnalysisArrearsBasic 接口测试", () => {
 	});
 
 	it("带参数调用", async () => {
-		const { execute, data } = queryAnalysisArrearsBasic({
+		const { execute } = queryAnalysisArrearsBasic({
 			pageIndex: 1,
 			pageSize: 10,
 			communityId: "2024022643710121",

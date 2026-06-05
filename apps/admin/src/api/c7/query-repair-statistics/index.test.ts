@@ -3,7 +3,7 @@ import { queryRepairStatistics } from "./index";
 
 describe("queryRepairStatistics 接口测试", () => {
 	it("基础调用", async () => {
-		const { execute, data } = queryRepairStatistics({
+		const { execute } = queryRepairStatistics({
 			community_id: "1",
 		});
 		const response = await execute();
@@ -11,7 +11,7 @@ describe("queryRepairStatistics 接口测试", () => {
 	});
 
 	it("带参数调用", async () => {
-		const { execute, data } = queryRepairStatistics({
+		const { execute } = queryRepairStatistics({
 			community_id: "1",
 			start_time: "2000-01-01",
 			end_time: "2099-12-31",

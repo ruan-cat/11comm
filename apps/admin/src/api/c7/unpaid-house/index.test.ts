@@ -3,7 +3,7 @@ import { queryUnpaidHouse } from "./index";
 
 describe("queryUnpaidHouse 接口测试", () => {
 	it("基础调用", async () => {
-		const { execute, data } = queryUnpaidHouse({
+		const { execute } = queryUnpaidHouse({
 			pageIndex: 1,
 			pageSize: 10,
 			communityId: "2024022692080516",
@@ -13,7 +13,7 @@ describe("queryUnpaidHouse 接口测试", () => {
 	});
 
 	it("带参数调用", async () => {
-		const { execute, data } = queryUnpaidHouse({
+		const { execute } = queryUnpaidHouse({
 			pageIndex: 1,
 			pageSize: 10,
 			communityId: "2024022692080516",

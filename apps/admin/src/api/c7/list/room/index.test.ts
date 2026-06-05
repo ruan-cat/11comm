@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { queryRoomList, type RoomDTO } from "./index";
 import { useRequest } from "@/composables/use-request";
 

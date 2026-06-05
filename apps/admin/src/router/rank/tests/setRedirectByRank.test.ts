@@ -1,6 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { setRedirectByRank } from "../index";
-import type { RouteRecordRaw } from "vue-router";
 
 // Mock @/router/utils 模块 - 必须在文件顶部
 vi.mock("@/router/utils", () => ({

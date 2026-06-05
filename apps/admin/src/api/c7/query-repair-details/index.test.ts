@@ -3,7 +3,7 @@ import { queryRepairDetails } from "./index";
 
 describe("queryRepairDetails 接口测试", () => {
 	it("基础调用", async () => {
-		const { execute, data } = queryRepairDetails({
+		const { execute } = queryRepairDetails({
 			pageIndex: 1,
 			pageSize: 10,
 			communityId: "2023052267100146",
@@ -13,7 +13,7 @@ describe("queryRepairDetails 接口测试", () => {
 	});
 
 	it("带参数调用", async () => {
-		const { execute, data } = queryRepairDetails({
+		const { execute } = queryRepairDetails({
 			pageIndex: 1,
 			pageSize: 10,
 			communityId: "2023052267100146",

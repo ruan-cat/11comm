@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryTaskDetailById, queryTaskList, modifyTask, removeTask, exportTaskDetail, addTaskDetail } from ".";
+import { queryTaskDetailById, queryTaskList, modifyTask, removeTask, addTaskDetail } from ".";
 
 describe("c2/维修管理/工单池", () => {
 	it("使用 query 接口 - 获取工单池工单详情", async () => {

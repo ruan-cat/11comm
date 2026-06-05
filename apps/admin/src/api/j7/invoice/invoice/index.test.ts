@@ -7,10 +7,8 @@ import {
 	queryInvoiceDetail,
 	queryInvoiceDetails,
 	queryAuditRecords,
-	queryInvoiceDownloadLink,
 	registerInvoice,
 	auditInvoice,
-	uploadInvoice,
 } from "./index";
 
 describe("j7/发票管理", () => {

@@ -3,7 +3,7 @@ import { queryOwnerPaymentDetail } from "./index";
 
 describe("queryOwnerPaymentDetail 接口测试", () => {
 	it("基础调用", async () => {
-		const { execute, data } = queryOwnerPaymentDetail({
+		const { execute } = queryOwnerPaymentDetail({
 			pageIndex: 1,
 			pageSize: 10,
 		});
@@ -12,7 +12,7 @@ describe("queryOwnerPaymentDetail 接口测试", () => {
 	});
 
 	it("带参数调用", async () => {
-		const { execute, data } = queryOwnerPaymentDetail({
+		const { execute } = queryOwnerPaymentDetail({
 			pageIndex: 1,
 			pageSize: 10,
 			feeTypeCd: "物业费",

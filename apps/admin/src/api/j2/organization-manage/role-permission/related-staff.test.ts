@@ -1,6 +1,6 @@
 import { describe, it } from "vitest";
 import { printFormat } from "@ruan-cat/utils";
-import { queryRelatedStaffList, addRelatedStaff, removeRelatedStaff } from "./related-staff";
+import { queryRelatedStaffList } from "./related-staff";
 
 describe("j2/组织管理/角色权限/员工关联", () => {
 	it("使用 query 接口 - 获取已关联员工列表（条件+分页）", async () => {

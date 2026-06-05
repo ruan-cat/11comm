@@ -7,7 +7,6 @@ import {
 	addCar,
 	addMemberVehicle,
 	exportVehicle,
-	importVehicle,
 	getMemberVehicleList,
 	modifyCar,
 	modifyOwnerVehicle,
