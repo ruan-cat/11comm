@@ -1,5 +1,16 @@
 import type { RouteRecordRaw } from "vue-router";
-import { isRoutePathDetailPage } from "@/router/utils";
+
+/** 详情页路由统一带这个后缀，rank 重定向逻辑需要跳过这些子页面。 */
+const detailPageFlag = "-detail-page" as const;
+
+/**
+ * 判断当前路由路径是否为详情页。
+ *
+ * 这里保留本地判断，避免 rank 排序工具反向导入全局 router 工具造成循环初始化。
+ */
+function isRoutePathDetailPage(path: string) {
+	return path.includes(detailPageFlag);
+}
 
 /**
  * 路由排序配置

@@ -134,12 +134,6 @@ const baseURL = VITE_IS_REVERSE_PROXY === "true" ? VITE_PROXY_PREFIX : VITE_BASE
 
 /** 登录 */
 export const getLogin = (authLoginParams?: AuthLoginParams) => {
-	/** 框架原版的登录函数 现在不使用 */
-	function originalGetLogin(data?: object) {
-		// 原始的登录接口
-		return http.request<UserResult>("post", "/login", { data });
-	}
-
 	/**
 	 * 授权登录
 	 * @see https://app.apifox.com/link/project/6386631/apis/api-307604116

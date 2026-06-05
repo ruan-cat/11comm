@@ -74,20 +74,6 @@ export const useUserStore = defineStore("pure-user", {
 		async loginByUsername(data: AuthLoginParams) {
 			// TODO: 返回值需要重设类型 目前登录后 还需要获取到足量的用户数据后 才能返回用户信息
 			return new Promise<UserResult>((resolve, reject) => {
-				/** 框架原版的登录处理函数 */
-				function originalGetLogin(data) {
-					getLogin(data)
-						.then((data) => {
-							// @ts-ignore
-							if (data?.success) setToken(data.data);
-							// @ts-ignore
-							resolve(data);
-						})
-						.catch((error) => {
-							reject(error);
-						});
-				}
-
 				/** 处理登录逻辑 对接01s接口的处理逻辑 */
 				function handleLogin(data: AuthLoginParams) {
 					getLogin(data)
@@ -107,7 +93,8 @@ export const useUserStore = defineStore("pure-user", {
 							// 如果接口成功
 							if (code === HttpCode.SUCCESS) {
 								// @ts-ignore 警告 此处只能设置少量的字段 大多数的字段无法设置 需要改动一下框架
-								const { clientId, refreshToken, token, expiresIn, tokenHead } = res.data;
+								// 旧框架登录返回字段较多；当前 01s 登录只需要 token 与 refreshToken 来写入 setToken。
+								const { refreshToken, token } = res.data;
 								setToken({
 									// 登录成功后 必须存储 token
 									accessToken: token,

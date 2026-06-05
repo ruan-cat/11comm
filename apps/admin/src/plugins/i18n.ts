@@ -14,7 +14,6 @@ import zhLocale from "element-plus/es/locale/lang/zh-cn";
  * 和目录强耦合的语言表
  */
 const langs = ["zh-CN", "en"] as const;
-type Langs = (typeof langs)[number];
 
 const zhCNGlob = import.meta.glob("../../locales/zh-CN/**/*.y(a)?ml", {
 	eager: true,
@@ -48,10 +47,7 @@ function normalizeLocaleNamespace(namespace: string) {
 function mergeLocaleMessages(target: Record<string, any>, source: Record<string, any>) {
 	for (const [key, value] of Object.entries(source)) {
 		if (isObject(target[key]) && isObject(value)) {
-			target[key] = mergeLocaleMessages(
-				target[key] as Record<string, any>,
-				value as Record<string, any>,
-			);
+			target[key] = mergeLocaleMessages(target[key] as Record<string, any>, value as Record<string, any>);
 			continue;
 		}
 
@@ -72,10 +68,7 @@ function resolveLocaleModuleEntry(filePath: string, localeModule: Record<string,
 
 	if (entries.length === 1) {
 		const [nestedNamespace, nestedMessages] = entries[0];
-		if (
-			nestedNamespace === normalizedFileNamespace ||
-			normalizedFileNamespace.startsWith(nestedNamespace)
-		) {
+		if (nestedNamespace === normalizedFileNamespace || normalizedFileNamespace.startsWith(nestedNamespace)) {
 			return [nestedNamespace, nestedMessages] as const;
 		}
 	}
@@ -94,10 +87,7 @@ function buildLocaleMessagesByNamespace(localeGlob: Record<string, any>) {
 
 			acc[namespace] =
 				isObject(prevMessages) && isObject(messages)
-					? mergeLocaleMessages(
-							prevMessages as Record<string, any>,
-							messages as Record<string, any>,
-						)
+					? mergeLocaleMessages(prevMessages as Record<string, any>, messages as Record<string, any>)
 					: messages;
 
 			return acc;
@@ -107,24 +97,16 @@ function buildLocaleMessagesByNamespace(localeGlob: Record<string, any>) {
 }
 
 const siphonI18n = (function () {
-	/** @deprecated */
-	function getOldCache() {
-		// 仅初始化一次国际化配置
-		const cache = Object.fromEntries(
-			Object.entries(import.meta.glob("../../locales/**/*.y(a)?ml", { eager: true })).map(([key, value]: any) => {
-				const matched = key.match(/([A-Za-z0-9-_]+)\./i)[1];
-				return [matched, value.default];
-			}),
-		);
-		return cache;
-	}
-
+	/**
+	 * 构建新的国际化缓存
+	 * @description
+	 * 旧缓存只按文件名截取一级 key，无法兼容“文件名一层 + 内容再包一层命名空间”的写法；
+	 * 当前统一走命名空间解析和深度合并，避免同名配置互相覆盖。
+	 */
 	function getNewCache() {
 		const langsKeyI18nValue = langs.map((lang) => {
 			/** 根据语言来分别获取并归并的 i18n 配置对象 */
-			const i18nValue = buildLocaleMessagesByNamespace(
-				lang === "zh-CN" ? zhCNGlob : enGlob,
-			);
+			const i18nValue = buildLocaleMessagesByNamespace(lang === "zh-CN" ? zhCNGlob : enGlob);
 			return [lang, i18nValue] as const;
 		});
 

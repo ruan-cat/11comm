@@ -11,7 +11,6 @@ import { isUrl, openLink, cloneDeep, isAllEmpty, storageLocal } from "@pureadmin
 import {
 	ascending,
 	getTopMenu,
-	initRouter,
 	isOneOfArray,
 	getHistoryMode,
 	findRouteByPath,
@@ -27,16 +26,12 @@ import { routes as autoRoutes, handleHotUpdate } from "vue-router/auto-routes";
 import { setupLayouts } from "virtual:meta-layouts";
 import { disposalAutoRouter } from "./file-based-routing";
 
-/** 自动导入全部静态路由，无需再手动引入！匹配 src/router/modules 目录（任何嵌套级别）中具有 .ts 扩展名的所有文件，除了 remaining.ts 文件
- * 如何匹配所有文件请看：https://github.com/mrmlnc/fast-glob#basic-syntax
- * 如何排除文件请看：https://cn.vitejs.dev/guide/features.html#negative-patterns
+/**
+ * 静态路由导入说明
+ * @description
+ * 旧实现曾导入 `src/router/modules/**` 下全部路由；当前业务页面由 `vue-router/auto-routes` 接管，
+ * 这里只保留 pure-admin 框架必须的 `error/home` 路由，避免旧模块路由和自动路由重复注册。
  */
-const modules: Record<string, any> = import.meta.glob(
-	//
-	["./modules/**/*.ts", "!./modules/**/remaining.ts"],
-	{ eager: true },
-);
-
 /** 导入框架自带的路由 其他的路由均不导入 */
 const routerModulesPureAdmin: Record<string, any> = import.meta.glob(
 	["./modules/**/error.ts", "./modules/**/home.ts"],
@@ -46,10 +41,6 @@ const routerModulesPureAdmin: Record<string, any> = import.meta.glob(
 /** 原始静态路由（未做任何处理） */
 const routes = [];
 
-// 将框架的路由 导入到需要处理的路由中
-// Object.keys(modules).forEach((key) => {
-// 	routes.push(modules[key].default);
-// });
 // 仅导入框架必须的路由
 Object.keys(routerModulesPureAdmin).forEach((key) => {
 	routes.push(routerModulesPureAdmin[key].default);
@@ -61,8 +52,7 @@ const cleanedAutoRoutes = disposalAutoRouter(autoRoutes);
 sortRoutes(cleanedAutoRoutes);
 // 对自动路由进行重定向设置
 setRedirectByRank(cleanedAutoRoutes);
-/** 扁平化的 自动路由 用于测试 */
-const flattenAutoRoutesForTest = formatFlatteningRoutes(ascending(cleanedAutoRoutes.flat(Infinity)));
+/** 合并清理后的自动路由 */
 cleanedAutoRoutes.forEach((route) => routes.push(route));
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
@@ -175,40 +165,9 @@ router.beforeEach((to, _from, next) => {
 		} else {
 			// 刷新
 			if (usePermissionStoreHook().wholeMenus.length === 0 && to.path !== "/login") {
-				function oldInitRouter() {
-					initRouter().then((router: Router) => {
-						if (!useMultiTagsStoreHook().getMultiTagsCache) {
-							const { path } = to;
-							const route = findRouteByPath(path, router.options.routes[0].children);
-							getTopMenu(true);
-							// query、params模式路由传参数的标签页不在此处处理
-							if (route && route.meta?.title) {
-								if (isAllEmpty(route.parentId) && route.meta?.backstage) {
-									// 此处为动态顶级路由（目录）
-									const { path, name, meta } = route.children[0];
-									useMultiTagsStoreHook().handleTags("push", {
-										path,
-										name,
-										meta,
-									});
-								} else {
-									const { path, name, meta } = route;
-									useMultiTagsStoreHook().handleTags("push", {
-										path,
-										name,
-										meta,
-									});
-								}
-							}
-						}
-						// 确保动态路由完全加入路由列表并且不影响静态路由（注意：动态路由刷新时router.beforeEach可能会触发两次，第一次触发动态路由还未完全添加，第二次动态路由才完全添加到路由列表，如果需要在router.beforeEach做一些判断可以在to.name存在的条件下去判断，这样就只会触发一次）
-						if (isAllEmpty(to.name)) router.push(to.fullPath);
-					});
-				}
-
 				/** @see https://pure-admin.cn/pages/routerMenu/#如何只要静态路由 */
 				function newInitRouter() {
-					// 使用下面方法替换initRouter
+					// 旧 `initRouter` 会重新走动态路由初始化；当前只使用静态路由和自动路由组合。
 					usePermissionStoreHook().handleWholeMenus([]);
 					addPathMatch();
 					if (!useMultiTagsStoreHook().getMultiTagsCache) {
