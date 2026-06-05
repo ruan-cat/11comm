@@ -2,6 +2,31 @@ import { vi } from "vitest";
 import { config } from "@dotenvx/dotenvx";
 import { resolve } from "node:path";
 
+vi.mock("@/plugins/i18n", () => ({
+	/** 默认 jsdom 单元测试不验证真实 locale 解析，只保留翻译入口的稳定占位。 */
+	transformI18n(message: unknown = "") {
+		if (!message) {
+			return "";
+		}
+
+		if (typeof message === "object") {
+			const localeMessage = message as Record<string, string>;
+			return localeMessage.zh ?? localeMessage["zh-CN"] ?? localeMessage.en ?? "";
+		}
+
+		return String(message);
+	},
+	$t: (key: string) => key,
+	i18n: {
+		global: {
+			locale: { value: "zh" },
+			te: () => false,
+			t: (key: string) => key,
+		},
+	},
+	useI18n: () => {},
+}));
+
 const adminDir = process.cwd();
 
 /**

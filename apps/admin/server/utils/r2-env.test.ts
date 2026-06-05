@@ -4,6 +4,7 @@ describe("getR2EnvRequired", () => {
 	beforeEach(() => {
 		vi.unstubAllEnvs();
 		vi.resetModules();
+		vi.stubEnv("R2_BUCKET", "");
 	});
 
 	test("missing key throws readable error", async () => {
