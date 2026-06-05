@@ -1,6 +1,3 @@
-import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-import { resolver } from "../vite-plugin-autogeneration-import-file/index";
-
 /**
  * 组件导入插件
  * @see https://plus-pro-components.com/ecosystem/resolver.html

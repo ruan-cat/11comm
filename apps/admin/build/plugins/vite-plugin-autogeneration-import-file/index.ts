@@ -5,15 +5,7 @@ const { autoImport, resolver } = createPlugin();
 
 export { resolver };
 
-import {
-	createAutoImportTemplate,
-	createDirOptionNameFunction,
-	defaultAutoImportTemplate,
-	defaultAutoImportTemplateFilename,
-	defaultAutoImportTemplatePath,
-	pathResolve,
-} from "@ruan-cat/utils/vite-plugin-autogeneration-import-file";
-import consola from "consola";
+import { defaultAutoImportTemplate, pathResolve } from "@ruan-cat/utils/vite-plugin-autogeneration-import-file";
 
 export default autoImport([
 	// components 目录

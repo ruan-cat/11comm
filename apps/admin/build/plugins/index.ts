@@ -1,7 +1,6 @@
 import { cdn } from "../cdn";
 import vue from "@vitejs/plugin-vue";
 import { pathResolve } from "../utils";
-import { viteBuildInfo } from "../info";
 import svgLoader from "vite-svg-loader";
 import Icons from "unplugin-icons/vite";
 import type { PluginOption, ConfigEnv } from "vite";
@@ -14,7 +13,6 @@ import removeConsole from "vite-plugin-remove-console";
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 import { codeInspectorPlugin } from "code-inspector-plugin";
 import { vitePluginFakeServer } from "vite-plugin-fake-server";
-import type { ComponentResolver } from "unplugin-vue-components/types";
 
 // 自动化路由插件
 import VueRouter from "vue-router/vite";
@@ -34,7 +32,6 @@ import tsAlias from "../plugins/vite-plugin-ts-alias/index";
 
 // 开发调试插件
 import vueDevTools from "vite-plugin-vue-devtools";
-import consola from "consola";
 
 import vercel from "vite-plugin-vercel";
 
