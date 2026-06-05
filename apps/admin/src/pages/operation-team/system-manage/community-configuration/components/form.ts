@@ -1,5 +1,5 @@
 import type { SettingCommunityConfigFormVO } from "@01s-11comm/type";
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 
 // ==================== 默认表单 ====================
 

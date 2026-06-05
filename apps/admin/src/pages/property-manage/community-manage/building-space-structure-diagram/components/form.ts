@@ -1,4 +1,4 @@
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 import type { BuildingSpaceStructureDiagramFormVO } from "@01s-11comm/type";
 
 export interface BuildingSpaceStructureDiagramFormProps {

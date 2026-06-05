@@ -1,5 +1,5 @@
-import type { RolePermission, RolePermissionFormVO } from "@01s-11comm/type";
-import { type Mode } from "@/composables/use-mode";
+import type { RolePermissionFormVO } from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
 
 /**
  * 默认表单数据对象

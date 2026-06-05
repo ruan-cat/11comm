@@ -1,4 +1,4 @@
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 import type { CommunityManageMyFormVO } from "@01s-11comm/type";
 
 export interface CommunityManageMyFormProps {

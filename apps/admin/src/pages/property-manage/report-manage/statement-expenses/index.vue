@@ -275,7 +275,7 @@ function handleSearch() {
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
-					<template #operation="{ row }">
+					<template #operation>
 						<ElButton type="primary" link>
 							{{ transformI18n($t("property-manage_report-manage.statement-expenses.buttons.detail")) }}
 						</ElButton>

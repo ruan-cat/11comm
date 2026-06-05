@@ -8,7 +8,6 @@ import type { ArrearsDetailsFormProps } from "./form";
 
 const props = defineProps<ArrearsDetailsFormProps>();
 
-
 /** 默认的表单重置变量 */
 const defaultValues = props.defaultValues as FieldValues & ArrearsDetailsFormProps["form"];
 

@@ -1,4 +1,4 @@
-import type { ScheduleType, WorkingSchedule, WorkingScheduleFormVO } from "@01s-11comm/type";
+import type { WorkingScheduleFormVO } from "@01s-11comm/type";
 
 /** 默认表单 @description 对外导出用于其他场景使用 */
 export const defaultForm: WorkingScheduleFormVO = {

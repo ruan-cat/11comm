@@ -1,4 +1,4 @@
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 
 /** 密码修改记录弹窗表单字段，只保留 sm_change_password_records 真实可写字段。 */
 export interface ChangePasswordRecordFormData {

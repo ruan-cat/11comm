@@ -10,7 +10,6 @@ import { repairTypeOptions, maintenanceTypeOptions, repairStatusOptions } from "
 
 const props = defineProps<RepairsTodoFormProps>();
 
-
 const defaultValues = props.defaultValues as FieldValues & RepairsTodoFormVO;
 
 const plusFormInstance = useTemplateRef("plusFormRef");

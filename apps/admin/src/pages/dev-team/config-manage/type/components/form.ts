@@ -3,7 +3,7 @@
  * @description 表单字段必须对齐 dt_config_types 接口允许写入的字段。
  */
 
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 
 export interface DictionaryTypeFormData {
 	/** 类型名称，对应字典类型接口的 typeName。 */

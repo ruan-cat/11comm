@@ -234,7 +234,7 @@ const pureTableBarProps = computed<PureTableBarProps>(() => ({
 					@page-size-change="handlePageSizeChange"
 					@page-current-change="handleCurrentPageChange"
 				>
-					<template #operation="{ row }">
+					<template #operation>
 						<ElButton type="info">
 							{{ transformI18n($t("common.buttons.info")) }}
 						</ElButton>

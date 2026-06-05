@@ -1,6 +1,5 @@
-import type { OptionsType } from "plus-pro-components";
-import { type Mode } from "@/composables/use-mode";
-import type { CellType, CellStatus, InitializeCellFormVO } from "@01s-11comm/type";
+import type { Mode } from "@/composables/use-mode";
+import type { InitializeCellFormVO } from "@01s-11comm/type";
 
 // ==================== 常量定义 ====================
 // 选项常量已移至 ../test-data.ts 中，避免重复定义

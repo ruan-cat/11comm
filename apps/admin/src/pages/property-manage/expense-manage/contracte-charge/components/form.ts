@@ -1,4 +1,4 @@
-import type { ContractFeeType, ContracteChargeFormVO } from "@01s-11comm/type";
+import type { ContracteChargeFormVO } from "@01s-11comm/type";
 
 // ==================== 常量定义 ====================
 

@@ -3,7 +3,7 @@
  * @description 表单字段必须对齐配置中心新增/更新接口允许写入的字段。
  */
 
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 import type { ConfigCenterFormVO } from "@01s-11comm/type";
 
 /** 配置中心默认表单，configType/status 使用接口枚举值，不能使用翻译后的中文 label。 */

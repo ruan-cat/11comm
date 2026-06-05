@@ -1,5 +1,5 @@
 import type { CommunityNoticeFormVO } from "@01s-11comm/type";
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 
 /**
  * @description 小区公示表单 Props 类型

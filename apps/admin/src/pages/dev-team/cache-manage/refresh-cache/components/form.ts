@@ -3,7 +3,7 @@
  * @description Refresh cache form types
  */
 
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 import type { RefreshCacheFormVO } from "@01s-11comm/type";
 
 /** 默认表单 Default form */

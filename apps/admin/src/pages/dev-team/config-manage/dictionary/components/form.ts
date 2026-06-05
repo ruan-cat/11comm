@@ -3,7 +3,7 @@
  * @description 表单字段必须对齐字典新增/更新接口允许写入的字段。
  */
 
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 
 export interface DictionaryFormData {
 	/** 字典名称，对应字典接口的 dictionaryName。 */

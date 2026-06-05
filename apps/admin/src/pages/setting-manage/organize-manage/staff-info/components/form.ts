@@ -1,4 +1,4 @@
-import type { StaffInfo, StaffInfoFormVO } from "@01s-11comm/type";
+import type { StaffInfoFormVO } from "@01s-11comm/type";
 
 /** 员工信息表单组件Props */
 export interface StaffInfoFormProps {

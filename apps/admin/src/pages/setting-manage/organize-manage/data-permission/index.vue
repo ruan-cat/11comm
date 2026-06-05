@@ -64,7 +64,7 @@ async function handleTabClick(tab: any) {
 <template>
 	<section :key="locale" class="index-root">
 		<div class="data-permission-container">
-			<div class="left-tree-panel" v-loading="isFetching">
+			<div v-loading="isFetching" class="left-tree-panel">
 				<div class="tree-header">
 					<div class="tree-actions">
 						<ElButton type="primary">

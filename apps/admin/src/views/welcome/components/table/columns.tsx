@@ -3,14 +3,12 @@ import { tableData } from "../../data";
 import { delay } from "@pureadmin/utils";
 import { transformI18n } from "@/plugins/i18n";
 import { ref, onMounted, reactive } from "vue";
-import { useI18n } from "vue-i18n";
 import type { PaginationProps } from "@pureadmin/table";
 import ThumbUp from "~icons/ri/thumb-up-line";
 import Hearts from "~icons/ri/hearts-line";
 import Empty from "./empty.svg?component";
 
 export function useColumns() {
-	const { t } = useI18n();
 	const dataList = ref([]);
 	const loading = ref(true);
 	const columns: TableColumnList = [

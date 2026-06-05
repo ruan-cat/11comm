@@ -1,4 +1,3 @@
-import { $t } from "@/plugins/i18n";
 import { RouterOrderEnums } from "@/router/enums";
 
 // import { codemirror } from "@/router/enums";

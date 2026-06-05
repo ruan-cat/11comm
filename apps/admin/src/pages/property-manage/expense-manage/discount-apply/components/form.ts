@@ -1,4 +1,4 @@
-import type { ApplicationType, DiscountApplyFormVO } from "@01s-11comm/type";
+import type { DiscountApplyFormVO } from "@01s-11comm/type";
 
 // ==================== 常量定义 ====================
 

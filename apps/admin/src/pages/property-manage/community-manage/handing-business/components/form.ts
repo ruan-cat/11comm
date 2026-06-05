@@ -1,4 +1,4 @@
-import { type Mode } from "@/composables/use-mode";
+import type { Mode } from "@/composables/use-mode";
 import type { HandingBusinessFormVO } from "@01s-11comm/type";
 
 export interface HandingBusinessFormProps {

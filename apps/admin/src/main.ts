@@ -5,7 +5,7 @@ import { useI18n, i18n } from "@/plugins/i18n";
 import { getPlatformConfig } from "./config";
 import { MotionPlugin } from "@vueuse/motion";
 import { useEcharts } from "@/plugins/echarts";
-import { createSSRApp, createApp, type Directive } from "vue";
+import { createApp, type Directive } from "vue";
 import { useVxeTable } from "@/plugins/vxeTable";
 import { useElementPlus } from "@/plugins/elementPlus";
 import { injectResponsiveStorage } from "@/utils/responsive";

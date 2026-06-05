@@ -1,5 +1,4 @@
-import { discountTypeOptions } from "@01s-11comm/type";
-import type { DiscountType, DiscountTypeFormVO } from "@01s-11comm/type";
+import type { DiscountTypeFormVO } from "@01s-11comm/type";
 
 // ==================== 常量定义 ====================
 
