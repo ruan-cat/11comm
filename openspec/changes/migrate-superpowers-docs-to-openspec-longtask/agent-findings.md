@@ -1,5 +1,55 @@
 # 代理发现记录
 
+## 2026-06-05 task102 浏览器 CORS baseline 发现
+
+本轮在生产 admin H5 `#/property-manage/contract-manage/draft-contract` 中通过新增弹窗的 `合同附件` shared-upload 控件触发浏览器上传。页面控制面可达：`upload/init`、`upload/status`、`upload/sign-part` 均由生产页面自然触发并返回 HTTP 200。浏览器直传 R2 时，`PUT` 进入 `net::ERR_FAILED`，Console 明确显示 preflight response 未通过 CORS 检查，缺少 `Access-Control-Allow-Origin` 响应头。随后点击“移除”触发 `upload/abort` HTTP 200，队列清空。
+
+该证据可关闭 `R2 浏览器 CORS baseline`，因为它已经单独记录浏览器 `PUT` 是否被 R2 CORS 允许，当前结论是仍被阻断。禁止外推：该证据不代表 CORS 已放通，不代表页面 shared-upload 完整成功，也不替代断点续传、失败恢复、complete、cleanup 的完整页面闭环。因此不能关闭 `task102 browser shared-upload drill`、upload endpoint 总体验收、页面 CRUD、每个 admin detail/create/update/delete 分项或旧服务退役。
+
+脱敏边界：DevTools 原始输出曾出现完整 signed URL，但长期 artifact 只保存 reqid、endpoint、HTTP 状态、`net::ERR_FAILED` 和 CORS 错误摘要，不保存完整 signed URL、完整 public URL、R2 object key、uploadId、签名参数、ETag 值、token、cookie、Authorization、数据库连接串、R2/AWS secret、完整请求体或完整响应体。
+
+## 2026-06-05 task102 server-side drill 发现
+
+本轮在 cleanup 门通过后执行了新的生产极小单分片 server-side multipart drill。证据见 `.tmp/phase7-dev-browser/2026-06-05-task102-production-server-side-drill.md` 和同名 records.json；runId 为 `phase7-task102-server-20260605-416452ee`，sessionId 为 `313dc153-ec3e-43a8-b414-5d15334b2c62`。链路覆盖 `init/status/sign-part/PUT/complete/status/public HEAD/abort cleanup/status/old public HEAD`：PUT 后 `uploadedPartsCount=1`，complete 后 public HEAD 为 HTTP 200，abort cleanup 后 status 为 `aborted`、uploadedPartsCount 为 0、publicUrl absent，旧 public HEAD 为 HTTP 404。
+
+该证据证明生产 `apps/api` server-side R2 multipart、complete、completed cleanup 和 residual HEAD 闭环成立，可关闭 `task102 server-side drill`。禁止外推：它不替代浏览器 `OPTIONS/PUT` CORS baseline，也不替代 admin 页面 shared-upload 的断点续传、失败恢复、complete、cleanup 交互证据；因此不能关闭 `R2 浏览器 CORS baseline`、`task102 browser shared-upload drill`、upload endpoint 总体验收、页面 CRUD、每个 admin detail/create/update/delete 分项或旧服务退役。
+
+脱敏边界：artifact 只保存 requestId、HTTP 状态、状态迁移、长度和布尔摘要，不保存完整 signed URL、完整 public URL、R2 object key、uploadId、ETag 值、token、cookie、Authorization、数据库连接串、R2/AWS secret、完整请求体或完整响应体。
+
+## 2026-06-05 task102 cleanup baseline 发现
+
+本轮补录的是旧 completed 残留 cleanup baseline，而不是新的上传闭环。证据复用 2026-05-27 生产 complete partial artifact 留下的 completed session `0da26065-b653-409c-8ffe-9a473693616b`，只执行旧 session 的 `status -> HEAD -> abort cleanup -> status -> old HEAD`；没有执行 `init`、`sign-part`、`PUT`、`complete`，也没有上传新对象。
+
+cleanup 前 status 仍为 `completed`，uploadedPartsCount 为 1，publicUrlPresent 为 true，old public HEAD 为 HTTP 200；abort cleanup 返回 HTTP 200 且 status 为 `aborted`；cleanup 后 status 为 `aborted`，uploadedPartsCount 为 0，publicUrlPresent 为 false，old public HEAD 为 HTTP 404。因此该证据可以证明旧 completed 残留 cleanup 已恢复，并支撑关闭 `R2 cleanup/residual baseline` 与 `task102 completed cleanup 门`。
+
+禁止外推：该证据不替代新的 server-side multipart complete drill，不替代浏览器 `OPTIONS/PUT` CORS baseline，不替代 admin 页面 shared-upload 断点续传、complete、cleanup 闭环，不关闭 upload endpoint 总体验收、页面 CRUD、每个 admin detail/create/update/delete 分项或旧服务退役。artifact 与 records 只保存状态码、requestId、状态摘要和长度标记，不保存完整 signed URL、完整 public URL、R2 object key、uploadId、ETag 值、token、cookie、Authorization、数据库连接串、R2/AWS secret、完整请求体或完整响应体。
+
+## 2026-06-05 task1013 CUD 执行边界
+
+`change/create` 不适合直接使用不存在的 `contractNumber` 独立写入，因为 repository 会先解析 `ct_contracts.id`，找不到父合同时会把 `contractId` 解析为空字符串，生产库预期会触发 UUID、非空或外键失败。安全路径是创建同一 `phase7RunId` 的 draft-contract 父合同哨兵，用返回的 id 创建 change，删除时先删 change 并在父合同仍存在时用 `change/list + contractNumber` 查残留，再删 draft-contract 并查 draft 残留。
+
+第一次 task1013 runner 失败点是脚本把 `/__nitro/health` 当成 admin envelope 校验，要求 `code=200`，而 health 实际只有 `status=ok` 与 `success=true`。该失败发生在任何写入前，`draftId` 与 `changeId` 均为空，不构成生产残留。修正断言后，最终 artifact 显示写入、读回、更新、删除和残留检查均通过。
+
+task1013 的 HTTP CUD 证据不能替代页面级证据。后续若关闭页面 CRUD 汇总项或每个 admin detail/create/update/delete 分项，仍需要 admin 页面按钮、弹窗或页面交互证据；不能只引用本次 no-page HTTP artifact。
+
+## 2026-06-05 生产 baseline 与 drift 收口
+
+上一轮生产 baseline 子代理组全部因 429 中断，不能作为业务证据或复核证据。本轮重新执行的证据以 `.tmp/phase7-dev-browser/2026-06-05-task971-production-readonly-baseline.md` 和 `.tmp/phase7-dev-browser/2026-06-05-task992-production-db-readiness-drift.md` 为准。
+
+最新生产 `change/list` 已不再复现 `missing FROM-clause entry for table "ct_contracts"`，同轮只读 Neon metadata 也确认 `ct_contracts`、`ct_changes` 目标表存在且 migration count 为 2/2。因此 2026-05-27 关于 `change/list` 被该错误阻断的记录只作为历史失败保留，不再作为当前 task101 前置阻断。该收口不能外推为 task101 CUD 已完成，也不能外推为 R2 cleanup/CORS、页面 shared-upload、页面 CRUD 或旧服务退役完成。
+
+本轮只读 drift 诊断使用本地 `apps/api/.env*` 中的 DB URL 连接 Neon main，但 artifact 只保存脱敏 host、database/schema 名、migration count、required tables、目标表字段/索引/约束摘要；不得保存数据库 URL、用户名、密码、token、cookie、Authorization、secret、完整 env 值、完整生产 payload 或对象存储信息。
+
+## 2026-05-30 task972/task993 本地 ct_contracts 复核 checkpoint
+
+本轮只记录既有事实并收口边界，不执行新的生产请求、DB 写入或迁移命令。`ct_contracts` 相关本地 query 修复口径已复核，覆盖重点是 `change/list` count query join 与 `createChange` 对 `contractNumber` 的兼容路径；`apps/api` 本地 contract change/draft 单测已通过，说明本地代码层面具备回归保护。该本地结论只能说明 runtime query 修复路径在本地可验证，不能替代生产部署、生产 requestId 或 Neon main drift/readiness 证据。
+
+纠偏：当前 `tasks.md` 是唯一任务源，task972/task993 以及 task992/task994 仍为 open；后续不得沿用 2026-05-27 历史进度中“已关闭 task992/task993/task994”的旧表述推进生产 drift 或 CUD 验收。
+
+task972 仍不能关闭：该任务要求在 `change/list` 仍返回 `missing FROM-clause entry for table "ct_contracts"` 时，先复核本地 query、生产部署差异、公开 HTTP requestId 和只读 drift 摘要。本轮只补齐“本地 query 已复核、单测已通过”的记录，仍缺新的生产公开 HTTP requestId、生产部署差异判断和只读 drift/readiness 摘要。
+
+task993 仍不能关闭：当前只能把生产历史错误保守归类为 runtime query、部署差异或 schema drift 待诊断；没有新的只读 drift 证据前，不得直接新增字段、直接改 Neon、运行 `db:push`，也不得跳过公开 `apps/api` HTTP baseline。稳定 artifact 见 `.tmp/phase7-dev-browser/2026-05-30-ct-contracts-local-classification.md`。
+
 ## 2026-05-27 task1005 独立复核关闭边界
 
 本轮复核只能关闭 OpenSpec 记录项 task1005，不代表生产或运行时状态升级。可关闭依据是：`specs/db-readiness-and-write-verification/spec.md` 已明确 `apps/type` 是 schema 事实源，`apps/api` 是 Drizzle Kit、迁移目录、`db:*`、Neon readiness 与 drift 诊断归属，`apps/admin` 只能作为 legacy source、兼容转发或退役对象；`tasks.md` §4D 已把 Drizzle 接管记录、工具链测试和 no-go 边界写成唯一任务源；当前配置也与该口径一致，`apps/api/drizzle.config.ts` 只扫描 `apps/type` schema 且 fail-closed，`apps/api/package.json` 持有 package-local Drizzle 脚本，admin 侧 DB 入口降级为 legacy notice。
@@ -2207,3 +2257,43 @@ Newton 只读复核确认 remaining catalog 的 46 个 `has-page-entry` 页面 l
 保守 C 执行边界：任何生产 schema 问题必须先走只读 drift/readiness 诊断，记录目标 runtime、`DB_READY`、脱敏 host、migration count、required tables、目标表、关键列、索引或约束摘要和 artifact path；没有 drift 证据时，应优先调查 query、部署或运行时差异。`ct_contracts` 的 `missing FROM-clause entry for table "ct_contracts"` 在 drift 证明前只能归类为 runtime query、部署差异或 schema drift 待诊断，不能直接推导为需要新增 Neon 字段或表。
 
 R2 证据边界同步补强：浏览器 direct PUT 被 CORS 预检阻断时，只能记录为 control-plane 可达但 browser PUT blocked；server-side multipart drill 可以验证 `apps/api` 控制面、R2 对象、DB session 和 residual，但不能替代 admin 页面 shared-upload、浏览器 CORS 或断点续传完整闭环。
+
+## 2026-06-05 task101 生产 admin 页面 CRUD 边界
+
+本轮补齐的生产 admin 页面证据只覆盖 `property-manage/contract-manage/draft-contract` 与 `property-manage/contract-manage/change` 两个页面的真实按钮/弹窗交互。有效证据是：页面点击触发生产 `apps/api` create/detail/update/delete；列表或详情弹窗读回受控字段；删除后页面搜索 residual 为“暂无数据 / 共 0 条”。证据路径为 `.tmp/phase7-dev-browser/2026-06-05-task101-production-admin-page-crud.md` 和同名 records.json。
+
+失败尝试边界：长合同编号、错误临时前端态 cookie 形态、以及页面选项外合同类型都在产生业务写入前被拦截或修正，不能写成 create 失败残留。采证后已清理浏览器临时前端态。
+
+字段映射边界：`draft-contract/detail` 的金额/时间字段和 `change/detail` 的部分合同基础字段仍可能为空；本轮不把这些字段写成完整持久化证据。分项关闭依据是 detail endpoint 独立命中、关键业务字段读回、update/delete/residual 闭环成立。
+
+禁止误判：本轮页面 CRUD 证据不能替代 task102 browser shared-upload drill，不能证明 R2 CORS 已放通，不能证明页面 shared-upload 的断点续传、失败恢复、complete/cleanup 闭环，也不能写成 retirement ledger 完成或旧 `apps/admin/server` 可退役。DevTools Network 中历史 R2 signed URL 只作为浏览器失败观察存在，长期 artifact 不得保存完整 signed URL、public URL、object key、uploadId、ETag、token、cookie、Authorization、数据库连接串或 secret。
+
+## 2026-06-05 task102 生产 admin shared-upload 与 R2 CORS 边界
+
+本轮先通过 Wrangler 管理 R2 bucket CORS。S3 compatible `GetBucketCors/PutBucketCors` 返回 `AccessDenied`，未继续重复尝试；Wrangler `r2 bucket cors list` 可读，显示原规则只有 `http://localhost:8080`。随后使用 `wrangler r2 bucket cors set` 写入当前 R2 API 需要的 `rules` 数组，回读确认生产 admin origin `https://01s-11comm.ruan-cat.com` 已允许 `PUT/GET/HEAD`、headers `*` 并暴露 `ETag`。证据摘要是 `.tmp/phase7-dev-browser/2026-06-05-task102-r2-cors-production-admin.json`，不含凭证。
+
+浏览器 shared-upload 证据来自生产 admin H5 的 `draft-contract` 页面真实组件交互，证据路径为 `.tmp/phase7-dev-browser/2026-06-05-task102-production-admin-shared-upload.md` 与同名 final.json。6MB 哨兵文件被组件识别为 2 片；第一片真实 R2 PUT 成功，第二片首次由页面采集器模拟失败，UI 进入 `failed / 1 个缺片`，点击“继续”后同一 session read-back 显示已上传 1 片、缺 1 片，随后第二片真实 R2 PUT 成功并 complete，最终 status 为 `completed/uploadedPartsCount=2/missingPartNumbersCount=0`。全部控制面 endpoint 命中生产 `apps/api=https://01s-11-server.ruan-cat.com`。
+
+cleanup 边界：当前 shared-upload 组件对 `completed` 队列项点击“移除”只清空前端队列和本地缓存，不调用 `upload/abort`，因此不能把该动作写成删除 completed public object。completed object 的 abort cleanup、status residual 与旧 public HEAD 404 已由 Task 1025/1026 的生产 server-side cleanup 证据覆盖。
+
+复核边界：Godel 子代理确认，browser shared-upload 成功足以关闭 task102 browser drill 和 upload 总体验收，但不能替代普通 CRUD 页面分项。最终页面复核项必须同时引用 task101 生产页面 CRUD 证据和 task102 页面上传证据；本轮已按该边界关闭。关闭这些项仍不代表旧 `apps/admin/server` 可删除，不代表 `retirementDecision` 可从 `keep-source` 升级，也不代表 fallback/shadow-off/ledger 退役门禁完成。
+
+脱敏边界：长期 artifact 不得保存完整 signed URL、public URL、R2 object key、uploadId、ETag 值、token、cookie、Authorization、DB/R2/AWS secret、完整请求体或完整响应体。中间态事件文件在发现含 R2 account origin 摘要后已删除，仅保留最终脱敏 final.json。
+
+## 2026-06-05 项目级 lint 残余风险
+
+`pnpm -r --if-present run lint` 不能作为本轮通过项记录。该命令中 `apps/app` lint 通过，但 `apps/admin` lint 失败，失败规模为 128 个既有 lint error，主要类型包括未使用变量、`no-empty-object-type`、`vue/no-unused-vars`，分布在 `apps/admin/build/plugins/**`、旧 `src/api/**`、router、docs 示例、若干 form 组件和测试文件；`apps/api` 当前没有 lint script。
+
+风险控制：由于 `apps/admin` 的 lint script 会执行 `eslint --fix`，本轮尝试后曾产生一批与 task101/task102/OpenSpec 收尾无关的 `apps/admin` 工作区改动。主代理已按本轮边界仅还原这些 lint 自动修复副作用，避免把旧 lint debt 或格式化副作用混入 OpenSpec 记录提交。后续如要满足 goal 的“项目 lint 全部通过”，应作为独立 lint debt 切片或单独 OpenSpec change 处理，不得把当前 OpenSpec tasks 全部完成误写为项目 lint 通过。
+
+## 2026-06-05 最终验证 v2 边界
+
+上一节“项目级 lint 残余风险”已经被本轮后续验证覆盖：`pnpm -r --if-present run lint` 复跑通过。早先失败是 admin eslint 在 Windows 下带 `--fix` 的一次崩溃或旧输出残留，不再作为当前阻断；当前可引用的最终门禁以 `agent-progress.md` 的“最终验证 v2”为准。
+
+admin 默认 Vitest 已调整为离线可验证边界：`tests/nitro/**` 继续由显式 `tests/nitro/` 路径或 `--node` 进入 node 配置；旧 `src/api/c*/**/*.test.ts` 与 `src/api/j*/**/*.test.ts` 默认排除，因为它们大量属于真实网络 smoke 测试或历史占位，默认全量不应依赖本地 Nitro 服务或外部网络。遗留风险是这些旧 smoke 目前没有新的显式脚本入口；如果后续要继续保留它们，应单独建立脚本、配置模式或迁移到 `src/api/**/tests/` 下的 hermetic 测试。
+
+根目录测试过滤有一个易误用点：`pnpm exec vitest run tests/bump-config.test.ts tests/vercel-env.test.ts` 会额外收集 `apps/admin/tests/vercel-env.test.ts`，因为 Vitest 文件过滤按片段匹配，导致 admin env 测试在 root cwd 下找不到 `apps/admin/.env` 与 `.env.vercel.local`。正确的根目录测试命令是 `pnpm exec vitest run --dir tests`，该命令已通过，覆盖根目录 2 files、5 tests。
+
+`apps/admin/tests/setup.ts` 仍会加载 `apps/admin/.env` 与 `.env.vercel.local`。这不是本轮新增风险，也不直接发起网络请求，但默认 admin 单测进程仍可能读入本地环境变量。后续若要进一步收紧 hermetic 测试，应单独评估是否把 env 加载拆到需要真实配置的测试 setup 中；本轮只记录风险，不扩大重构。
+
+当前 OpenSpec change 的 `/opsx:verify` 等效复核无 CRITICAL，`tasks.md` 无未勾选任务；但这些结论仍不代表旧 `apps/admin/server` 或 `apps/app/server` 目录可删除，也不代表 retirement decision 可自动从 `keep-source` 升级。退役仍需要独立评审或后续 OpenSpec change。

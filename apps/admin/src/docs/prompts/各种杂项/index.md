@@ -627,7 +627,7 @@ BLOCKED：已按长任务停止条件收尾。当前 tasks.md 还剩 22 个未�
 3. 提供或确认 R2 env、AWS SDK/R2 client、upload session repository 与前端断点续传闭环方案。
 4. task815 还需要新增专门的 fallback/shadow-off drill，证明 fallback 不可用时 exact handler 仍由 apps/api 承接。
 
-### 04 2026-5-27 AI 的阶段性中断报告 <!-- TODO: -->
+### 04 2026-5-27 AI 的阶段性中断报告 <!-- 已完成 -->
 
 当前阻断原因：
 
@@ -640,3 +640,11 @@ BLOCKED：已按长任务停止条件收尾。当前 tasks.md 还剩 22 个未�
 1. 为什么 `ct_contracts` 有问题？你没办法增加，修改，更新生产环境的 neon 数据库字段么？我们 admin 项目提供了 neon 数据库的 drizzle 更新能力，请你用这个能力去更新 neon 数据库，自己处理好字段和数据库表的问题。这个问题不应该跟我说需要我人工干预。
    - 另外，你需要在 openspec\changes\migrate-superpowers-docs-to-openspec-longtask 的 spec 内，增加说明清楚如何用 drizzle 来更新 neon 数据库表，并更新对应 schema 架构的规范。这个东西早就准备好了，你看看本项目的项目级别 skills，和 openspec 的历史 spec 规范。
 2. 本地页面 R2 浏览器直传被 CORS 预检阻断。那就换一种方式来完成 R2 文件分片请求的测试。之前 admin 项目不是已经把这部分的接口给做好了吗？你直接迁移整合不行么？admin 项目已经完成过复杂的，基于 cloudflare R2 的文件分片上传的接口开发，和生产环境接口的部署了。你认真学习代码，做好迁移和自测就行。那为什么之前弄这个文件分片上传开发的时候，没有说遇到跨域的问题呢？
+
+### 05 最终全面评估是否可以删除 旧 apps/admin/server 和 apps/app/server 两个 nitro 接口是否可以删除掉 <!-- TODO: -->
+
+`openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 说代表的长任务，现在已经基本上是全部执行完毕了。但是我不清楚你的执行情况，是否有遗漏和缺漏。
+
+我需要你全面探索，全面审核 migrate-superpowers-docs-to-openspec-longtask 任务是否执行完毕了。然后我再继续考虑旧 apps/admin/server 和 apps/app/server 两个 nitro 接口服务的 retirement gate 是否达成。
+
+这是一个探索与验证任务，请你设计好如何完整探索与验证的方案。并且去落实执行下去，并最后给我一个是否能开始删除 app 和 admin 两个项目 nitro 接口的进度。
