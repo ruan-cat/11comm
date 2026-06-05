@@ -165,7 +165,7 @@ export function exportPaymentMethod<T = void>(params: MethodExportQueryParams, o
  * 导出欠费统计
  */
 export function exportArrearsStat<T = void>(options?: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
+	return useRequest<ParamsQueryKey, T, Record<string, never>>({
 		url: "/c6-repomanage/datastat/arrearsExport",
 		httpParamWay: "query",
 		config: {

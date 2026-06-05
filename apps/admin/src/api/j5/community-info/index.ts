@@ -93,12 +93,12 @@ export interface NotEnteredCommunityData {
 /**
  * 添加小区参数
  */
-export interface AddCommunityParams extends CommunityData {}
+export type AddCommunityParams = CommunityData;
 
 /**
  * 修改小区参数
  */
-export interface ModifyCommunityParams extends CommunityDetailData {}
+export type ModifyCommunityParams = CommunityDetailData;
 
 /**
  * 查询小区列表参数
@@ -229,7 +229,7 @@ export function queryCityAreas<T = CityAreaData[]>(options: UseAxiosOptionsJsonV
  * @description 获取尚未有物业公司入驻的小区列表
  */
 export function queryNotEnteredCommunityList<T = NotEnteredCommunityData[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
+	return useRequest<ParamsQueryKey, T, Record<string, never>>({
 		url: "/j5-info/community/query-not-entered",
 		httpParamWay: "query",
 		config: {

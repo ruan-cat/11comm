@@ -174,7 +174,7 @@ export function listShiftSetting<T = PageDTO<ShiftListDTO>>(options: UseAxiosOpt
  * @description 获取所有班次的名称列表
  */
 export function getShiftNameList<T = ShiftNameItem[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
+	return useRequest<ParamsQueryKey, T, Record<string, never>>({
 		url: "/j4-orgmanager/shiftSetting/listShiftSettingName",
 		httpParamWay: "query",
 		config: {

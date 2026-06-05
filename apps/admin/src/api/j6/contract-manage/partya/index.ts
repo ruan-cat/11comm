@@ -81,7 +81,7 @@ export interface UpdateContractPartyaParams {
  * https://app.apifox.com/link/project/6386631/apis/api-305749927
  */
 export function getContractPartyaNameList<T = string[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
+	return useRequest<ParamsQueryKey, T, Record<string, never>>({
 		url: "/j6-contract/partya/query-contract-partya",
 		httpParamWay: "query",
 		config: {

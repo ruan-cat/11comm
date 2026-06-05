@@ -181,7 +181,7 @@ export function deleteOrganization<T = string>(options: UseAxiosOptionsJsonVO<T>
  * @description 获取组织结构树
  */
 export function getOrganizationTree<T = OrganizationTreeNode[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
+	return useRequest<ParamsQueryKey, T, Record<string, never>>({
 		url: "/j4-orgmanager/organization/get-org-tree",
 		httpParamWay: "query",
 		config: {

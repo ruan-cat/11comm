@@ -266,7 +266,7 @@ export function deleteContractTypeExtend<T = boolean>(options: UseAxiosOptionsJs
  * 获取合同类型名称列表
  */
 export function getContractTypeNameList<T = ContractTypeNameDataModel[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
+	return useRequest<ParamsQueryKey, T, Record<string, never>>({
 		url: "/j6-contract/type/list-contract-type-names",
 		httpParamWay: "query",
 		config: {

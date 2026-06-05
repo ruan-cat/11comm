@@ -228,7 +228,6 @@ export class PureHttp {
 					const _data = response.data as JsonVO<any>;
 
 					// 警告 文件请求接口没有返回以下信息 可能会导致错误
-					const { data = {}, message = "" } = _data;
 					let { code } = _data;
 					/**
 					 * 检查当前的请求地址是否是apifox的地址

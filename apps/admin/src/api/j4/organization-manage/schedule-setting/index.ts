@@ -239,7 +239,7 @@ export function queryScheduleList<T = PageDTO<ScheduleInfoDTO>>(options: UseAxio
  * @description 获取所有排班设置的名称列表
  */
 export function getScheduleNameList<T = ScheduleNameItem[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
+	return useRequest<ParamsQueryKey, T, Record<string, never>>({
 		url: "/j4-orgmanager/scheduling/schedule-name-list",
 		httpParamWay: "query",
 		config: {

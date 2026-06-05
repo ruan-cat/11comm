@@ -189,7 +189,7 @@ export interface ModifyMenuItemParams {
  * @description 获取菜单名称树
  */
 export function getMenuPrivilegeTree<T = MenuPrivilegeTreeDTO[]>(options: UseAxiosOptionsJsonVO<T>) {
-	return useRequest<ParamsQueryKey, T, {}>({
+	return useRequest<ParamsQueryKey, T, Record<string, never>>({
 		url: "/j1-manumana/meunmana/get-menuprivilegetree",
 		httpParamWay: "query",
 		options,

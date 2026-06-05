@@ -49,7 +49,7 @@ export const getContractList = (
 };
 
 // 获取合同甲方
-export const getJF = (data?: object) => {
+export const getJF = (_data?: object) => {
 	return http.request<Result>("get", baseUrl + "/contract/change/get-contract-chang", {
 		headers: {
 			"Content-Type": "application/json",
@@ -58,7 +58,7 @@ export const getJF = (data?: object) => {
 };
 
 // 获取合同类型
-export const getLX = (data?: object) => {
+export const getLX = (_data?: object) => {
 	return http.request<Result>("get", baseUrl + "/contract/change/get-contract", {
 		headers: {
 			"Content-Type": "application/json",
@@ -67,7 +67,7 @@ export const getLX = (data?: object) => {
 };
 
 // 获取合同变更
-export const getBG = (data?: object) => {
+export const getBG = (_data?: object) => {
 	return http.request<Result>("get", baseUrl + "/contract/change/get-contrac", {
 		headers: {
 			"Content-Type": "application/json",
@@ -76,7 +76,7 @@ export const getBG = (data?: object) => {
 };
 
 // 获取起草合同
-export const getQC = (data?: object) => {
+export const getQC = (_data?: object) => {
 	return http.request<Result>("get", baseUrl + "/contract/change/get-const", {
 		headers: {
 			"Content-Type": "application/json",

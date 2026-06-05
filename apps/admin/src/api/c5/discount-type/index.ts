@@ -5,9 +5,8 @@ import { useRequest } from "@/composables/use-request";
 /**
  * 获取优惠类型名称列表参数
  */
-export interface QueryDiscountTypeNameParams {
-	// 通常名称列表查询不需要特殊参数，但保留空对象以满足类型约束
-}
+/** 通常名称列表查询不需要特殊参数，但保留空对象以满足类型约束 */
+export type QueryDiscountTypeNameParams = Record<string, never>;
 
 /**
  * 获取优惠类型列表查询参数
