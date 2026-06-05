@@ -84,8 +84,8 @@ export function useGotoDetailPage() {
 	 */
 	function handleDetailPageBeforeEnter(
 		to: RouteLocationNormalized,
-		from: RouteLocationNormalized,
-		next: NavigationGuardNext,
+		_from: RouteLocationNormalized,
+		_next: NavigationGuardNext,
 	) {
 		try {
 			// 1. 获取当前路由名称

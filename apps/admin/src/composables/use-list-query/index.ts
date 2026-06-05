@@ -17,7 +17,7 @@ type UseListPureTableProps = DefaultListPureTableProps;
  * useListQuery 配置选项
  * useListQuery configuration options
  */
-export interface UseListQueryOptions<TItem, TParams extends BaseListQueryParams = BaseListQueryParams> {
+export interface UseListQueryOptions<_TItem, TParams extends BaseListQueryParams = BaseListQueryParams> {
 	/** 查询键前缀 Query key prefix */
 	queryKeyPrefix: string;
 	/** API 接口路径 API endpoint path */
@@ -136,7 +136,7 @@ export function useListQuery<TItem, TParams extends BaseListQueryParams>(
 		staleTime,
 	});
 
-	const { data, isError, isFetching, error, refetch } = tanStackQueryObject;
+	const { data, isFetching, error, refetch } = tanStackQueryObject;
 
 	/** 监听数据变化，更新表格数据 */
 	watch(

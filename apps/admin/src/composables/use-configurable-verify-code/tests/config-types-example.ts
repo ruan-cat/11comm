@@ -1,4 +1,4 @@
-interface PlatformConfigs {
+export interface PlatformConfigs {
 	/** 验证码相关配置 */
 	CaptchaConfig?: {
 		/** 是否启用图片验证码，默认false */
@@ -10,7 +10,7 @@ interface PlatformConfigs {
 	};
 }
 
-interface StorageConfigs {
+export interface StorageConfigs {
 	/** 验证码相关配置（驼峰命名用于本地存储） */
 	captchaConfig?: {
 		/** 是否启用图片验证码，默认false */

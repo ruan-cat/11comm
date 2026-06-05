@@ -1,12 +1,12 @@
 import { useConfigurableVerifyCode } from "../index";
 
 // 参数类型定义
-interface BaseParams {
+export interface BaseParams {
 	username: string;
 	password: string;
 }
 
-interface CaptchaData {
+export interface CaptchaData {
 	verifyCode?: string; // 图片验证码
 	uuid?: string; // 验证码UUID
 	smsCode?: string; // 短信验证码
@@ -17,7 +17,7 @@ interface CaptchaData {
 const { buildLoginParams } = useConfigurableVerifyCode();
 
 // 使用示例
-const loginParams = buildLoginParams(
+export const loginParams = buildLoginParams(
 	{
 		username: "admin",
 		password: "123456",

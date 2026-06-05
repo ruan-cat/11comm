@@ -1,6 +1,4 @@
 import { onMounted } from "vue";
-import type { PlusFormInstance } from "plus-pro-components";
-import type { Ref, TemplateRef } from "vue";
 
 /**
  * 使用 `PlusForm` 的重置表单功能

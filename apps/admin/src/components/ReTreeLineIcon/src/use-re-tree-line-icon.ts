@@ -1,13 +1,5 @@
-import { ref, computed, watch, readonly, getCurrentInstance, type Ref } from "vue";
-import type {
-	TreeNodeWithIcon,
-	TreeSelectEvent,
-	TreeSearchOptions,
-	TreeExpansionOptions,
-	HighlightMap,
-	TreeExposedMethods,
-	ReTreeLineIconInstance,
-} from "./types";
+import { ref, computed, watch, readonly, type Ref } from "vue";
+import type { TreeNodeWithIcon, ReTreeLineIconInstance } from "./types";
 
 /**
  * ReTreeLineIcon 组合式API
@@ -154,7 +146,6 @@ export function useReTreeLineIcon(
 	function getSelectionPath(): TreeNodeWithIcon[] {
 		if (!selectedNode.value) return [];
 
-		const flatNodes = getFlatNodes();
 		const path: TreeNodeWithIcon[] = [];
 		const currentNode = selectedNode.value;
 

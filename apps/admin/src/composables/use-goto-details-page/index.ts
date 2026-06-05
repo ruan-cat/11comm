@@ -1,4 +1,4 @@
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import type {
 	RouteLocationRaw,
 	NavigationGuardNext,
@@ -28,7 +28,6 @@ export interface BeforeEnterParams {
  */
 export function useGotoDetailsPage() {
 	const router = useRouter();
-	const route = useRoute();
 	const detailsPageRouterInfoStore = useDetailsPageRouterInfoStoreHook();
 
 	/**
@@ -125,7 +124,6 @@ export function useGotoDetailsPage() {
 	) {
 		try {
 			// 1. 准备当前路由信息（按照文档要求）
-			const route = useRoute();
 
 			// 2. 从当前路由信息内，获取路由名称（按照文档要求）
 			const routeName = to.name;

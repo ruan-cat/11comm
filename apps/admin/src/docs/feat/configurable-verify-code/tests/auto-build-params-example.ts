@@ -16,7 +16,7 @@ const captchaInfo = {
 const { isImageCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 // 旧方式 - 手动构建参数
-const loginDataOld = {
+export const loginDataOld = {
 	username: form.username,
 	password: form.password,
 	...(isImageCaptchaEnabled.value && {
@@ -26,7 +26,7 @@ const loginDataOld = {
 };
 
 // 新方式 - 自动构建参数
-const loginDataNew = buildLoginParams(
+export const loginDataNew = buildLoginParams(
 	{ username: form.username, password: form.password },
 	{ verifyCode: form.verifyCode, uuid: captchaInfo.value?.uuid },
 );

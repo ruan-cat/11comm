@@ -2,8 +2,7 @@ import { useConfigurableVerifyCode } from "@/composables/use-configurable-verify
 
 export default {
 	setup() {
-		const { isImageCaptchaEnabled, isSmsCaptchaEnabled, isSystemCaptchaEnabled, buildLoginParams } =
-			useConfigurableVerifyCode();
+		const { isImageCaptchaEnabled, isSmsCaptchaEnabled, buildLoginParams } = useConfigurableVerifyCode();
 
 		return {
 			isImageCaptchaEnabled,
