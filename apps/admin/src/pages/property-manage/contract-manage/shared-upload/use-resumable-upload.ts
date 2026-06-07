@@ -158,8 +158,19 @@ async function hashText(text: string) {
 			.join("");
 	}
 
-	const { createHash } = await import("node:crypto");
-	return createHash("sha256").update(text).digest("hex");
+	return hashTextWithoutSubtleCrypto(text);
+}
+
+/** 少数浏览器缺少 SubtleCrypto 时，使用前端本地稳定散列兜底，避免把 Node crypto 打进浏览器包。 */
+function hashTextWithoutSubtleCrypto(text: string) {
+	let hash = 2166136261;
+
+	for (let index = 0; index < text.length; index++) {
+		hash ^= text.charCodeAt(index);
+		hash = Math.imul(hash, 16777619);
+	}
+
+	return `fallback-${(hash >>> 0).toString(16).padStart(8, "0")}`;
 }
 
 /** 为前端上传队列项创建本地唯一 ID */
