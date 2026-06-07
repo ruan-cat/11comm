@@ -1,5 +1,27 @@
 # 代理发现记录
 
+## 2026-06-07 app task438/task439 purchase 第二十九批 readonly/guarded exact 边界
+
+`/app/resourceStore.listResourceStores` 已从 fallback-only 收敛为 `apps/api` purchase 模块 GET-only readonly exact；`/app/purchase/purchaseApply` 与 `/app/purchase/urgentPurchaseApply` 已从 fallback-only 收敛为 POST-only guarded exact。registry 不为资源仓库列表注册 POST，也不为两条写入口注册 GET；fallback disabled 时三条路径都由 `apps/api` 承接，不触发旧 app fallback fetch。
+
+旧语义边界：旧 app purchase repository 的 `listResourceStores` 只读取 resource store seed；`savePurchaseApply` 和 `saveUrgentPurchaseApply` 会向旧 in-memory purchase apply list 写入记录。当前没有 purchase DB-backed、受控写入窗口、read-back、rollback、residual check、guard-restored 或生产 App H5 Network 证据，因此本批只能让两条写入口 fail-closed guard，不能真实提交普通采购或紧急采购申请。
+
+TDD 与统计记录：红灯阶段同一组 7 个 api 测试文件先失败在三条 endpoint 未注册、dispatch 404、fallback-off 仍进入 404、manifest/evidence 缺 batch29 和 module fixture 仍是旧 purchase guard；实现后 7 files / 447 tests 通过，`pnpm -F @01s-11comm/api run typecheck` 通过，限定 `git diff --check` 通过。fresh scan 从 apiRows=129、exactOldSource=128、fallbackOnly=83 更新为 apiRows=132、exactOldSource=131、fallbackOnly=80；purchaseExact=3、purchaseFallback=5。`/app/purchase/updatePurchaseApply` 仍是 apiOnly=1 的 client-only guard，不计入旧 source exactOldSource。
+
+禁止误判：第二十九批不代表 purchase DB_READY、真实采购申请写入、紧急采购申请写入、生产 app H5 Network、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate 或旧 app server 删除许可。purchase 前缀剩余 fallback 为 `/app/purchase/resourceEnter`、`/app/purchaseApply.auditApplyOrder`、`/app/purchaseApply.deletePurchaseApply`、`/app/purchaseApply.listMyAuditOrders` 与 `/app/purchaseApply.listPurchaseApplys`，这些属于 resource 旧 source 模块，后续不能因本批把 purchase 前缀整体写成完成。
+
+## 2026-06-07 app task438/task439 coupon 第二十八批 readonly/guarded exact 边界
+
+`/app/reserveOrder.listReserveGoodsConfirmOrder` 已从 fallback-only 收敛为 `apps/api` coupon 模块 GET+POST readonly exact；`/app/couponProperty.writeOffCouponPropertyUser`、`/app/integral.useIntegral` 与 `/app/reserveOrder.saveReserveGoodsConfirmOrder` 已从 fallback-only 收敛为 POST-only guarded exact。registry 对三条写入口不注册 GET，fallback disabled 时由 `apps/api` 直接返回 `{ code: 409, msg, data: null, errorCode: "PHASE7_MUTATION_GUARDED" }`，不触发旧 app fallback fetch。
+
+旧语义边界：Heisenberg 只读复核确认三条写入口会修改旧 app in-memory 状态，分别对应卡券核销、积分使用和预约确认保存；预约确认列表是只读分页查询。当前没有 coupon/integral/reserve DB-backed、受控写入窗口、read-back、rollback、residual check、guard-restored 或生产 App H5 Network 证据，因此本批不能真实核销卡券、使用积分或保存预约确认。
+
+TDD 与统计记录：红灯阶段同一组 7 个 api 测试文件先失败在 endpoint 未注册、GET/POST 边界缺失、dispatch 404、manifest/evidence 缺 batch28 和 fallback-off 未承接；实现后 7 files / 443 tests 通过，`pnpm -F @01s-11comm/api run typecheck` 通过，提交前 staged `git diff --cached --check` 与限定 `git diff --check` 通过。fresh scan 从 apiRows=125、exactOldSource=124、fallbackOnly=87、couponExact=3、couponFallback=4 更新为 apiRows=129、exactOldSource=128、fallbackOnly=83、couponExact=7、couponFallback=0。coupon 旧 source 已无 fallback-only URL；task438/task439 仍 open，因为全局 fallbackOnly=83 未清零。
+
+工具与提交记录：fresh scan 第一次嵌套 PowerShell here-string 触发 BOM 解析失败，不能作为证据；最终采用直接 PowerShell URL 提取脚本的成功输出。本轮按用户阶段性 git commit 要求提交了 `b21a91a5` 与 `d677a6ba` 两个本地 commit，未 push；后续若继续长任务，应以当前工作树和 OpenSpec 文件为准，不要把这两个提交外推成生产部署或旧服务退役完成。
+
+禁止误判：第二十八批不代表 coupon/integral/reserve DB_READY、真实核销、积分使用、预约确认保存、生产 app H5 Network、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate 或旧 app server 删除许可。
+
 ## 2026-06-07 app task438/task439 maintenance 第二十七批两条 guarded exact 边界
 
 `/app/maintenance.submitMaintenanceSingle` 与 `/app/maintenance.transferMaintenanceTask` 已从 fallback-only 收敛为 `apps/api` maintenance 模块 POST-only guarded exact：registry 只注册 POST，不注册 GET；fallback disabled 时由 `apps/api` 直接返回 maintenance legacy envelope 的 409 guard，不触发旧 app fallback fetch。返回 shape 继续保持 `{ success, code, message, data, timestamp }`，并额外带 `errorCode=PHASE7_MUTATION_GUARDED`；不能改写成其它模块常见的 `{ code, msg, data }`。
