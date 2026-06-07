@@ -6,19 +6,6 @@
       "cache": true,
       "outputs": ["dist/**"]
     },
-    "build:nitro": {
-      "cache": true,
-      "outputs": [".output/**"]
-    },
-    "build:nitro:node": {
-      "cache": true,
-      "outputs": [".output/**"]
-    },
-    "build:nitro:vercel": {
-      "cache": true,
-      "outputs": [".output/**", ".vercel/output/**"],
-      "dependsOn": ["build:h5:prod"]
-    },
     "docs:build": {
       "cache": true,
       "outputs": ["docs/.vitepress/dist/**"]

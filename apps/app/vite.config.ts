@@ -21,7 +21,6 @@ import Optimization from '@uni-ku/bundle-optimizer'
 // https://github.com/uni-ku/root
 import UniKuRoot from '@uni-ku/root'
 import dayjs from 'dayjs'
-import { nitro } from 'nitro/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -29,7 +28,7 @@ import { defineConfig, loadEnv } from 'vite'
 import { mockDevServerPlugin } from 'vite-plugin-mock-dev-server'
 import ViteRestart from 'vite-plugin-restart'
 
-/** Mock compiler only needs the local aliases referenced by `src/api/mock` and `server/**`. */
+/** Mock compiler only needs the local aliases referenced by `src/api/mock`. */
 function createMockRuntimeAliasEntries(root: string) {
   return [
     { find: '@', replacement: path.join(root, './src') },
@@ -93,12 +92,10 @@ export default ({ command, mode }) => {
     VITE_APP_PROXY_ENABLE,
     VITE_APP_PROXY_PREFIX,
     VITE_API_RUNTIME,
-    NITRO_PORT,
   } = env
   console.log('环境变量 env -> ', env)
 
   const isMockRuntime = !VITE_API_RUNTIME || VITE_API_RUNTIME === 'mock'
-  const isNitroViteRuntime = VITE_API_RUNTIME === 'nitro-vite'
   const mockRuntimeAliasLifecycle = createMockRuntimeAliasLifecycle()
 
   return defineConfig({
@@ -149,7 +146,6 @@ export default ({ command, mode }) => {
         // 修改 Vite 主配置时自动重启开发服务器（与仓库实际文件名一致）
         restart: ['vite.config.ts', 'vite.config.js'],
       }),
-      isNitroViteRuntime && nitro(),
 
       // 开发态保留 mock 服务；preview 预览态禁用，避免 vite@6 下触发 mock 插件兼容异常
       command === 'serve'
@@ -249,13 +245,6 @@ export default ({ command, mode }) => {
             },
           }
         : undefined,
-    },
-    nitro: {
-      serverDir: './server',
-      ignore: ['modules/**/*'],
-      devServer: {
-        port: Number.parseInt(NITRO_PORT || '3101', 10),
-      },
     },
     esbuild: {
       drop: VITE_DELETE_CONSOLE === 'true' ? ['console', 'debugger'] : ['debugger'],
