@@ -2,7 +2,7 @@ import { legacyFailure, legacySuccess } from "../../shared/runtime/response-buil
 import type { WorkOrderService } from "./service";
 
 export const workOrderLegacyAdapterEvidence = {
-	scope: "readonly-exact-handler-pilot",
+	scope: "readonly-exact-handler-plus-guarded-write",
 	dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 	responseContract: "{ code, msg, data }",
 	endpoints: [
@@ -12,7 +12,7 @@ export const workOrderLegacyAdapterEvidence = {
 		"/app/workorder/task/list",
 		"/app/workorder/task/items",
 	],
-	notCovered: [
+	guardedEndpoints: [
 		"/app/workorder/create",
 		"/app/workorder/update",
 		"/app/workorder/start",
@@ -20,6 +20,13 @@ export const workOrderLegacyAdapterEvidence = {
 		"/app/workorder/audit",
 		"/app/workorder/cancel",
 		"/app/workorder/copy/finish",
+	],
+	defaultWriteBehavior: "blocked-for-execution",
+	writeVerification: "no-read-back-or-rollback-evidence",
+	notCovered: [
+		"work-order-write-read-back-rollback",
+		"production-app-h5-work-order-network",
+		"db-ready-work-order-write-path",
 	],
 } as const;
 
@@ -82,6 +89,15 @@ export function createLegacyWorkOrderAdapter(service: WorkOrderService) {
 			const states = parseStates(toString(input.states));
 
 			return legacySuccess(await service.listTaskItems({ page, row, workId, states }), "query success");
+		},
+
+		async guardedWrite(endpoint: string, input: Record<string, unknown>) {
+			void input;
+			return legacyFailure(
+				`Phase7 mutation guard blocked ${endpoint}; no work-order write read-back rollback evidence exists, so this endpoint stays guarded in apps/api.`,
+				409,
+				{ errorCode: "PHASE7_MUTATION_GUARDED" },
+			);
 		},
 	};
 }

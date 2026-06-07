@@ -7,10 +7,20 @@ import {
 } from "../../server/shared/runtime/endpoint-registry";
 import { runtimeEndpointDefinitions } from "../../server/shared/runtime/runtime-endpoints";
 
-describe("work-order legacy endpoints phase7 readonly slice", () => {
+const guardedWriteEndpoints = [
+	["/app/workorder/create", "create"],
+	["/app/workorder/update", "update"],
+	["/app/workorder/start", "start"],
+	["/app/workorder/complete", "complete"],
+	["/app/workorder/audit", "audit"],
+	["/app/workorder/cancel", "cancel"],
+	["/app/workorder/copy/finish", "copy/finish"],
+] as const;
+
+describe("work-order legacy endpoints phase7 readonly and guarded write slice", () => {
 	const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
-	test("registers only readonly exact handlers", () => {
+	test("registers readonly exact handlers and guarded write POST handlers", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/workorder/todo/list")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/workorder/todo/list")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/workorder/detail")).toBeTruthy();
@@ -22,18 +32,31 @@ describe("work-order legacy endpoints phase7 readonly slice", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/workorder/task/items")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/workorder/task/items")).toBeTruthy();
 
-		for (const path of [
-			"/app/workorder/create",
-			"/app/workorder/update",
-			"/app/workorder/start",
-			"/app/workorder/complete",
-			"/app/workorder/audit",
-			"/app/workorder/cancel",
-			"/app/workorder/copy/finish",
-		]) {
-			expect(findEndpointDefinition(registry, "POST", path)).toBeUndefined();
+		for (const [path] of guardedWriteEndpoints) {
+			expect(findEndpointDefinition(registry, "POST", path)).toBeTruthy();
+			expect(findEndpointDefinition(registry, "GET", path)).toBeUndefined();
 		}
 	});
+
+	test.each(guardedWriteEndpoints)(
+		"blocks %s by default with the legacy guarded mutation envelope",
+		async (path, action) => {
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path,
+				body: { workId: "WO_001" },
+			});
+
+			expect(response).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+		},
+	);
 
 	test("serves todo list through the unified app legacy envelope", async () => {
 		const response = await dispatchEndpoint(registry, {

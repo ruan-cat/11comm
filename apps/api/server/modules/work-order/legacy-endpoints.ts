@@ -29,4 +29,46 @@ export const workOrderLegacyEndpointDefinitions: EndpointDefinition[] = [
 		handler: ({ query, body, event }) =>
 			getWorkOrderRuntime(event).legacyAdapter.listTaskItems(mergeInput(query, body)),
 	},
+	{
+		url: "/app/workorder/create",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getWorkOrderRuntime(event).legacyAdapter.guardedWrite("/app/workorder/create", mergeInput(query, body)),
+	},
+	{
+		url: "/app/workorder/update",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getWorkOrderRuntime(event).legacyAdapter.guardedWrite("/app/workorder/update", mergeInput(query, body)),
+	},
+	{
+		url: "/app/workorder/start",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getWorkOrderRuntime(event).legacyAdapter.guardedWrite("/app/workorder/start", mergeInput(query, body)),
+	},
+	{
+		url: "/app/workorder/complete",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getWorkOrderRuntime(event).legacyAdapter.guardedWrite("/app/workorder/complete", mergeInput(query, body)),
+	},
+	{
+		url: "/app/workorder/audit",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getWorkOrderRuntime(event).legacyAdapter.guardedWrite("/app/workorder/audit", mergeInput(query, body)),
+	},
+	{
+		url: "/app/workorder/cancel",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getWorkOrderRuntime(event).legacyAdapter.guardedWrite("/app/workorder/cancel", mergeInput(query, body)),
+	},
+	{
+		url: "/app/workorder/copy/finish",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getWorkOrderRuntime(event).legacyAdapter.guardedWrite("/app/workorder/copy/finish", mergeInput(query, body)),
+	},
 ];
