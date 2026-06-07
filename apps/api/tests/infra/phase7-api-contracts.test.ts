@@ -715,6 +715,26 @@ describe("phase7 apps-api dual client contracts", () => {
 			phase: "phase7-purchase-guarded-write",
 			cutoverStatus: "blocked-for-execution",
 		});
+		expectManifestEntry("/app/resourceStore.listResourceStores", {
+			method: "GET",
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "purchase",
+			phase: "phase7-purchase-readonly-batch29",
+			cutoverStatus: "app-shadow-allowlist",
+		});
+		for (const url of ["/app/purchase/purchaseApply", "/app/purchase/urgentPurchaseApply"]) {
+			expectManifestEntry(url, {
+				method: "POST",
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "purchase",
+				phase: "phase7-purchase-guarded-write-batch29",
+				cutoverStatus: "blocked-for-execution",
+			});
+		}
 	});
 
 	test("admin canonical adapter returns JsonVO instead of app legacy envelope", async () => {
@@ -1993,14 +2013,79 @@ describe("phase7 apps-api dual client contracts", () => {
 		});
 	});
 
+	test("purchase resource store list returns the legacy code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/resourceStore.listResourceStores",
+		});
+
+		expect(response).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				resourceStores: expect.arrayContaining([
+					expect.objectContaining({ resId: expect.stringMatching(/^RES_/), resName: expect.any(String) }),
+				]),
+			},
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+	});
+
+	test.each([
+		["/app/purchase/purchaseApply", { resourceStores: [{ resId: "RES_001", quantity: 1 }] }, "purchase.purchaseApply"],
+		[
+			"/app/purchase/urgentPurchaseApply",
+			{
+				resourceStores: [{ resId: "RES_002", quantity: 1 }],
+				endUserName: "User",
+				endUserTel: "13800000000",
+				description: "urgent",
+			},
+			"purchase.urgentPurchaseApply",
+		],
+	])("purchase guarded old source write endpoint returns the legacy guard envelope: %s", async (path, body, action) => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path,
+			body,
+		});
+
+		expect(response).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining(action),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+		expect(response).not.toHaveProperty("timestamp");
+	});
+
 	test("purchase guard evidence declares no-go write status", () => {
 		expect(purchaseLegacyGuardEvidence).toMatchObject({
-			scope: "client-only-gap-write-guard",
-			dataSourceStatus: "no-exact-legacy-server-source",
-			endpoint: "/app/purchase/updatePurchaseApply",
+			scope: "client-only-gap-plus-old-source-batch29",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			endpoints: ["/app/resourceStore.listResourceStores"],
+			guardedEndpoints: [
+				"/app/purchase/updatePurchaseApply",
+				"/app/purchase/purchaseApply",
+				"/app/purchase/urgentPurchaseApply",
+			],
 			defaultBehavior: "blocked-for-execution",
 			writeVerification: "no-read-back-or-rollback-evidence",
 		});
+		expect(purchaseLegacyGuardEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"db-backed-purchase-data",
+				"purchase-write-read-back-rollback",
+				"production-app-h5-purchase-network",
+			]),
+		);
 	});
 
 	test("manifest marks repair readonly DB-wired endpoints as app shadow allowlisted", () => {
@@ -2395,6 +2480,9 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(urls).toContain("/app/integral.useIntegral");
 		expect(urls).toContain("/app/reserveOrder.listReserveGoodsConfirmOrder");
 		expect(urls).toContain("/app/reserveOrder.saveReserveGoodsConfirmOrder");
+		expect(urls).toContain("/app/resourceStore.listResourceStores");
+		expect(urls).toContain("/app/purchase/purchaseApply");
+		expect(urls).toContain("/app/purchase/urgentPurchaseApply");
 	});
 
 	test("manifest marks high-risk app legacy mutation actions as blocked for execution", () => {
@@ -2405,6 +2493,8 @@ describe("phase7 apps-api dual client contracts", () => {
 			"/app/ownerRepair.saveOwnerRepair",
 			"/callComponent/ownerRepair.appraiseRepair",
 			"/app/purchase/updatePurchaseApply",
+			"/app/purchase/purchaseApply",
+			"/app/purchase/urgentPurchaseApply",
 			"/app/owner.saveRoomOwner",
 			"/app/owner.editOwner",
 			"/app/owner.deleteOwner",

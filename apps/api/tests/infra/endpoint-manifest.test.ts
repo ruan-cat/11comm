@@ -286,6 +286,9 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/itemRelease.queryFinishItemReleaseV2");
 		expect(urls).toContain("/app/itemRelease.auditItemRelease");
 		expect(urls).toContain("/app/purchase/updatePurchaseApply");
+		expect(urls).toContain("/app/resourceStore.listResourceStores");
+		expect(urls).toContain("/app/purchase/purchaseApply");
+		expect(urls).toContain("/app/purchase/urgentPurchaseApply");
 		expect(urls).toContain("/app/couponProperty.listCouponPropertyUserDetail");
 		expect(urls).toContain("/app/integral.listIntegralSetting");
 		expect(urls).toContain("/app/integral.listIntegralUserDetail");
@@ -390,7 +393,6 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).not.toContain("/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord");
 		expect(urls).not.toContain("/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord");
 		expect(urls).not.toContain("/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord");
-		expect(urls).not.toContain("/app/resourceStore.listResourceStores");
 		expect(urls).not.toContain("/app/owner.queryOwnerCars");
 		expect(urls).not.toContain("/app/machine/openDoor");
 	});
@@ -938,6 +940,24 @@ describe("phase7 endpoint manifest", () => {
 					responseContract: "{ code, msg, data }",
 					cutoverStatus: "blocked-for-execution",
 				}),
+				expect.objectContaining({
+					url: "/app/resourceStore.listResourceStores",
+					method: "GET",
+					ownerModule: "purchase",
+					phase: "phase7-purchase-readonly-batch29",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				...["/app/purchase/purchaseApply", "/app/purchase/urgentPurchaseApply"].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "purchase",
+						phase: "phase7-purchase-guarded-write-batch29",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
 				...[
 					"/app/couponProperty.listCouponPropertyUserDetail",
 					"/app/integral.listIntegralSetting",

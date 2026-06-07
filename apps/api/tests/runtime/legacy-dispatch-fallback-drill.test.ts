@@ -147,6 +147,17 @@ describe("legacy-dispatch fallback drill", () => {
 			{ timeId: "RSV200000" },
 			"reserveOrder.saveReserveGoodsConfirmOrder",
 		],
+		["/app/purchase/purchaseApply", { resourceStores: [{ resId: "RES_001", quantity: 1 }] }, "purchase.purchaseApply"],
+		[
+			"/app/purchase/urgentPurchaseApply",
+			{
+				resourceStores: [{ resId: "RES_002", quantity: 1 }],
+				endUserName: "User",
+				endUserTel: "13800000000",
+				description: "urgent",
+			},
+			"purchase.urgentPurchaseApply",
+		],
 	])("guarded exact endpoint is served by apps/api when fallback is disabled: %s", async (path, body, action) => {
 		process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
 		const fetchSpy = vi.spyOn(globalThis, "fetch");
@@ -381,6 +392,13 @@ describe("legacy-dispatch fallback drill", () => {
 			expect.objectContaining({
 				resources: expect.arrayContaining([expect.objectContaining({ resTypeName: "水管类" })]),
 				total: expect.any(Number),
+			}),
+		],
+		[
+			"/app/resourceStore.listResourceStores",
+			{},
+			expect.objectContaining({
+				resourceStores: expect.arrayContaining([expect.objectContaining({ resId: expect.stringMatching(/^RES_/) })]),
 			}),
 		],
 	])(

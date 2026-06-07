@@ -524,8 +524,25 @@ const appLegacyModules: readonly AppLegacyModuleFixture[] = [
 		phase: "phase7-purchase-guarded-write",
 		cutoverStatus: "blocked-for-execution",
 		readonly: false,
-		endpoints: ["/app/purchase/updatePurchaseApply"],
-		notCovered: [],
+		endpoints: [
+			"/app/purchase/updatePurchaseApply",
+			"/app/resourceStore.listResourceStores",
+			"/app/purchase/purchaseApply",
+			"/app/purchase/urgentPurchaseApply",
+		],
+		methodByUrl: {
+			"/app/resourceStore.listResourceStores": `method: "GET"`,
+		},
+		phaseByUrl: {
+			"/app/resourceStore.listResourceStores": "phase7-purchase-readonly-batch29",
+			"/app/purchase/purchaseApply": "phase7-purchase-guarded-write-batch29",
+			"/app/purchase/urgentPurchaseApply": "phase7-purchase-guarded-write-batch29",
+		},
+		cutoverStatusByUrl: {
+			"/app/resourceStore.listResourceStores": "app-shadow-allowlist",
+		},
+		mergeInputUsageCount: 3,
+		notCovered: ["db-backed-purchase-data", "purchase-write-read-back-rollback", "production-app-h5-purchase-network"],
 	},
 	{
 		name: "property-application",
@@ -763,7 +780,14 @@ describe("app legacy module layering", () => {
 			for (const url of endpoints) {
 				const definition = runtimeEndpointDefinitions.find((item) => item.url === url);
 				const manifest = runtimeEndpointManifest.find((item) => item.url === url && item.ownerModule === ownerModule);
-				const expectedMethod = methodByUrl?.[url] === `method: "POST"` ? "POST" : readonly ? ["GET", "POST"] : "POST";
+				const expectedMethod =
+					methodByUrl?.[url] === `method: "POST"`
+						? "POST"
+						: methodByUrl?.[url] === `method: "GET"`
+							? "GET"
+							: readonly
+								? ["GET", "POST"]
+								: "POST";
 
 				expect(definition, `${url} should be registered in runtimeEndpointDefinitions`).toMatchObject({
 					url,
