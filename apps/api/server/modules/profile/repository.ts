@@ -4,12 +4,14 @@ import type {
 	ProfileAttendanceQuery,
 	ProfileCommunityQuery,
 	ProfileInfo,
+	ProfileWriteGuardDecision,
 } from "./types";
 
 export interface ProfileRepository {
 	getUserProfile(): Promise<ProfileInfo>;
 	listCommunities(query: ProfileCommunityQuery): Promise<CommunityInfo[]>;
 	listAttendanceRecords(query: ProfileAttendanceQuery): Promise<AttendanceDayRecord[]>;
+	getWriteGuardDecision(endpoint: string, input: Record<string, unknown>): Promise<ProfileWriteGuardDecision>;
 }
 
 const profile: ProfileInfo = {
@@ -46,6 +48,15 @@ export function createProfileRepository(): ProfileRepository {
 
 		async listAttendanceRecords(query) {
 			return createAttendanceRecords(query.month);
+		},
+
+		async getWriteGuardDecision(endpoint, input) {
+			void input;
+			return {
+				code: 409,
+				message: `Phase7 mutation guard blocked ${endpoint}; no profile write read-back rollback evidence exists, so this endpoint stays guarded until the controlled write window is designed.`,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			};
 		},
 	};
 }

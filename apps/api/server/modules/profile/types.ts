@@ -34,3 +34,9 @@ export interface ProfileCommunityQuery {
 export interface ProfileAttendanceQuery {
 	month: string;
 }
+
+export interface ProfileWriteGuardDecision {
+	code: number;
+	message: string;
+	errorCode: "PHASE7_MUTATION_GUARDED";
+}

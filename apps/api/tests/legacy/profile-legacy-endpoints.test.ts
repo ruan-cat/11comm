@@ -20,8 +20,10 @@ describe("profile legacy endpoints phase7 readonly slice", () => {
 			expect(findEndpointDefinition(registry, "POST", url)).toBeTruthy();
 		}
 
-		expect(findEndpointDefinition(registry, "POST", "/app/profile.changeCommunity")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/profile.changePassword")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/profile.changeCommunity")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/profile.changePassword")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/profile.changeCommunity")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/profile.changePassword")).toBeUndefined();
 	});
 
 	test("serves profile snapshot through the unified app legacy envelope", async () => {
@@ -99,6 +101,26 @@ describe("profile legacy endpoints phase7 readonly slice", () => {
 		for (const item of response.data) {
 			expect(item.name).toContain("Sun");
 		}
+	});
+
+	test.each([
+		["/app/profile.changeCommunity", { communityId: "COMM_002" }, "profile.changeCommunity"],
+		["/app/profile.changePassword", { oldPwd: "old-password", newPwd: "new-password" }, "profile.changePassword"],
+	])("guards %s without faking write verification", async (path, body, action) => {
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path,
+			body,
+		});
+
+		expect(response).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining(action),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
 	});
 
 	test("returns an empty legacy data array for an unknown community keyword", async () => {

@@ -20,4 +20,15 @@ export const profileLegacyEndpointDefinitions: EndpointDefinition[] = [
 		handler: ({ query, body, event }) =>
 			getProfileRuntime(event).legacyAdapter.listAttendanceRecords(mergeInput(query, body)),
 	},
+	{
+		url: "/app/profile.changeCommunity",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getProfileRuntime(event).legacyAdapter.changeCommunity(mergeInput(query, body)),
+	},
+	{
+		url: "/app/profile.changePassword",
+		method: "POST",
+		handler: ({ query, body, event }) => getProfileRuntime(event).legacyAdapter.changePassword(mergeInput(query, body)),
+	},
 ];
