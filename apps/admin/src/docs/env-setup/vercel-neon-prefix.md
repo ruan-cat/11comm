@@ -1,10 +1,10 @@
 # Vercel Neon 环境变量前缀机制
 
-本文档说明 admin 项目如何获取和使用带前缀的 Vercel Neon 环境变量。
+本文档说明 `apps/api` 如何读取 Vercel Neon 环境变量。admin 文档站只保留本文作为历史说明入口；现行 DB/Nitro 运维必须以 `@01s-11comm/api` 为准。
 
 ## 1. 背景
 
-当通过 Vercel 的 Neon 集成配置数据库时，Vercel 会为环境变量添加自定义前缀，以区分不同项目的数据库连接。例如：
+通过 Vercel Neon 集成配置数据库时，Vercel 会为环境变量添加自定义前缀。例如：
 
 ```bash
 comm_admin_11__DATABASE_URL="postgresql://..."
@@ -13,233 +13,77 @@ comm_admin_11__NEON_AUTH_BASE_URL="https://..."
 comm_admin_11__PGDATABASE="neondb"
 ```
 
-其中 `comm_admin_11_` 是在 Vercel Neon 集成配置页面设置的前缀。
+其中 `comm_admin_11_` 是历史 Vercel Neon 集成前缀。名称里保留 `admin`，但当前数据库连接由 `apps/api` 消费。
 
-## 2. 环境变量文件结构
+## 2. 现行入口
 
-|              文件              |                   作用                   | 是否提交 Git |
-| :----------------------------: | :--------------------------------------: | :----------: |
-|       `apps/admin/.env`        |  项目级别配置（包含 VERCEL_ENV_PREFIX）  |      是      |
-| `apps/admin/.env.vercel.local` | 从 Vercel 拉取的 Neon 环境变量（带前缀） |      否      |
-| `apps/admin/.env.development`  |             开发环境前端配置             |      是      |
-|  `apps/admin/.env.production`  |             生产环境前端配置             |      是      |
+| 用途           | 现行位置                                |
+| -------------- | --------------------------------------- |
+| API 服务       | `apps/api`                              |
+| Nitro 配置     | `apps/api/nitro.config.ts`              |
+| Drizzle 配置   | `apps/api/drizzle.config.ts`            |
+| 运行时环境解析 | `apps/api/server/shared/runtime/env.ts` |
+| Seed CLI       | `apps/api/server/db/seed/index.ts`      |
 
-## 3. 核心配置
+`apps/admin/server/**` 只能作为 legacy source 或历史兼容参考，不再作为当前环境变量、数据库连接或 Nitro 运维入口。
 
-### 3.1. 前缀环境变量
+## 3. 数据库 URL 解析顺序
 
-在 `apps/admin/.env` 中定义了前缀环境变量：
+`apps/api` 会从以下变量中解析数据库连接：
 
-```bash
-# Vercel Neon 集成环境变量前缀
-# 该前缀用于标识从 Vercel 拉取的 Neon 数据库环境变量
-# 在 Vercel Neon 集成配置页面设置和维护：
-# https://vercel.com/ruancat-projects/~/integrations/neon/icfg_aFCpQJZiS9sXcBJfKSgHG3ZR/resources/storage/store_1hsWrjTtdSHtwdJQ/projects
-VERCEL_ENV_PREFIX=comm_admin_11_
-```
+1. `comm_admin_11__DATABASE_URL`
+2. `NITRO_DATABASE_URL`
+3. `DATABASE_URL`
+4. `POSTGRES_URL`
+5. `POSTGRES_PRISMA_URL`
+6. `VERCEL_POSTGRES_URL`
 
-### 3.2. 拉取 Vercel 环境变量
+Cloudflare Worker 运行时优先读取 `event.req.runtime.cloudflare.env`，Node/Vercel 本地运行时读取 `process.env`，最后回退到 Nitro `runtimeConfig.databaseUrl`。
 
-执行以下命令拉取 Vercel 环境变量：
+## 4. 本地配置
 
-```bash
-cd apps/admin
-pnpm env:pull
-```
-
-该命令会将环境变量保存到 `apps/admin/.env.vercel.local` 文件中（已被 .gitignore 忽略）。
-
-## 4. 工具函数
-
-项目提供了专用的工具函数来获取带前缀的环境变量。
-
-### 4.1. 文件位置
-
-```plain
-apps/admin/server/utils/vercel-env.ts
-```
-
-### 4.2. 可用函数
-
-|          函数名          |                  说明                   |       返回值        |
-| :----------------------: | :-------------------------------------: | :-----------------: |
-|   `getVercelEnvPrefix`   |   获取环境变量前缀（comm*admin_11*）    |      `string`       |
-|      `getVercelEnv`      | 获取带前缀的环境变量（可选，可能为空）  | `string｜undefined` |
-|  `getVercelEnvRequired`  |   获取带前缀的环境变量（必需，报错）    |      `string`       |
-|     `getDatabaseUrl`     | 获取数据库连接 URL（优先 Vercel，回退） |      `string`       |
-| `getDatabaseUrlUnpooled` |     获取数据库直连 URL（无连接池）      | `string｜undefined` |
-
-### 4.3. 使用示例
-
-```typescript
-import { getDatabaseUrl, getVercelEnv, getVercelEnvRequired } from "../utils/vercel-env";
-
-// 获取数据库连接 URL（自动处理前缀）
-const databaseUrl = getDatabaseUrl();
-
-// 获取特定的带前缀环境变量
-// 实际读取的是 comm_admin_11__PGDATABASE
-const pgDatabase = getVercelEnv("PGDATABASE");
-
-// 获取必需的环境变量（不存在时报错）
-const neonProjectId = getVercelEnvRequired("NEON_PROJECT_ID");
-```
-
-## 5. 工作原理
-
-```plain
-┌─────────────────────────────────────────────────────────────────┐
-│                      环境变量获取流程                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  1. 从 .env 读取 VERCEL_ENV_PREFIX                              │
-│     └── 获取前缀：comm_admin_11_                                 │
-│                                                                 │
-│  2. 从 .env.vercel.local 读取带前缀的环境变量                     │
-│     └── 例如：comm_admin_11__DATABASE_URL                       │
-│                                                                 │
-│  3. 拼接完整的环境变量名                                          │
-│     └── 前缀 + "_" + 变量名 = comm_admin_11__DATABASE_URL       │
-│                                                                 │
-│  4. 返回环境变量值                                                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-## 6. 在代码中的实际使用
-
-### 6.1. 数据库连接（server/db/index.ts）
-
-#### 懒加载模式（推荐用于 Nitro API）
-
-````typescript
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
-import type { H3Event } from "nitro/h3";
-import { getVercelEnvRequired } from "../utils/vercel-env";
-import * as schema from "./schema";
-
-/**
- * 获取数据库实例（懒加载模式）
- *
- * 在 Cloudflare Worker 环境中，环境变量只在请求处理时可用
- * 因此需要在每个请求时动态初始化数据库连接
- *
- * @param event - H3 事件对象
- * @returns Drizzle 数据库实例
- *
- * @example
- * ```typescript
- * // 在 API 路由中使用
- * export default defineEventHandler(async (event) => {
- *   const db = useDb(event);
- *   return await db.select().from(users);
- * });
- * ```
- */
-export function useDb(event: H3Event) {
-	// 如果事件上下文中已有数据库实例，直接返回（单例模式）
-	if (event.context.db) {
-		return event.context.db;
-	}
-
-	// 从环境变量获取数据库 URL（使用 Vercel 前缀）
-	const envDatabaseUrl = getVercelEnvRequired("DATABASE_URL");
-
-	// 创建新的数据库连接并缓存到事件上下文中
-	const envSql = neon(envDatabaseUrl);
-	const envDbInstance = drizzle(envSql, { schema });
-	event.context.db = envDbInstance;
-
-	return envDbInstance;
-}
-````
-
-#### Seed 脚本模式
-
-```typescript
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
-import { getDatabaseUrl } from "../utils/vercel-env";
-import * as schema from "./schema";
-
-// 使用 getDatabaseUrl 获取数据库连接（seed 脚本使用）
-const databaseUrl = getDatabaseUrl();
-const sql = databaseUrl && databaseUrl !== "postgres://dummy:dummy@localhost:5432/dummy" ? neon(databaseUrl) : null;
-const dbInstance = sql ? drizzle(sql, { schema }) : null;
-
-export const db = dbInstance;
-```
-
-### 6.2. Drizzle 配置（drizzle.config.ts）
-
-```typescript
-import { getDatabaseUrl } from "./server/utils/vercel-env";
-
-export default defineConfig({
-	dbCredentials: {
-		url: getDatabaseUrl(),
-	},
-});
-```
-
-## 7. 测试
-
-项目提供了测试用例来验证环境变量读取功能：
+本地开发或验证 `apps/api` 时，优先在 `apps/api` 运行命令：
 
 ```bash
-cd apps/admin
-pnpm vitest run tests/vercel-env.test.ts
+pnpm -F @01s-11comm/api dev
+pnpm -F @01s-11comm/api run typecheck
 ```
 
-测试内容包括：
+如需验证迁移和 seed 入口：
 
-- 验证 `VERCEL_ENV_PREFIX` 变量读取
-- 验证带前缀的 `PGDATABASE` 变量读取（期望值：`neondb`）
-- 验证前缀变量不为空字符串
-
-## 8. Vercel 配置管理
-
-### 8.1. 配置页面
-
-环境变量前缀在以下 Vercel 页面配置和维护：
-
-[Vercel Neon 集成配置](https://vercel.com/ruancat-projects/~/integrations/neon/icfg_aFCpQJZiS9sXcBJfKSgHG3ZR/resources/storage/store_1hsWrjTtdSHtwdJQ/projects)
-
-### 8.2. 修改前缀
-
-如需修改前缀，需同步更新：
-
-1. Vercel Neon 集成配置页面的前缀设置
-2. `apps/admin/.env` 中的 `VERCEL_ENV_PREFIX` 变量
-3. 重新执行 `pnpm env:pull` 拉取新的环境变量
-
-## 9. 故障排查
-
-### 9.1. 常见问题
-
-**问题：** 调用 `getDatabaseUrl()` 报错 "DATABASE_URL is not configured"
-
-**解决方案：**
-
-1. 确认已执行 `pnpm env:pull` 拉取 Vercel 环境变量
-2. 确认 `apps/admin/.env.vercel.local` 文件存在且包含带前缀的环境变量
-3. 确认 `apps/admin/.env` 中的 `VERCEL_ENV_PREFIX` 与 Vercel 配置一致
-
-**问题：** 环境变量前缀不匹配
-
-**解决方案：**
-
-1. 检查 Vercel Neon 集成配置页面的前缀设置
-2. 更新 `apps/admin/.env` 中的 `VERCEL_ENV_PREFIX` 变量
-
-### 9.2. 调试技巧
-
-可以打印环境变量进行调试：
-
-```typescript
-import { getVercelEnvPrefix, getVercelEnv } from "../utils/vercel-env";
-
-console.log("前缀:", getVercelEnvPrefix());
-console.log("数据库名:", getVercelEnv("PGDATABASE"));
+```bash
+pnpm -F @01s-11comm/api db:generate
+pnpm -F @01s-11comm/api db:migrate
+pnpm -F @01s-11comm/api run db:seed:dry-run
 ```
+
+## 5. R2 环境变量
+
+R2 也由 `apps/api` 读取和校验，相关变量包括：
+
+```bash
+R2_ENDPOINT="https://..."
+R2_BUCKET="01s-11comm-files"
+R2_ACCESS_KEY_ID="..."
+R2_SECRET_ACCESS_KEY="..."
+R2_PUBLIC_BASE_URL="https://..."
+```
+
+运行时解析位置为 `apps/api/server/shared/runtime/r2-env.ts`。readiness 检查会同时覆盖数据库和 R2 配置。
+
+## 6. 故障排查
+
+**问题：** 接口返回 "Database URL is not configured"
+
+**处理：**
+
+1. 确认 `apps/api` 运行环境存在上述任一数据库 URL。
+2. Cloudflare 部署时确认变量注入到 Worker runtime env。
+3. 本地 Node/Vercel 运行时确认变量存在于 `process.env`。
+
+**问题：** R2 readiness 失败
+
+**处理：**
+
+1. 确认 `R2_ENDPOINT`、`R2_BUCKET`、`R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`、`R2_PUBLIC_BASE_URL` 均已配置。
+2. 运行 `pnpm -F @01s-11comm/api run test:infra` 验证运行时环境解析。

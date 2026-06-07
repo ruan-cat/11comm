@@ -1,215 +1,112 @@
 # Nitro 接口环境变量配置指南
 
-本文档说明 Nitro 接口在 Cloudflare Worker 环境中如何获取 Neon 数据库环境变量的完整流程。
+本文档说明独立 Nitro API 服务在部署和运行时如何获取 Neon 与 R2 环境变量。当前权威入口是 `apps/api`，admin 旧 Nitro 入口仅作为 legacy source 或历史兼容参考。
 
 ## 1. 环境变量获取链路
 
-### 1.1 命令执行流程
-
 ```mermaid
 graph TD
-    A[运行 pnpm build:prod:cloudflare] --> B[turbo 运行 env:pull 命令]
-    B --> C[调用 scripts/env-pull.ts]
-    C --> D[从 Vercel 项目拉取环境变量]
-    D --> E[生成 apps/admin/.env.vercel.local]
-    E --> F[turbo 运行 vite:build:prod:cloudflare]
-    F --> G[Vite 调用 Nitro 插件]
-    G --> H[Nitro 加载 nitro.config.ts]
-    H --> I[dotenv 加载 .env.vercel.local]
-    I --> J[getVercelEnv 读取环境变量]
-    J --> K[将环境变量写入 cloudflare.wrangler.vars]
-    K --> L[生成 .output/server/wrangler.json]
+    A[部署或本地启动 apps/api] --> B[加载 apps/api/nitro.config.ts]
+    B --> C[写入 Nitro runtimeConfig]
+    C --> D[Cloudflare Worker / Node / Vercel 运行时]
+    D --> E[server/shared/runtime/env.ts 解析数据库变量]
+    D --> F[server/shared/runtime/r2-env.ts 解析 R2 变量]
+    E --> G[apps/api Nitro 路由]
+    F --> G
 ```
 
-### 1.2 关键文件说明
+## 2. 关键文件说明
 
-| 文件                           | 说明                                                        |
-| ------------------------------ | ----------------------------------------------------------- |
-| `.env`                         | 项目根目录的环境变量配置文件，定义 `VERCEL_ENV_PREFIX` 前缀 |
-| `.env.vercel.local`            | 由 `env:pull` 命令生成，包含 Vercel Neon 集成的环境变量     |
-| `nitro.config.ts`              | Nitro 配置文件，负责将环境变量写入 wrangler 配置            |
-| `.output/server/wrangler.json` | 构建生成的 wrangler 配置文件，包含环境变量                  |
+| 文件                                          | 说明                                        |
+| --------------------------------------------- | ------------------------------------------- |
+| `apps/api/nitro.config.ts`                    | 独立 API 服务 Nitro 配置                    |
+| `apps/api/server/shared/runtime/env.ts`       | 数据库 URL、CORS 和公共运行时配置解析       |
+| `apps/api/server/shared/runtime/r2-env.ts`    | R2 必需环境变量解析和 readiness 结果        |
+| `apps/api/server/db/index.ts`                 | 通过 `useDb(event)` 创建 Drizzle 数据库实例 |
+| `apps/api/server/routes/__nitro/ready.get.ts` | 数据库与 R2 readiness 检查                  |
 
-## 2. 环境变量前缀
+## 3. 数据库环境变量
 
-### 2.1 Vercel 前缀
-
-本项目使用 Vercel Neon 集成，环境变量前缀为：
-
-- **前缀**: `comm_admin_11_`
-- **完整变量名**: `comm_admin_11__DATABASE_URL`
-
-### 2.2 .env.vercel.local 文件内容示例
+`apps/api` 支持以下数据库 URL，按解析顺序择一使用：
 
 ```bash
-# Neon 数据库连接
-comm_admin_11__DATABASE_URL="postgresql://neondb_owner:xxx@ep-cold-surf-a1x1hkmn-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
-comm_admin_11__DATABASE_URL_UNPOOLED="postgresql://neondb_owner:xxx@ep-cold-surf-a1x1hkmn.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
-
-# Neon 项目信息
-comm_admin_11__NEON_AUTH_BASE_URL="https://ep-cold-surf-a1x1hkmn.neonauth.ap-southeast-1.aws.neon.tech/neondb/auth"
-comm_admin_11__NEON_PROJECT_ID="snowy-base-74751932"
-
-# PostgreSQL 连接参数
-comm_admin_11__PGDATABASE="neondb"
-comm_admin_11__PGHOST="ep-cold-surf-a1x1hkmn-pooler.ap-southeast-1.aws.neon.tech"
-comm_admin_11__PGPASSWORD="xxx"
-comm_admin_11__PGUSER="neondb_owner"
+comm_admin_11__DATABASE_URL="postgresql://..."
+NITRO_DATABASE_URL="postgresql://..."
+DATABASE_URL="postgresql://..."
+POSTGRES_URL="postgresql://..."
+POSTGRES_PRISMA_URL="postgresql://..."
+VERCEL_POSTGRES_URL="postgresql://..."
 ```
 
-## 3. 数据存储特点
+`comm_admin_11__DATABASE_URL` 保留历史 Vercel Neon 前缀命名，但当前由 `apps/api` 消费。
 
-### 3.1 构建时存储
+## 4. R2 环境变量
 
-```mermaid
-graph LR
-    A[.env.vercel.local] --> B[dotenv 加载]
-    B --> C[nitro.config.ts]
-    C --> D[cloudflare.wrangler.vars]
-    D --> E[.output/server/wrangler.json]
-```
-
-在构建过程中，环境变量通过以下方式存储：
-
-1. **nitro.config.ts** 使用 `dotenv` 加载 `.env.vercel.local`
-2. 通过 `getVercelEnv()` 函数读取带前缀的环境变量
-3. 将环境变量写入 `cloudflare.wrangler.vars` 配置
-4. 最终写入 `.output/server/wrangler.json` 的 `vars` 字段
-
-### 3.2 运行时存储
-
-```mermaid
-graph LR
-    A[wrangler.json vars] --> B[Cloudflare Worker 环境]
-    B --> C[process.env]
-    C --> D[Nitro API 路由]
-    D --> E[useDb 函数]
-    E --> F[Neon 数据库]
-```
-
-在 Cloudflare Worker 运行时：
-
-1. Nitro 自动将 `wrangler.json` 中的 `vars` 注入到 Worker 环境
-2. 代码中使用 `process.env.comm_admin_11__DATABASE_URL` 访问环境变量
-
-### 3.3 本地开发存储
-
-本地开发时，环境变量存储在：
-
-- `apps/admin/.env` - 项目本地配置
-- `apps/admin/.env.vercel.local` - Vercel 拉取的环境变量
-
-## 4. 本地验证方式
-
-### 4.1 构建验证
-
-运行构建命令并检查输出：
+文件上传相关能力由 `apps/api` 的 R2 runtime 模块读取以下变量：
 
 ```bash
-cd apps/admin
-pnpm build:prod:cloudflare
+R2_ENDPOINT="https://..."
+R2_BUCKET="01s-11comm-files"
+R2_ACCESS_KEY_ID="..."
+R2_SECRET_ACCESS_KEY="..."
+R2_PUBLIC_BASE_URL="https://..."
 ```
 
-```mermaid
-graph TD
-    A[运行 build 命令] --> B{检查构建输出}
-    B -->|成功| C[检查 wrangler.json]
-    B -->|失败| D[检查错误信息]
-    C --> E{验证 vars 字段}
-    E -->|包含 DATABASE_URL| F[验证通过]
-    E -->|vars 为空| G[检查 env:pull 是否执行]
-    D --> H[修复后重新构建]
-    G --> H
-```
+readiness 接口会在缺少任一必需 R2 变量时返回受控失败。
 
-### 4.2 验证 wrangler.json
+## 5. 本地验证方式
 
-构建完成后，检查生成的配置文件：
+### 5.1 类型与基础设施测试
 
 ```bash
-cat apps/admin/.output/server/wrangler.json
+pnpm -F @01s-11comm/api run typecheck
+pnpm -F @01s-11comm/api run test:infra
 ```
 
-**预期结果**：文件中的 `vars` 字段应包含 `comm_admin_11__DATABASE_URL` 等环境变量：
-
-```json
-{
-  "vars": {
-    "comm_admin_11__DATABASE_URL": "postgresql://...",
-    "comm_admin_11__DATABASE_URL_UNPOOLED": "postgresql://...",
-    ...
-  }
-}
-```
-
-### 4.3 部署验证
-
-部署后访问接口验证：
+### 5.2 构建验证
 
 ```bash
-curl https://01s-11.ruan-cat.com/api/dev-team/config-manage/center/list
+pnpm -F @01s-11comm/api run build:cloudflare
+pnpm -F @01s-11comm/api run build:node
 ```
 
-**预期结果**：返回 200 状态码和正确的 JSON 数据
+### 5.3 readiness 验证
 
-## 5. 核心代码说明
+启动独立 API 服务：
 
-### 5.1 server/db/index.ts
-
-数据库连接使用 `process.env.comm_admin_11__DATABASE_URL`：
-
-```typescript
-export function useDb(event: H3Event): DbType {
-	const databaseUrl = process.env.comm_admin_11__DATABASE_URL;
-
-	if (!databaseUrl) {
-		throw new Error("DATABASE_URL is not configured...");
-	}
-
-	const envSql = neon(databaseUrl);
-	const envDbInstance = drizzle(envSql, { schema });
-	return envDbInstance;
-}
+```bash
+pnpm -F @01s-11comm/api dev
 ```
 
-### 5.2 nitro.config.ts
+访问：
 
-Nitro 配置使用 `cloudflare.wrangler.vars` 写入环境变量：
-
-```typescript
-function getVercelEnv(envName: string): string | undefined {
-	const prefix = process.env.VERCEL_ENV_PREFIX || "comm_admin_11_";
-	return process.env[`${prefix}_${envName}`];
-}
-
-export default defineConfig({
-	cloudflare: {
-		wrangler: {
-			vars: {
-				comm_admin_11__DATABASE_URL: getVercelEnv("DATABASE_URL"),
-				// ... 其他变量
-			},
-		},
-	},
-});
+```bash
+curl http://127.0.0.1:3102/__nitro/ready
 ```
+
+生产 API 地址以 `apps/api/package.json` 的 `homepage` 字段为准。
 
 ## 6. 常见问题
 
-### 6.1 环境变量未找到
+### 6.1 数据库变量未找到
 
-**症状**: 接口返回 500 错误，错误信息为 "DATABASE_URL is not configured"
+**症状**：接口返回数据库 URL 未配置。
 
-**解决方案**:
+**解决方案**：
 
-1. 确保 `.env.vercel.local` 文件存在且包含 `comm_admin_11__DATABASE_URL`
-2. 确保构建命令先运行 `env:pull`
+1. 确认 `apps/api` 运行环境存在至少一个数据库 URL。
+2. Cloudflare Worker 部署时确认变量注入到 runtime env。
+3. Node/Vercel 运行时确认变量存在于 `process.env` 或 Nitro runtimeConfig。
 
-### 6.2 wrangler.json 中 vars 为空
+### 6.2 R2 readiness 失败
 
-**症状**: 构建成功但 `wrangler.json` 中 `vars` 为空对象
+**症状**：`/__nitro/ready` 返回 `R2_ENV_MISSING`。
 
-**解决方案**:
+**解决方案**：
 
-1. 检查 `.env.vercel.local` 文件是否存在
-2. 检查 `nitro.config.ts` 中是否正确调用了 `dotenv`
+1. 补齐 `R2_ENDPOINT`、`R2_BUCKET`、`R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`、`R2_PUBLIC_BASE_URL`。
+2. 运行 `pnpm -F @01s-11comm/api run test:infra` 验证解析逻辑。
+
+### 6.3 仍看到 admin Nitro 文档或命令
+
+admin 旧入口只能理解为 legacy source。新接口、新迁移、新 seed、新 readiness 和 R2 运维都必须从 `apps/api` 推进。

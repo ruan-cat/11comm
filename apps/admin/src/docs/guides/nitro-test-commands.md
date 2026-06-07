@@ -1,6 +1,16 @@
-# Nitro 接口测试命令指南
+# 旧 admin Nitro 接口测试历史说明
 
-本文档详细说明 `test:nitro` 命令的使用方法，帮助开发者正确运行 Nitro 接口测试。
+`apps/admin/tests/nitro/**` 曾用于旧 admin 内置 Nitro 的 HTTP 冒烟测试。当前后台项目已经切到独立 `apps/api` 承接接口、数据库、R2 和 seed 运维；admin 包不再提供 `test:nitro` 命令，也不再把这批旧测试作为 `apps/admin/server/**` 删除门禁。
+
+现行验证入口如下：
+
+| 验证范围                         | 当前入口                                                                        |
+| :------------------------------- | :------------------------------------------------------------------------------ |
+| admin 前端调用端与 URL resolver  | `apps/admin/src/**/tests/*.test.ts`                                             |
+| admin 对应接口、DB、R2、manifest | `apps/api/tests/admin/**`、`apps/api/tests/infra/**`                            |
+| 旧 Nitro 退役门禁                | `openspec/changes/migrate-superpowers-docs-to-openspec-longtask/tasks.md` 的 §7 |
+
+下面内容仅保留为历史对照，不代表当前可执行命令。
 
 ## 1. 背景说明
 
@@ -35,10 +45,10 @@ Nitro 接口依赖以下环境能力：
 
 ### 2.1. 测试命令对比
 
-|       命令        |                         说明                          |  环境   |       测试目标       |
-| :---------------: | :---------------------------------------------------: | :-----: | :------------------: |
-|    `pnpm test`    |   启动 Vitest 测试（jsdom 环境，用于前端组件测试）    |  jsdom  |  Vue 组件、UI 测试   |
-| `pnpm test:nitro` | 启动 Nitro 接口测试（node 环境，需要先运行 pnpm dev） | Node.js | API 接口、数据库操作 |
+|       命令        |                       说明                       |  环境   |      测试目标       |
+| :---------------: | :----------------------------------------------: | :-----: | :-----------------: |
+|    `pnpm test`    | 启动 Vitest 测试（jsdom 环境，用于前端组件测试） |  jsdom  |  Vue 组件、UI 测试  |
+| `pnpm test:nitro` |                已废弃，仅历史对照                | Node.js | 旧 admin 内置 Nitro |
 
 ### 2.2. 命令使用示例
 
@@ -46,15 +56,15 @@ Nitro 接口依赖以下环境能力：
 # 运行前端组件测试（jsdom 环境）
 pnpm test
 
-# 运行 Nitro 接口测试（node 环境）
-pnpm test:nitro
+# 旧命令已废弃；请改用 apps/api 的专项测试
+pnpm -F @01s-11comm/api exec vitest run tests/admin
 ```
 
 ## 3. 使用流程
 
 ### 3.1. 启动 Nitro 接口测试的步骤
 
-由于 Nitro 接口测试需要连接数据库，需要先启动开发服务器：
+旧 Nitro 接口测试曾需要先启动 admin 开发服务器：
 
 **步骤 1：启动开发服务器**
 
@@ -78,7 +88,7 @@ pnpm test:nitro
 
 ### 3.2. 注意事项
 
-- **必须先启动 dev 服务器**：`test:nitro` 命令依赖开发服务器提供的 API 端点
+- **历史说明**：`test:nitro` 命令已经从 admin package 移除，当前不要再按本流程运行
 - **端口占用**：确保 `pnpm dev` 和 `pnpm test:nitro` 使用的端口不冲突
 - **数据库连接**：确保 Neon 数据库服务正常运行，否则接口测试会失败
 
@@ -86,10 +96,10 @@ pnpm test:nitro
 
 ### 4.1. 测试文件组织
 
-|    测试类型    |          文件位置          |
-| :------------: | :------------------------: |
-|  前端组件测试  |    `tests/**/*.test.ts`    |
-| Nitro 接口测试 | `tests/nitro/**/*.test.ts` |
+|     测试类型      |                文件位置                |
+| :---------------: | :------------------------------------: |
+|   前端组件测试    |          `tests/**/*.test.ts`          |
+| 旧 Nitro 接口测试 | `tests/nitro/**/*.test.ts`，仅历史对照 |
 
 ### 4.2. 文件示例
 
@@ -107,17 +117,17 @@ apps/admin/
 
 ### 5.1. Vitest 配置机制
 
-项目使用 Vitest 作为测试框架，通过 `--node` 参数区分不同的测试环境：
+项目曾使用 Vitest 通过 `--node` 参数区分不同的测试环境；当前 admin Vitest 配置只保留前端 jsdom 测试。
 
-|      参数      |               说明                |
-| :------------: | :-------------------------------: |
-| 无参数（默认） |     jsdom 环境，运行前端测试      |
-|    `--node`    | Node.js 环境，运行 Nitro 接口测试 |
+|      参数      |                    说明                     |
+| :------------: | :-----------------------------------------: |
+| 无参数（默认） |          jsdom 环境，运行前端测试           |
+|    `--node`    | 旧用法，当前不再切换到 admin Nitro 测试配置 |
 
 ### 5.2. 配置位置
 
 - **前端测试配置**：`vitest.config.ts`（默认 jsdom 环境）
-- **Nitro 测试配置**：通过 `--node` 参数切换到 Node.js 环境
+- **旧 Nitro 测试配置**：已从 active Vitest 配置移除；请迁到 `apps/api/tests/**`
 
 ### 5.3. 工作原理
 
