@@ -139,6 +139,66 @@ export interface DataReportItem {
 	value: number;
 }
 
+export interface ChargeMachine {
+	chargeTypeName: string;
+	communityId: string;
+	factoryName: string;
+	machineCode: string;
+	machineId: string;
+	machineName: string;
+	monitorId?: string;
+	monitorName?: string;
+	photoUrl: string;
+	ruleName: string;
+	state: string;
+	stateName: string;
+}
+
+export interface ChargeMachineOrder {
+	amount: number;
+	chargeHours: number;
+	durationPrice: number;
+	endTime: string;
+	energy: number;
+	machineCode: string;
+	machineId: string;
+	machineName: string;
+	orderId: string;
+	personName: string;
+	personTel: string;
+	portCode: string;
+	remark: string;
+	startTime: string;
+	stateName: string;
+}
+
+export interface ChargeMachinePort {
+	machineId: string;
+	portCode: string;
+	portId: string;
+	portName: string;
+	stateName: string;
+}
+
+export interface OpenDoorLog {
+	logId: string;
+	roomId: string;
+	roomName: string;
+	ownerName: string;
+	openType: string;
+	openTypeName: string;
+	openTime: string;
+	remark: string;
+}
+
+export interface ListMachineRecordsQuery {
+	page: number;
+	row: number;
+	communityId?: string;
+	startDate?: string;
+	endDate?: string;
+}
+
 export interface Paginated<T> {
 	list: T[];
 	total: number;

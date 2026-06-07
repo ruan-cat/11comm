@@ -4,6 +4,9 @@
 	FeeDetailQuery,
 	FeeRepository,
 	LegacyFeeQuery,
+	ChargeMachineQuery,
+	ChargeMachineOrderQuery,
+	ChargeMachinePortQuery,
 	ListExpenseSummaryTablesParams,
 	ListHouseChargesParams,
 	ListMeterReadingTypesParams,
@@ -68,6 +71,10 @@ export interface FeeService {
 	getPayFeeDetailReport: (params: PayFeeDetailQuery) => ReturnType<FeeRepository["getPayFeeDetailReport"]>;
 	getRoomFeeReport: (params: RoomFeeReportQuery) => ReturnType<FeeRepository["getRoomFeeReport"]>;
 	getDataReport: (params: DataReportQuery) => ReturnType<FeeRepository["getDataReport"]>;
+	listChargeMachines: (params: ChargeMachineQuery) => ReturnType<FeeRepository["listChargeMachines"]>;
+	listChargeMachineOrders: (params: ChargeMachineOrderQuery) => ReturnType<FeeRepository["listChargeMachineOrders"]>;
+	listChargeMachinePorts: (params: ChargeMachinePortQuery) => ReturnType<FeeRepository["listChargeMachinePorts"]>;
+	listMachineRecords: FeeRepository["listMachineRecords"];
 	listReminderForOverduePayments: FeeRepository["listReminderForOverduePayments"];
 	listReprintVouchers: FeeRepository["listReprintVouchers"];
 	listExpenseSummaryTables: (
@@ -163,6 +170,10 @@ export function createFeeService(repository: FeeRepository): FeeService {
 		getPayFeeDetailReport: (params) => repository.getPayFeeDetailReport(params),
 		getRoomFeeReport: (params) => repository.getRoomFeeReport(params),
 		getDataReport: (params) => repository.getDataReport(params),
+		listChargeMachines: (params) => repository.listChargeMachines(params),
+		listChargeMachineOrders: (params) => repository.listChargeMachineOrders(params),
+		listChargeMachinePorts: (params) => repository.listChargeMachinePorts(params),
+		listMachineRecords: (params) => repository.listMachineRecords(params),
 		listReminderForOverduePayments: (params) => repository.listReminderForOverduePayments(params),
 		listReprintVouchers: (params) => repository.listReprintVouchers(params),
 		listExpenseSummaryTables: (params: ListExpenseSummaryTablesParams) => repository.listExpenseSummaryTables(params),

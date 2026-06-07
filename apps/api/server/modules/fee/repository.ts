@@ -41,6 +41,10 @@ import type { DbType } from "../../db";
 import type {
 	AdminExpenseItemSettingListItem,
 	AdminHouseChargeListItem,
+	ChargeMachine,
+	ChargeMachineOrder,
+	ChargeMachinePort,
+	ListMachineRecordsQuery,
 	DataReportItem,
 	DiscountSettingListItem,
 	DiscountTypeListItem,
@@ -55,6 +59,8 @@ import type {
 	ListDiscountTypesParams,
 	OweFeeCallableItem,
 	OweFeeItem,
+	OpenDoorLog,
+	Paginated,
 	PayFeeDetailReportItem,
 	AdminExpenseSummaryTableListItem,
 	AdminReportExpenseSummaryTableListItem,
@@ -134,6 +140,10 @@ export interface FeeRepository {
 	getPayFeeDetailReport: (params: PayFeeDetailQuery) => Promise<{ list: PayFeeDetailReportItem[]; total: number }>;
 	getRoomFeeReport: (params: RoomFeeReportQuery) => Promise<{ list: RoomFeeReportItem[]; total: number }>;
 	getDataReport: (params: DataReportQuery) => Promise<{ list: DataReportItem[] }>;
+	listChargeMachines: (params: ChargeMachineQuery) => Promise<{ list: ChargeMachine[] }>;
+	listChargeMachineOrders: (params: ChargeMachineOrderQuery) => Promise<{ list: ChargeMachineOrder[] }>;
+	listChargeMachinePorts: (params: ChargeMachinePortQuery) => Promise<{ list: ChargeMachinePort[] }>;
+	listMachineRecords: (params: ListMachineRecordsQuery) => Promise<Paginated<OpenDoorLog>>;
 	listLegacyFees: (params: LegacyFeeQuery) => Promise<{ list: FeeItem[]; total: number; page: number; row: number }>;
 	listExpenseSummaryTables: (
 		params: ListExpenseSummaryTablesParams,
@@ -278,6 +288,26 @@ export interface RoomFeeReportQuery extends ReportQuery {
 export interface DataReportQuery {
 	communityId?: string;
 	reportCode?: string;
+}
+
+export interface ChargeMachineQuery {
+	page: number;
+	row: number;
+	communityId: string;
+	machineId?: string;
+	machineNameLike?: string;
+}
+
+export interface ChargeMachineOrderQuery {
+	page: number;
+	row: number;
+	machineId?: string;
+}
+
+export interface ChargeMachinePortQuery {
+	page: number;
+	row: number;
+	machineId: string;
 }
 
 export interface ListExpenseSummaryTablesParams {
@@ -1765,6 +1795,10 @@ interface InMemoryFeeSeed {
 	feeDetails: FeeDetailItem[];
 	feeConfigs: FeeConfigItem[];
 	callables: OweFeeCallableItem[];
+	chargeMachines: ChargeMachine[];
+	chargeOrders: ChargeMachineOrder[];
+	chargePorts: ChargeMachinePort[];
+	openDoorLogs: OpenDoorLog[];
 	expenseItemSettings: AdminExpenseItemSettingListItem[];
 }
 
@@ -1778,6 +1812,10 @@ class InMemoryFeeRepository implements FeeRepository {
 	private readonly feeDetails: FeeDetailItem[];
 	private readonly feeConfigs: FeeConfigItem[];
 	private readonly callables: OweFeeCallableItem[];
+	private readonly chargeMachines: ChargeMachine[];
+	private readonly chargeOrders: ChargeMachineOrder[];
+	private readonly chargePorts: ChargeMachinePort[];
+	private readonly openDoorLogs: OpenDoorLog[];
 	private readonly expenseItemSettings: AdminExpenseItemSettingListItem[];
 
 	constructor(seed?: Partial<InMemoryFeeSeed>) {
@@ -1787,6 +1825,10 @@ class InMemoryFeeRepository implements FeeRepository {
 		this.feeDetails = structuredClone(seed?.feeDetails ?? defaultFeeDetails);
 		this.feeConfigs = structuredClone(seed?.feeConfigs ?? defaultFeeConfigs);
 		this.callables = structuredClone(seed?.callables ?? defaultCallables);
+		this.chargeMachines = structuredClone(seed?.chargeMachines ?? defaultChargeMachines);
+		this.chargeOrders = structuredClone(seed?.chargeOrders ?? defaultChargeOrders);
+		this.chargePorts = structuredClone(seed?.chargePorts ?? defaultChargePorts);
+		this.openDoorLogs = structuredClone(seed?.openDoorLogs ?? defaultOpenDoorLogs);
 		this.expenseSummaryTables = structuredClone(seed?.expenseSummaryTables ?? defaultExpenseSummaryTables);
 		this.refundReviews = structuredClone(seed?.refundReviews ?? defaultRefundReviews);
 		this.meterReadingTypes = structuredClone(seed?.meterReadingTypes ?? defaultMeterReadingTypes);
@@ -2089,6 +2131,37 @@ class InMemoryFeeRepository implements FeeRepository {
 			],
 		};
 	}
+
+	async listChargeMachines(params: ChargeMachineQuery) {
+		let data = this.chargeMachines.filter((item) => item.communityId === params.communityId);
+		if (params.machineId) {
+			data = data.filter((item) => item.machineId === params.machineId);
+		}
+		if (params.machineNameLike) {
+			data = data.filter((item) => item.machineName.includes(params.machineNameLike || ""));
+		}
+
+		return { list: paginate(data, params.page, params.row).list };
+	}
+
+	async listChargeMachineOrders(params: ChargeMachineOrderQuery) {
+		let data = [...this.chargeOrders];
+		if (params.machineId) {
+			data = data.filter((item) => item.machineId === params.machineId);
+		}
+
+		return { list: paginate(data, params.page, params.row).list };
+	}
+
+	async listChargeMachinePorts(params: ChargeMachinePortQuery) {
+		const data = this.chargePorts.filter((item) => item.machineId === params.machineId);
+		return { list: paginate(data, params.page, params.row).list };
+	}
+
+	async listMachineRecords(params: ListMachineRecordsQuery) {
+		return paginate(this.openDoorLogs, params.page, params.row);
+	}
+
 	async listReminderForOverduePayments(params: ReminderForOverduePaymentsQuery) {
 		const data: ReminderForOverduePaymentListItem[] = [];
 		return paginate(data, params.page, params.pageSize);
@@ -2768,6 +2841,112 @@ const defaultCallables: OweFeeCallableItem[] = [
 		endTime: "2026-04-30",
 		remark: "已电话提醒业主尽快缴费",
 		createTime: "2026-04-15 10:00:00",
+	},
+];
+
+const defaultChargeMachines: ChargeMachine[] = [
+	{
+		machineId: "MACHINE_001",
+		machineName: "东门充电桩 1 号",
+		machineCode: "CM-001",
+		photoUrl: "https://picsum.photos/300/200?random=charge-1",
+		communityId: "COMM_001",
+		factoryName: "智充科技",
+		ruleName: "按小时计费",
+		chargeTypeName: "慢充",
+		stateName: "在线",
+		state: "ONLINE",
+		monitorId: "MONITOR_001",
+		monitorName: "东门监控",
+	},
+	{
+		machineId: "MACHINE_002",
+		machineName: "地下车库充电桩 2 号",
+		machineCode: "CM-002",
+		photoUrl: "https://picsum.photos/300/200?random=charge-2",
+		communityId: "COMM_001",
+		factoryName: "智充科技",
+		ruleName: "按电量计费",
+		chargeTypeName: "快充",
+		stateName: "离线",
+		state: "OFFLINE",
+	},
+];
+
+const defaultChargeOrders: ChargeMachineOrder[] = [
+	{
+		orderId: "CHARGE_ORDER_001",
+		personName: "张三",
+		personTel: "13800138001",
+		machineId: "MACHINE_001",
+		machineName: "东门充电桩 1 号",
+		machineCode: "CM-001",
+		portCode: "A01",
+		chargeHours: 2,
+		durationPrice: 2.5,
+		energy: 12.6,
+		amount: 5,
+		startTime: "2026-04-20 08:00:00",
+		endTime: "2026-04-20 10:00:00",
+		stateName: "已完成",
+		remark: "自动扣费成功",
+	},
+	{
+		orderId: "CHARGE_ORDER_002",
+		personName: "李四",
+		personTel: "13800138002",
+		machineId: "MACHINE_001",
+		machineName: "东门充电桩 1 号",
+		machineCode: "CM-001",
+		portCode: "A02",
+		chargeHours: 1,
+		durationPrice: 2.5,
+		energy: 5.2,
+		amount: 2.5,
+		startTime: "2026-04-21 09:00:00",
+		endTime: "2026-04-21 10:00:00",
+		stateName: "已完成",
+		remark: "",
+	},
+];
+
+const defaultChargePorts: ChargeMachinePort[] = [
+	{
+		portId: "PORT_001",
+		machineId: "MACHINE_001",
+		portName: "A01 插座",
+		portCode: "A01",
+		stateName: "空闲",
+	},
+	{
+		portId: "PORT_002",
+		machineId: "MACHINE_001",
+		portName: "A02 插座",
+		portCode: "A02",
+		stateName: "使用中",
+	},
+];
+
+const defaultOpenDoorLogs: OpenDoorLog[] = [
+	{
+		logId: "OPEN_LOG_001",
+		roomId: "ROOM_001",
+		roomName: "1栋01室",
+		ownerName: "张三",
+		openType: "FACE",
+		openTypeName: "人脸识别",
+		openTime: "2026-04-20 08:30:00",
+		remark: "东门门禁开门",
+	},
+	{
+		logId: "OPEN_LOG_002",
+		roomId: "ROOM_002",
+		roomName: "2栋02室",
+		ownerName: "李四",
+		openType: "CARD",
+		openTypeName: "门禁卡",
+		openTime: "2026-04-20 09:15:00",
+		remark: "北门门禁开门",
 	},
 ];
 

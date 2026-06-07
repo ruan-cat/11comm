@@ -1,6 +1,35 @@
 import type { FeeService } from "./service";
 import { legacyFailure, legacySuccess } from "../../shared/runtime/response-builder";
 
+export const feeLegacyAdapterEvidence = {
+	scope: "fee-payment-report-plus-charge-machine-and-machine-record-readonly-and-guarded-write",
+	dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+	responseContract: "{ code, msg, data }",
+	endpoints: [
+		"/app/fee.listFee",
+		"/app/fee.queryFeeDetail",
+		"/app/feeApi/listOweFees",
+		"/app/oweFeeCallable.listOweFeeCallable",
+		"/app/feeConfig.listFeeConfigs",
+		"/app/reportFeeMonthStatistics.queryReportFeeSummary",
+		"/app/reportFeeMonthStatistics/queryPayFeeDetail",
+		"/app/reportFeeMonthStatistics.queryReportFeeDetailRoom",
+		"/app/dataReport.queryFeeDataReport",
+		"/app/iot/listChargeMachineBmoImpl",
+		"/app/iot/listChargeMachineOrderBmoImpl",
+		"/app/iot/listChargeMachinePortBmoImpl",
+		"/app/machine/listMachineRecords",
+	],
+	guardedEndpoints: [
+		"/app/payment.nativeQrcodePayment",
+		"/app/oweFeeCallable.writeOweFeeCallable",
+		"/app/fee.saveRoomCreateFee",
+	],
+	defaultWriteBehavior: "blocked-for-execution",
+	writeVerification: "no-read-back-or-rollback-evidence",
+	notCovered: ["db-backed-charge-machine-data", "db-backed-machine-record-data", "production-app-h5-fee-network"],
+} as const;
+
 export function createLegacyFeeAdapter(service: FeeService) {
 	return {
 		async listFee(input: Record<string, unknown>) {
@@ -120,6 +149,50 @@ export function createLegacyFeeAdapter(service: FeeService) {
 					reportCode: toString(input.reportCode) || "FEE_REPORT",
 				}),
 				"查询数据报表成功",
+			);
+		},
+		async listChargeMachines(input: Record<string, unknown>) {
+			return legacySuccess(
+				await service.listChargeMachines({
+					page: toNumber(input.page, 1),
+					row: toNumber(input.row, 10),
+					communityId: toString(input.communityId) || "COMM_001",
+					machineId: toString(input.machineId),
+					machineNameLike: toString(input.machineNameLike),
+				}),
+				"查询充电桩列表成功",
+			);
+		},
+		async listChargeMachineOrders(input: Record<string, unknown>) {
+			return legacySuccess(
+				await service.listChargeMachineOrders({
+					page: toNumber(input.page, 1),
+					row: toNumber(input.row, 10),
+					machineId: toString(input.machineId),
+				}),
+				"查询充电订单成功",
+			);
+		},
+		async listChargeMachinePorts(input: Record<string, unknown>) {
+			return legacySuccess(
+				await service.listChargeMachinePorts({
+					page: toNumber(input.page, 1),
+					row: toNumber(input.row, 10),
+					machineId: toString(input.machineId) || "MACHINE_001",
+				}),
+				"查询充电桩插座成功",
+			);
+		},
+		async listMachineRecords(input: Record<string, unknown>) {
+			return legacySuccess(
+				await service.listMachineRecords({
+					page: toNumber(input.page, 1),
+					row: toNumber(input.row, 10),
+					communityId: toString(input.communityId) || "COMM_001",
+					startDate: toString(input.startDate),
+					endDate: toString(input.endDate),
+				}),
+				"查询开门记录成功",
 			);
 		},
 	};

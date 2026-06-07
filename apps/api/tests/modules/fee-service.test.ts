@@ -56,10 +56,33 @@ describe("fee service shared repository", () => {
 		});
 	});
 
-	test("does not expose charge-machine or open-door repository methods in Phase2", () => {
-		const repository = createInMemoryFeeRepository() as unknown as Record<string, unknown>;
+	test("exposes machine record reads without open-door actions", async () => {
+		const repository = createInMemoryFeeRepository();
+		const repositoryRecord = repository as unknown as Record<string, unknown>;
+		const service = createFeeService(repository);
 
-		expect(repository.getChargeMachineList).toBeUndefined();
-		expect(repository.getOpenDoorLogList).toBeUndefined();
+		expect(repositoryRecord.getChargeMachineList).toBeUndefined();
+		expect(repositoryRecord.getOpenDoorLogList).toBeUndefined();
+		expect(repositoryRecord.openDoor).toBeUndefined();
+		expect(repositoryRecord.listMachineRecords).toEqual(expect.any(Function));
+		expect(service.listMachineRecords).toEqual(expect.any(Function));
+
+		const result = await service.listMachineRecords({ page: 1, row: 10, communityId: "UNKNOWN_COMMUNITY" });
+
+		expect(result).toMatchObject({
+			total: 2,
+			page: 1,
+			row: 10,
+			list: [
+				expect.objectContaining({
+					logId: "OPEN_LOG_001",
+					roomId: "ROOM_001",
+					ownerName: "张三",
+				}),
+				expect.objectContaining({
+					logId: "OPEN_LOG_002",
+				}),
+			],
+		});
 	});
 });

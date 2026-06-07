@@ -19,6 +19,13 @@ const readOnlyFeeLegacyPaths = [
 	"/app/dataReport.queryFeeDataReport",
 ];
 
+const readOnlyChargeMachineLegacyPaths = [
+	"/app/iot/listChargeMachineBmoImpl",
+	"/app/iot/listChargeMachineOrderBmoImpl",
+	"/app/iot/listChargeMachinePortBmoImpl",
+	"/app/machine/listMachineRecords",
+] as const;
+
 function expectLegacyEnvelope(response: Record<string, unknown>) {
 	expect(response).toMatchObject({
 		code: 0,
@@ -35,18 +42,19 @@ describe("fee legacy endpoints", () => {
 		delete process.env.PHASE7_ALLOW_LEGACY_MUTATIONS;
 	});
 
-	test("keeps Phase2 fee payment report endpoints registered and excludes device endpoints", () => {
+	test("keeps Phase2 fee payment report endpoints registered and excludes unrelated device endpoints", () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
 		for (const path of readOnlyFeeLegacyPaths) {
 			expect(findEndpointDefinition(registry, "GET", path)).toBeTruthy();
 			expect(findEndpointDefinition(registry, "POST", path)).toBeTruthy();
 		}
+		for (const path of readOnlyChargeMachineLegacyPaths) {
+			expect(findEndpointDefinition(registry, "GET", path)).toBeTruthy();
+			expect(findEndpointDefinition(registry, "POST", path)).toBeTruthy();
+		}
 		expect(findEndpointDefinition(registry, "POST", "/app/payment.nativeQrcodePayment")).toBeTruthy();
-		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineBmoImpl")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineOrderBmoImpl")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachinePortBmoImpl")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/machine/listMachineRecords")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/machine/openDoor")).toBeUndefined();
 	});
 
 	test("blocks payment, callable write, and fee-create actions by default in phase7 execution guard", async () => {
@@ -258,6 +266,143 @@ describe("fee legacy endpoints", () => {
 		expectLegacyEnvelope(feeConfigs);
 		expect(feeConfigs.data).toHaveLength(1);
 		expect(feeConfigs.data[0]).toMatchObject({ feeTypeCd: "888800010001" });
+	});
+
+	test("serves charge machine, order, and port legacy list shapes for GET and POST", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const method of ["GET", "POST"] as const) {
+			const chargeMachines = await dispatchEndpoint(registry, {
+				method,
+				path: "/app/iot/listChargeMachineBmoImpl",
+				query: method === "GET" ? { page: 1, row: 10, communityId: "COMM_001" } : undefined,
+				body: method === "POST" ? { page: 1, row: 10, communityId: "COMM_001" } : undefined,
+			});
+			expectLegacyEnvelope(chargeMachines);
+			expect(chargeMachines.data).toMatchObject({ list: expect.any(Array) });
+			expect(chargeMachines.data.list[0]).toMatchObject({
+				machineId: "MACHINE_001",
+				machineCode: "CM-001",
+				communityId: "COMM_001",
+				stateName: expect.any(String),
+			});
+
+			const chargeOrders = await dispatchEndpoint(registry, {
+				method,
+				path: "/app/iot/listChargeMachineOrderBmoImpl",
+				query: method === "GET" ? { page: 1, row: 10, communityId: "UNKNOWN_COMMUNITY" } : undefined,
+				body: method === "POST" ? { page: 1, row: 10, communityId: "UNKNOWN_COMMUNITY" } : undefined,
+			});
+			expectLegacyEnvelope(chargeOrders);
+			expect(chargeOrders.data).toMatchObject({ list: expect.any(Array) });
+			expect(chargeOrders.data.list[0]).toMatchObject({
+				orderId: "CHARGE_ORDER_001",
+				machineId: "MACHINE_001",
+				portCode: "A01",
+				amount: expect.any(Number),
+			});
+
+			const chargePorts = await dispatchEndpoint(registry, {
+				method,
+				path: "/app/iot/listChargeMachinePortBmoImpl",
+				query: method === "GET" ? { page: 1, row: 10, communityId: "COMM_001", machineId: "MACHINE_001" } : undefined,
+				body: method === "POST" ? { page: 1, row: 10, communityId: "COMM_001", machineId: "MACHINE_001" } : undefined,
+			});
+			expectLegacyEnvelope(chargePorts);
+			expect(chargePorts.data).toMatchObject({ list: expect.any(Array) });
+			expect(chargePorts.data.list[0]).toMatchObject({
+				portId: "PORT_001",
+				machineId: "MACHINE_001",
+				portCode: "A01",
+				stateName: expect.any(String),
+			});
+		}
+	});
+
+	test("prefers POST body over query parameters for charge machine legacy endpoints", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const chargeMachines = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/iot/listChargeMachineBmoImpl",
+			query: { page: 1, row: 10, communityId: "COMM_001", machineId: "MACHINE_001" },
+			body: { page: 1, row: 10, communityId: "COMM_001", machineId: "MACHINE_002" },
+		});
+		expectLegacyEnvelope(chargeMachines);
+		expect(chargeMachines.data.list).toHaveLength(1);
+		expect(chargeMachines.data.list[0]).toMatchObject({ machineId: "MACHINE_002" });
+
+		const chargeOrders = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/iot/listChargeMachineOrderBmoImpl",
+			query: { page: 1, row: 10, communityId: "COMM_001", machineId: "UNKNOWN_MACHINE" },
+			body: { page: 1, row: 10, communityId: "COMM_001", machineId: "MACHINE_001" },
+		});
+		expectLegacyEnvelope(chargeOrders);
+		expect(chargeOrders.data.list).toHaveLength(2);
+		expect(chargeOrders.data.list[0]).toMatchObject({ machineId: "MACHINE_001" });
+
+		const chargePorts = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/iot/listChargeMachinePortBmoImpl",
+			query: { page: 1, row: 10, communityId: "COMM_001", machineId: "UNKNOWN_MACHINE" },
+			body: { page: 1, row: 10, communityId: "COMM_001", machineId: "MACHINE_001" },
+		});
+		expectLegacyEnvelope(chargePorts);
+		expect(chargePorts.data.list).toHaveLength(2);
+		expect(chargePorts.data.list[0]).toMatchObject({ machineId: "MACHINE_001" });
+	});
+
+	test("serves machine open door records as readonly exact GET and POST endpoint", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const method of ["GET", "POST"] as const) {
+			const response = await dispatchEndpoint(registry, {
+				method,
+				path: "/app/machine/listMachineRecords",
+				query: method === "GET" ? { page: 1, row: 1, communityId: "UNKNOWN_COMMUNITY" } : undefined,
+				body: method === "POST" ? { page: 1, row: 1, communityId: "UNKNOWN_COMMUNITY" } : undefined,
+			});
+
+			expectLegacyEnvelope(response);
+			expect(response.msg).toBe("查询开门记录成功");
+			expect(response.data).toMatchObject({
+				total: 2,
+				page: 1,
+				row: 1,
+				list: [
+					expect.objectContaining({
+						logId: "OPEN_LOG_001",
+						roomId: "ROOM_001",
+						roomName: "1栋01室",
+						ownerName: "张三",
+						openType: "FACE",
+						openTypeName: "人脸识别",
+						openTime: expect.any(String),
+						remark: expect.any(String),
+					}),
+				],
+			});
+		}
+	});
+
+	test("prefers POST body over query parameters for machine open door records", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/machine/listMachineRecords",
+			query: { page: 1, row: 1, communityId: "COMM_001" },
+			body: { page: 2, row: 1, communityId: "COMM_001" },
+		});
+
+		expectLegacyEnvelope(response);
+		expect(response.data).toMatchObject({ total: 2, page: 2, row: 1 });
+		expect(response.data.list).toEqual([
+			expect.objectContaining({
+				logId: "OPEN_LOG_002",
+			}),
+		]);
 	});
 
 	test("keeps empty-result compatibility for unknown fee legacy filters", async () => {

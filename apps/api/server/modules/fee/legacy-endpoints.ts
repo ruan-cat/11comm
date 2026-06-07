@@ -65,4 +65,26 @@ export const feeLegacyEndpointDefinitions: EndpointDefinition[] = [
 		method: ["GET", "POST"],
 		handler: ({ query, body, event }) => getFeeRuntime(event).legacyAdapter.getDataReport(mergeInput(query, body)),
 	},
+	{
+		url: "/app/iot/listChargeMachineBmoImpl",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) => getFeeRuntime(event).legacyAdapter.listChargeMachines(mergeInput(query, body)),
+	},
+	{
+		url: "/app/iot/listChargeMachineOrderBmoImpl",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getFeeRuntime(event).legacyAdapter.listChargeMachineOrders(mergeInput(query, body)),
+	},
+	{
+		url: "/app/iot/listChargeMachinePortBmoImpl",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getFeeRuntime(event).legacyAdapter.listChargeMachinePorts(mergeInput(query, body)),
+	},
+	{
+		url: "/app/machine/listMachineRecords",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) => getFeeRuntime(event).legacyAdapter.listMachineRecords(mergeInput(query, body)),
+	},
 ];
