@@ -262,3 +262,44 @@ Phase1-Phase7 在 OpenSpec 中解释为统一 Nitro API 合并的阶段链：Pha
 
 - 历史报告中引用旧三文档作为历史事实的位置，是全部改写为 OpenSpec canonical，还是保留历史表述并增加迁移索引说明？默认策略：直接执行入口全部改写，历史报告优先指向迁移索引。
 - 旧三文档是否需要保留最后有效版本的 git commit 链接？默认策略：在迁移索引或 `agent-findings.md` 记录删除前 git 状态和旧路径清单。
+
+## 2026-06-05 Retirement Execution Extension
+
+### Decision: 当前 longtask 重新打开旧内置 Nitro 退役执行阶段
+
+`assess-legacy-nitro-server-retirement` 已经完成一次独立评估并以 `--skip-specs` 归档，但它的目录级门禁没有沉淀到 active specs，也没有形成当前 `tasks.md` 的 open gates。当前用户要求在 `migrate-superpowers-docs-to-openspec-longtask` 内继续推进剩余阻断，因此本 change 必须从“文档迁移已完成”重新打开为“旧内置 Nitro 退役执行增补阶段”。
+
+该决策修正 §5 的历史 no-go 口径：旧服务目录仍受保护，但“必须另开 OpenSpec change”不再是唯一执行方式。本 change 现在通过 §7 显式承接目录级退役评审、阻断清理、dry-run、删除门禁和最终验证。直到 §7 全部通过前，`apps/admin/server` 与 `apps/app/server` 仍不得删除；§7 通过后，删除可以作为本 change 的受控执行步骤，而不是夹带在 endpoint 迁移任务里。
+
+### Decision: 目录级状态机高于 endpoint 数量统计
+
+退役判断从 endpoint 级升级为目录/文件组级。每个目录或文件组必须处于以下状态之一：
+
+| 状态                       | 含义                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| `protected`                | 默认状态；旧目录仍是迁移来源、fallback、测试或运维入口，不可删除                |
+| `blocked`                  | 已发现必须先处理的阻断，例如 fallback-only、旧脚本、DB/seed、R2、mock/test 依赖 |
+| `keep-source`              | 暂时保留作为来源或回滚材料，即使部分调用已迁移                                  |
+| `not-candidate-but-unused` | 当前无活动依赖，但缺少删除收益、回滚设计或最终确认                              |
+| `delete-candidate`         | 反向依赖清零、替代实现明确、验证命令通过、生产证据闭环、回滚可执行              |
+
+`old path exact coverage=155/155`、`apps/api route file exists`、manifest 注册、HTTP 200、Vitest 通过或文档删除都不能单独把目录升级为 `delete-candidate`。只有目录级 evidence matrix 同时覆盖当前依赖、目标替代、测试/构建、生产 runtime、fallback/shadow-off、DB/write/R2 和 rollback 后，才允许进入删除步骤。
+
+### Migration Extension Plan
+
+新增 §7 按以下顺序推进：
+
+1. 合并归档评估结论，建立 `legacy-nitro-retirement-execution-plan.md`、目录依赖审计和 evidence matrix。
+2. 清理 admin 阻断：移除 admin Vite/Nitro 接入、admin Nitro config、admin Drizzle compatibility 作为权威入口、legacy DB/seed/reset、R2/upload 源依赖、旧任务生成器和活动文档。
+3. 清理 app 阻断：移除 app Nitro build/dev/preview、Vite Nitro plugin、`nitro.config.ts`、mock/test 对 `server/modules/**` 的直接依赖和 app runtime 测试对旧 server 的库化依赖。
+4. 强化 `apps/api`：补齐 app fallback-only exact handlers，收口 fallback/shadow-off，迁移 seed 运维入口，扩展 readiness，完成真实 Neon/R2/页面证据。
+5. 在隔离 worktree 中执行 rename/delete dry-run，验证引用扫描、typecheck、Vitest、build、OpenSpec strict 和回滚。
+6. 只有全部 evidence matrix 行升级为 `delete-candidate` 后，才删除 `apps/admin/server` 与 `apps/app/server`，并立刻跑最终验证。
+
+### Risk Controls
+
+- `tasks.md` 仍是唯一任务源；`legacy-nitro-retirement-execution-plan.md`、evidence matrix 和 reports 只提供证据，不维护第二套待办。
+- 删除前必须先 dry-run rename；不得直接在当前工作区递归删除旧目录。
+- 生产 Neon 写入、R2 multipart、CUD、rollback/residual check 只能通过公开 `apps/api` endpoint 和已授权窗口执行，不得直接写库或绕过业务 handler。
+- `D:\code\ruan-cat\01s-11comm-app` 继续永久只读保留，不参与任何删除。
+- 若 admin/app 任一构建、测试、生产 Network、fallback-off、`DB_READY` 或 R2 cleanup 失败，目录状态回退到 `blocked`，并把失败写入 `agent-findings.md`。
