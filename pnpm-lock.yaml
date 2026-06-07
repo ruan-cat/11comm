@@ -210,12 +210,6 @@ importers:
       "@antfu/utils":
         specifier: ^9.3.0
         version: 9.3.0
-      "@aws-sdk/client-s3":
-        specifier: ^3.1045.0
-        version: 3.1045.0
-      "@aws-sdk/s3-request-presigner":
-        specifier: ^3.1045.0
-        version: 3.1045.0
       "@howdyjs/mouse-menu":
         specifier: ^2.1.7
         version: 2.1.7(vue@3.5.34(typescript@5.9.3))
@@ -228,9 +222,6 @@ importers:
       "@logicflow/extension":
         specifier: ^2.2.1
         version: 2.2.1(@logicflow/core@2.2.1)
-      "@neondatabase/serverless":
-        specifier: ^0.10.4
-        version: 0.10.4
       "@pureadmin/descriptions":
         specifier: ^1.2.1
         version: 1.2.1(echarts@6.0.0)(element-plus@2.14.0(vue@3.5.34(typescript@5.9.3)))(typescript@5.9.3)
@@ -300,12 +291,6 @@ importers:
       deep-chat:
         specifier: ^2.4.2
         version: 2.4.2
-      drizzle-orm:
-        specifier: 0.42.0
-        version: 0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0)
-      drizzle-zod:
-        specifier: ^0.8.3
-        version: 0.8.3(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))(zod@3.25.76)
       echarts:
         specifier: ^6.0.0
         version: 6.0.0
@@ -351,9 +336,6 @@ importers:
       mqtt:
         specifier: 5.13.1
         version: 5.13.1
-      nitro:
-        specifier: 3.0.1-alpha.2
-        version: 3.0.1-alpha.2(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@vercel/blob@1.0.2)(chokidar@5.0.0)(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))(lru-cache@11.3.6)(rolldown@1.0.0)(rollup@4.60.3)(vite@7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4))
       nprogress:
         specifier: ^0.2.0
         version: 0.2.0
@@ -20815,9 +20797,9 @@ packages:
       { integrity: sha512-OTIk8iR8/aCRWBqvxrzxR0hgxWpnYBblY1S5hDWBQfk/VFmJwzmJgQFN3WsoUKHISv2eAwe+PpbUzyL1CKTLXg== }
     engines: { node: ^20.17.0 || >=22.9.0 }
 
-  ws@7.4.5:
+  ws@7.5.11:
     resolution:
-      { integrity: sha512-xzyu3hFvomRfXKH8vOFMU3OguG6oOvhXMo3xsGy3xWExqaM2dxBbVxuD99O7m3ZUFMvvscsZDqxfgMaRr/Nr1g== }
+      { integrity: sha512-zS54Oen9bITtp7kp2XM3AydrCIq1D+HwJOuH+c+e4LfpL/lotP5osijd+UoMnxwAam1GN8R4KtLAyIrIcBNpiA== }
     engines: { node: ">=8.3.0" }
     peerDependencies:
       bufferutil: ^4.0.1
@@ -25394,7 +25376,7 @@ snapshots:
   "@jest/console@27.0.2":
     dependencies:
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       chalk: 4.1.2
       jest-message-util: 27.0.2
       jest-util: 27.0.2
@@ -25407,7 +25389,7 @@ snapshots:
       "@jest/test-result": 27.0.2
       "@jest/transform": 27.0.2
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       ansi-escapes: 4.2.1
       chalk: 4.1.2
       emittery: 0.8.1
@@ -25442,21 +25424,21 @@ snapshots:
     dependencies:
       "@jest/fake-timers": 27.0.3
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       jest-mock: 27.0.3
 
   "@jest/environment@27.5.1":
     dependencies:
       "@jest/fake-timers": 27.5.1
       "@jest/types": 27.5.1
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       jest-mock: 27.5.1
 
   "@jest/fake-timers@27.0.3":
     dependencies:
       "@jest/types": 27.0.2
       "@sinonjs/fake-timers": 7.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       jest-message-util: 27.0.2
       jest-mock: 27.0.3
       jest-util: 27.0.2
@@ -25465,7 +25447,7 @@ snapshots:
     dependencies:
       "@jest/types": 27.5.1
       "@sinonjs/fake-timers": 8.0.1
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       jest-message-util: 27.5.1
       jest-mock: 27.5.1
       jest-util: 27.5.1
@@ -25551,7 +25533,7 @@ snapshots:
     dependencies:
       "@types/istanbul-lib-coverage": 2.0.6
       "@types/istanbul-reports": 3.0.4
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       "@types/yargs": 16.0.11
       chalk: 4.1.2
 
@@ -25559,7 +25541,7 @@ snapshots:
     dependencies:
       "@types/istanbul-lib-coverage": 2.0.6
       "@types/istanbul-reports": 3.0.4
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       "@types/yargs": 16.0.11
       chalk: 4.1.2
 
@@ -27962,7 +27944,7 @@ snapshots:
 
   "@types/graceful-fs@4.1.9":
     dependencies:
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
 
   "@types/hash-sum@1.0.2": {}
 
@@ -34372,7 +34354,7 @@ snapshots:
       "@jest/environment": 27.0.3
       "@jest/test-result": 27.0.2
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -34467,7 +34449,7 @@ snapshots:
       "@jest/environment": 27.0.3
       "@jest/fake-timers": 27.0.3
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       jest-mock: 27.0.3
       jest-util: 27.0.2
       jsdom: 16.6.0
@@ -34482,7 +34464,7 @@ snapshots:
       "@jest/environment": 27.5.1
       "@jest/fake-timers": 27.5.1
       "@jest/types": 27.5.1
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       jest-mock: 27.5.1
       jest-util: 27.5.1
 
@@ -34492,7 +34474,7 @@ snapshots:
     dependencies:
       "@jest/types": 27.0.2
       "@types/graceful-fs": 4.1.9
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -34512,7 +34494,7 @@ snapshots:
       "@jest/source-map": 27.5.1
       "@jest/test-result": 27.0.2
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       chalk: 4.1.2
       co: 4.6.0
       expect: 27.0.2
@@ -34567,12 +34549,12 @@ snapshots:
   jest-mock@27.0.3:
     dependencies:
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
 
   jest-mock@27.5.1:
     dependencies:
       "@jest/types": 27.5.1
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
 
   jest-pnp-resolver@1.2.3(jest-resolve@27.0.4):
     optionalDependencies:
@@ -34607,7 +34589,7 @@ snapshots:
       "@jest/test-result": 27.0.2
       "@jest/transform": 27.0.2
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       chalk: 4.1.2
       emittery: 0.8.1
       exit: 0.1.2
@@ -34663,7 +34645,7 @@ snapshots:
 
   jest-serializer@27.5.1:
     dependencies:
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       graceful-fs: 4.2.11
 
   jest-snapshot@27.0.4:
@@ -34698,7 +34680,7 @@ snapshots:
   jest-util@27.0.2:
     dependencies:
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       chalk: 4.1.2
       graceful-fs: 4.2.11
       is-ci: 3.0.1
@@ -34707,7 +34689,7 @@ snapshots:
   jest-util@27.5.1:
     dependencies:
       "@jest/types": 27.5.1
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       chalk: 4.1.2
       ci-info: 3.2.0
       graceful-fs: 4.2.11
@@ -34726,7 +34708,7 @@ snapshots:
     dependencies:
       "@jest/test-result": 27.0.2
       "@jest/types": 27.0.2
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       ansi-escapes: 4.2.1
       chalk: 4.1.2
       jest-util: 27.0.2
@@ -34734,7 +34716,7 @@ snapshots:
 
   jest-worker@27.0.2:
     dependencies:
-      "@types/node": 25.6.1
+      "@types/node": 24.12.3
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -34833,7 +34815,7 @@ snapshots:
       whatwg-encoding: 1.0.5
       whatwg-mimetype: 2.3.0
       whatwg-url: 8.5.0
-      ws: 7.4.5
+      ws: 7.5.11
       xml-name-validator: 3.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -36375,57 +36357,6 @@ snapshots:
       rolldown: 1.0.0
       rollup: 4.60.3
       vite: 7.1.12(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)
-    transitivePeerDependencies:
-      - "@azure/app-configuration"
-      - "@azure/cosmos"
-      - "@azure/data-tables"
-      - "@azure/identity"
-      - "@azure/keyvault-secrets"
-      - "@azure/storage-blob"
-      - "@capacitor/preferences"
-      - "@deno/kv"
-      - "@electric-sql/pglite"
-      - "@emnapi/core"
-      - "@emnapi/runtime"
-      - "@libsql/client"
-      - "@netlify/blobs"
-      - "@planetscale/database"
-      - "@upstash/redis"
-      - "@vercel/blob"
-      - "@vercel/functions"
-      - "@vercel/kv"
-      - aws4fetch
-      - better-sqlite3
-      - chokidar
-      - drizzle-orm
-      - idb-keyval
-      - ioredis
-      - lru-cache
-      - mongodb
-      - mysql2
-      - sqlite3
-      - uploadthing
-
-  nitro@3.0.1-alpha.2(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@vercel/blob@1.0.2)(chokidar@5.0.0)(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))(lru-cache@11.3.6)(rolldown@1.0.0)(rollup@4.60.3)(vite@7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)):
-    dependencies:
-      consola: 3.4.2
-      crossws: 0.4.5(srvx@0.10.1)
-      db0: 0.3.4(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0))
-      h3: 2.0.1-rc.22(crossws@0.4.5(srvx@0.10.1))
-      jiti: 2.7.0
-      nf3: 0.3.17
-      ofetch: 2.0.0-alpha.3
-      ohash: 2.0.11
-      oxc-minify: 0.110.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
-      oxc-transform: 0.110.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
-      srvx: 0.10.1
-      undici: 7.25.0
-      unenv: 2.0.0-rc.24
-      unstorage: 2.0.0-alpha.7(@vercel/blob@1.0.2)(chokidar@5.0.0)(db0@0.3.4(drizzle-orm@0.42.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.2.0)))(lru-cache@11.3.6)(ofetch@2.0.0-alpha.3)
-    optionalDependencies:
-      rolldown: 1.0.0
-      rollup: 4.60.3
-      vite: 7.2.7(@types/node@24.12.3)(jiti@2.7.0)(less@4.6.4)(lightningcss@1.32.0)(sass@1.99.0)(terser@5.47.1)(tsx@4.21.0)(yaml@2.8.4)
     transitivePeerDependencies:
       - "@azure/app-configuration"
       - "@azure/cosmos"
@@ -41006,7 +40937,7 @@ snapshots:
     dependencies:
       signal-exit: 4.1.0
 
-  ws@7.4.5: {}
+  ws@7.5.11: {}
 
   ws@8.18.0: {}
 
