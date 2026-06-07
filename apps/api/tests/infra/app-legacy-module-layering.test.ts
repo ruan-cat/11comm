@@ -15,12 +15,16 @@ interface AppLegacyModuleFixture {
 	ownerModule: string;
 	phase: string;
 	cutoverStatus: string;
+	responseContract?: string;
 	readonly: boolean;
 	endpoints: readonly string[];
 	notCovered: readonly string[];
 	methodByUrl?: Record<string, string>;
 	phaseByUrl?: Record<string, string>;
 	cutoverStatusByUrl?: Record<string, string>;
+	inputImport?: string;
+	mergeInputUsageCount?: number;
+	runtimeEventParam?: string;
 }
 
 const appLegacyModules: readonly AppLegacyModuleFixture[] = [
@@ -32,16 +36,53 @@ const appLegacyModules: readonly AppLegacyModuleFixture[] = [
 		phase: "phase7-activity-readonly",
 		cutoverStatus: "app-shadow-allowlist",
 		readonly: true,
-		endpoints: ["/app/activities.listActivitiess"],
-		notCovered: [
-			"/app/activities.saveActivities",
-			"/app/activities.updateActivities",
-			"/app/activities.deleteActivities",
-			"/app/activities.increaseView",
+		endpoints: [
+			"/app/activities.listActivitiess",
 			"/app/activities.likeActivity",
+			"/app/activities.increaseView",
 			"/app/activities.updateStatus",
 			"/app/activities.updateLike",
 			"/app/activities.updateCollect",
+			"/app/activities.saveActivities",
+			"/app/activities.updateActivities",
+			"/app/activities.deleteActivities",
+		],
+		methodByUrl: {
+			"/app/activities.likeActivity": `method: "POST"`,
+			"/app/activities.increaseView": `method: "POST"`,
+			"/app/activities.updateStatus": `method: "POST"`,
+			"/app/activities.updateLike": `method: "POST"`,
+			"/app/activities.updateCollect": `method: "POST"`,
+			"/app/activities.saveActivities": `method: "POST"`,
+			"/app/activities.updateActivities": `method: "POST"`,
+			"/app/activities.deleteActivities": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/activities.likeActivity": "phase7-activity-guarded-write-batch17",
+			"/app/activities.increaseView": "phase7-activity-guarded-write-batch17",
+			"/app/activities.updateStatus": "phase7-activity-guarded-write-batch17",
+			"/app/activities.updateLike": "phase7-activity-guarded-write-batch24",
+			"/app/activities.updateCollect": "phase7-activity-guarded-write-batch24",
+			"/app/activities.saveActivities": "phase7-activity-guarded-write-batch25",
+			"/app/activities.updateActivities": "phase7-activity-guarded-write-batch25",
+			"/app/activities.deleteActivities": "phase7-activity-guarded-write-batch25",
+		},
+		cutoverStatusByUrl: {
+			"/app/activities.likeActivity": "blocked-for-execution",
+			"/app/activities.increaseView": "blocked-for-execution",
+			"/app/activities.updateStatus": "blocked-for-execution",
+			"/app/activities.updateLike": "blocked-for-execution",
+			"/app/activities.updateCollect": "blocked-for-execution",
+			"/app/activities.saveActivities": "blocked-for-execution",
+			"/app/activities.updateActivities": "blocked-for-execution",
+			"/app/activities.deleteActivities": "blocked-for-execution",
+		},
+		notCovered: [
+			"db-backed-activity-data",
+			"activity-write-read-back-rollback",
+			"activity-residual-check",
+			"activity-guard-restored",
+			"production-app-h5-activity-network",
 		],
 	},
 	{
@@ -187,6 +228,58 @@ const appLegacyModules: readonly AppLegacyModuleFixture[] = [
 		],
 	},
 	{
+		name: "fee",
+		runtimeName: "Fee",
+		definitionsName: "feeLegacyEndpointDefinitions",
+		ownerModule: "fee",
+		phase: "phase2-fee-payment-report",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/fee.listFee",
+			"/app/fee.queryFeeDetail",
+			"/app/feeApi/listOweFees",
+			"/app/oweFeeCallable.listOweFeeCallable",
+			"/app/feeConfig.listFeeConfigs",
+			"/app/reportFeeMonthStatistics.queryReportFeeSummary",
+			"/app/reportFeeMonthStatistics/queryPayFeeDetail",
+			"/app/reportFeeMonthStatistics.queryReportFeeDetailRoom",
+			"/app/dataReport.queryFeeDataReport",
+			"/app/iot/listChargeMachineBmoImpl",
+			"/app/iot/listChargeMachineOrderBmoImpl",
+			"/app/iot/listChargeMachinePortBmoImpl",
+			"/app/machine/listMachineRecords",
+			"/app/payment.nativeQrcodePayment",
+			"/app/oweFeeCallable.writeOweFeeCallable",
+			"/app/fee.saveRoomCreateFee",
+		],
+		methodByUrl: {
+			"/app/payment.nativeQrcodePayment": `method: "POST"`,
+			"/app/oweFeeCallable.writeOweFeeCallable": `method: "POST"`,
+			"/app/fee.saveRoomCreateFee": `method: "POST"`,
+		},
+		cutoverStatusByUrl: {
+			"/app/payment.nativeQrcodePayment": "blocked-for-execution",
+			"/app/oweFeeCallable.writeOweFeeCallable": "blocked-for-execution",
+			"/app/fee.saveRoomCreateFee": "blocked-for-execution",
+		},
+		phaseByUrl: {
+			"/app/iot/listChargeMachineBmoImpl": "phase7-fee-charge-machine-readonly",
+			"/app/iot/listChargeMachineOrderBmoImpl": "phase7-fee-charge-machine-readonly",
+			"/app/iot/listChargeMachinePortBmoImpl": "phase7-fee-charge-machine-readonly",
+			"/app/machine/listMachineRecords": "phase7-fee-machine-record-readonly",
+		},
+		inputImport: 'import { asRecord, mergeInput } from "../../shared/runtime/legacy-endpoint-input";',
+		mergeInputUsageCount: 13,
+		runtimeEventParam: "event",
+		notCovered: [
+			"db-backed-charge-machine-data",
+			"db-backed-machine-record-data",
+			"fee-write-read-back-rollback",
+			"production-app-h5-fee-network",
+		],
+	},
+	{
 		name: "profile",
 		runtimeName: "Profile",
 		definitionsName: "profileLegacyEndpointDefinitions",
@@ -194,8 +287,200 @@ const appLegacyModules: readonly AppLegacyModuleFixture[] = [
 		phase: "phase7-profile-readonly",
 		cutoverStatus: "app-shadow-allowlist",
 		readonly: true,
-		endpoints: ["/app/profile.getUserProfile", "/app/profile.listCommunities", "/app/profile.listAttendanceRecords"],
-		notCovered: ["/app/profile.changeCommunity", "/app/profile.changePassword"],
+		endpoints: [
+			"/app/profile.getUserProfile",
+			"/app/profile.listCommunities",
+			"/app/profile.listAttendanceRecords",
+			"/app/profile.changeCommunity",
+			"/app/profile.changePassword",
+		],
+		methodByUrl: {
+			"/app/profile.changeCommunity": `method: "POST"`,
+			"/app/profile.changePassword": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/profile.changeCommunity": "phase7-profile-guarded-write",
+			"/app/profile.changePassword": "phase7-profile-guarded-write",
+		},
+		cutoverStatusByUrl: {
+			"/app/profile.changeCommunity": "blocked-for-execution",
+			"/app/profile.changePassword": "blocked-for-execution",
+		},
+		notCovered: ["db-backed-profile-data", "profile-write-read-back-rollback", "production-app-h5-profile-network"],
+	},
+	{
+		name: "repair",
+		runtimeName: "Repair",
+		definitionsName: "repairLegacyEndpointDefinitions",
+		ownerModule: "repair",
+		phase: "phase4a-repair-minimal",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/ownerRepair.listOwnerRepairs",
+			"/app/ownerRepair.queryOwnerRepair",
+			"/app/ownerRepair.saveOwnerRepair",
+			"/app/repairSetting.listRepairSettings",
+			"/app/dict.queryRepairStates",
+			"/app/dict.queryPayTypes",
+			"/app/ownerRepair.getRepairStatistics",
+			"/app/ownerRepair.listRepairStaffRecords",
+			"/app/ownerRepair.listRepairStaffs",
+			"/app/repair.listRepairTypeUsers",
+			"/app/resourceStore.listResources",
+			"/callComponent/core/list",
+			"/callComponent/ownerRepair.appraiseRepair",
+		],
+		methodByUrl: {
+			"/app/ownerRepair.saveOwnerRepair": `method: "POST"`,
+			"/callComponent/ownerRepair.appraiseRepair": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/dict.queryPayTypes": "phase7-repair-readonly",
+			"/app/ownerRepair.getRepairStatistics": "phase7-repair-readonly",
+			"/app/ownerRepair.listRepairStaffRecords": "phase7-repair-readonly",
+			"/app/ownerRepair.listRepairStaffs": "phase7-repair-readonly",
+			"/app/repair.listRepairTypeUsers": "phase7-repair-readonly",
+			"/app/resourceStore.listResources": "phase7-repair-readonly",
+		},
+		cutoverStatusByUrl: {
+			"/app/ownerRepair.saveOwnerRepair": "blocked-for-execution",
+			"/callComponent/ownerRepair.appraiseRepair": "blocked-for-execution",
+		},
+		inputImport: 'import { asRecord, mergeInput } from "../../shared/runtime/legacy-endpoint-input";',
+		mergeInputUsageCount: 10,
+		runtimeEventParam: "event",
+		notCovered: [
+			"/app/ownerRepair.updateOwnerRepair",
+			"/app/ownerRepair.repairDispatch",
+			"/app/ownerRepair.repairFinish",
+			"/app/ownerRepair.repairEnd",
+			"/app/ownerRepair.repairStart",
+			"/app/ownerRepair.repairStop",
+			"/app/ownerRepair.grabbingRepair",
+			"/app/repair.replyRepairAppraise",
+			"db-backed-repair-statistics-data",
+			"production-app-h5-repair-network",
+		],
+	},
+	{
+		name: "coupon",
+		runtimeName: "Coupon",
+		definitionsName: "couponLegacyEndpointDefinitions",
+		ownerModule: "coupon",
+		phase: "phase7-coupon-readonly-batch22",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/couponProperty.listCouponPropertyUserDetail",
+			"/app/integral.listIntegralSetting",
+			"/app/integral.listIntegralUserDetail",
+		],
+		notCovered: [
+			"/app/couponProperty.writeOffCouponPropertyUser",
+			"/app/integral.useIntegral",
+			"/app/reserveOrder.listReserveGoodsConfirmOrder",
+			"/app/reserveOrder.saveReserveGoodsConfirmOrder",
+			"db-backed-coupon-data",
+			"coupon-integral-write-read-back-rollback",
+			"reserve-order-readonly-and-write",
+			"production-app-h5-coupon-integral-network",
+		],
+	},
+	{
+		name: "maintenance",
+		runtimeName: "Maintenance",
+		definitionsName: "maintenanceLegacyEndpointDefinitions",
+		ownerModule: "maintenance",
+		phase: "phase7-maintenance-readonly-batch23",
+		cutoverStatus: "app-shadow-allowlist",
+		responseContract: "{ success, code, message, data, timestamp }",
+		readonly: true,
+		endpoints: [
+			"/app/maintenance.listMaintenanceTasks",
+			"/app/maintenance.queryMaintenanceTask",
+			"/app/maintenance.listMaintenanceTaskDetails",
+		],
+		notCovered: [
+			"/app/maintenance.startMaintenanceTask",
+			"/app/maintenance.completeMaintenanceTask",
+			"/app/maintenance.submitMaintenanceSingle",
+			"/app/maintenance.transferMaintenanceTask",
+			"db-backed-maintenance-data",
+			"production-app-h5-maintenance-network",
+		],
+	},
+	{
+		name: "inspection",
+		runtimeName: "Inspection",
+		definitionsName: "inspectionLegacyEndpointDefinitions",
+		ownerModule: "inspection",
+		phase: "phase7-inspection-readonly",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/staff.listStaffs",
+			"/app/inspection.getTodayReport",
+			"/app/inspection.listInspectionItemTitles",
+			"/app/inspection.listInspectionTasks",
+			"/app/inspection.listInspectionTaskDetails",
+			"/app/inspection.submitInspection",
+			"/app/inspection.transferTask",
+		],
+		methodByUrl: {
+			"/app/inspection.submitInspection": `method: "POST"`,
+			"/app/inspection.transferTask": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/inspection.submitInspection": "phase7-inspection-guarded-write-batch16",
+			"/app/inspection.transferTask": "phase7-inspection-guarded-write-batch16",
+		},
+		cutoverStatusByUrl: {
+			"/app/inspection.submitInspection": "blocked-for-execution",
+			"/app/inspection.transferTask": "blocked-for-execution",
+		},
+		notCovered: [
+			"db-backed-inspection-data",
+			"inspection-write-read-back-rollback",
+			"production-app-h5-inspection-network",
+		],
+	},
+	{
+		name: "meter",
+		runtimeName: "Meter",
+		definitionsName: "meterLegacyEndpointDefinitions",
+		ownerModule: "meter",
+		phase: "phase7-meter-readonly-batch13",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/meter.queryFeeTypes",
+			"/app/meter.queryFeeTypesItems",
+			"/app/meter.listMeterType",
+			"/app/meter.listMeterWaters",
+			"/app/meter.queryPreMeterWater",
+			"/app/meter.listFloorShareReading",
+			"/app/meter.listFloorShareMeter",
+			"/app/meter.saveMeterWater",
+			"/app/meter.saveFloorShareReading",
+			"/app/meter.auditFloorShareReading",
+		],
+		methodByUrl: {
+			"/app/meter.saveMeterWater": `method: "POST"`,
+			"/app/meter.saveFloorShareReading": `method: "POST"`,
+			"/app/meter.auditFloorShareReading": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/meter.saveMeterWater": "phase7-meter-guarded-write-batch14",
+			"/app/meter.saveFloorShareReading": "phase7-meter-guarded-write-batch14",
+			"/app/meter.auditFloorShareReading": "phase7-meter-guarded-write-batch14",
+		},
+		cutoverStatusByUrl: {
+			"/app/meter.saveMeterWater": "blocked-for-execution",
+			"/app/meter.saveFloorShareReading": "blocked-for-execution",
+			"/app/meter.auditFloorShareReading": "blocked-for-execution",
+		},
+		notCovered: ["db-backed-meter-data", "meter-write-read-back-rollback", "production-app-h5-meter-network"],
 	},
 	{
 		name: "purchase",
@@ -207,6 +492,53 @@ const appLegacyModules: readonly AppLegacyModuleFixture[] = [
 		readonly: false,
 		endpoints: ["/app/purchase/updatePurchaseApply"],
 		notCovered: [],
+	},
+	{
+		name: "property-application",
+		runtimeName: "PropertyApplication",
+		definitionsName: "propertyApplicationLegacyEndpointDefinitions",
+		ownerModule: "property-application",
+		phase: "phase7-property-application-readonly",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: ["/app/feeDiscount/queryFeeDiscount", "/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail"],
+		notCovered: [
+			"/app/applyRoomDiscount/queryApplyRoomDiscount",
+			"/app/applyRoomDiscount/updateApplyRoomDiscount",
+			"/app/applyRoomDiscount/updateReviewApplyRoomDiscount",
+			"/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord",
+			"/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord",
+			"/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord",
+			"db-backed-property-application-data",
+			"property-application-write-read-back-rollback",
+		],
+	},
+	{
+		name: "item-release",
+		runtimeName: "ItemRelease",
+		definitionsName: "itemReleaseLegacyEndpointDefinitions",
+		ownerModule: "item-release",
+		phase: "phase7-item-release-readonly-batch20",
+		cutoverStatus: "app-shadow-allowlist",
+		readonly: true,
+		endpoints: [
+			"/app/itemRelease.getItemRelease",
+			"/app/itemRelease.getItemReleaseRes",
+			"/app/itemRelease.queryOaWorkflowUser",
+			"/app/itemRelease.queryUndoItemReleaseV2",
+			"/app/itemRelease.queryFinishItemReleaseV2",
+			"/app/itemRelease.auditItemRelease",
+		],
+		methodByUrl: {
+			"/app/itemRelease.auditItemRelease": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/itemRelease.auditItemRelease": "phase7-item-release-guarded-write-batch21",
+		},
+		cutoverStatusByUrl: {
+			"/app/itemRelease.auditItemRelease": "blocked-for-execution",
+		},
+		notCovered: ["db-backed-item-release-data", "item-release-write-read-back-rollback"],
 	},
 	{
 		name: "video",
@@ -227,8 +559,17 @@ const appLegacyModules: readonly AppLegacyModuleFixture[] = [
 		phase: "phase7-visit-readonly",
 		cutoverStatus: "app-shadow-allowlist",
 		readonly: true,
-		endpoints: ["/app/visit.getVisit", "/app/visit.getVisitDetail"],
-		notCovered: ["/app/visit.auditVisit"],
+		endpoints: ["/app/visit.getVisit", "/app/visit.getVisitDetail", "/app/visit.auditVisit"],
+		methodByUrl: {
+			"/app/visit.auditVisit": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/visit.auditVisit": "phase7-visit-guarded-write",
+		},
+		cutoverStatusByUrl: {
+			"/app/visit.auditVisit": "blocked-for-execution",
+		},
+		notCovered: ["visit-audit-read-back-rollback"],
 	},
 	{
 		name: "work-order",
@@ -244,8 +585,6 @@ const appLegacyModules: readonly AppLegacyModuleFixture[] = [
 			"/app/workorder/copy/list",
 			"/app/workorder/task/list",
 			"/app/workorder/task/items",
-		],
-		notCovered: [
 			"/app/workorder/create",
 			"/app/workorder/update",
 			"/app/workorder/start",
@@ -253,6 +592,38 @@ const appLegacyModules: readonly AppLegacyModuleFixture[] = [
 			"/app/workorder/audit",
 			"/app/workorder/cancel",
 			"/app/workorder/copy/finish",
+		],
+		methodByUrl: {
+			"/app/workorder/create": `method: "POST"`,
+			"/app/workorder/update": `method: "POST"`,
+			"/app/workorder/start": `method: "POST"`,
+			"/app/workorder/complete": `method: "POST"`,
+			"/app/workorder/audit": `method: "POST"`,
+			"/app/workorder/cancel": `method: "POST"`,
+			"/app/workorder/copy/finish": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/workorder/create": "phase7-work-order-guarded-write",
+			"/app/workorder/update": "phase7-work-order-guarded-write",
+			"/app/workorder/start": "phase7-work-order-guarded-write",
+			"/app/workorder/complete": "phase7-work-order-guarded-write",
+			"/app/workorder/audit": "phase7-work-order-guarded-write",
+			"/app/workorder/cancel": "phase7-work-order-guarded-write",
+			"/app/workorder/copy/finish": "phase7-work-order-guarded-write",
+		},
+		cutoverStatusByUrl: {
+			"/app/workorder/create": "blocked-for-execution",
+			"/app/workorder/update": "blocked-for-execution",
+			"/app/workorder/start": "blocked-for-execution",
+			"/app/workorder/complete": "blocked-for-execution",
+			"/app/workorder/audit": "blocked-for-execution",
+			"/app/workorder/cancel": "blocked-for-execution",
+			"/app/workorder/copy/finish": "blocked-for-execution",
+		},
+		notCovered: [
+			"work-order-write-read-back-rollback",
+			"production-app-h5-work-order-network",
+			"db-ready-work-order-write-path",
 		],
 	},
 ] as const;
@@ -289,7 +660,9 @@ describe("app legacy module layering", () => {
 		const inputHelperSource = readFileSync(join(sharedRuntimeRoot, "legacy-endpoint-input.ts"), "utf8");
 
 		expect(endpointSource).toContain(`export const ${module.definitionsName}: EndpointDefinition[] = [`);
-		expect(endpointSource).toContain('import { mergeInput } from "../../shared/runtime/legacy-endpoint-input";');
+		expect(endpointSource).toContain(
+			module.inputImport ?? 'import { mergeInput } from "../../shared/runtime/legacy-endpoint-input";',
+		);
 		for (const url of module.endpoints) {
 			const expectedMethod =
 				module.methodByUrl?.[url] ?? (module.readonly ? `method: ["GET", "POST"]` : `method: "POST"`);
@@ -300,7 +673,9 @@ describe("app legacy module layering", () => {
 			endpointSource.match(/method:/g),
 			`${module.name} should declare one method field per endpoint`,
 		).toHaveLength(module.endpoints.length);
-		expect(endpointSource.match(/mergeInput\(query, body\)/g)).toHaveLength(module.endpoints.length);
+		expect(endpointSource.match(/mergeInput\(query, body\)/g)).toHaveLength(
+			module.mergeInputUsageCount ?? module.endpoints.length,
+		);
 		expect(inputHelperSource).toContain(
 			"export function mergeInput(query: unknown, body: unknown): Record<string, unknown>",
 		);
@@ -312,8 +687,9 @@ describe("app legacy module layering", () => {
 
 	test.each(appLegacyModules)(
 		"%s runtime wires repository, service, and legacy adapter once",
-		({ name, runtimeName }) => {
+		({ name, runtimeName, runtimeEventParam }) => {
 			const runtimeSource = readFileSync(join(moduleRoot, name, "runtime.ts"), "utf8");
+			const eventParam = runtimeEventParam ?? "_event";
 
 			expect(runtimeSource).toContain(`import { createLegacy${runtimeName}Adapter } from "./legacy-adapter";`);
 			expect(runtimeSource).toContain(`export interface ${runtimeName}Runtime`);
@@ -324,7 +700,7 @@ describe("app legacy module layering", () => {
 				`const fallbackRuntime = create${runtimeName}Runtime(create${runtimeName}Repository());`,
 			);
 			expect(runtimeSource).toContain(
-				`export function get${runtimeName}Runtime(_event?: H3Event): ${runtimeName}Runtime`,
+				`export function get${runtimeName}Runtime(${eventParam}?: H3Event): ${runtimeName}Runtime`,
 			);
 			expect(runtimeSource).toContain(`legacyAdapter: createLegacy${runtimeName}Adapter(service)`);
 		},
@@ -339,7 +715,17 @@ describe("app legacy module layering", () => {
 
 	test.each(appLegacyModules)(
 		"%s runtime definitions and manifest match the app legacy contract",
-		({ ownerModule, phase, cutoverStatus, readonly, endpoints, methodByUrl, phaseByUrl, cutoverStatusByUrl }) => {
+		({
+			ownerModule,
+			phase,
+			cutoverStatus,
+			responseContract,
+			readonly,
+			endpoints,
+			methodByUrl,
+			phaseByUrl,
+			cutoverStatusByUrl,
+		}) => {
 			for (const url of endpoints) {
 				const definition = runtimeEndpointDefinitions.find((item) => item.url === url);
 				const manifest = runtimeEndpointManifest.find((item) => item.url === url && item.ownerModule === ownerModule);
@@ -357,7 +743,7 @@ describe("app legacy module layering", () => {
 					ownerModule,
 					targetClient: "app",
 					routeKind: "app-legacy",
-					responseContract: "{ code, msg, data }",
+					responseContract: responseContract ?? "{ code, msg, data }",
 					cutoverStatus: cutoverStatusByUrl?.[url] ?? cutoverStatus,
 				});
 			}
