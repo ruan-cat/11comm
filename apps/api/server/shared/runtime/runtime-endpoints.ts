@@ -62,6 +62,8 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/profile.changeCommunity",
 	"/app/profile.changePassword",
 	"/app/purchase/updatePurchaseApply",
+	"/app/purchase/purchaseApply",
+	"/app/purchase/urgentPurchaseApply",
 	"/app/visit.auditVisit",
 	"/app/itemRelease.auditItemRelease",
 	"/app/inspection.submitInspection",
@@ -229,7 +231,7 @@ const runtimeEndpointEntries = [
 	})),
 	...purchaseLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase7-purchase-guarded-write",
+		phase: getPurchaseLegacyPhase(definition),
 		ownerModule: "purchase",
 		cutoverStatus: getPurchaseLegacyCutoverStatus(definition),
 	})),
@@ -1461,9 +1463,25 @@ function getItemReleaseLegacyCutoverStatus(definition: EndpointDefinition): Endp
 }
 
 function getPurchaseLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (definition.url === "/app/resourceStore.listResourceStores") {
+		return "app-shadow-allowlist";
+	}
+
 	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
 		return "blocked-for-execution";
 	}
 
 	return "not-in-app-shadow-allowlist";
+}
+
+function getPurchaseLegacyPhase(definition: EndpointDefinition): string {
+	if (definition.url === "/app/resourceStore.listResourceStores") {
+		return "phase7-purchase-readonly-batch29";
+	}
+
+	if (definition.url === "/app/purchase/purchaseApply" || definition.url === "/app/purchase/urgentPurchaseApply") {
+		return "phase7-purchase-guarded-write-batch29";
+	}
+
+	return "phase7-purchase-guarded-write";
 }

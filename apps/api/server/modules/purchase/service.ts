@@ -2,13 +2,16 @@ import type { PurchaseRepository } from "./repository";
 import type { PurchaseUpdateApplyInput } from "./types";
 
 export interface PurchaseService {
-	getUpdatePurchaseApplyGuardDecision(
+	listResourceStores(): ReturnType<PurchaseRepository["listResourceStores"]>;
+	getPurchaseGuardDecision(
+		action: string,
 		input: PurchaseUpdateApplyInput,
-	): ReturnType<PurchaseRepository["getUpdatePurchaseApplyGuardDecision"]>;
+	): ReturnType<PurchaseRepository["getPurchaseGuardDecision"]>;
 }
 
 export function createPurchaseService(repository: PurchaseRepository): PurchaseService {
 	return {
-		getUpdatePurchaseApplyGuardDecision: (input) => repository.getUpdatePurchaseApplyGuardDecision(input),
+		listResourceStores: () => repository.listResourceStores(),
+		getPurchaseGuardDecision: (action, input) => repository.getPurchaseGuardDecision(action, input),
 	};
 }
