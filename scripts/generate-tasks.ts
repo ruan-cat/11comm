@@ -200,8 +200,8 @@ function generateRouteTasks(route: RouteConfig, moduleIndex: number, routeIndex:
 **路由路径**：\`${route.path}\`
 
 - [ ] Task ${taskId}.1: 创建类型定义文件 \`apps/type/src/business/${route.filePath}.ts\`
-- [ ] Task ${taskId}.2: 创建 Mock 数据文件 \`apps/admin/server/api/${route.filePath}/mock-data.ts\`
-- [ ] Task ${taskId}.3: 创建 Nitro 接口文件 \`apps/admin/server/api/${route.filePath}/list.post.ts\`
+- [ ] Task ${taskId}.2: 准备 apps/api 数据源（Drizzle 查询或受控 seed 数据），禁止新增 \`apps/admin/server/**\` mock/route
+- [ ] Task ${taskId}.3: 创建 apps/api Nitro 接口文件 \`apps/api/server/routes/api/${route.filePath}/list.post.ts\`
 - [ ] Task ${taskId}.4: 创建前端 API Hook \`apps/admin/src/api/${route.filePath}/index.ts\`
 - [ ] Task ${taskId}.5: 改写列表页 \`apps/admin/src/pages/${route.filePath}/index.vue\`
 - [ ] Task ${taskId}.6: 删除旧的假数据文件 \`apps/admin/src/pages/${route.filePath}/test-data.ts\`
@@ -247,7 +247,7 @@ function generateFullTasks(): string {
 
 ## 任务概述
 
-本任务清单用于迁移 ${totalRoutes} 个三级路由的列表页，从本地假数据迁移到 Nitro 后端 + TanStack Query 体系。
+本任务清单用于迁移 ${totalRoutes} 个三级路由的列表页，从本地假数据迁移到独立 \`apps/api\` Nitro 后端 + TanStack Query 体系。
 
 ## 任务统计
 
@@ -266,8 +266,8 @@ ${moduleTasks}
 对于每个三级路由，**必须严格按照以下顺序执行任务，不允许跳步**：
 
 1. **类型定义层**（Task X.Y.1）- 必须首先完成，确保类型安全的基础
-2. **数据层**（Task X.Y.2）- 依赖类型定义，创建 Mock 数据
-3. **API 层**（Task X.Y.3）- 依赖类型定义和数据层，创建 Nitro 接口
+2. **数据层**（Task X.Y.2）- 依赖类型定义，准备 \`apps/api\` 数据源；不得新增 \`apps/admin/server/**\` mock/route
+3. **API 层**（Task X.Y.3）- 依赖类型定义和数据层，在 \`apps/api/server/routes/api/**\` 创建 Nitro 接口
 4. **前端 Hook 层**（Task X.Y.4）- 依赖 API 层，封装数据查询逻辑
 5. **列表页改造**（Task X.Y.5）- 依赖 Hook 层，使用新的数据获取方式
 6. **清理旧代码**（Task X.Y.6）- 删除旧的假数据文件
@@ -291,31 +291,33 @@ ${moduleTasks}
 - ✅ 枚举值保持中文
 - ✅ Options 导出正确
 
-#### Task X.Y.2: 创建 Mock 数据文件
+#### Task X.Y.2: 准备 apps/api 数据源
 
 **任务内容**：
-- 导入 {Page}ListItem 类型
-- 创建 mock{Page}Data 数组
-- 数据量：至少 20-50 条
-- 数据类型约束满足 {Page}ListItem
+- 确认接口读取的 Drizzle schema 和查询来源
+- 如需种子数据，使用 \`apps/api/server/db/seed/**\` 的现行 seed 边界
+- 不再创建 \`apps/admin/server/api/**/mock-data.ts\`
+- \`apps/admin/server/**\` 只能作为 legacy source 对照，不得作为新模板输出
 
 **验收标准**：
-- ✅ 类型约束正确
-- ✅ 数据字段名为英文
-- ✅ 数据量充足（20-50条）
+- ✅ 数据来源位于 \`apps/api\` 或 \`@01s-11comm/type\`
+- ✅ 无新增 admin Nitro route/mock 文件
+- ✅ 数据字段名为英文且满足类型约束
 
-#### Task X.Y.3: 创建 Nitro 接口文件
+#### Task X.Y.3: 创建 apps/api Nitro 接口文件
 
 **任务内容**：
 - 导入必要的类型（JsonVO、PageDTO、{Page}ListItem、{Page}QueryParams）
 - 使用 defineHandler 和 readBody（从 nitro/h3 导入）
-- 实现筛选逻辑（字符串模糊匹配、枚举精确匹配）
-- 实现分页逻辑（slice）
+- 在 \`apps/api/server/routes/api/{business-path}/list.post.ts\` 实现接口
+- 通过 \`useDb(event)\` 和 Drizzle 查询读取数据
+- 实现筛选逻辑（字符串模糊匹配、枚举精确匹配）和分页逻辑
 - 返回 JsonVO<PageDTO<{Page}ListItem>> 格式
 - 添加 JSDoc 注释
 
 **验收标准**：
 - ✅ 使用 Nitro v3 写法
+- ✅ 路由文件位于 \`apps/api/server/routes/api/**\`
 - ✅ 返回值有完整类型约束
 - ✅ 筛选和分页逻辑正确
 - ✅ 有 JSDoc 注释
@@ -326,7 +328,7 @@ ${moduleTasks}
 - 定义 use{Page}ListQuery Hook
 - 调用通用 useListQuery
 - 配置 queryKeyPrefix（完整路径）
-- 配置 apiUrl（对应 Nitro 接口路径）
+- 配置 apiUrl（对应 \`apps/api\` 暴露的 \`/api/**\` 接口路径）
 
 **验收标准**：
 - ✅ queryKeyPrefix 格式正确
