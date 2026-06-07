@@ -32,6 +32,40 @@ export const repairLegacyEndpointDefinitions: EndpointDefinition[] = [
 		handler: ({ event }) => getRepairRuntime(event).legacyAdapter.listRepairStates(),
 	},
 	{
+		url: "/app/dict.queryPayTypes",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) => getRepairRuntime(event).legacyAdapter.listPayTypes(mergeInput(query, body)),
+	},
+	{
+		url: "/app/ownerRepair.getRepairStatistics",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getRepairRuntime(event).legacyAdapter.getRepairStatistics(mergeInput(query, body)),
+	},
+	{
+		url: "/app/ownerRepair.listRepairStaffRecords",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getRepairRuntime(event).legacyAdapter.listRepairStaffRecords(mergeInput(query, body)),
+	},
+	{
+		url: "/app/ownerRepair.listRepairStaffs",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getRepairRuntime(event).legacyAdapter.listRepairStaffs(mergeInput(query, body)),
+	},
+	{
+		url: "/app/repair.listRepairTypeUsers",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getRepairRuntime(event).legacyAdapter.listRepairTypeUsers(mergeInput(query, body)),
+	},
+	{
+		url: "/app/resourceStore.listResources",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) => getRepairRuntime(event).legacyAdapter.listResources(mergeInput(query, body)),
+	},
+	{
 		url: "/callComponent/core/list",
 		method: ["GET", "POST"],
 		handler: ({ query, body, event }) => getRepairRuntime(event).legacyAdapter.listCoreDict(mergeInput(query, body)),

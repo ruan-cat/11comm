@@ -1,6 +1,40 @@
 import type { RepairService } from "./service";
 import { legacyFailure, legacySuccess } from "../../shared/runtime/response-builder";
 
+export const repairLegacyAdapterEvidence = {
+	scope: "phase4a-minimal-plus-phase7-readonly-and-guarded-write",
+	dataSourceStatus: "deterministic-compat-seed-db-read-fallback-mixed-no-db-ready",
+	responseContract: "{ code, msg, data }",
+	endpoints: [
+		"/app/ownerRepair.listOwnerRepairs",
+		"/app/ownerRepair.queryOwnerRepair",
+		"/app/repairSetting.listRepairSettings",
+		"/app/dict.queryRepairStates",
+		"/callComponent/core/list",
+		"/app/dict.queryPayTypes",
+		"/app/ownerRepair.getRepairStatistics",
+		"/app/ownerRepair.listRepairStaffRecords",
+		"/app/ownerRepair.listRepairStaffs",
+		"/app/repair.listRepairTypeUsers",
+		"/app/resourceStore.listResources",
+	],
+	guardedEndpoints: ["/app/ownerRepair.saveOwnerRepair", "/callComponent/ownerRepair.appraiseRepair"],
+	defaultWriteBehavior: "blocked-for-execution",
+	writeVerification: "no-read-back-or-rollback-evidence",
+	notCovered: [
+		"/app/ownerRepair.updateOwnerRepair",
+		"/app/ownerRepair.repairDispatch",
+		"/app/ownerRepair.repairFinish",
+		"/app/ownerRepair.repairEnd",
+		"/app/ownerRepair.repairStart",
+		"/app/ownerRepair.repairStop",
+		"/app/ownerRepair.grabbingRepair",
+		"/app/repair.replyRepairAppraise",
+		"db-backed-repair-statistics-data",
+		"production-app-h5-repair-network",
+	],
+} as const;
+
 export function createLegacyRepairAdapter(service: RepairService) {
 	return {
 		async listOwnerRepairs(input: Record<string, unknown>) {
@@ -58,6 +92,34 @@ export function createLegacyRepairAdapter(service: RepairService) {
 		},
 		async listRepairStates() {
 			return legacySuccess(await service.listRepairStates(), "query success");
+		},
+		async listPayTypes(_input: Record<string, unknown>) {
+			return legacySuccess(await service.listPayTypes(), "查询成功");
+		},
+		async getRepairStatistics(_input: Record<string, unknown>) {
+			return legacySuccess(await service.getRepairStatistics(), "获取统计数据成功");
+		},
+		async listRepairStaffRecords(input: Record<string, unknown>) {
+			const repairId = toString(input.repairId);
+			if (!repairId) {
+				return legacyFailure("维修工单ID不能为空", 400);
+			}
+			const repair = await service.getOwnerRepair({ repairId });
+			if (!repair) {
+				return legacyFailure("维修工单不存在", 404);
+			}
+			return legacySuccess({ staffRecords: await service.listRepairStaffRecords(repairId) }, "查询成功");
+		},
+		async listRepairStaffs(input: Record<string, unknown>) {
+			const staffs = await service.listRepairStaffs(toString(input.repairType));
+			return legacySuccess({ staffs }, "查询成功");
+		},
+		async listRepairTypeUsers(input: Record<string, unknown>) {
+			const users = await service.listRepairTypeUsers(toString(input.repairType));
+			return legacySuccess({ users }, "查询成功");
+		},
+		async listResources(input: Record<string, unknown>) {
+			return legacySuccess(await service.listResources(toString(input.rstId)), "查询成功");
 		},
 		async listCoreDict(input: Record<string, unknown>) {
 			const name = toString(input.name);

@@ -9,8 +9,15 @@ import type {
 	RepairItem,
 	RepairListQuery,
 	RepairListResult,
+	RepairPayTypeItem,
+	RepairResource,
+	RepairResourceType,
 	RepairSettingItem,
 	RepairStateDictionaryItem,
+	RepairStaff,
+	RepairStaffRecord,
+	RepairStatistics,
+	RepairTypeUser,
 	RepairsHaveDoneDbItem,
 } from "./types";
 
@@ -20,6 +27,12 @@ export interface RepairRepository {
 	createOwnerRepair: (input: CreateRepairInput) => Promise<RepairItem>;
 	listRepairSettings: (params: { page: number; row: number; publicArea?: string }) => Promise<RepairSettingItem[]>;
 	listRepairStates: () => Promise<RepairStateDictionaryItem[]>;
+	listPayTypes: () => Promise<RepairPayTypeItem[]>;
+	listRepairStaffs: (repairType?: string) => Promise<RepairStaff[]>;
+	listRepairTypeUsers: (repairType?: string) => Promise<RepairTypeUser[]>;
+	listResources: (rstId?: string) => Promise<{ resources: RepairResource[]; total: number }>;
+	getRepairStatistics: () => Promise<RepairStatistics>;
+	listRepairStaffRecords: (repairId: string) => Promise<RepairStaffRecord[]>;
 	listCoreDict: (params: { name?: string; type?: string; domain?: string }) => Promise<CoreDictItem[]>;
 	appraiseOwnerRepair: (params: { repairId: string; context: string }) => Promise<RepairItem | undefined>;
 	listRepairsHaveDone: (params: ListRepairsHaveDoneParams) => Promise<{ list: RepairsHaveDoneDbItem[]; total: number }>;
@@ -29,6 +42,10 @@ interface InMemoryRepairSeed {
 	repairs: RepairItem[];
 	settings: RepairSettingItem[];
 	states: RepairStateDictionaryItem[];
+	payTypes: RepairPayTypeItem[];
+	staffs: RepairStaff[];
+	resourceTypes: RepairResourceType[];
+	resources: RepairResource[];
 }
 
 export function createRepairRepository(options: { db?: DbType } = {}): RepairRepository {
@@ -330,11 +347,19 @@ class InMemoryRepairRepository implements RepairRepository {
 	private readonly repairs: RepairItem[];
 	private readonly settings: RepairSettingItem[];
 	private readonly states: RepairStateDictionaryItem[];
+	private readonly payTypes: RepairPayTypeItem[];
+	private readonly staffs: RepairStaff[];
+	private readonly resourceTypes: RepairResourceType[];
+	private readonly resources: RepairResource[];
 
 	constructor(seed?: Partial<InMemoryRepairSeed>) {
 		this.repairs = structuredClone(seed?.repairs ?? defaultRepairs);
 		this.settings = structuredClone(seed?.settings ?? defaultRepairSettings);
 		this.states = structuredClone(seed?.states ?? defaultRepairStates);
+		this.payTypes = structuredClone(seed?.payTypes ?? defaultPayTypes);
+		this.staffs = structuredClone(seed?.staffs ?? defaultRepairStaffs);
+		this.resourceTypes = structuredClone(seed?.resourceTypes ?? defaultRepairResourceTypes);
+		this.resources = structuredClone(seed?.resources ?? defaultRepairResources);
 	}
 
 	async listOwnerRepairs(params: RepairListQuery): Promise<RepairListResult> {
@@ -398,6 +423,134 @@ class InMemoryRepairRepository implements RepairRepository {
 
 	async listRepairStates(): Promise<RepairStateDictionaryItem[]> {
 		return structuredClone(this.states);
+	}
+
+	async listPayTypes(): Promise<RepairPayTypeItem[]> {
+		return structuredClone(this.payTypes);
+	}
+
+	async listRepairStaffs(repairType?: string): Promise<RepairStaff[]> {
+		return structuredClone(filterRepairStaffs(this.staffs, repairType, this.settings));
+	}
+
+	async listRepairTypeUsers(repairType?: string): Promise<RepairTypeUser[]> {
+		return filterRepairStaffs(this.staffs, repairType, this.settings).map((staff) => ({
+			userId: staff.staffId,
+			userName: staff.staffName,
+		}));
+	}
+
+	async listResources(rstId?: string): Promise<{ resources: RepairResource[]; total: number }> {
+		let resources = [...this.resources];
+		if (rstId) {
+			const resourceType = this.resourceTypes.find((item) => item.rstId === rstId);
+			if (resourceType) {
+				resources = resources.filter((item) => item.resTypeName === resourceType.name);
+			}
+		}
+
+		return {
+			resources: structuredClone(resources),
+			total: resources.length,
+		};
+	}
+
+	async getRepairStatistics(): Promise<RepairStatistics> {
+		const statusStats = countBy(this.repairs, (repair) => repair.statusCd || "UNKNOWN");
+		const typeStats = countBy(this.repairs, (repair) => repair.repairType || "UNKNOWN");
+		const monthlyStats = countBy(this.repairs, (repair) => (repair.createTime || "").slice(0, 7) || "UNKNOWN");
+		const evaluatedRepairs = this.repairs.filter((repair) => repair.evaluation);
+		const satisfiedCount = evaluatedRepairs.filter((repair) => (repair.evaluation?.rating || 0) >= 4).length;
+		const satisfactionRate =
+			evaluatedRepairs.length > 0 ? `${Math.round((satisfiedCount / evaluatedRepairs.length) * 100)}%` : "0%";
+
+		return {
+			total: this.repairs.length,
+			statusStats,
+			typeStats,
+			monthlyStats,
+			avgResponseTime: "2.5小时",
+			satisfactionRate,
+		};
+	}
+
+	async listRepairStaffRecords(repairId: string): Promise<RepairStaffRecord[]> {
+		const repair = this.repairs.find((item) => item.repairId === repairId);
+		if (!repair) {
+			return [];
+		}
+
+		const records: RepairStaffRecord[] = [
+			{
+				ruId: "RU_001",
+				repairId,
+				staffId: "STAFF_001",
+				staffName: "张师傅",
+				statusCd: "10001",
+				statusName: "待派单",
+				startTime: repair.createTime,
+				endTime: repair.statusCd !== "10001" ? addHours(repair.createTime, 1) : undefined,
+				context: "工单已创建",
+			},
+		];
+
+		if (["10002", "10003", "10004"].includes(repair.statusCd)) {
+			records.push({
+				ruId: "RU_002",
+				repairId,
+				staffId: "STAFF_002",
+				staffName: "李师傅",
+				statusCd: "10002",
+				statusName: "已派单",
+				startTime: addHours(repair.createTime, 1),
+				endTime: repair.statusCd !== "10002" ? addHours(repair.createTime, 2) : undefined,
+				context: "已派单给维修师傅",
+			});
+		}
+
+		if (["10003", "10004"].includes(repair.statusCd)) {
+			records.push({
+				ruId: "RU_003",
+				repairId,
+				staffId: "STAFF_002",
+				staffName: "李师傅",
+				statusCd: "10003",
+				statusName: "处理中",
+				startTime: addHours(repair.createTime, 2),
+				endTime: repair.statusCd === "10004" ? addHours(repair.createTime, 3) : undefined,
+				context: "正在处理维修问题",
+			});
+		}
+
+		if (repair.statusCd === "10004") {
+			records.push({
+				ruId: "RU_004",
+				repairId,
+				staffId: "STAFF_002",
+				staffName: "李师傅",
+				statusCd: "10004",
+				statusName: "已完成",
+				startTime: addHours(repair.createTime, 3),
+				endTime: addHours(repair.createTime, 3),
+				context: "维修已完成，问题已解决",
+			});
+		}
+
+		if (repair.evaluation) {
+			records.push({
+				ruId: "RU_005",
+				repairId,
+				staffId: "STAFF_002",
+				staffName: "李师傅",
+				statusCd: "10007",
+				statusName: "业主评价",
+				startTime: repair.evaluation.evaluateTime,
+				endTime: repair.evaluation.evaluateTime,
+				context: repair.evaluation.comment,
+			});
+		}
+
+		return structuredClone(records);
 	}
 
 	async listCoreDict(params: { name?: string; type?: string; domain?: string }): Promise<CoreDictItem[]> {
@@ -492,16 +645,56 @@ function toStatusName(statusCd: string, states: RepairStateDictionaryItem[]): st
 	return states.find((item) => item.statusCd === statusCd)?.name || "Pending";
 }
 
+function countBy<T>(items: T[], selector: (item: T) => string): Record<string, number> {
+	return items.reduce(
+		(result, item) => {
+			const key = selector(item);
+			result[key] = (result[key] || 0) + 1;
+			return result;
+		},
+		{} as Record<string, number>,
+	);
+}
+
+function addHours(dateTime: string, hours: number): string {
+	const timestamp = Date.parse(dateTime.replace(" ", "T"));
+	if (!Number.isFinite(timestamp)) {
+		return dateTime;
+	}
+
+	return formatDateTime(timestamp + hours * 60 * 60 * 1000);
+}
+
+function filterRepairStaffs(
+	staffs: RepairStaff[],
+	repairType: string | undefined,
+	settings: RepairSettingItem[],
+): RepairStaff[] {
+	if (!repairType) {
+		return staffs;
+	}
+
+	const repairTypeName = toRepairTypeName(repairType, settings);
+	return staffs.filter((staff) => staff.repairTypes.includes(repairType) || staff.repairTypes.includes(repairTypeName));
+}
+
 const defaultRepairStates: RepairStateDictionaryItem[] = [
 	{ statusCd: "10001", name: "Pending" },
 	{ statusCd: "10002", name: "Processing" },
 	{ statusCd: "10003", name: "Finished" },
 ];
 
+const defaultPayTypes: RepairPayTypeItem[] = [
+	{ statusCd: "1001", name: "有偿服务" },
+	{ statusCd: "1002", name: "无偿服务" },
+	{ statusCd: "1003", name: "有偿不使用材料" },
+	{ statusCd: "1004", name: "无偿不使用材料" },
+];
+
 const defaultRepairSettings: RepairSettingItem[] = [
 	{
 		repairType: "1001",
-		repairTypeName: "Water and electricity",
+		repairTypeName: "水电维修",
 		publicArea: "F",
 		payFeeFlag: "F",
 		priceScope: "0",
@@ -512,6 +705,210 @@ const defaultRepairSettings: RepairSettingItem[] = [
 		publicArea: "T",
 		payFeeFlag: "T",
 		priceScope: "50-200",
+	},
+];
+
+const defaultRepairStaffs: RepairStaff[] = [
+	{ staffId: "STAFF_001", staffName: "张师傅", repairTypes: ["水电维修", "管道疏通"] },
+	{ staffId: "STAFF_002", staffName: "李师傅", repairTypes: ["门窗维修", "墙面修补"] },
+	{ staffId: "STAFF_003", staffName: "王师傅", repairTypes: ["空调维修", "电梯维修"] },
+	{ staffId: "STAFF_004", staffName: "赵师傅", repairTypes: ["水电维修", "其他维修"] },
+	{ staffId: "STAFF_005", staffName: "刘师傅", repairTypes: ["管道疏通", "墙面修补"] },
+];
+
+const defaultRepairResourceTypes: RepairResourceType[] = [
+	{ rstId: "RST_001", name: "水电材料", parentRstId: "0" },
+	{ rstId: "RST_002", name: "五金材料", parentRstId: "0" },
+	{ rstId: "RST_003", name: "空调材料", parentRstId: "0" },
+	{ rstId: "RST_004", name: "装修材料", parentRstId: "0" },
+	{ rstId: "RST_001_01", name: "水管类", parentRstId: "RST_001" },
+	{ rstId: "RST_001_02", name: "电线类", parentRstId: "RST_001" },
+	{ rstId: "RST_001_03", name: "开关插座", parentRstId: "RST_001" },
+	{ rstId: "RST_002_01", name: "门锁类", parentRstId: "RST_002" },
+	{ rstId: "RST_002_02", name: "密封条", parentRstId: "RST_002" },
+	{ rstId: "RST_002_03", name: "滑轨配件", parentRstId: "RST_002" },
+	{ rstId: "RST_003_01", name: "制冷剂", parentRstId: "RST_003" },
+	{ rstId: "RST_003_02", name: "滤网", parentRstId: "RST_003" },
+	{ rstId: "RST_004_01", name: "瓷砖类", parentRstId: "RST_004" },
+	{ rstId: "RST_004_02", name: "涂料类", parentRstId: "RST_004" },
+];
+
+const defaultRepairResources: RepairResource[] = [
+	{
+		resId: "RES_001",
+		resName: "水龙头",
+		resTypeName: "水管类",
+		specName: "普通型",
+		price: 50,
+		outLowPrice: 40,
+		outHighPrice: 60,
+		unit: "个",
+		stock: 20,
+	},
+	{
+		resId: "RES_008",
+		resName: "管道胶",
+		resTypeName: "水管类",
+		specName: "防水型",
+		price: 35,
+		outLowPrice: 30,
+		outHighPrice: 40,
+		unit: "瓶",
+		stock: 15,
+	},
+	{
+		resId: "RES_007",
+		resName: "电线",
+		resTypeName: "电线类",
+		specName: "2.5平方",
+		price: 8,
+		outLowPrice: 7,
+		outHighPrice: 10,
+		unit: "米",
+		stock: 500,
+	},
+	{
+		resId: "RES_009",
+		resName: "网线",
+		resTypeName: "电线类",
+		specName: "六类线",
+		price: 3,
+		outLowPrice: 2.5,
+		outHighPrice: 3.5,
+		unit: "米",
+		stock: 300,
+	},
+	{
+		resId: "RES_002",
+		resName: "插座",
+		resTypeName: "开关插座",
+		specName: "五孔",
+		price: 15,
+		outLowPrice: 12,
+		outHighPrice: 18,
+		unit: "个",
+		stock: 50,
+	},
+	{
+		resId: "RES_010",
+		resName: "开关",
+		resTypeName: "开关插座",
+		specName: "单开",
+		price: 10,
+		outLowPrice: 8,
+		outHighPrice: 12,
+		unit: "个",
+		stock: 60,
+	},
+	{
+		resId: "RES_003",
+		resName: "门锁",
+		resTypeName: "门锁类",
+		specName: "防盗型",
+		price: 120,
+		outLowPrice: 100,
+		outHighPrice: 150,
+		unit: "把",
+		stock: 10,
+	},
+	{
+		resId: "RES_011",
+		resName: "智能门锁",
+		resTypeName: "门锁类",
+		specName: "指纹识别",
+		price: 800,
+		outLowPrice: 700,
+		outHighPrice: 900,
+		unit: "把",
+		stock: 5,
+	},
+	{
+		resId: "RES_004",
+		resName: "窗户密封条",
+		resTypeName: "密封条",
+		specName: "隔音型",
+		price: 30,
+		outLowPrice: 25,
+		outHighPrice: 35,
+		unit: "米",
+		stock: 100,
+	},
+	{
+		resId: "RES_012",
+		resName: "门缝密封条",
+		resTypeName: "密封条",
+		specName: "防风型",
+		price: 25,
+		outLowPrice: 20,
+		outHighPrice: 30,
+		unit: "米",
+		stock: 80,
+	},
+	{
+		resId: "RES_005",
+		resName: "空调氟利昂",
+		resTypeName: "制冷剂",
+		specName: "R410A",
+		price: 200,
+		outLowPrice: 180,
+		outHighPrice: 220,
+		unit: "瓶",
+		stock: 5,
+	},
+	{
+		resId: "RES_013",
+		resName: "R32制冷剂",
+		resTypeName: "制冷剂",
+		specName: "环保型",
+		price: 180,
+		outLowPrice: 160,
+		outHighPrice: 200,
+		unit: "瓶",
+		stock: 8,
+	},
+	{
+		resId: "RES_014",
+		resName: "空调滤网",
+		resTypeName: "滤网",
+		specName: "通用型",
+		price: 40,
+		outLowPrice: 35,
+		outHighPrice: 45,
+		unit: "个",
+		stock: 20,
+	},
+	{
+		resId: "RES_006",
+		resName: "瓷砖",
+		resTypeName: "瓷砖类",
+		specName: "釉面砖",
+		price: 25,
+		outLowPrice: 20,
+		outHighPrice: 30,
+		unit: "片",
+		stock: 200,
+	},
+	{
+		resId: "RES_015",
+		resName: "地砖",
+		resTypeName: "瓷砖类",
+		specName: "防滑型",
+		price: 35,
+		outLowPrice: 30,
+		outHighPrice: 40,
+		unit: "片",
+		stock: 150,
+	},
+	{
+		resId: "RES_016",
+		resName: "乳胶漆",
+		resTypeName: "涂料类",
+		specName: "环保型",
+		price: 120,
+		outLowPrice: 100,
+		outHighPrice: 140,
+		unit: "桶",
+		stock: 10,
 	},
 ];
 

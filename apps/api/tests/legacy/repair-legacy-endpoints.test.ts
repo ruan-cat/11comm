@@ -24,14 +24,31 @@ describe("repair legacy endpoints wave4a", () => {
 		expect(findEndpointDefinition(registry, "POST", "/app/repairSetting.listRepairSettings")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/dict.queryRepairStates")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/dict.queryRepairStates")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/dict.queryPayTypes")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/dict.queryPayTypes")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.getRepairStatistics")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.getRepairStatistics")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listRepairStaffRecords")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.listRepairStaffRecords")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listRepairStaffs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.listRepairStaffs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/repair.listRepairTypeUsers")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/repair.listRepairTypeUsers")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listResources")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/resourceStore.listResources")).toBeTruthy();
 
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.updateOwnerRepair")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairDispatch")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairFinish")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairEnd")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairStart")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairStop")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.grabbingRepair")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/repair.replyRepairAppraise")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listStaffRepairs")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listResources")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/resourceStoreType.listResourceStoreTypes")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/workorder/create")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/owner.queryOwnerCars")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/machine/listMachineRecords")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/machine/openDoor")).toBeUndefined();
 	});
 
 	test("blocks owner repair create by default in phase7 execution guard", async () => {
@@ -96,6 +113,117 @@ describe("repair legacy endpoints wave4a", () => {
 			path: "/app/dict.queryRepairStates",
 		});
 		expect(dict.data[0]).toMatchObject({ statusCd: expect.any(String), name: expect.any(String) });
+
+		const payTypes = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/dict.queryPayTypes",
+		});
+		expect(payTypes).toEqual({
+			code: 0,
+			msg: "查询成功",
+			data: expect.arrayContaining([
+				expect.objectContaining({ statusCd: expect.any(String), name: expect.any(String) }),
+			]),
+		});
+
+		const statistics = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/ownerRepair.getRepairStatistics",
+			query: { ignored: "yes" },
+		});
+		expect(statistics).toMatchObject({
+			code: 0,
+			msg: "获取统计数据成功",
+			data: {
+				total: expect.any(Number),
+				statusStats: expect.any(Object),
+				typeStats: expect.any(Object),
+				monthlyStats: expect.any(Object),
+				avgResponseTime: expect.any(String),
+				satisfactionRate: expect.any(String),
+			},
+		});
+
+		const staffRecords = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/ownerRepair.listRepairStaffRecords",
+			query: { repairId: firstRepairId },
+		});
+		expect(staffRecords).toMatchObject({
+			code: 0,
+			msg: "查询成功",
+			data: {
+				staffRecords: expect.arrayContaining([
+					expect.objectContaining({
+						repairId: firstRepairId,
+						ruId: expect.any(String),
+						staffId: expect.any(String),
+						staffName: expect.any(String),
+						statusCd: expect.any(String),
+						statusName: expect.any(String),
+						startTime: expect.any(String),
+					}),
+				]),
+			},
+		});
+
+		const staffs = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/ownerRepair.listRepairStaffs",
+			query: { repairType: "1001" },
+		});
+		expect(staffs).toMatchObject({
+			code: 0,
+			msg: "查询成功",
+			data: {
+				staffs: expect.arrayContaining([
+					expect.objectContaining({
+						staffId: expect.any(String),
+						staffName: expect.any(String),
+						repairTypes: expect.arrayContaining(["水电维修"]),
+					}),
+				]),
+			},
+		});
+
+		const users = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/repair.listRepairTypeUsers",
+			query: { repairType: "1001" },
+		});
+		expect(users).toMatchObject({
+			code: 0,
+			msg: "查询成功",
+			data: {
+				users: expect.arrayContaining([
+					expect.objectContaining({
+						userId: expect.any(String),
+						userName: expect.any(String),
+					}),
+				]),
+			},
+		});
+
+		const resources = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/resourceStore.listResources",
+			query: { rstId: "RST_001_01" },
+		});
+		expect(resources).toMatchObject({
+			code: 0,
+			msg: "查询成功",
+			data: {
+				resources: expect.arrayContaining([
+					expect.objectContaining({
+						resId: expect.any(String),
+						resName: expect.any(String),
+						resTypeName: "水管类",
+					}),
+				]),
+				total: expect.any(Number),
+			},
+		});
+		expect(resources.data.resources.every((item: { resTypeName: string }) => item.resTypeName === "水管类")).toBe(true);
 	});
 
 	test("returns an empty legacy list envelope for unmatched owner repair filters", async () => {
@@ -144,6 +272,38 @@ describe("repair legacy endpoints wave4a", () => {
 			code: 404,
 			msg: "repair not found",
 			data: null,
+		});
+	});
+
+	test("returns legacy error envelopes for missing and unknown repair staff record ids", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		await expect(
+			dispatchEndpoint(registry, {
+				method: "GET",
+				path: "/app/ownerRepair.listRepairStaffRecords",
+				query: {},
+			}),
+		).resolves.toEqual({
+			code: 400,
+			msg: "维修工单ID不能为空",
+			data: null,
+			requestId: undefined,
+			errorCode: undefined,
+		});
+
+		await expect(
+			dispatchEndpoint(registry, {
+				method: "GET",
+				path: "/app/ownerRepair.listRepairStaffRecords",
+				query: { repairId: "UNKNOWN_REPAIR" },
+			}),
+		).resolves.toEqual({
+			code: 404,
+			msg: "维修工单不存在",
+			data: null,
+			requestId: undefined,
+			errorCode: undefined,
 		});
 	});
 
@@ -217,6 +377,61 @@ describe("repair legacy endpoints wave4a", () => {
 		expect(settings).toMatchObject({
 			code: 0,
 			data: [expect.objectContaining({ publicArea: "F" })],
+		});
+
+		const records = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/ownerRepair.listRepairStaffRecords",
+			query: { repairId: "UNKNOWN_REPAIR" },
+			body: { repairId: "REPAIR_001" },
+		});
+		expect(records).toMatchObject({
+			code: 0,
+			data: { staffRecords: [expect.objectContaining({ repairId: "REPAIR_001" })] },
+		});
+
+		const staffs = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/ownerRepair.listRepairStaffs",
+			query: { repairType: "unknown" },
+			body: { repairType: "1001" },
+		});
+		expect(staffs).toMatchObject({
+			code: 0,
+			data: {
+				staffs: expect.arrayContaining([
+					expect.objectContaining({ staffId: expect.any(String), staffName: expect.any(String) }),
+				]),
+			},
+		});
+
+		const users = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/repair.listRepairTypeUsers",
+			query: { repairType: "unknown" },
+			body: { repairType: "1001" },
+		});
+		expect(users).toMatchObject({
+			code: 0,
+			data: {
+				users: expect.arrayContaining([
+					expect.objectContaining({ userId: expect.any(String), userName: expect.any(String) }),
+				]),
+			},
+		});
+
+		const resources = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/resourceStore.listResources",
+			query: { rstId: "unknown" },
+			body: { rstId: "RST_001_01" },
+		});
+		expect(resources).toMatchObject({
+			code: 0,
+			data: {
+				resources: expect.arrayContaining([expect.objectContaining({ resTypeName: "水管类" })]),
+				total: expect.any(Number),
+			},
 		});
 	});
 

@@ -63,6 +63,61 @@ export interface RepairStateDictionaryItem {
 	name: string;
 }
 
+export interface RepairPayTypeItem {
+	statusCd: string;
+	name: string;
+}
+
+export interface RepairStaff {
+	repairTypes: string[];
+	staffId: string;
+	staffName: string;
+}
+
+export interface RepairTypeUser {
+	userId: string;
+	userName: string;
+}
+
+export interface RepairResource {
+	outHighPrice?: number;
+	outLowPrice?: number;
+	price?: number;
+	resId: string;
+	resName: string;
+	resTypeName: string;
+	specName?: string;
+	stock?: number;
+	unit?: string;
+}
+
+export interface RepairResourceType {
+	name: string;
+	parentRstId: string;
+	rstId: string;
+}
+
+export interface RepairStatistics {
+	total: number;
+	statusStats: Record<string, number>;
+	typeStats: Record<string, number>;
+	monthlyStats: Record<string, number>;
+	avgResponseTime: string;
+	satisfactionRate: string;
+}
+
+export interface RepairStaffRecord {
+	ruId: string;
+	repairId: string;
+	staffId: string;
+	staffName: string;
+	statusCd: string;
+	statusName: string;
+	startTime: string;
+	endTime?: string;
+	context?: string;
+}
+
 export interface CoreDictItem {
 	statusCd: string;
 	name: string;
