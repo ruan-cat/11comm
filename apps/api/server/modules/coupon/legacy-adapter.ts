@@ -1,24 +1,27 @@
-import { legacySuccess } from "../../shared/runtime/response-builder";
+import { legacyFailure, legacySuccess } from "../../shared/runtime/response-builder";
 import type { CouponService } from "./service";
 import type { LegacyPaginationResponse } from "./types";
 
 export const couponLegacyAdapterEvidence = {
-	scope: "readonly-exact-handler-batch22",
+	scope: "readonly-exact-handler-plus-guarded-write-batch28",
 	dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 	responseContract: "{ code, msg, data }",
 	endpoints: [
 		"/app/couponProperty.listCouponPropertyUserDetail",
 		"/app/integral.listIntegralSetting",
 		"/app/integral.listIntegralUserDetail",
+		"/app/reserveOrder.listReserveGoodsConfirmOrder",
 	],
-	notCovered: [
+	guardedEndpoints: [
 		"/app/couponProperty.writeOffCouponPropertyUser",
 		"/app/integral.useIntegral",
-		"/app/reserveOrder.listReserveGoodsConfirmOrder",
 		"/app/reserveOrder.saveReserveGoodsConfirmOrder",
+	],
+	defaultWriteBehavior: "blocked-for-execution",
+	writeVerification: "no-read-back-or-rollback-evidence",
+	notCovered: [
 		"db-backed-coupon-data",
-		"coupon-integral-write-read-back-rollback",
-		"reserve-order-readonly-and-write",
+		"coupon-integral-reserve-write-read-back-rollback",
 		"production-app-h5-coupon-integral-network",
 	],
 } as const;
@@ -49,6 +52,23 @@ export function createLegacyCouponAdapter(service: CouponService) {
 				createPaginationResponse(await service.listIntegralLogs({ ownerTel, page, row }), page, row),
 				"查询成功",
 			);
+		},
+
+		async listReserveGoodsConfirmOrder(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+			const reserveQrcode = toString(input.reserveQrcode);
+
+			return legacySuccess(
+				createPaginationResponse(await service.listReserveOrders({ reserveQrcode, page, row }), page, row),
+				"OK",
+			);
+		},
+
+		async guardedWrite(action: string, _input: Record<string, unknown>) {
+			return legacyFailure(`Phase7 coupon mutation guarded: ${action}`, 409, {
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
 		},
 	};
 }

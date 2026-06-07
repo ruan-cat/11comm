@@ -4,12 +4,15 @@ import type {
 	IntegralLogQuery,
 	IntegralSetting,
 	IntegralWriteOffLog,
+	ReserveConfirmOrder,
+	ReserveOrderQuery,
 } from "./types";
 
 export interface CouponRepository {
 	listCouponOrders(query: CouponOrderQuery): Promise<CouponWriteOffOrder[]>;
 	listIntegralSettings(): Promise<IntegralSetting[]>;
 	listIntegralLogs(query: IntegralLogQuery): Promise<IntegralWriteOffLog[]>;
+	listReserveOrders(query: ReserveOrderQuery): Promise<ReserveConfirmOrder[]>;
 }
 
 const couponOrders: CouponWriteOffOrder[] = Array.from({ length: 42 }, (_, index) => {
@@ -50,6 +53,23 @@ const integralLogs: IntegralWriteOffLog[] = Array.from({ length: 28 }, (_, index
 	};
 });
 
+const reserveOrders: ReserveConfirmOrder[] = Array.from({ length: 36 }, (_, index) => {
+	const sequence = index + 1;
+	const qrcodeSequence = 200000 + index;
+
+	return {
+		orderId: `RO_${`${sequence}`.padStart(5, "0")}`,
+		reserveQrcode: `RSV${qrcodeSequence}`,
+		goodsName: index % 2 === 0 ? "Community Room" : "Meeting Room",
+		quantity: (index % 3) + 1,
+		appointmentTime: `2026-06-${`${(index % 28) + 1}`.padStart(2, "0")}`,
+		hours: index % 2 === 0 ? "09:00-11:00" : "14:00-16:00",
+		personName: `Reserve User ${sequence}`,
+		personTel: `1390000${`${sequence}`.padStart(4, "0")}`,
+		createTime: `2026-05-${`${(index % 28) + 1}`.padStart(2, "0")} 08:30:00`,
+	};
+});
+
 export function createCouponRepository(): CouponRepository {
 	return {
 		async listCouponOrders(query) {
@@ -71,6 +91,16 @@ export function createCouponRepository(): CouponRepository {
 
 			if (query.ownerTel) {
 				filtered = filtered.filter((item) => item.ownerTel.includes(query.ownerTel ?? ""));
+			}
+
+			return cloneValue(filtered);
+		},
+
+		async listReserveOrders(query) {
+			let filtered = reserveOrders;
+
+			if (query.reserveQrcode) {
+				filtered = filtered.filter((item) => item.reserveQrcode.includes(query.reserveQrcode ?? ""));
 			}
 
 			return cloneValue(filtered);

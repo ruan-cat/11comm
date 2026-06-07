@@ -37,6 +37,24 @@ export interface IntegralLogQuery {
 	row?: number;
 }
 
+export interface ReserveConfirmOrder {
+	orderId: string;
+	reserveQrcode: string;
+	goodsName: string;
+	quantity: number;
+	appointmentTime: string;
+	hours: string;
+	personName: string;
+	personTel: string;
+	createTime: string;
+}
+
+export interface ReserveOrderQuery {
+	reserveQrcode?: string;
+	page?: number;
+	row?: number;
+}
+
 export interface LegacyPaginationResponse<T> {
 	list: T[];
 	total: number;

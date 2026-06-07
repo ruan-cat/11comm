@@ -81,6 +81,9 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/maintenance.completeMaintenanceTask",
 	"/app/maintenance.submitMaintenanceSingle",
 	"/app/maintenance.transferMaintenanceTask",
+	"/app/couponProperty.writeOffCouponPropertyUser",
+	"/app/integral.useIntegral",
+	"/app/reserveOrder.saveReserveGoodsConfirmOrder",
 	"/app/workorder/create",
 	"/app/workorder/update",
 	"/app/workorder/start",
@@ -130,9 +133,9 @@ const runtimeEndpointEntries = [
 	})),
 	...couponLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase7-coupon-readonly-batch22",
+		phase: getCouponLegacyPhase(definition),
 		ownerModule: "coupon",
-		cutoverStatus: "app-shadow-allowlist" as const,
+		cutoverStatus: getCouponLegacyCutoverStatus(definition),
 	})),
 	...roomUnitLegacyEndpointDefinitions.map((definition) => ({
 		definition,
@@ -1253,6 +1256,26 @@ function getContactLegacyPhase(definition: EndpointDefinition): string {
 }
 
 function getContactLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getCouponLegacyPhase(definition: EndpointDefinition): string {
+	if (definition.url === "/app/reserveOrder.listReserveGoodsConfirmOrder") {
+		return "phase7-coupon-readonly-batch28";
+	}
+
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-coupon-guarded-write-batch28";
+	}
+
+	return "phase7-coupon-readonly-batch22";
+}
+
+function getCouponLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
 	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
 		return "blocked-for-execution";
 	}
