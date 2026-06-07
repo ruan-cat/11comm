@@ -19,6 +19,8 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:push": "drizzle-kit push",
 		"db:studio": "drizzle-kit studio",
+		"db:seed:dry-run": "tsx server/db/seed/index.ts --dry-run",
+		"db:seed": "tsx server/db/seed/index.ts",
 		"typecheck": "tsc --noEmit",
 		"test": "vitest run",
 		"test:infra": "vitest run tests/infra tests/smoke tests/runtime",
