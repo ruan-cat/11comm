@@ -545,6 +545,41 @@ const appLegacyModules: readonly AppLegacyModuleFixture[] = [
 		notCovered: ["db-backed-purchase-data", "purchase-write-read-back-rollback", "production-app-h5-purchase-network"],
 	},
 	{
+		name: "resource",
+		runtimeName: "Resource",
+		definitionsName: "resourceLegacyEndpointDefinitions",
+		ownerModule: "resource",
+		phase: "phase7-resource-readonly-batch30",
+		cutoverStatus: "app-shadow-allowlist",
+		responseContract: "{ success, code, message, data, timestamp }",
+		readonly: true,
+		endpoints: [
+			"/app/resourceStore.listStorehouses",
+			"/app/resourceStore.listAllocationStorehouseApplys",
+			"/app/resourceStore.saveAllocationStorehouse",
+		],
+		methodByUrl: {
+			"/app/resourceStore.listStorehouses": `method: "GET"`,
+			"/app/resourceStore.listAllocationStorehouseApplys": `method: "GET"`,
+			"/app/resourceStore.saveAllocationStorehouse": `method: "POST"`,
+		},
+		phaseByUrl: {
+			"/app/resourceStore.saveAllocationStorehouse": "phase7-resource-guarded-write-batch30",
+		},
+		cutoverStatusByUrl: {
+			"/app/resourceStore.saveAllocationStorehouse": "blocked-for-execution",
+		},
+		notCovered: [
+			"/app/resourceStoreType.listResourceStoreTypes",
+			"/app/resourceStore.listAllocationStoreAuditOrders",
+			"/app/resourceStore.listAllocationStorehouses",
+			"/app/resourceStore.queryMyResourceStoreInfo",
+			"db-backed-resource-data",
+			"resource-write-read-back-rollback",
+			"production-app-h5-resource-network",
+		],
+	},
+	{
 		name: "property-application",
 		runtimeName: "PropertyApplication",
 		definitionsName: "propertyApplicationLegacyEndpointDefinitions",

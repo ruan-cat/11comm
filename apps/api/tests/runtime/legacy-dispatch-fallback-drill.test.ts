@@ -213,6 +213,35 @@ describe("legacy-dispatch fallback drill", () => {
 
 	test.each([
 		[
+			"/app/resourceStore.saveAllocationStorehouse",
+			{ fromShId: "SH_001", toShId: "SH_002", resourceStores: [{ resName: "Office Desk" }] },
+			"resourceStore.saveAllocationStorehouse",
+		],
+	])(
+		"guarded resource endpoint keeps the legacy resource envelope when fallback is disabled: %s",
+		async (path, body, action) => {
+			process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
+			const fetchSpy = vi.spyOn(globalThis, "fetch");
+			mockLegacyPostRequest(path, body);
+
+			const response = await legacyDispatchHandler(createEvent());
+
+			expect(fetchSpy).not.toHaveBeenCalled();
+			expect(mockedSetResponseStatus).not.toHaveBeenCalled();
+			expect(response).toMatchObject({
+				success: false,
+				code: "409",
+				message: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+				timestamp: expect.any(Number),
+			});
+			expect(response).not.toHaveProperty("msg");
+		},
+	);
+
+	test.each([
+		[
 			"/app/feeDiscount/queryFeeDiscount",
 			{ discountType: "3003", communityId: "COMM_001" },
 			{ discountId: "DISCOUNT_001" },
@@ -417,6 +446,49 @@ describe("legacy-dispatch fallback drill", () => {
 				msg: expect.any(String),
 				data: expectedData,
 			});
+		},
+	);
+
+	test.each([
+		[
+			"/app/resourceStore.listStorehouses",
+			{ allowPurchase: "ON", page: 1, row: 2 },
+			expect.objectContaining({
+				list: expect.arrayContaining([expect.objectContaining({ shId: "SH_001", allowPurchase: "ON" })]),
+				total: 2,
+				page: 1,
+				pageSize: 2,
+			}),
+		],
+		[
+			"/app/resourceStore.listAllocationStorehouseApplys",
+			{ page: 1, row: 10 },
+			expect.objectContaining({
+				list: [expect.objectContaining({ allocationId: "AL_20240301_001", state: 1200 })],
+				total: 1,
+				page: 1,
+				pageSize: 10,
+			}),
+		],
+	])(
+		"readonly resource exact endpoint keeps the legacy resource envelope when fallback is disabled: %s",
+		async (path, query, expectedData) => {
+			process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
+			const fetchSpy = vi.spyOn(globalThis, "fetch");
+			mockLegacyGetRequest(path, query);
+
+			const response = await legacyDispatchHandler(createEvent());
+
+			expect(fetchSpy).not.toHaveBeenCalled();
+			expect(mockedSetResponseStatus).not.toHaveBeenCalled();
+			expect(response).toMatchObject({
+				success: true,
+				code: "0",
+				message: expect.any(String),
+				data: expectedData,
+				timestamp: expect.any(Number),
+			});
+			expect(response).not.toHaveProperty("msg");
 		},
 	);
 

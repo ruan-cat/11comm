@@ -289,6 +289,9 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/resourceStore.listResourceStores");
 		expect(urls).toContain("/app/purchase/purchaseApply");
 		expect(urls).toContain("/app/purchase/urgentPurchaseApply");
+		expect(urls).toContain("/app/resourceStore.listStorehouses");
+		expect(urls).toContain("/app/resourceStore.listAllocationStorehouseApplys");
+		expect(urls).toContain("/app/resourceStore.saveAllocationStorehouse");
 		expect(urls).toContain("/app/couponProperty.listCouponPropertyUserDetail");
 		expect(urls).toContain("/app/integral.listIntegralSetting");
 		expect(urls).toContain("/app/integral.listIntegralUserDetail");
@@ -947,6 +950,24 @@ describe("phase7 endpoint manifest", () => {
 					phase: "phase7-purchase-readonly-batch29",
 					responseContract: "{ code, msg, data }",
 					cutoverStatus: "app-shadow-allowlist",
+				}),
+				...["/app/resourceStore.listStorehouses", "/app/resourceStore.listAllocationStorehouseApplys"].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "GET",
+						ownerModule: "resource",
+						phase: "phase7-resource-readonly-batch30",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				expect.objectContaining({
+					url: "/app/resourceStore.saveAllocationStorehouse",
+					method: "POST",
+					ownerModule: "resource",
+					phase: "phase7-resource-guarded-write-batch30",
+					responseContract: "{ success, code, message, data, timestamp }",
+					cutoverStatus: "blocked-for-execution",
 				}),
 				...["/app/purchase/purchaseApply", "/app/purchase/urgentPurchaseApply"].map((url) =>
 					expect.objectContaining({

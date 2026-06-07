@@ -25,6 +25,7 @@ import { profileLegacyAdapterEvidence } from "../../server/modules/profile/legac
 import { propertyApplicationLegacyAdapterEvidence } from "../../server/modules/property-application/legacy-adapter";
 import { purchaseLegacyGuardEvidence } from "../../server/modules/purchase/legacy-adapter";
 import { repairLegacyAdapterEvidence } from "../../server/modules/repair/legacy-adapter";
+import { resourceLegacyAdapterEvidence } from "../../server/modules/resource/legacy-adapter";
 import { roomUnitLegacyAdapterEvidence } from "../../server/modules/room-unit/legacy-adapter";
 import { videoLegacyAdapterEvidence } from "../../server/modules/video/legacy-adapter";
 import { visitLegacyAdapterEvidence } from "../../server/modules/visit/legacy-adapter";
@@ -723,6 +724,26 @@ describe("phase7 apps-api dual client contracts", () => {
 			ownerModule: "purchase",
 			phase: "phase7-purchase-readonly-batch29",
 			cutoverStatus: "app-shadow-allowlist",
+		});
+		for (const url of ["/app/resourceStore.listStorehouses", "/app/resourceStore.listAllocationStorehouseApplys"]) {
+			expectManifestEntry(url, {
+				method: "GET",
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ success, code, message, data, timestamp }",
+				ownerModule: "resource",
+				phase: "phase7-resource-readonly-batch30",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
+		expectManifestEntry("/app/resourceStore.saveAllocationStorehouse", {
+			method: "POST",
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ success, code, message, data, timestamp }",
+			ownerModule: "resource",
+			phase: "phase7-resource-guarded-write-batch30",
+			cutoverStatus: "blocked-for-execution",
 		});
 		for (const url of ["/app/purchase/purchaseApply", "/app/purchase/urgentPurchaseApply"]) {
 			expectManifestEntry(url, {
@@ -1690,6 +1711,94 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(maintenanceLegacyAdapterEvidence.notCovered).not.toContain("/app/maintenance.transferMaintenanceTask");
 	});
 
+	test("resource readonly app legacy endpoints keep the legacy resource envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/resourceStore.listStorehouses",
+				query: { allowPurchase: "ON", page: 1, row: 2 },
+				data: expect.objectContaining({
+					list: expect.arrayContaining([expect.objectContaining({ shId: "SH_001", allowPurchase: "ON" })]),
+					total: 2,
+					page: 1,
+					pageSize: 2,
+				}),
+			},
+			{
+				path: "/app/resourceStore.listAllocationStorehouseApplys",
+				query: { page: 1, row: 10 },
+				data: expect.objectContaining({
+					list: [expect.objectContaining({ allocationId: "AL_20240301_001", state: 1200 })],
+					total: 1,
+					page: 1,
+					pageSize: 10,
+				}),
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				success: true,
+				code: "0",
+				message: expect.any(String),
+				data: request.data,
+				timestamp: expect.any(Number),
+			});
+			expect(response).not.toHaveProperty("msg");
+		}
+	});
+
+	test("resource guarded allocation write endpoint keeps the legacy resource guard envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/resourceStore.saveAllocationStorehouse",
+			body: {
+				fromShId: "SH_001",
+				toShId: "SH_002",
+				resourceStores: [{ resName: "Office Desk" }],
+			},
+		});
+
+		expect(response).toMatchObject({
+			success: false,
+			code: "409",
+			message: expect.stringContaining("resourceStore.saveAllocationStorehouse"),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+			timestamp: expect.any(Number),
+		});
+		expect(response).not.toHaveProperty("msg");
+	});
+
+	test("resource adapter evidence separates readonly handlers from guarded allocation write path", () => {
+		expect(resourceLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-plus-guarded-write-batch30",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ success, code, message, data, timestamp }",
+			endpoints: ["/app/resourceStore.listStorehouses", "/app/resourceStore.listAllocationStorehouseApplys"],
+			guardedEndpoints: ["/app/resourceStore.saveAllocationStorehouse"],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
+		});
+		expect(resourceLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"db-backed-resource-data",
+				"resource-write-read-back-rollback",
+				"production-app-h5-resource-network",
+			]),
+		);
+		expect(resourceLegacyAdapterEvidence.notCovered).not.toContain("/app/resourceStore.listStorehouses");
+		expect(resourceLegacyAdapterEvidence.notCovered).not.toContain("/app/resourceStore.listAllocationStorehouseApplys");
+		expect(resourceLegacyAdapterEvidence.notCovered).not.toContain("/app/resourceStore.saveAllocationStorehouse");
+	});
+
 	test("item-release readonly app legacy endpoint returns the unified code msg data envelope", async () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
@@ -2483,6 +2592,9 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(urls).toContain("/app/resourceStore.listResourceStores");
 		expect(urls).toContain("/app/purchase/purchaseApply");
 		expect(urls).toContain("/app/purchase/urgentPurchaseApply");
+		expect(urls).toContain("/app/resourceStore.listStorehouses");
+		expect(urls).toContain("/app/resourceStore.listAllocationStorehouseApplys");
+		expect(urls).toContain("/app/resourceStore.saveAllocationStorehouse");
 	});
 
 	test("manifest marks high-risk app legacy mutation actions as blocked for execution", () => {
@@ -2529,6 +2641,7 @@ describe("phase7 apps-api dual client contracts", () => {
 			"/app/maintenance.completeMaintenanceTask",
 			"/app/maintenance.submitMaintenanceSingle",
 			"/app/maintenance.transferMaintenanceTask",
+			"/app/resourceStore.saveAllocationStorehouse",
 		]) {
 			expectManifestEntry(url, {
 				targetClient: "app",

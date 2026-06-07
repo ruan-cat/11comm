@@ -207,6 +207,12 @@ describe("endpoint registry runtime", () => {
 		expect(findEndpointDefinition(registry, "POST", "/app/purchase/purchaseApply")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/purchase/urgentPurchaseApply")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/purchase/urgentPurchaseApply")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listStorehouses")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/resourceStore.listStorehouses")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listAllocationStorehouseApplys")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/resourceStore.listAllocationStorehouseApplys")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.saveAllocationStorehouse")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/resourceStore.saveAllocationStorehouse")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/couponProperty.listCouponPropertyUserDetail")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/couponProperty.listCouponPropertyUserDetail")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/integral.listIntegralSetting")).toBeTruthy();
