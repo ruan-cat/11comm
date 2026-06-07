@@ -85,9 +85,8 @@ const fileListTotal: number[] = [];
 /** 获取指定文件夹中所有文件的总大小 */
 const getPackageSize = (options) => {
 	const {
-		// folder = "dist"
-		// 项目使用了 nitro ，所以输出目录是 .output
-		folder = ".output",
+		// admin 已退役内置 Nitro 构建，默认统计 Vite 前端产物目录。
+		folder = "dist",
 		callback,
 		format = true,
 	} = options;

@@ -8,7 +8,7 @@ import { loadEnv } from "vite";
 import Vue from "@vitejs/plugin-vue";
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 
-/** Nitro 集成测试需要 node 环境和本地 8080 服务，不进入默认 jsdom 单元测试。 */
+/** 旧 admin 内置 Nitro HTTP 套件仅作历史对照，不进入当前 admin 有效测试入口。 */
 const nitroIntegrationTestPattern = "tests/nitro/**";
 
 /** 历史占位测试文件为空，默认全量测试不把它们计为有效测试套件。 */
@@ -80,42 +80,8 @@ const jsdomConfig = defineConfig({
 	},
 });
 
-// Nitro 接口测试配置（node 环境）
-const nitroNodeConfig = defineConfig({
-	test: {
-		environment: "node",
-		include: ["tests/nitro/**/*.test.ts"],
-		exclude: [...configDefaults.exclude, "e2e/**", "src/**/*.test.ts"],
-		root: fileURLToPath(new URL("./", import.meta.url)),
-		env: {
-			NODE_ENV: "test",
-			...loadEnv("test", process.cwd(), ""),
-		},
-		globals: true,
-		setupFiles: ["./tests/setup-neon.ts"],
-		pool: "forks",
-	},
-	resolve: {
-		alias: {
-			"@": fileURLToPath(new URL("./src", import.meta.url)),
-			"setup-neon": fileURLToPath(new URL("./tests/setup-neon.ts", import.meta.url)),
-		},
-	},
-});
-
 // 导出合并后的配置
-export default defineConfig(({ mode }) => {
-	// 如果是 node 环境（nitro 接口测试），使用 nitro 配置
-	// 检查 --node 参数（在 -- 之后）
-	const args = process.argv.slice(2);
-	const normalizedArgs = args.map((arg) => arg.replaceAll("\\", "/"));
-	const isExplicitNitroTest = normalizedArgs.some((arg) => arg.includes("tests/nitro/"));
-	const isNodeTest = args.includes("--node") || isExplicitNitroTest;
-
-	if (isNodeTest) {
-		return nitroNodeConfig;
-	}
-
-	// 默认使用 jsdom 配置
+export default defineConfig(() => {
+	// 当前 admin 包只运行前端 jsdom 单测；旧 Nitro HTTP 套件的权威替代验证在 apps/api/tests/**。
 	return jsdomConfig;
 });

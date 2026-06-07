@@ -19,11 +19,11 @@
 		},
 		"vite:build:prod:cloudflare": {
 			"cache": true,
-			"outputs": [".output/**"]
+			"outputs": ["dist/**"]
 		},
 		"vite:build:prod:vercel": {
 			"cache": true,
-			"env": ["ENABLE_EXPERIMENTAL_COREPACK", "R2_*", "comm_admin_11__*"],
+			"env": ["ENABLE_EXPERIMENTAL_COREPACK"],
 			"outputs": [".vercel/output/**"]
 		},
 		"move-vercel-output-to-root": {

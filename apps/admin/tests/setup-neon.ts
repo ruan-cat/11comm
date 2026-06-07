@@ -5,9 +5,11 @@ import { resolve } from "node:path";
 const adminDir = process.cwd();
 
 /**
- * 加载 Neon 环境变量（用于 Nitro 接口测试）
+ * 加载旧 admin Nitro HTTP 测试环境变量。
  *
- * 使用 @dotenvx/dotenvx 加载环境变量，确保测试可以访问 Neon 数据库连接
+ * 该 helper 只服务 `tests/nitro/**` 历史对照套件。当前 admin 包不再通过
+ * `vitest.config.ts` 暴露这批测试入口，现行 API/DB/R2 验证必须迁到
+ * `apps/api/tests/**`。
  */
 function loadVercelEnv() {
 	// 加载项目级别环境变量
@@ -20,19 +22,12 @@ function loadVercelEnv() {
 loadVercelEnv();
 
 /**
- * Nitro 服务器地址配置
+ * 旧 Nitro 服务器地址配置。
  *
- * 如果需要在测试时调用真实的 Nitro 接口，请先启动 Nitro 开发服务器：
- *
- * ```bash
- * # 终端 1: 启动 Nitro 服务器
- * pnpm dev
- *
- * # 终端 2: 运行测试
- * pnpm test
- * ```
- *
- * Nitro 服务器默认地址: http://localhost:8080
+ * 这里仍保留 `localhost:8080` 仅用于阅读历史测试意图。删除
+ * `apps/admin/server/**` 前不应再把这批旧 HTTP 测试作为门禁；请使用
+ * `apps/api/tests/admin/**`、`apps/api/tests/infra/**` 和 admin 调用端
+ * resolver/shared-upload 单测替代。
  *
  * 测试代码中可以这样使用:
  * ```typescript
@@ -84,5 +79,5 @@ console.log("=".repeat(50));
 console.log("🧪 Nitro 测试环境配置加载完成");
 console.log("=".repeat(50));
 console.log(`📡 Nitro 服务器地址: ${NITRO_BASE_URL}`);
-console.log("💡 如需测试真实 Nitro 接口，请先运行: pnpm dev");
+console.log("💡 该 helper 仅供旧 tests/nitro/** 历史对照；现行接口测试请迁到 apps/api/tests/**");
 console.log("=".repeat(50));

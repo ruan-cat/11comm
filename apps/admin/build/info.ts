@@ -27,9 +27,8 @@ export function viteBuildInfo(): Plugin {
 			config = resolvedConfig;
 			outDir =
 				resolvedConfig.build?.outDir ??
-				// "dist"
-				// 项目使用了 nitro ，所以输出目录是 .output
-				".output";
+				// admin 已退役内置 Nitro 构建，默认读取 Vite 前端产物目录。
+				"dist";
 		},
 		buildStart() {
 			console.log(boxen(welcomeMessage, boxenOptions));
