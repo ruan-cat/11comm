@@ -12,21 +12,22 @@ const activityReadonlyUrl = "/app/activities.listActivitiess";
 describe("activity legacy endpoints phase7 readonly slice", () => {
 	const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
-	test("registers exactly the activity readonly handler", () => {
+	test("registers the activity readonly handler and guarded writes through batch25", () => {
 		expect(findEndpointDefinition(registry, "GET", activityReadonlyUrl)).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", activityReadonlyUrl)).toBeTruthy();
 
 		for (const path of [
-			"/app/activities.saveActivities",
-			"/app/activities.updateActivities",
-			"/app/activities.deleteActivities",
-			"/app/activities.increaseView",
 			"/app/activities.likeActivity",
+			"/app/activities.increaseView",
 			"/app/activities.updateStatus",
 			"/app/activities.updateLike",
 			"/app/activities.updateCollect",
+			"/app/activities.saveActivities",
+			"/app/activities.updateActivities",
+			"/app/activities.deleteActivities",
 		]) {
-			expect(findEndpointDefinition(registry, "POST", path)).toBeUndefined();
+			expect(findEndpointDefinition(registry, "POST", path)).toBeTruthy();
+			expect(findEndpointDefinition(registry, "GET", path)).toBeUndefined();
 		}
 	});
 
@@ -167,5 +168,34 @@ describe("activity legacy endpoints phase7 readonly slice", () => {
 				row: 2,
 			},
 		});
+	});
+
+	test("blocks activity guarded writes through batch25 with the legacy mutation guard envelope", async () => {
+		for (const [path, action] of [
+			["/app/activities.likeActivity", "activities.likeActivity"],
+			["/app/activities.increaseView", "activities.increaseView"],
+			["/app/activities.updateStatus", "activities.updateStatus"],
+			["/app/activities.updateLike", "activities.updateLike"],
+			["/app/activities.updateCollect", "activities.updateCollect"],
+			["/app/activities.saveActivities", "activities.saveActivities"],
+			["/app/activities.updateActivities", "activities.updateActivities"],
+			["/app/activities.deleteActivities", "activities.deleteActivities"],
+		] as const) {
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path,
+				body: { activitiesId: "ACT_001", title: "Blocked activity mutation" },
+			});
+
+			expect(response).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
 	});
 });
