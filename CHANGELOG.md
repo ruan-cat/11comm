@@ -1,3 +1,86 @@
+## v1.3.0
+
+[compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.2-beta.5...v1.3.0)
+
+### ✨ 新增功能
+
+- **api:** 新增数据库 seed 命令入口 ([f77df195](https://github.com/ruan-cat/11comm/commit/f77df195))
+- **api:** 新增优惠券旧端只读接口 ([0083e3f0](https://github.com/ruan-cat/11comm/commit/0083e3f0))
+- **api:** 新增巡检旧端接口适配 ([0af91b0c](https://github.com/ruan-cat/11comm/commit/0af91b0c))
+- **api:** 新增抄表旧端接口适配 ([0f432a58](https://github.com/ruan-cat/11comm/commit/0f432a58))
+- **api:** 新增物品放行旧端接口适配 ([a1d8f989](https://github.com/ruan-cat/11comm/commit/a1d8f989))
+- **api:** 新增设备维保旧端接口适配 ([63c12893](https://github.com/ruan-cat/11comm/commit/63c12893))
+- **api:** 新增房屋优惠申请旧端接口 ([6f7978f7](https://github.com/ruan-cat/11comm/commit/6f7978f7))
+- **api:** 扩展费用充电设备旧端接口 ([fdbe5ed4](https://github.com/ruan-cat/11comm/commit/fdbe5ed4))
+- **api:** 扩展报修旧端只读接口 ([98c056e6](https://github.com/ruan-cat/11comm/commit/98c056e6))
+- **api:** 为活动旧端写接口加保护 ([b93cb08b](https://github.com/ruan-cat/11comm/commit/b93cb08b))
+- **api:** 为个人中心旧端写接口加保护 ([97a06e0a](https://github.com/ruan-cat/11comm/commit/97a06e0a))
+- **api:** 为访客审核旧端写接口加保护 ([86b16164](https://github.com/ruan-cat/11comm/commit/86b16164))
+- **api:** 为工单旧端写接口加保护 ([88f9eda7](https://github.com/ruan-cat/11comm/commit/88f9eda7))
+- **api:** 将 R2 配置纳入 ready 门禁 ([7cdb92b1](https://github.com/ruan-cat/11comm/commit/7cdb92b1))
+- **api:** 支持关闭旧端 fallback 代理 ([6bda0eeb](https://github.com/ruan-cat/11comm/commit/6bda0eeb))
+- **api:** 注册批量旧端迁移清单 ([416e5003](https://github.com/ruan-cat/11comm/commit/416e5003))
+- **api:** 为保养旧端写接口加保护 ([2cdf2373](https://github.com/ruan-cat/11comm/commit/2cdf2373))
+- **api:** 补齐卡券预约旧接口 exact 迁移 ([b21a91a5](https://github.com/ruan-cat/11comm/commit/b21a91a5))
+- **api:** 补齐采购旧接口 exact 迁移 ([7db39e96](https://github.com/ruan-cat/11comm/commit/7db39e96))
+- **api:** 补齐资源旧接口 exact 迁移 ([8cd0a27d](https://github.com/ruan-cat/11comm/commit/8cd0a27d))
+
+### 🐞 修复缺陷
+
+- **admin:** 避免上传 hash 引入 Node crypto ([de8149b4](https://github.com/ruan-cat/11comm/commit/de8149b4))
+
+### 🦄 代码重构
+
+- **app:** 本地化 mock 共享工具 ([1387b8a3](https://github.com/ruan-cat/11comm/commit/1387b8a3))
+- **app:** 本地化活动保养抄表 mock ([1c91ea05](https://github.com/ruan-cat/11comm/commit/1c91ea05))
+- **app:** 本地化预约投诉 mock ([9a1da00d](https://github.com/ruan-cat/11comm/commit/9a1da00d))
+- **app:** 本地化卡券巡检放行 mock ([f444e313](https://github.com/ruan-cat/11comm/commit/f444e313))
+- **app:** 本地化费用 mock ([8604a703](https://github.com/ruan-cat/11comm/commit/8604a703))
+- **app:** 本地化楼栋房屋单元 mock ([fc7eb730](https://github.com/ruan-cat/11comm/commit/fc7eb730))
+- **app:** 本地化 OA 流程 mock ([8c6a12f5](https://github.com/ruan-cat/11comm/commit/8c6a12f5))
+- **app:** 本地化停车 mock ([0f06719d](https://github.com/ruan-cat/11comm/commit/0f06719d))
+- **app:** 本地化业主资料 mock ([d66611df](https://github.com/ruan-cat/11comm/commit/d66611df))
+- **app:** 本地化物业申请 mock ([4be46632](https://github.com/ruan-cat/11comm/commit/4be46632))
+- **app:** 本地化采购员工装修 mock ([5102155d](https://github.com/ruan-cat/11comm/commit/5102155d))
+- **app:** 本地化报修 mock ([d47f0ca8](https://github.com/ruan-cat/11comm/commit/d47f0ca8))
+- **app:** 本地化资源预约 mock ([1b0544ec](https://github.com/ruan-cat/11comm/commit/1b0544ec))
+- **app:** 本地化视频访客公告 mock ([24bd706f](https://github.com/ruan-cat/11comm/commit/24bd706f))
+- **app:** 本地化工单测试 mock ([94e86db5](https://github.com/ruan-cat/11comm/commit/94e86db5))
+
+### 📖 Documentation
+
+- **admin:** 记录旧 Nitro 退役初步结论 ([3063dcff](https://github.com/ruan-cat/11comm/commit/3063dcff))
+- **openspec:** 归档旧 Nitro 退役评审 ([19b9a31a](https://github.com/ruan-cat/11comm/commit/19b9a31a))
+- **admin:** 更新统一 API 迁移指南 ([e3fb930d](https://github.com/ruan-cat/11comm/commit/e3fb930d))
+- **openspec:** 建立旧 Nitro 退役执行门禁 ([a6016a8a](https://github.com/ruan-cat/11comm/commit/a6016a8a))
+- **openspec:** 扩展旧 Nitro 退役任务规范 ([a2f9ac50](https://github.com/ruan-cat/11comm/commit/a2f9ac50))
+- **openspec:** 刷新 app legacy 退役台账 ([8dcc72ae](https://github.com/ruan-cat/11comm/commit/8dcc72ae))
+- **openspec:** 记录采购旧接口迁移证据 ([96d9191a](https://github.com/ruan-cat/11comm/commit/96d9191a))
+
+### 🔨 构建相关
+
+- **admin:** 退役内置 Nitro 构建入口 ([0b5839f8](https://github.com/ruan-cat/11comm/commit/0b5839f8))
+- **scripts:** 将任务生成器指向 apps-api ([a7128cb6](https://github.com/ruan-cat/11comm/commit/a7128cb6))
+- **app:** 将 Nitro 联调脚本指向统一 API ([4755af44](https://github.com/ruan-cat/11comm/commit/4755af44))
+- **app:** 移除内置 Nitro 构建配置 ([e0aba784](https://github.com/ruan-cat/11comm/commit/e0aba784))
+
+### 🏡 Chore
+
+- 设计提示词，标记待办任务。 ([98c2370d](https://github.com/ruan-cat/11comm/commit/98c2370d))
+
+### ✅ Tests
+
+- **api:** 补齐旧端运行时注册测试 ([b2121165](https://github.com/ruan-cat/11comm/commit/b2121165))
+- **api:** 补齐旧服务退役门禁 ([39e25a46](https://github.com/ruan-cat/11comm/commit/39e25a46))
+- **app:** 覆盖员工列表分组回归 ([55c7dc9a](https://github.com/ruan-cat/11comm/commit/55c7dc9a))
+- **api:** 覆盖卡券旧接口 exact 迁移边界 ([d677a6ba](https://github.com/ruan-cat/11comm/commit/d677a6ba))
+- **api:** 覆盖采购旧接口 exact 迁移边界 ([54da761a](https://github.com/ruan-cat/11comm/commit/54da761a))
+- **api:** 覆盖资源旧接口 exact 迁移边界 ([669808c8](https://github.com/ruan-cat/11comm/commit/669808c8))
+
+### ❤️ Contributors
+
+- Ruan-cat <1219043956@qq.com>
+
 ## v1.2.2-beta.5
 
 [compare changes](https://github.com/ruan-cat/11comm/compare/v1.2.2-beta.4...v1.2.2-beta.5)
