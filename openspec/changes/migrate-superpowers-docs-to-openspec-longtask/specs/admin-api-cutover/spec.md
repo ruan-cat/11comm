@@ -101,3 +101,59 @@ Admin old path exact coverage 不能作为删除 `apps/admin/server` 的证明�
 
 - **WHEN** admin old path exact coverage 被记录为 155/155
 - **THEN** `apps/admin/server` 仍保持受保护，直到 retirement gate 对所有 endpoint 完成归类和独立评审
+
+### Requirement: Admin 内置 Nitro 构建退役
+
+`apps/admin` 完成旧内置 Nitro 退役后 MUST 不再通过 Vite Nitro plugin、`apps/admin/nitro.config.ts`、`serverDir: "./server"`、`scanDirs: ["./server"]`、Nitro build script 或 Vercel Nitro script 运行本包 server。Admin 前端必须通过 `resolveAdminApiRequestUrl` 或等价 resolver 消费独立 `apps/api`，不得把 `apps/admin/server` 作为 dev、build、CI 或 production API 入口。
+
+#### Scenario: admin Vite 仍加载 Nitro
+
+- **WHEN** `apps/admin/build/plugins/index.ts` 仍导入 `nitro/vite` 或调用 `nitro()`
+- **THEN** admin 内置 Nitro 未退役，`apps/admin/server` 必须保持 `blocked`
+
+#### Scenario: admin Nitro config 仍被脚本使用
+
+- **WHEN** `apps/admin/nitro.config.ts` 仍被 `package.json`、Vercel build、CI 或 dev script 调用
+- **THEN** admin 仍具备自有 Nitro runtime，不能删除 `apps/admin/server`
+
+### Requirement: Admin legacy DB、seed 与 Drizzle compatibility 退役
+
+`apps/admin/server/db/**`、`apps/admin/server/db/seed/**`、`apps/admin/drizzle.config.ts` 和 admin 侧 `db:*` / `db:legacy:*` script MUST 在删除 `apps/admin/server` 前迁入 `apps/api` 或显式废弃。任何生产 migration、schema drift、readiness、seed、reset 或 CUD 验证都不得继续把 admin 包作为权威入口。带有 destructive reset 语义的旧 seed/reset 命令不得作为现行操作保留。
+
+#### Scenario: admin db script 仍存在
+
+- **WHEN** `apps/admin/package.json` 仍包含可执行 `db:*` 或 `db:legacy:*` 入口
+- **THEN** 必须确认它们已被删除、改为 fail-closed notice、或转向 `apps/api`；否则 `apps/admin/server` 状态保持 `blocked`
+
+#### Scenario: seed 仍有业务价值
+
+- **WHEN** 旧 `apps/admin/server/db/seed/**` 中的 seed 运维仍需要保留
+- **THEN** 必须迁入 `apps/api` 的 package-local seed/dry-run seed 入口，并补缺 DB URL fail-closed、dry-run、回滚和不直接破坏生产库的规范
+
+### Requirement: Admin R2/upload 源依赖退役
+
+Contract upload 的 R2 client、env 读取、upload session repository、multipart control plane 和 cleanup/residual 证据 MUST 由 `apps/api` 承接。删除 `apps/admin/server` 前，admin 页面和 shared-upload 组件必须证明在 standalone/shadow-off 或目标生产配置下命中 `apps/api`，且不再依赖旧 admin server 同域 upload route 或旧 `server/services/**`、`server/utils/r2-*`。
+
+#### Scenario: upload hook 仍依赖同域旧 API
+
+- **WHEN** admin upload hook、页面或 env 配置仍可能把 upload control plane 发往同域 `/api/**` 的旧 admin Nitro
+- **THEN** 必须补 URL resolver 测试、页面 Network 证据和生产 CORS/R2 evidence，不能删除旧 upload source
+
+#### Scenario: server-side R2 drill 通过
+
+- **WHEN** `apps/api` server-side R2 multipart drill 通过
+- **THEN** 只能证明 API control plane 和 R2 gateway 可用；仍需 admin 浏览器 shared-upload、R2 CORS、cleanup/residual 和 standalone/shadow-off 证据才能推进目录删除
+
+### Requirement: Admin generator 与活动文档不得继续指向旧 server
+
+旧内置 Nitro 退役前，活动生成器、指南和部署文档 MUST 不再引导新增 `apps/admin/server/**`、从 admin 运行 Drizzle、或把 admin Nitro 作为生产 API。历史 reports 可以保留迁移来源表述，但现行 guide、script 和 prompt 入口必须改到 `apps/api` 或明确标记废弃。
+
+#### Scenario: generator 仍生成 admin server route
+
+- **WHEN** `scripts/generate-tasks.ts` 或等价脚本仍生成 `apps/admin/server/api/**`
+- **THEN** 该脚本必须迁移或废弃，否则 admin server 目录保持 `blocked`
+
+#### Scenario: 活动 guide 仍说明 admin db/seed
+
+- **WHEN** `apps/admin/src/docs/guides/**` 仍把 admin server、admin Drizzle 或 admin seed 写成现行操作入口
+- **THEN** 必须更新到 `apps/api`，并在 retirement evidence 中记录扫描结果

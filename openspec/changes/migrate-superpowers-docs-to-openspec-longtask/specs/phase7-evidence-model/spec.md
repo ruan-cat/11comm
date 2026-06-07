@@ -152,3 +152,31 @@ endpoint 状态升级必须满足对应门槛：路径覆盖需要 route/manifes
 
 - **WHEN** endpoint 准备进入 `delete-candidate` 或 retirement review
 - **THEN** 必须同时具备替代实现、调用端切流或无调用证明、浏览器/HTTP 证据、fallback/shadow-off、DB/write evidence、独立复核和 no-go 解除条件
+
+### Requirement: 目录与文件组级证据字段模型
+
+Phase7 的 retirement ledger MUST 支持目录/文件组级记录。除 endpoint 级字段外，目录级 evidence matrix 至少记录 `directoryPath`、`fileGroup`、`currentDependency`、`targetReplacement`、`configScriptEvidence`、`testBuildEvidence`、`runtimeEvidence`、`fallbackOrShadowEvidence`、`dbR2SeedEvidence`、`dryRunEvidence`、`rollbackNote`、`retirementDecision` 和 `notes`。缺任一关键字段时，目录不得升级为 `delete-candidate`。
+
+#### Scenario: 记录 admin 文件组
+
+- **WHEN** 记录 `apps/admin/server` 的 `api`、`db/seed`、`services`、`utils`、`middleware/plugins` 或相关 config/script 文件组
+- **THEN** 必须说明当前依赖、`apps/api` 替代、是否仍被 Vite/Nitro/Drizzle/script/doc/test 引用、验证命令和回滚策略
+
+#### Scenario: 记录 app 文件组
+
+- **WHEN** 记录 `apps/app/server` 的 `modules`、`handlers/legacy-dispatch`、`shared/runtime`、mock/test 依赖或 Nitro config/script 文件组
+- **THEN** 必须说明 fallback-only 状态、exact/guard/blocked 替代、mock/test 迁移状态、production standalone 证据和 dry-run 结果
+
+### Requirement: `all_done` 不得替代证据矩阵
+
+OpenSpec artifact 完整、`openspec instructions apply` 返回 `all_done`、旧 Superpowers 文档删除或评估 change 归档，MUST 不得替代目录/文件组 evidence matrix。只要新增退役执行阶段存在未完成 checkbox 或 evidence matrix 存在 `protected`、`blocked`、`keep-source` 行，旧内置 Nitro 目录不得删除。
+
+#### Scenario: instructions apply 显示完成
+
+- **WHEN** OpenSpec 工具显示当前 change 的 artifact 或历史 task 已完成
+- **THEN** 后续代理仍必须检查 `tasks.md` 最新未完成 checkbox 和目录级 evidence matrix，不能仅凭工具完成态归档或删除旧 server
+
+#### Scenario: 目录级矩阵未建立
+
+- **WHEN** `retirement-evidence-matrix.md` 或等价 canonical 记录尚未覆盖 admin/app 所有关键文件组
+- **THEN** 任何删除、移动、归档、重命名或清空旧 server 目录的请求都必须被阻断

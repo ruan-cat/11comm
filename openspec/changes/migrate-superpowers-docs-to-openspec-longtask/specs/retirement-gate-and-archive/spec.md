@@ -75,7 +75,7 @@
 
 ### Requirement: 删除验证
 
-删除旧 Superpowers 文档或推进旧服务退役都必须有 fresh scan、OpenSpec validation、状态审查、git diff 检查和 Memorix 记录。旧服务 runtime 退役还必须是单独 OpenSpec change 或明确独立评审。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
+删除旧 Superpowers 文档或推进旧服务退役都必须有 fresh scan、OpenSpec validation、状态审查、git diff 检查和 Memorix 记录。旧服务 runtime 退役还必须经过当前 change §7E 的明确独立复核/删除门禁；如果在当前 change 之外执行，则必须另开 OpenSpec change 或取得等价的明确单独评审。 本 requirement MUST 作为后续执行、证据升级和退役评审的强制约束。
 
 #### Scenario: 删除旧文档
 
@@ -85,4 +85,46 @@
 #### Scenario: 删除旧服务目录
 
 - **WHEN** 有人准备删除、移动、归档、重命名或清空 `apps/admin/server` 或 `apps/app/server`
-- **THEN** 必须阻止当前 change 直接执行，并要求单独退役评审、回滚方案和用户明确确认
+- **THEN** 必须先完成当前 change §7 的 evidence matrix、生产证据、dry-run rename/delete、rollback 演练和 §7E 独立复核/删除门禁；不得绕过这些门禁直接执行
+
+### Requirement: 当前 change 的旧内置 Nitro 退役执行扩展
+
+2026-06-05 起，`migrate-superpowers-docs-to-openspec-longtask` MUST 作为旧内置 Nitro 退役的 active execution change 继续推进。旧 §5 的 no-go 记录仍保留为历史保护边界，但不得再把 `openspec instructions apply` 的 all_done 状态解释为目录级退役完成。只有新增 §7 的目录级任务、证据矩阵、dry-run 和最终验证全部通过后，才允许删除 `apps/admin/server` 或 `apps/app/server`。
+
+#### Scenario: longtask 被重新打开
+
+- **WHEN** `tasks.md` 新增旧内置 Nitro 退役执行增补阶段
+- **THEN** 后续代理必须按 §7 未完成 checkbox 推进，不得归档本 change，也不得只引用旧 §5 的 no-go 结论停止执行
+
+#### Scenario: 已归档评估未同步 specs
+
+- **WHEN** `assess-legacy-nitro-server-retirement` 使用 `--skip-specs` 归档
+- **THEN** 其有效评估结论必须被合并到当前 active change 的 specs、design、tasks 或 evidence artifact 后，才能作为后续退役执行依据
+
+### Requirement: 目录级退役状态机
+
+旧内置 Nitro 目录 MUST 使用目录级状态机管理：`protected`、`blocked`、`keep-source`、`not-candidate-but-unused`、`delete-candidate`。默认状态为 `protected`。只要反向依赖、替代实现、测试构建、生产证据、fallback/shadow-off、DB/write/R2、dry-run 或 rollback 任一缺失，目录不得升级为 `delete-candidate`。
+
+#### Scenario: endpoint 证据充足但目录依赖未清
+
+- **WHEN** admin old path parity、app exact handler、HTTP gate 或页面证据已经通过，但 package script、Nitro config、mock/test、DB/seed、R2、fallback 或 docs/generator 仍引用旧 server
+- **THEN** 对应目录状态必须保持 `blocked` 或 `keep-source`，不得删除
+
+#### Scenario: 目录升级为删除候选
+
+- **WHEN** 准备把 `apps/admin/server` 或 `apps/app/server` 标记为 `delete-candidate`
+- **THEN** 必须能从 evidence matrix 追溯当前依赖已清零、`apps/api` 替代实现已验证、production evidence 已脱敏记录、dry-run rename/delete 已通过、rollback 已演练
+
+### Requirement: 隔离 dry-run 删除门禁
+
+删除旧内置 Nitro 目录前 MUST 在隔离 worktree、临时分支或可回滚临时 rename 中执行 dry-run。dry-run MUST 至少覆盖引用扫描、admin/app/api typecheck、相关 Vitest、admin/app build、OpenSpec strict、`git diff --check` 和回滚演练。不得在未 dry-run 的当前工作区直接递归删除目录。
+
+#### Scenario: dry-run 失败
+
+- **WHEN** dry-run rename/delete 后任一扫描、测试、构建、OpenSpec 校验或回滚步骤失败
+- **THEN** 必须恢复目录，记录 blocker，并把对应目录状态回退为 `blocked`
+
+#### Scenario: dry-run 通过
+
+- **WHEN** dry-run 全部通过
+- **THEN** 仍只能把目录推进到删除执行候选；最终删除后还必须重新运行同一组验证命令并记录结果

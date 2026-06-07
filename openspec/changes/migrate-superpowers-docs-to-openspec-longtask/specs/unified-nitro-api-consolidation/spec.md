@@ -186,3 +186,31 @@ Phase2 MUST 被解释为最小可运行 `apps/api` shadow service 加 fee/paymen
 
 - **WHEN** task101 的 `change/list` baseline、task102 的 completed cleanup/residual、浏览器 R2 CORS 或页面 shared-upload 闭环任一前置门未通过
 - **THEN** 只能记录 partial 或 blocked evidence；不得用 list、HTTP gate、Vitest、server-side drill 或 route manifest 关闭真实 CRUD 页面级证据、upload 页面闭环或旧服务退役门禁
+
+### Requirement: 前端项目不得继续内置 Nitro 运行时
+
+旧内置 Nitro 退役执行完成后，`apps/admin` 与 `apps/app` MUST 只作为前端项目消费独立 `apps/api`。它们不得继续通过 Vite Nitro plugin、`nitro.config.ts`、`serverDir: "./server"`、Nitro build/dev/preview 脚本或 CI pipeline 产出本包 Nitro server。`apps/api` 是唯一长期 Nitro build、deploy、Drizzle、Neon readiness、R2/upload control plane 和 legacy dispatch 承接项目。
+
+#### Scenario: admin/app 仍配置 serverDir
+
+- **WHEN** `apps/admin/nitro.config.ts` 或 `apps/app/nitro.config.ts` 仍声明 `serverDir: "./server"`、handlers、scanDirs 或等价内置 server 配置
+- **THEN** 旧内置 Nitro 目录必须保持 `blocked`，不得删除或归档
+
+#### Scenario: package scripts 仍构建内置 Nitro
+
+- **WHEN** `apps/admin/package.json`、`apps/app/package.json` 或 `apps/app/turbo.json` 仍存在 `nitro:*`、`dev:nitro`、`build:nitro*`、`preview:nitro` 或等价 pipeline
+- **THEN** 对应前端包尚未完成 standalone API 切流，目录不得升级为 `delete-candidate`
+
+### Requirement: `apps/api` 承接 DB、seed、R2 与 legacy dispatch 运维入口
+
+旧内置 Nitro 删除前，`apps/api` MUST 承接或显式废弃 admin/app 旧 server 中仍有真实职责的运维入口：Drizzle config、migration output、Neon readiness/drift、seed/dry-run seed、contract R2 upload、app legacy exact handler、fallback/shadow-off 行为和 production evidence。任何仍由 `apps/admin/server` 或 `apps/app/server` 承担的运行时、测试或运维职责都会阻断目录删除。
+
+#### Scenario: admin seed/reset 仍在旧 server
+
+- **WHEN** seed、reset、drift、DB readiness 或 Drizzle migration 仍需要从 `apps/admin/server` 或 `apps/admin/drizzle.config.ts` 运行
+- **THEN** admin server 目录必须保持 `blocked`，直到入口迁入 `apps/api` 或被明确废弃并移除脚本
+
+#### Scenario: app fallback-only 仍依赖旧 server
+
+- **WHEN** `/app/**` 或 `/callComponent/**` endpoint 仍只能通过旧 app server fallback 返回
+- **THEN** `apps/app/server` 必须保持 `blocked`，直到 endpoint 被 exact handler、guarded/blocked 契约或 not-candidate 决策收口

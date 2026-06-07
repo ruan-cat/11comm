@@ -190,3 +190,45 @@ App legacy readiness 必须独立于 admin readiness。admin resolver 完成、a
 
 - **WHEN** admin cutover 证据明显多于 app legacy 证据
 - **THEN** 统一 Nitro 合并仍保持 partial，`apps/app/server` 和旧 app 项目仍保持受保护
+
+### Requirement: App mock 与测试不得库化依赖旧 server
+
+旧内置 Nitro 退役前，`apps/app/src/api/mock/**` 与 `apps/app/src/tests/nitro-runtime/**` MUST 不再直接导入 `apps/app/server/modules/**`、`apps/app/server/shared/runtime/**` 或等价旧 server 文件。App 侧测试只能保留前端 URL 解析、调用端 base URL、shadow/standalone 配置等前端职责；endpoint、repository、runtime registry、legacy adapter 和 fallback 行为测试必须迁到 `apps/api/tests/**` 或改为不依赖旧 server。
+
+#### Scenario: mock 文件导入旧 server modules
+
+- **WHEN** `apps/app/src/api/mock/*.mock.ts` 仍导入 `../../../server/modules/**`
+- **THEN** `apps/app/server` 目录必须保持 `blocked`，mock 必须逐文件改为 app-local fixture、独立 `apps/api` helper 或删除冗余 mock
+
+#### Scenario: nitro-runtime 测试导入旧 server
+
+- **WHEN** `apps/app/src/tests/nitro-runtime/**` 仍把旧 `apps/app/server` 当作 runtime library
+- **THEN** 该测试必须迁入 `apps/api/tests/legacy`、`apps/api/tests/runtime` 或改为纯前端配置测试；不得用这些测试证明旧 server 可删除
+
+### Requirement: App 内置 Nitro 构建退役
+
+`apps/app` 完成退役切流后 MUST 不再拥有自有 Nitro build/dev/preview/runtime。`apps/app/package.json`、`apps/app/turbo.json`、`apps/app/vite.config.ts`、`apps/app/nitro.config.ts` 和 app dev scripts 中任何启动或构建 app Nitro 的入口都会阻断 `apps/app/server` 删除。
+
+#### Scenario: app 仍有 legacy-dispatch handler
+
+- **WHEN** `apps/app/nitro.config.ts` 仍把 `/app/**` 或 `/callComponent/**` 指向 `./server/handlers/legacy-dispatch`
+- **THEN** app 内置 Nitro 未退役，必须先由 `apps/api` exact handler、guard/blocked 契约和 fallback-off 证据承接
+
+#### Scenario: app production standalone 已配置
+
+- **WHEN** app production shadow-disabled 或 standalone base URL 指向 `apps/api`
+- **THEN** 仍必须验证 mock/test/Nitro build/fallback-only 均已清理；生产 base URL 成功不能单独证明 `apps/app/server` 可删除
+
+### Requirement: App fallback-only endpoint 收口
+
+App fallback-only endpoint MUST 在删除旧 app server 前逐项收口为 exact handler、guarded write、explicit blocked、diagnostic/not-candidate 或删除候选外保留项。历史 150 个 fallback-only 只是 dated snapshot，后续执行前必须 fresh scan。只要存在未归类 fallback-only，`apps/app/server` 就不得升级为 `delete-candidate`。
+
+#### Scenario: fallback-only 清单刷新
+
+- **WHEN** 后续代理准备推进 app server 删除
+- **THEN** 必须重新扫描 `apps/app/server/modules/**` 与 `apps/api/server/shared/runtime/runtime-endpoints.ts`，刷新 exact/fallback/diagnostic 差集，再按小批次推进
+
+#### Scenario: endpoint 无法短期迁移
+
+- **WHEN** fallback-only endpoint 因数据源、写入风险、旧字段语义或页面调用不清而无法迁移
+- **THEN** 必须显式标记为 `blocked`、`guarded` 或 `not-candidate`，并说明为何不会继续依赖旧 app server fallback
