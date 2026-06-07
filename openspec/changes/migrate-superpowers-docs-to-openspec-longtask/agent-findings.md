@@ -1,5 +1,19 @@
 # 代理发现记录
 
+## 2026-06-07 用户暂停长任务边界
+
+用户明确要求“及时暂停，记录任务进度”后，主代理已停止继续推进，不再进入 maintenance 实现。Wegener 复核子代理已经完成并返回 batch25 PASS；Hubble 编辑子代理在 maintenance 下一批任务中仍处于 running 时被关闭，返回状态为 shutdown，不能把它视为完成了任何 maintenance 修改、红绿灯验证或任务进度。后续恢复时必须先重新读取当前工作区和 `tasks.md`，确认是否存在 Hubble 关闭前留下的文件改动；若有，只能按普通未验证改动处理，不能自动归入已完成 checkpoint。
+
+当前有效进度仍以 activity 第二十五批为止：fresh scan 为 fallbackOnly=91、activityFallback=0；task438/task439 仍 open，7D/7E 仍 open。下一步建议来自只读探索而非已实施事实：maintenance 的 `/app/maintenance.startMaintenanceTask` 与 `/app/maintenance.completeMaintenanceTask` 可作为下一批 POST-only guarded exact 候选，但必须重新走 TDD、验证、复核和文档更新。
+
+## 2026-06-07 activity 第二十五批 CUD guarded exact 边界
+
+`/app/activities.saveActivities`、`/app/activities.updateActivities` 与 `/app/activities.deleteActivities` 在旧 app server 中都是 POST 写入口，会分别新增、更新或删除旧 in-memory activity 记录。由于当前没有 activity DB_READY、真实写入窗口、write/read-back/rollback、residual check、生产 App H5 或 guard-restored 证据，本批不能实现真实 CUD，只能在 `apps/api` 注册 POST-only guarded exact。
+
+TDD 红灯记录：三条 CUD endpoint 在实现前无法通过 registry 查找，fallback disabled dispatch 返回 404，manifest/evidence 也缺少 batch25 记录。实现后同一组 api legacy/runtime/infra 测试通过，fresh scan 从 apiRows=118、exactOldSource=117、fallbackOnly=94、activityExact=6、activityFallback=3 更新为 apiRows=121、exactOldSource=120、fallbackOnly=91、activityExact=9、activityFallback=0。activity 旧 source 模块当前已无 fallback-only URL，但这只代表 fallback disabled 时由 `apps/api` fail-closed 承接，不代表真实 activity CUD 或旧 app server 可退役。
+
+遗留风险：全局 fallbackOnly 仍为 91，coupon、maintenance、oa-workflow、parking、property-application、purchase、renovation、repair、resource 与 staff 仍阻断 `apps/app/server/**` delete-candidate。下一批可按探索子代理建议处理 maintenance 的 `/app/maintenance.startMaintenanceTask` 与 `/app/maintenance.completeMaintenanceTask` 两条 POST-only guarded exact；仍不得声称 DB_READY、真实保养写入、生产验证、全局 shadow-off/fallback、dry-run 或删除许可。
+
 ## 2026-06-05 task102 浏览器 CORS baseline 发现
 
 本轮在生产 admin H5 `#/property-manage/contract-manage/draft-contract` 中通过新增弹窗的 `合同附件` shared-upload 控件触发浏览器上传。页面控制面可达：`upload/init`、`upload/status`、`upload/sign-part` 均由生产页面自然触发并返回 HTTP 200。浏览器直传 R2 时，`PUT` 进入 `net::ERR_FAILED`，Console 明确显示 preflight response 未通过 CORS 检查，缺少 `Access-Control-Allow-Origin` 响应头。随后点击“移除”触发 `upload/abort` HTTP 200，队列清空。
@@ -2297,3 +2311,353 @@ admin 默认 Vitest 已调整为离线可验证边界：`tests/nitro/**` 继续�
 `apps/admin/tests/setup.ts` 仍会加载 `apps/admin/.env` 与 `.env.vercel.local`。这不是本轮新增风险，也不直接发起网络请求，但默认 admin 单测进程仍可能读入本地环境变量。后续若要进一步收紧 hermetic 测试，应单独评估是否把 env 加载拆到需要真实配置的测试 setup 中；本轮只记录风险，不扩大重构。
 
 当前 OpenSpec change 的 `/opsx:verify` 等效复核无 CRITICAL，`tasks.md` 无未勾选任务；但这些结论仍不代表旧 `apps/admin/server` 或 `apps/app/server` 目录可删除，也不代表 retirement decision 可自动从 `keep-source` 升级。退役仍需要独立评审或后续 OpenSpec change。
+
+## 2026-06-05 旧内置 Nitro 退役增补边界
+
+本轮重新审计后确认，旧 `all_done` 状态会误导后续代理：它只表示此前 387 个文档迁移与 Phase7 证据任务完成，不表示 admin/app 内置 Nitro runtime 可删除。归档的 `assess-legacy-nitro-server-retirement` 使用了 `--skip-specs`，其结论没有进入 active specs，因此必须合并回 `migrate-superpowers-docs-to-openspec-longtask`。
+
+admin 当前阻断来自四类：`apps/admin/build/plugins/index.ts` 仍接入 `nitro/vite` 和 `nitro()`；`apps/admin/nitro.config.ts` 仍声明 `serverDir: "./server"` 与 `scanDirs: ["./server"]`；`apps/admin/package.json` 仍有 `nitro:*`、`db:*`、`db:legacy:*` 等旧入口；`apps/admin/drizzle.config.ts`、`apps/admin/server/db/seed/**`、旧 R2/upload service/utils 和活动 generator/docs 仍会把旧 admin server 当作运行时或运维来源。admin old path route parity 155/155 不能抵消这些阻断。
+
+app 当前阻断来自四类：`apps/app/package.json`、`apps/app/turbo.json`、`apps/app/vite.config.ts`、`apps/app/nitro.config.ts` 仍保留自有 Nitro build/dev/preview/runtime；`apps/app/src/api/mock/**/*.mock.ts` 仍直接导入 `../../../server/modules/**`；`apps/app/src/tests/nitro-runtime/**` 仍把旧 app server 当运行时库；`apps/api` 仍有大量 app fallback-only 路径需要 exact handler、guarded/blocked 契约或 not-candidate 决策收口。生产 app standalone URL 证据不能单独证明 `apps/app/server` 可删除。
+
+新的长期执行规则是：`tasks.md` §7 为唯一任务源，`legacy-nitro-retirement-execution-plan.md`、目录依赖审计和 evidence matrix 只是支撑证据。目录级状态必须从 `protected/blocked/keep-source` 逐步推进到 `delete-candidate`，中间必须经过替代实现、调用端切流、DB/R2/seed/readiness、fallback/shadow-off、生产证据、dry-run rename/delete 和回滚演练。任何时候只要 mock/test、Nitro config、package script、DB/seed、R2/upload、fallback-only 或 docs/generator 仍有未分类旧依赖，旧 server 目录都不能删除。
+
+## 2026-06-06 旧配置与 active docs 退役后的剩余阻断
+
+本轮删除三个旧配置文件后，`apps/admin/nitro.config.ts`、`apps/admin/drizzle.config.ts`、`apps/app/nitro.config.ts` 不再是 active 阻断；`scripts/generate-tasks.ts` 和四份 active docs 也不再正向指导新建 `apps/admin/server/**` route/mock、admin Drizzle 或 admin seed 运维入口。剩余命中已经在 `tasks.md` 记录为 `apps/api` 正向入口、api-side 测试 helper、或 admin legacy 负向说明。
+
+仍不能删除 `apps/admin/server/**` 的原因：`tasks.md` §7A 的 admin upload hook 三态测试、R2 blocked artifact 补充、admin typecheck/build、隔离 dry-run rename 和目录级 `delete-candidate` 仍未完成；此外 `apps/admin/tsconfig.json`、历史 node 测试配置或旧 server 目录内测试依赖仍需后续 dry-run 证明。删除目录前必须先运行 §7A 的扫描、测试、build 和回滚演练，不能只凭 config 文件消失就升级目录状态。
+
+仍不能删除 `apps/app/server/**` 的原因：`apps/app/src/api/mock/**/*.mock.ts` 仍有 28 个文件直接导入 `../../../server/modules/**`，`apps/app/src/api/mock/shared/utils.ts` 仍依赖 `server/shared/runtime/**`，`apps/app/src/tests/nitro-runtime/**` 仍把 app server 当运行时库；`apps/app/tsconfig.json` 也仍包含 server 路径。app 的自有 Nitro build/dev 入口和 `nitro.config.ts` 已切断，但 mock/test/runtime 依赖、fallback-only exact handler 收口、dry-run rename 和 production standalone/fallback 证据未完成前，目录必须继续保持 `blocked`。
+
+## 2026-06-06 admin 7A 408/410/412 证据边界
+
+本节保留为过程记录，并已由后续“admin/app 退役门禁纠偏”修正 task408/task409 口径：task407 的有效范围才是 `apps/admin/src/api/property-manage/contract-manage/upload/tests/index.test.ts` 新增三态 URL resolver 测试；task408 的有效范围是 `apps/api/tests/admin/contract-upload-r2-blocked.test.ts` 的 R2/upload 控制面回归，以及生产 R2 CORS artifact、浏览器 shared-upload drill、server-side drill 和 completed cleanup baseline 的互不替代说明。本节不代表旧 `apps/admin/server/**` 已可删除。
+
+task410 的有效范围是 admin 前端构建产物归类：`apps/admin/build/utils.ts` 与 `apps/admin/build/info.ts` 默认产物已经归口到 `dist`；`apps/admin/turbo.json` 的 `vite:build:prod:vercel.env` 最新事实是只保留 `["ENABLE_EXPERIMENTAL_COREPACK"]`，不得再记录为 `comm_admin_11__*` 仍保留。`.vercel/output/**` 保留不是 Nitro `.output/**`，而是 `vite-plugin-vercel` / `move-vercel-output-to-root` 的前端 Vercel Output API 产物；后续审计不得把它误判为 admin 内置 Nitro 仍在构建。
+
+task412 的有效范围是 admin 目标验证已通过：`pnpm -F @01s-11comm/admin exec vitest run src/api/property-manage/contract-manage/upload/tests/index.test.ts src/utils/http/tests/api-base-url.test.ts src/pages/property-manage/contract-manage/shared-upload/tests/use-resumable-upload.test.ts` 通过，3 files / 21 tests；`pnpm -F @01s-11comm/admin run typecheck` 通过；`pnpm -F @01s-11comm/admin run build:prod` 通过。这些验证只能关闭 admin 构建测试项，不能替代 task413 的隔离 rename dry-run，也不能把 task414 升级为 `delete-candidate`。
+
+task409 后续已按“显式废弃/归类，不迁移整目录”关闭。可引用的 task102 事实证据包括 `.tmp/phase7-dev-browser/2026-06-05-task102-production-admin-shared-upload.md`、`.tmp/phase7-dev-browser/2026-06-05-task102-production-server-side-drill.md`、`.tmp/phase7-dev-browser/2026-06-05-task102-production-completed-cleanup-baseline.md`、`.tmp/phase7-dev-browser/2026-06-05-task102-r2-cors-production-admin.json`；判断时应以后续纠偏段落和 `tasks.md` 当前 checkbox 为准。
+
+## 2026-06-06 admin/app 退役门禁纠偏
+
+task408 不能再引用 admin upload hook 三态 resolver 作为主证据；该 resolver 属于 task407 调用端证据。task408 的有效边界是 `apps/api/tests/admin/contract-upload-r2-blocked.test.ts` 的 R2/upload 控制面回归，以及生产 R2 CORS artifact、浏览器 shared-upload drill、server-side drill 和 completed cleanup baseline 的互不替代说明。
+
+task409 已按“显式废弃/归类，不迁移整目录”关闭。`apps/admin/tests/nitro/**` 不是静态源码 import 阻断，但它默认指向 `localhost:8080` 旧 admin 内置 Nitro 运行时；当前 active Vitest 配置不再提供 `--node` 或显式路径复活该套件的分支，旧 helper/guide 已写成历史对照。旧套件文件本体暂未删除，不能据此认为 admin server 目录可删；真正删除仍要通过 dry-run rename、扫描、typecheck、build、生产 Network 和回滚演练。
+
+admin package 的直接服务端依赖已从 `apps/admin/package.json` 移除：`@aws-sdk/client-s3`、`@aws-sdk/s3-request-presigner`、`@neondatabase/serverless`、`drizzle-orm`、`drizzle-zod`、`nitro`。`drizzle-orm` 与 `drizzle-zod` 仍会通过 `@01s-11comm/type` 的同构 schema 库进入依赖图，这不等价于 admin 仍是 Drizzle 运维项目；判断标准应看 admin direct dependency、scripts、config 和 source import。
+
+app `shared/utils.ts` 已脱离 `server/shared/runtime/**`，task426 仍是主要阻断。本轮第一阶段已把 `floor/room/unit`、`video/visit/notice`、`work-order/test` 共 8 个 mock 文件迁成 app-local fixture，剩余 20 个 mock 文件仍直接导入 `../../../server/modules/**` 或 `../../../server/shared/runtime/mock-definition-adapter`，因此不得关闭 task426 或升级 `apps/app/server/**` 状态。
+
+## 2026-06-06 app task426 第一阶段 mock 迁移边界
+
+已完成的 8 个文件只解除前端 Vite mock 编译链对旧 `apps/app/server` 的依赖；它们不替代 `apps/api` 的真实后端承接证据。`floor/room/unit/video/notice` 和 visit read-only URL 在 `apps/api` 已有 legacy endpoints 与测试，但 `/app/visit.auditVisit` 在 `apps/api` 侧仍明确是 not covered，本轮只保留 app 本地开发 mock，不得把它写成 exact handler 已迁。
+
+本轮修复了 `defineUniAppMock` 的类型根因：原泛型在创建 helper 时被固定为 `{ url: string }`，导致新 mock 的 `method/body` 被 vue-tsc 视为多余属性；现在泛型移动到返回函数的 overload 上，保留每次传入 mock 对象的真实类型。该改动已通过 4 个 mock 测试和 app type-check。
+
+剩余 20 个文件是下一批任务入口：`activity`、`appointment`、`complaint`、`contact`、`coupon`、`fee`、`inspection`、`item-release`、`maintenance`、`meter`、`oa-workflow`、`owner`、`parking`、`profile`、`property-application`、`purchase`、`renovation`、`repair`、`resource`、`staff`。这些文件未迁出前，`apps/app/server/**` 继续保持 `blocked`。
+
+## 2026-06-06 app task426 第二阶段 mock 迁移边界
+
+本阶段新增迁出的 6 个文件只解除前端 Vite mock 编译链对旧 `apps/app/server` 的依赖：`profile`、`contact`、`owner`、`coupon`、`inspection`、`item-release`。其中 `contact` 和 `owner` 在 `apps/api` 已有较完整 exact/guard 覆盖；`profile.changeCommunity`、`profile.changePassword`、`coupon`、`inspection`、`item-release` 仍不能被本地 mock 迁移自动升级为 `apps/api` exact handler 已承接。后续 task438/task439 仍必须单独处理 exact/guard/blocked/not-candidate 状态。
+
+复核子代理 Russell 只读确认 6 个目标 mock 文件没有 `server/modules` 或 `mock-definition-adapter` 残留，URL 分别覆盖旧 endpoint：`profile` 5 个、`contact` 8 个、`owner` 4 个、`coupon` 7 个、`inspection` 7 个、`item-release` 6 个；测试文件里的 forbidden 字符串只用于 `not.toContain` 断言，不是残留依赖。
+
+质量建议不作为本轮必须修复项：`contact.mock.ts` 的部门字段仍使用 `as DepartmentType | undefined` 宽断言，后续可改为白名单校验；retirement 测试当前使用 `arrayContaining`，只能证明旧 URL 被包含，后续可改成按模块精确 URL 集合；`owner.mock.ts` 的 `Object.assign(owner, { ...data })` 虽然 typecheck 通过，但可能把请求专用字段写入运行时对象，后续可显式映射字段。当前不扩大修改范围，避免把 task426 的旧 server 依赖清理和质量重构混在一起。
+
+剩余 14 个文件是下一批任务入口：`appointment`、`complaint`、`staff`、`oa-workflow`、`renovation`、`fee`、`activity`、`meter`、`maintenance`、`parking`、`resource`、`repair`、`property-application`、`purchase`。这些文件未迁出前，`apps/app/server/**` 继续保持 `blocked`，不得进入 dry-run rename 或 `delete-candidate`。
+
+## 2026-06-06 app task426 第三阶段 mock 迁移边界
+
+本阶段新增迁出的 3 个文件仍只解除前端 Vite mock 编译链对旧 `apps/app/server` 的依赖：`appointment`、`complaint`、`fee`。`appointment` 与 `complaint` 在 `apps/api` 侧已有较完整 exact/guard 覆盖，但本轮没有新增或验证生产 exact handler；`fee` 的 `/app/iot/*`、`/app/machine/listMachineRecords`、费用报表和 payment 相关路径仍需要 task438/task439 单独收口，不能因为 H5 mock 本地化就写成后端退役完成。
+
+`fee.mock.ts` 这次在文件内定义私有 fixture 类型，是为了避免把旧 repository 私有类型扩张到公共 `apps/app/src/types/fee.ts` 或 `apps/type`。这是保守的 task426 解耦策略，不是业务 schema 迁移；后续如果要把 fee app legacy exact handler 正式迁入 `apps/api`，必须另走 API 端模块、runtime manifest、guard/not-candidate、HTTP/测试证据链。
+
+剩余 11 个文件是下一批任务入口：`activity`、`maintenance`、`meter`、`parking`、`oa-workflow`、`property-application`、`purchase`、`renovation`、`repair`、`resource`、`staff`。这些文件未迁出前，`apps/app/server/**` 继续保持 `blocked`，不得进入 dry-run rename 或 `delete-candidate`。
+
+## 2026-06-06 app task426 第四阶段 mock 迁移边界
+
+本阶段新增迁出的 3 个文件仍只解除前端 Vite mock 编译链对旧 `apps/app/server` 的依赖：`activity`、`maintenance`、`meter`。`activity` 的创建、更新、删除、点赞、收藏、状态变更，`maintenance` 的开始、完成、单项提交、流转，`meter` 的抄表提交、公摊提交和审核，均只是本地内存态 mock；不得把这些写入类路径误判为 `apps/api` exact handler、生产 DB 写入或 guard 收口完成。
+
+剩余 8 个文件是下一批任务入口：`resource`、`staff`、`oa-workflow`、`property-application`、`repair`、`renovation`、`purchase`、`parking`。这些文件未迁出前，`apps/app/server/**` 继续保持 `blocked`，不得进入 dry-run rename 或 `delete-candidate`。
+
+## 2026-06-06 app task426 全量 mock 迁移边界
+
+本轮已经把最后 8 个文件 `purchase`、`staff`、`renovation`、`parking`、`oa-workflow`、`resource`、`property-application`、`repair` 迁为 app-local mock，最终 `apps/app/src/api/mock/*.mock.ts` 对旧 `apps/app/server/modules/**` 和 `mock-definition-adapter` 的直接依赖已清零。该结论只代表前端 Vite mock 编译链不再需要旧 app server 模块；它不代表 `apps/api` 已对这些模块的所有读写路径完成 exact handler、生产 DB 写入、guard/blocked/not-candidate 收口或 fallback-only 清零。
+
+`resource`、`repair`、`property-application`、`oa-workflow`、`parking` 等本地 fixture 保留旧 URL、method 和基础响应 shape，但不是旧 repository 的逐字段、逐随机样本等价实现。后续如果页面或测试依赖更细的旧 seed 行为，应在 app-local mock 内补最小必要 fixture，不能恢复对 `apps/app/server/**` 的导入。
+
+`apps/app/server/**` 仍不得进入 dry-run rename 或 `delete-candidate`，因为 task428-task432 仍要求迁移/废弃 nitro-runtime 测试与 `tsconfig` server include，task437-task439 仍要求重新扫描 app exact/fallback 差集并在 `apps/api` 收口 fallback-only 路径。只有这些任务和 dry-run/rollback 证据完成后，才能重新评估旧 app server 目录状态。
+
+## 2026-06-06 app task428 业务 runtime 测试迁移边界
+
+task428 关闭的范围仅限业务模块 `*-endpoints.test.ts` 对旧 `apps/app/server/modules/**` 与 `server/shared/runtime` 的 endpoint/repository 行为验证依赖。`runtime-endpoints.test.ts`、`legacy-endpoints.test.ts`、`endpoint-registry.test.ts`、`endpoint-catalog.test.ts`、`mock-definition-adapter.test.ts`、`memory-repository.test.ts`、`nitro-request-context.test.ts` 和 `server-node-imports.test.ts` 仍可能引用旧 app server runtime，但这些文件已分别落入 task429 或 task430，不能反向把 task428 判为未完成，也不能把 task428 的完成外推为 app server 已可删除。
+
+新增 `apps/api/tests/runtime/app-legacy-gap-registry.test.ts` 是 gap 证据，不是 exact handler 迁移证据。该测试刻意断言 coupon、inspection、item-release、maintenance、meter、oa-workflow、parking、property-application、purchase、renovation、resource、staff 等大量旧 app legacy 路径仍未注册到 `apps/api` runtime registry；这些路径后续必须由 task437-task439 逐项收敛为 exact、guarded、blocked 或 not-candidate。删除 app 侧旧 runtime 测试不能被写成这些路径已经完成后端承接。
+
+`staff-endpoints.test.ts` 的处理边界是：只把 `formatStaffList` 迁到 `apps/app/src/api/tests/staff.test.ts`，因为它是纯前端 helper 行为；旧 staff endpoint registry、repository、动态路由优先级和拼音搜索测试没有迁到 app 侧，当前由 `app-legacy-gap-registry.test.ts` 记录为未承接路径。后续若要保留 staff endpoint 行为，必须在 `apps/api` 中补 exact/guard 测试和实现，不能恢复对 `apps/app/server/modules/staff` 的测试依赖。
+
+## 2026-06-06 app task429 runtime helper 测试迁移边界
+
+task429 关闭的是 7 个旧 runtime helper 测试对 `apps/app/server/shared/runtime/**`、旧 app `legacy-endpoints`、旧 HTML catalog、旧 memory repository 和旧 mock adapter 的依赖。当前 `apps/app/src/tests/nitro-runtime` 只剩 `runtime-base-url.test.ts` 与 `server-node-imports.test.ts`；前者属于 task431 的前端 URL 解析保留项，后者仍是 task430 的迁移/废弃对象。
+
+迁入 API 的有效语义只有两类：`request-adapter.test.ts` 固定 `apps/api` 当前 H3 event 到 endpoint dispatch input 的归一化边界，`legacy-endpoint-input.test.ts` 固定 legacy handler 输入合并边界。旧 app registry 的动态 path params、旧 mock adapter 的 Vite mock params 覆盖、旧 HTML catalog 根路由、旧 pilot memory repository 都不是统一 API server 的现行产品面，不应为了“迁移测试”而在 `apps/api` 复制旧实现。
+
+`legacy-endpoints.test.ts` 中的 `fee.queryFeeDetail`、`resourceStoreType.listResourceStoreTypes`、`resourceStore.listResourceStores` 和 `runtime-endpoints.test.ts` 中的 staff detail 正向断言不能被 task429 原样迁移。当前 `resourceStore*` 与 staff detail 仍属于未注册或 fallback-only gap，必须由 task437-task439 逐项判定为 exact、guarded、blocked 或 not-candidate；删除旧 app 测试不能被解释为这些路径已经由 `apps/api` 承接。
+
+## 2026-06-06 app task430 server-node-imports 迁移边界
+
+旧 `server-node-imports.test.ts` 的有效退役价值是“不要让 app 测试继续把 `process.cwd()/server` 当 runtime 根目录”，不是“把旧 app server 的 Node ESM 显式扩展名规则迁到 API”。`apps/api` 是 Nitro/TypeScript 项目，当前源码正常使用 extensionless 相对导入；强行要求 `../../db.ts` 或 `../../shared/runtime/env.ts` 会和现有模式冲突。
+
+新增 `apps/api/tests/infra/app-server-retirement-imports.test.ts` 是 task430 的替代门禁。它扫描 `apps/api/server` 不得导入旧前端 server roots 或前端别名 `@/`，并扫描 `apps/app/src/tests/nitro-runtime` 不得残留 `process.cwd()/server`、`../../server`、`../../../server`、`server/modules`、`server/shared/runtime`。该测试红灯阶段只抓到旧 `server-node-imports.test.ts`，说明删除旧 app 测试是正确收口。
+
+task430 完成后，`apps/app/src/tests/nitro-runtime` 只剩 `runtime-base-url.test.ts`。这仍不代表 `apps/app/server/**` 可删，因为 task431 需要确认该保留测试只覆盖前端 URL 解析，task432 需要移除 `apps/app/tsconfig.json` 的 server include，task437-task439 还要继续收口 fallback-only 路径，最后还要 dry-run rename、回滚和生产 Network 证据。
+
+## 2026-06-06 app task431/task432 保留测试与 tsconfig 边界
+
+`runtime-base-url.test.ts` 的保留边界已经收敛为前端调用端 URL 解析：mock/proxy、nitro-standalone、nitro-vite、upload base、App legacy shadow allowlist、production standalone 和 shadow-disabled 解析。它不再承担旧 app Nitro runtime 行为验证，也不导入旧 server；后续不要把该测试恢复成 endpoint registry、repository、legacy-dispatch 或 server module 测试。
+
+`apps/app/tsconfig.json` 已不再 include `server/**/*.ts` 或 `server/**/*.d.ts`。这说明 app 前端 typecheck 与当前保留测试不需要 `apps/app/server` 参与 TypeScript project，但仍不等同于目录可删除；删除前还必须完成 fallback-only 差集、`apps/api` exact/guard/not-candidate 收口、生产 app Network、shadow-off/fallback 证据、dry-run rename 和 rollback。
+
+当前 app mock retirement tests 里出现的 `server/modules` 字符串属于 `expect(source).not.toContain(...)` 负向断言，是防止旧依赖回归的门禁，不是实际 import 命中。引用扫描或退役矩阵后续应区分“负向断言字符串”和“真实源代码导入”，避免误把已迁 mock 测试判为阻断。
+
+## 2026-06-06 app task437 fresh scan 差集边界
+
+task437 的完成范围是重新扫描并固化当前差集，不是实现 fallback-only exact handlers。当前 fresh scan 结果为旧 app runtime rows=219、unique=214，API exact legacy rows=62、unique=62，exactOldSource=61，fallbackOnly=150，diagnostic=3，apiOnly=1。这个结果替代早期 dated snapshot 的执行口径，但不会自动升级任何目录状态。
+
+`/app/purchase/updatePurchaseApply` 只能作为 apiOnly client-only guard/API-only exact 记录，不能计入旧 app source exactOldSource。purchase 模块旧 source fallback-only 仍是三条：`/app/resourceStore.listResourceStores`、`/app/purchase/purchaseApply`、`/app/purchase/urgentPurchaseApply`。后续 task438/task439 如果按 purchase 分组推进，必须同时处理这三条旧 source 路径，不能只看 `/app/purchase/urgentPurchaseApply`。
+
+`/test`、`/test/error`、`/test/params` 是 diagnostic/test 分类，不计业务完成率，不进入 API registry，也不能因为 app nitro-runtime 测试已经删除就写成业务 endpoint 承接完成。app mock/test/tsconfig 的迁出只证明前端编译链不再直接依赖旧 server；它不证明 `apps/api` 已承接 fallback-only 路径。
+
+截至本 finding，fallback-only=150 仍是 `apps/app/server/**` 目录级退役的硬阻断。task435/task436 dry-run 和 delete-candidate 必须等 task438/task439、production app Network、fallback/shadow-off、readiness、write/read-back/rollback 和回滚证据完成后再评估。
+
+## 2026-06-06 app task438/task439 profile guarded exact 边界
+
+`/app/profile.changeCommunity` 与 `/app/profile.changePassword` 已从 fallback-only 收敛为 `apps/api` guarded exact：registry 命中、manifest 标记 `blocked-for-execution`、fallback disabled 时不触发旧 app fallback fetch，直接返回 legacy 409 guard。这只能证明 exact handler 由 `apps/api` 承接并 fail-closed，不能证明 profile 切换小区或修改密码真实写入已经完成。
+
+这两个路径仍缺少生产 app H5 Network、受控写入窗口、write/read-back/rollback/residual check、guard-restored 和真实用户/社区/密码业务规则证据。后续不得把 `exactOldSource=63` 或 `fallbackOnly=148` 写成 app server delete gate 达成；`apps/app/server/**` 继续保持 blocked。
+
+首批之后的低风险候选优先考虑只读 property-application 路径，例如 `/app/feeDiscount/queryFeeDiscount` 与 `/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail`。不要优先碰 `payment`、`delete`、`audit`、`resourceOut/resourceEnter`、`openDoor/closeDoor`、`purchaseApply`、`urgentPurchaseApply` 等写入口；如必须收口写入口，应先按 guarded exact 处理，除非已经有受控 CUD 证据链。
+
+## 2026-06-06 app task438/task439 property-application 只读 exact 边界
+
+`/app/feeDiscount/queryFeeDiscount` 与 `/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail` 已从 fallback-only 收敛为 `apps/api` 只读 exact：registry 命中、manifest 标记 `phase7-property-application-readonly` 与 `app-shadow-allowlist`，fallback disabled 时不触发旧 app fallback fetch，直接返回 legacy `{ code, msg, data }` envelope。fresh scan 更新为 exactOldSource=65、fallbackOnly=146、diagnostic=3、apiOnly=1。
+
+这两个路径的数据源仍是 deterministic compat seed，不是 Neon DB-backed。`/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail` 保留旧 server 语义：`ardrId` 与 `communityId` 可以过滤，`roomName/page/row` 不改变详情结果；不要照搬 app-local mock 中的 `roomName` 过滤差异到 API 端。
+
+本批没有迁移或放开 property-application 写入口：`/app/applyRoomDiscount/updateApplyRoomDiscount`、`/app/applyRoomDiscount/updateReviewApplyRoomDiscount`、`/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord`、`/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord` 继续未注册；`/app/applyRoomDiscount/queryApplyRoomDiscount` 与 `/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord` 也仍是 fallback-only。后续不得把本批两个只读 exact 写成 property-application 全模块完成、生产 app H5 完成、DB_READY、写入闭环、全局 fallback/shadow-off 完成或 `apps/app/server/**` 可删除。
+
+## 2026-06-06 app task438/task439 visit guarded exact 边界
+
+`/app/visit.auditVisit` 已从 fallback-only 收敛为 `apps/api` guarded exact：registry 仅注册 POST，GET 仍未注册；manifest 标记 `phase7-visit-guarded-write`、`ownerModule=visit`、`cutoverStatus=blocked-for-execution`；fallback disabled 时不触发旧 app fallback fetch，直接返回 legacy 409 guard，`errorCode=PHASE7_MUTATION_GUARDED`。fresh scan 更新为 exactOldSource=66、fallbackOnly=145、diagnostic=3、apiOnly=1，visit 模块不再有 fallback-only 路径。
+
+本批只证明访客审核写入口已由 `apps/api` 明确 fail-closed，不证明访客审核真实写入完成。旧 app server 的 `auditVisit` 会修改 in-memory 访客 `state/stateName`，但本批 API 侧只新增 `getWriteGuardDecision()`，没有执行 DB CUD、没有修改兼容种子、没有 read-back、rollback 或 residual check，也没有生产 app H5 Network 和 guard-restored 证据。
+
+后续候选优先级：探索子代理建议下一批优先处理 fee 的三条只读充电桩查询 `/app/iot/listChargeMachineBmoImpl`、`/app/iot/listChargeMachineOrderBmoImpl`、`/app/iot/listChargeMachinePortBmoImpl`，它们是 GET/POST 只读且位于已有 fee 七件套内；`/app/machine/listMachineRecords` 可作为同类备选。`purchaseApply`、`urgentPurchaseApply`、`resourceOut/resourceEnter`、`audit`、`save`、`update`、`delete`、`openDoor/closeDoor` 等写入口仍应优先 guarded 或继续 blocked，不能在没有受控 CUD 证据时真实执行。
+
+## 2026-06-06 app task438/task439 fee 充电桩只读 exact 边界
+
+`/app/iot/listChargeMachineBmoImpl`、`/app/iot/listChargeMachineOrderBmoImpl` 与 `/app/iot/listChargeMachinePortBmoImpl` 已从 fallback-only 收敛为 `apps/api` 只读 exact：registry 同时注册 GET+POST，manifest 标记 `phase7-fee-charge-machine-readonly`、`ownerModule=fee`、`cutoverStatus=app-shadow-allowlist`；fallback disabled 时不触发旧 app fallback fetch，直接返回 legacy `{ code, msg, data: { list } }` envelope。fresh scan 更新为 API legacy rows=70、unique=70，exactOldSource=69、fallbackOnly=142、diagnostic=3、apiOnly=1。
+
+本批刻意保持旧语义：充电桩列表默认 `page=1`、`row=10`、`communityId=COMM_001`，可按 `machineId` 与 `machineNameLike` 过滤；充电订单只按 `machineId` 过滤，不使用 `communityId`；充电插座默认 `machineId=MACHINE_001`。POST body 通过 `mergeInput(query, body)` 覆盖 query。上述行为由 `fee-legacy-endpoints.test.ts`、`fee-service.test.ts`、`legacy-dispatch-fallback-drill.test.ts`、`endpoint-manifest.test.ts`、`app-legacy-module-layering.test.ts` 与 `phase7-api-contracts.test.ts` 覆盖。
+
+风险边界：三条路径的数据源仍是 deterministic compat seed，不是 Neon DB-backed，也没有生产 app H5 Network、全局 shadow-off/fallback、R2/DB readiness 或真实设备数据证据。该段是第四批当时状态；`/app/machine/listMachineRecords` 已在第五批补成只读 exact，当前不再作为 fee fallback-only。不得把第四批写成 fee 充电设备全模块完成、开门记录完成、DB_READY、目录级 dry-run 通过或旧 app server 可删除。
+
+## 2026-06-06 app task438/task439 fee 开门记录列表只读 exact 边界
+
+`/app/machine/listMachineRecords` 已从 fallback-only 收敛为 `apps/api` 只读 exact：registry 同时注册 GET+POST，manifest 标记 `phase7-fee-machine-record-readonly`、`ownerModule=fee`、`cutoverStatus=app-shadow-allowlist`；fallback disabled 时不触发旧 app fallback fetch，直接返回 legacy `{ code, msg, data: { list, total, page, row } }` envelope。fresh scan 更新为 API legacy rows=71、unique=71，exactOldSource=70、fallbackOnly=141、diagnostic=3、apiOnly=1，fee 模块当前不再有 fallback-only URL。
+
+本批刻意保持旧语义：默认 `page=1`、`row=10`、`communityId=COMM_001`，但 repository 只对 `openDoorLogs` 做分页，不按 `communityId/startDate/endDate` 过滤。它是“开门记录列表”，不是 `/app/machine/openDoor` 真实开门动作；`/app/machine/openDoor`、`/app/machine/closeDoor` 和停车设备控制类路径仍未注册，必须继续保持 fallback-only 或后续 guarded/blocked。
+
+风险边界：该路径的数据源仍是 deterministic compat seed，不是 Neon DB-backed，也没有生产 app H5 Network、全局 shadow-off/fallback、真实门禁设备数据或开门动作证据。`feeLegacyAdapterEvidence.notCovered` 已移除该路径，但仍包含 `db-backed-charge-machine-data`、`db-backed-machine-record-data` 和 `production-app-h5-fee-network`。不得把本批写成 DB_READY、真实开门、fee 全模块完成、目录级 dry-run 通过或旧 app server 可删除。
+
+## 2026-06-06 app task438/task439 repair 三条只读 exact 边界
+
+`/app/dict.queryPayTypes`、`/app/ownerRepair.getRepairStatistics` 与 `/app/ownerRepair.listRepairStaffRecords` 已从 fallback-only 收敛为 `apps/api` 只读 exact：registry 同时注册 GET+POST，manifest 标记 `phase7-repair-readonly`、`ownerModule=repair`、`cutoverStatus=app-shadow-allowlist`；fallback disabled 时不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=74、unique=74，exactOldSource=73、fallbackOnly=138、diagnostic=3、apiOnly=1，repair exact 从 7 增到 10。
+
+本批只覆盖只读查询：支付方式字典直接返回静态字典；维修统计对当前 repair seed 或 DB fallback 读结果做聚合；师傅记录列表只在缺 `repairId` 时返回 400、未知工单时返回 404，成功时返回 `{ staffRecords }`。这些行为不改变工单状态、不写 DB、不修改内存种子，也不执行评价、派单、抢单、开始、暂停、完工或结束动作。
+
+风险边界：`repairLegacyAdapterEvidence.dataSourceStatus` 仍是 `deterministic-compat-seed-db-read-fallback-mixed-no-db-ready`，不是 `DB_READY` 删除门禁。`/app/ownerRepair.updateOwnerRepair`、`/app/ownerRepair.repairDispatch`、`/app/ownerRepair.repairFinish`、`/app/ownerRepair.repairEnd`、`/app/ownerRepair.repairStart`、`/app/ownerRepair.repairStop`、`/app/ownerRepair.grabbingRepair` 与 `/app/repair.replyRepairAppraise` 仍在 notCovered 或 fallback-only 风险内；不得把本批写成 repair 全模块完成、真实维修流转写入完成、生产 app H5 Network 完成、全局 shadow-off/fallback 完成或旧 app server 可删除。
+
+## 2026-06-06 app task438/task439 work-order guarded exact 边界
+
+`/app/workorder/create`、`/app/workorder/update`、`/app/workorder/start`、`/app/workorder/complete`、`/app/workorder/audit`、`/app/workorder/cancel` 与 `/app/workorder/copy/finish` 已从 fallback-only 收敛为 `apps/api` POST-only guarded exact：registry 只注册 POST，GET 保持未暴露；manifest 标记 `phase7-work-order-guarded-write`、`ownerModule=work-order`、`cutoverStatus=blocked-for-execution`；fallback disabled 时由 `apps/api` 返回 legacy 409 guard，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=81、unique=81，exactOldSource=80、fallbackOnly=131、diagnostic=3、apiOnly=1，work-order exact 从 5 增到 12，work-order fallback-only 从 7 降到 0。
+
+本批只证明旧工单写入口已经 fail-closed，不证明真实工单 CUD。`apps/api/server/modules/work-order/service.ts` 仍只暴露列表、详情、任务和任务项查询方法；`legacyAdapter.guardedWrite()` 不调用 repository、不调用旧 app server、不执行 create/update/start/complete/audit/cancel/copy finish。后续如果要从 guarded exact 升级为真实写入，必须重新经过受控写入窗口、read-back、rollback 或 cleanup、residual check、guard-restored、生产 app H5 Network 和 DB_READY 证据，不得把本批 409 guard 当成工单写入完成或 `apps/app/server/**` delete-candidate。
+
+## 2026-06-06 app task438/task439 repair 第八批只读 exact 边界
+
+`/app/ownerRepair.listRepairStaffs`、`/app/repair.listRepairTypeUsers` 与 `/app/resourceStore.listResources` 已从 fallback-only 收敛为 `apps/api` 只读 exact：registry 同时注册 GET+POST，manifest 标记 `phase7-repair-readonly`、`ownerModule=repair`、`cutoverStatus=app-shadow-allowlist`；fallback disabled 时不触发旧 app fallback fetch，直接返回 legacy `{ code, msg, data }` envelope。fresh scan 更新为 API legacy rows=84、unique=84，exactOldSource=83、fallbackOnly=128、diagnostic=3、apiOnly=1，repair API exact 从 10 增到 13。
+
+本批只覆盖只读查询：师傅列表返回维修师傅候选；维修类型人员按维修类型与人员关联返回；资源列表按 repair 相关资源类型和可选 `rstId` 过滤。`/app/resourceStore.listResources` 在本批属于 repair 页面需要的资源列表兼容路径，不等同于 resource 模块的物资出库、入库、调拨、报废、采购、仓库授权或用户仓库流程完成。
+
+风险边界：`repairLegacyAdapterEvidence.dataSourceStatus` 仍是 `deterministic-compat-seed-db-read-fallback-mixed-no-db-ready`，不是 `DB_READY` 删除门禁。`/app/ownerRepair.updateOwnerRepair`、`/app/ownerRepair.repairDispatch`、`/app/ownerRepair.repairFinish`、`/app/ownerRepair.repairEnd`、`/app/ownerRepair.repairStart`、`/app/ownerRepair.repairStop`、`/app/ownerRepair.grabbingRepair`、`/app/ownerRepair.listStaffRepairs`、`/app/ownerRepair.listStaffFinishRepairs`、`/app/resourceStore.listUserStorehouses`、`/app/resourceStoreType.listResourceStoreTypes` 与 `/app/repair.replyRepairAppraise` 仍是 fallback-only 或 notCovered 风险；不得把本批写成 repair 全模块完成、真实维修流转写入完成、生产 app H5 Network 完成、全局 shadow-off/fallback 完成或旧 app server 可删除。
+
+## 2026-06-06 app task438/task439 inspection 第九批只读 exact 边界
+
+`/app/staff.listStaffs`、`/app/inspection.getTodayReport` 与 `/app/inspection.listInspectionItemTitles` 已从 fallback-only 收敛为 `apps/api` 只读 exact：registry 同时注册 GET+POST，manifest 标记 `phase7-inspection-readonly`、`ownerModule=inspection`、`cutoverStatus=app-shadow-allowlist`；fallback disabled 时不触发旧 app fallback fetch，直接返回 legacy `{ code, msg, data }` envelope。fresh scan 更新为 API legacy rows=87、unique=87，exactOldSource=86、fallbackOnly=125、diagnostic=3、apiOnly=1，inspection API exact 从 0 增到 3。
+
+本批只覆盖只读查询：员工列表返回 `{ userId, userName }` 兼容行；今日巡检报表返回 `{ staffId, staffName, finishCount, waitCount }`；巡检项标题保留旧的 `itemId` 必填边界，缺 `itemId` 返回 legacy 400，成功时返回分页 `{ list, total, page, pageSize, hasMore }`。POST body 通过 `mergeInput(query, body)` 覆盖 query，用于兼容旧调用端。
+
+风险边界：`inspectionLegacyAdapterEvidence.dataSourceStatus` 是 `deterministic-compat-seed-no-db-ready`，不是 `DB_READY` 删除门禁。`/app/inspection.listInspectionTasks`、`/app/inspection.listInspectionTaskDetails`、`/app/inspection.submitInspection` 与 `/app/inspection.transferTask` 仍是 fallback-only 或 notCovered 风险；其中提交和转派会修改旧 in-memory 状态，后续只能在受控写入窗口或 guarded/blocked 策略下处理。不得把本批写成 inspection 全模块完成、巡检任务流转完成、真实提交或转派写入完成、生产 app H5 Network 完成、全局 shadow-off/fallback 完成或旧 app server 可删除。
+
+## 2026-06-06 app task438/task439 inspection 第十批任务列表只读 exact 边界
+
+`/app/inspection.listInspectionTasks` 与 `/app/inspection.listInspectionTaskDetails` 已从 fallback-only 收敛为 `apps/api` 只读 exact：registry 同时注册 GET+POST，manifest 仍标记 `phase7-inspection-readonly`、`ownerModule=inspection`、`cutoverStatus=app-shadow-allowlist`；fallback disabled 时不触发旧 app fallback fetch，直接返回 legacy `{ code, msg, data }` envelope。fresh scan 更新为 API legacy rows=89、unique=89，exactOldSource=88、fallbackOnly=123、diagnostic=3、apiOnly=1，inspection API exact 从 3 增到 5，inspection fallback-only 从 4 降到 2。
+
+本批刻意保持旧语义：任务列表默认 `page=1`、`row=10`，按 `moreState`、`isToday`、`canReexamine=2000` 和 `planInsTime` 过滤；任务详情默认 `page=1`、`row=100`，`taskId` 优先，`planUserId` 分支只展开全部详情且不按员工或 `inspectionId` 过滤，只有没有 `taskId/planUserId` 时才按 `inspectionId` 选择来源，随后按 `state` 和 `qrCodeTime` 小时过滤。POST body 通过 `mergeInput(query, body)` 覆盖 query。
+
+风险边界：本批仍是 deterministic compat seed，不是 DB-backed，也没有生产 app H5 Network、全局 shadow-off/fallback 或目录级 dry-run 证据。`/app/inspection.submitInspection` 与 `/app/inspection.transferTask` 仍是 fallback-only 或 notCovered 风险，旧实现会修改 in-memory 明细状态或任务巡检人；后续只能在受控写入窗口、guarded exact 或 explicit blocked 策略下处理。不得把本批写成 inspection 全模块完成、真实巡检提交/转派写入完成、read-back/rollback/residual check 完成、DB_READY 删除门禁完成或旧 app server 可删除。
+
+## 2026-06-06 app task438/task439 meter 第十一批字典只读 exact 边界
+
+`/app/meter.queryFeeTypes`、`/app/meter.queryFeeTypesItems` 与 `/app/meter.listMeterType` 已从 fallback-only 收敛为 `apps/api` 字典只读 exact：registry 同时注册 GET+POST，manifest 标记 `phase7-meter-readonly-batch11`、`ownerModule=meter`、`cutoverStatus=app-shadow-allowlist`；fallback disabled 时不触发旧 app fallback fetch，直接返回 legacy `{ code, msg, data }` envelope。fresh scan 更新为 API legacy rows=92、unique=92，exactOldSource=91、fallbackOnly=120、diagnostic=3、apiOnly=1，meter API exact 从 0 增到 3，meter fallback-only 从 10 降到 7。
+
+本批只覆盖费用类型、费用项和抄表类型三个字典查询；`/app/meter.queryFeeTypesItems` 继续保留旧语义，按 `feeTypeCd` 精确映射，未知或空值返回空数组，POST body 通过 `mergeInput(query, body)` 覆盖 query。数据源仍是 deterministic compat seed，不是 Neon DB-backed，不是生产 app H5 Network，也不是全局 shadow-off/fallback 或目录级 dry-run 证据。
+
+`/app/meter.listMeterWaters`、`/app/meter.queryPreMeterWater`、`/app/meter.listFloorShareReading`、`/app/meter.listFloorShareMeter`、`/app/meter.saveMeterWater`、`/app/meter.saveFloorShareReading` 与 `/app/meter.auditFloorShareReading` 仍是 fallback-only 或 notCovered 风险；其中抄表列表、上期读数、公摊抄表列表和公摊表列表可以继续按只读 exact 评估，三条保存/审核路径会修改旧 in-memory 状态，后续只能在受控写入窗口、guarded exact 或 explicit blocked 策略中处理。不得把本批写成 meter 全模块完成、真实抄表/公摊写入完成、DB_READY 删除门禁完成、生产 app H5 cutover 完成或旧 app server 可删除。
+
+## 2026-06-06 app task438/task439 meter 第十二批分页只读 exact 边界
+
+`/app/meter.listMeterWaters`、`/app/meter.listFloorShareReading` 与 `/app/meter.listFloorShareMeter` 已从 fallback-only 收敛为 `apps/api` meter 分页只读 exact，registry 同时注册 GET+POST，manifest 标记 `phase7-meter-readonly-batch12`、`ownerModule=meter`、`cutoverStatus=app-shadow-allowlist`。fallback disabled 时由 `apps/api` 直接返回 legacy `{ code, msg, data }` envelope，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=95、unique=95，exactOldSource=94，fallbackOnly=117，diagnostic=3，apiOnly=1，meter fallback-only 从 7 降到 4。
+
+本批刻意保留旧语义：`listMeterWaters` 只按 `objName.includes(roomNum)` 过滤，所以 `roomNum=1-` 会命中楼层、单元或房号片段中的 `1-`，在旧 60 条种子里为 20 条，不是只匹配一楼的 5 条；`listFloorShareReading` 忽略 `communityId/fsmId/state`，只分页 28 条公摊抄表记录；`listFloorShareMeter` 只按 `fsmId` 精确过滤。不得把测试里的 `total=20` 改回 5，也不得把 `roomNum` 收窄为楼层过滤，除非后续明确修改产品契约并同步 OpenSpec。
+
+剩余 meter 风险只包括 `/app/meter.queryPreMeterWater`、`/app/meter.saveMeterWater`、`/app/meter.saveFloorShareReading` 与 `/app/meter.auditFloorShareReading`。其中 `queryPreMeterWater` 可继续按只读 exact 评估；三条保存/审核路径会修改旧 in-memory 抄表或公摊读数状态，后续只能在受控写入窗口、guarded exact 或 explicit blocked 策略中处理。不得把本批写成 meter 全模块完成、真实抄表/公摊写入完成、DB_READY 删除门禁完成、生产 app H5 cutover 完成、全局 fallback/shadow-off 完成或旧 app server 可删除。
+
+本批复核路径存在一次子代理失败：Leibniz 复核子代理因 429 中断，未产出 PASS/FAIL。该失败不能写成复核通过，只能作为工具层失败记录；有效证据仍是主代理实跑的红灯、绿灯、typecheck、diff check、fresh scan 和后续补派复核结论。
+
+补派复核子代理 Meitner 已返回 PASS：确认三条 meter 分页只读接口已经 GET+POST exact 注册并实现；四条剩余 meter 路径仍未注册且位于 `notCovered`；runtime phase 是 `phase7-meter-readonly-batch12`；三份证据文档保留 `exactOldSource=94 / fallbackOnly=117` 和目录级 no-go。主代理随后发现并修正两份台账当前段落里的旧统计残留：`old-service-retirement-candidates.md` 的 `app exact 旧源路径 91 行`、`app fallback-only 120 行` 和 meter fallback 7 条旧清单；`app-retirement-ledger.md` 的 `exactOldSource | 91`、meter 3 条旧分布和 meter 7 条 fallback 说明。修正后旧统计扫描无输出，OpenSpec strict、7 个 api 相关测试文件 362 tests、api typecheck 均通过。
+
+## 2026-06-06 app task438/task439 meter 第十三批上期读数只读 exact 边界
+
+`/app/meter.queryPreMeterWater` 已从 fallback-only 收敛为 `apps/api` meter 上期读数只读 exact，registry 同时注册 GET+POST，manifest 标记 `phase7-meter-readonly-batch13`、`ownerModule=meter`、`cutoverStatus=app-shadow-allowlist`。fallback disabled 时由 `apps/api` 直接返回 legacy `{ code, msg, data }` envelope，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=96、unique=96，exactOldSource=95，fallbackOnly=116，diagnostic=3，apiOnly=1，meter fallback-only 从 4 降到 3。
+
+旧语义边界：该接口只按 `objId + meterType` 从当前 deterministic meter readings 里找读数，命中返回 `{ curDegrees, curReadingTime }`，未命中返回 `curDegrees=0` 和时间字符串；POST body 通过 `mergeInput(query, body)` 覆盖 query。它不写入抄表记录，不审核公摊读数，不触发 DB CUD。为了让未知读数在测试里可稳定断言，`apps/api` 使用固定 seed base time 生成 fallback 时间字符串；这与旧 app 的“当前时间字符串”只在时间值上保守固定，不改变 response shape 或只读性质。
+
+剩余 meter 风险只包括三条写入口：`/app/meter.saveMeterWater`、`/app/meter.saveFloorShareReading` 与 `/app/meter.auditFloorShareReading`。三者会修改旧 in-memory 抄表或公摊读数状态，后续只能在受控写入窗口、guarded exact 或 explicit blocked 策略中处理。不得把第十三批写成 meter 全模块完成、真实抄表/公摊写入完成、read-back/rollback/residual check 完成、DB_READY 删除门禁完成、生产 app H5 cutover 完成、全局 fallback/shadow-off 完成或旧 app server 可删除。
+
+本批子代理探索存在工具层失败：Kepler 探索子代理因 429 中断，没有 PASS/FAIL。该失败不能写成子代理确认；本批有效探索来自主代理本地读取旧 endpoints/repository。补派 Kierkegaard 复核子代理同样因 429 中断，没有 PASS/FAIL；因此本批没有可采纳的子代理复核结论，当前证据以主代理红绿灯、fresh scan、OpenSpec strict、diff check 和 typecheck 为准。
+
+## 2026-06-06 app task438/task439 meter 第十四批保存/审核 guarded exact 边界
+
+`/app/meter.saveMeterWater`、`/app/meter.saveFloorShareReading` 与 `/app/meter.auditFloorShareReading` 已从 fallback-only 收敛为 `apps/api` POST-only guarded exact：registry 只注册 POST，GET 保持未暴露；manifest 标记 `phase7-meter-guarded-write-batch14`、`ownerModule=meter`、`cutoverStatus=blocked-for-execution`；fallback disabled 时由 `apps/api` 返回 legacy 409 guard 和 `PHASE7_MUTATION_GUARDED`，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=99、unique=99，exactOldSource=98，fallbackOnly=113，diagnostic=3，apiOnly=1，meter API exact 从 7 增到 10，meter fallback-only 从 3 降到 0。
+
+旧行为边界：三条路径不是只读接口。旧 `/app/meter.saveMeterWater` 会向 in-memory `meterReadings` 追加抄表记录；旧 `/app/meter.saveFloorShareReading` 会向 in-memory `floorShareReadings` 追加待审核公摊读数；旧 `/app/meter.auditFloorShareReading` 会修改已存在公摊读数的 `state`、`stateName` 和 `auditRemark`。本批没有 Neon DB-backed repository、生产 DB_READY、写入窗口 read-back、rollback、cleanup、residual check 或 guard-restored 证据，所以只能 fail-closed，不能升级为真实 CUD。
+
+禁止误判：meter 模块 fallback-only 已清零，只代表旧 meter URL 不再需要靠 fallback-only 静默回旧 app server；它不代表抄表保存、公摊保存或公摊审核业务完成，也不代表 `apps/app/server/**` 可删除。只要 fallback-only 总量仍为 113、生产 app H5 Network、全局 shadow-off/fallback、DB_READY、dry-run rename/delete 和回滚证据未完成，task438/task439 与目录 retirement gate 必须保持 open 或 blocked。
+
+429 重试纪律：用户已明确 2026-06-06 晚间和 2026-06-07 内出现的子代理 429 属于误报型可重试中断。后续遇到 429 时应关闭失败代理、缩小任务范围后补派新 agent，并在 `tasks.md` 或 `agent-progress.md` 写入重试事实；单次 429 不能作为 blocker，也不能伪造为 PASS/FAIL 复核结论。
+
+## 2026-06-06 app task438/task439 inspection 第十五批提交 guarded exact 边界
+
+`/app/inspection.submitInspection` 已从 fallback-only 收敛为 `apps/api` POST-only guarded exact：registry 只注册 POST，GET 保持未暴露；manifest 标记 `phase7-inspection-guarded-write-batch15`、`ownerModule=inspection`、`cutoverStatus=blocked-for-execution`；fallback disabled 时由 `apps/api` 返回 legacy 409 guard 和 `PHASE7_MUTATION_GUARDED`，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=100、unique=100，exactOldSource=99，fallbackOnly=112，diagnostic=3，apiOnly=1，inspection API exact 从 5 增到 6，inspection fallback-only 从 2 降到 1。
+
+旧行为边界：Heisenberg 与 Kuhn 补派探索子代理已只读确认 `/app/inspection.submitInspection` 是旧 app server POST 写入口。旧 dispatcher 会构造 query、body、pathParams 合并后的 `params`，但该 endpoint handler 实际只读取 `body`，因此旧提交行为是 body-only，query 里的 `taskId/taskDetailId/photos` 不参与提交。成功响应是 legacy `{ success: true, code: "0", message: "提交成功", data: { success: true } }`，缺失记录时返回 `{ success: false, code: "400", message: "提交失败", data: null }`，不是 404；若命中明细但 body 缺 `photos`，旧仓储可能在 `photos.map(...)` 处抛运行时异常，而不是返回失败 envelope。
+
+旧 CUD 行为：repository 会按 `taskId` 和 `taskDetailId` 找到巡检明细，随后把明细 `state` 改为完成态、写入 `description`，并把 `photos` 转成 `{ url, fileId }` 列表；它不更新父任务整体状态。旧 in-memory 环境里可以通过任务详情查询读回同一 Map 的改动，但当前 `apps/api` 缺少 DB-backed、受控写入窗口、read-back、rollback、residual check、生产 app H5 Network 和 guard-restored 证据，所以本批只能 fail-closed，不能升级为真实巡检提交 CUD。
+
+禁止误判：`submitInspection` 不再是 fallback-only，只代表关闭 fallback 时由独立 `apps/api` 明确 guard 承接；它不代表巡检提交业务完成，也不代表 inspection 模块完成。`/app/inspection.transferTask` 仍是 inspection 唯一 fallback-only 路径，且目录级退役仍被 fallback-only 112、生产 app H5 Network、全局 shadow-off/fallback、DB_READY、dry-run rename/delete 和回滚证据阻断。
+
+429 重试记录：第十五批复核阶段首个检查子代理因 429 中断后已关闭并补派，Banach 复核 PASS。后续对 `/app/inspection.transferTask` 的两个缩小版探索子代理也连续遇到 429，均已按用户 2026-06-06/2026-06-07 规则关闭并准备继续拆小重试；这些 429 是误报型可重试中断，不作为 blocker，也不能伪造为 PASS/FAIL 结论。
+
+## 2026-06-06 app task438/task439 inspection 第十六批转派 guarded exact 边界
+
+`/app/inspection.transferTask` 已从 fallback-only 收敛为 `apps/api` POST-only guarded exact：registry 只注册 POST，GET 保持未暴露；manifest 标记 `phase7-inspection-guarded-write-batch16`、`ownerModule=inspection`、`cutoverStatus=blocked-for-execution`；fallback disabled 时由 `apps/api` 返回 legacy 409 guard 和 `PHASE7_MUTATION_GUARDED`，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=101、unique=101，exactOldSource=100，fallbackOnly=111，diagnostic=3，apiOnly=1；inspection API exact 从 6 增到 7，inspection fallback-only 从 1 降到 0。
+
+旧行为边界：Lagrange 补派探索子代理只读确认 `/app/inspection.transferTask` 是旧 app server POST body-only 写入口，旧 handler 不读取 query/params，只把整个 body 传给 repository；旧 repository 实际只按 `taskId` 找到内存任务，并把 `task.planUserName = data.staffName`，找不到任务则返回 false。成功旧 envelope 为 `{ success: true, code: "0", message: "流转成功", data: { success: true } }`，失败旧 envelope 为 `{ success: false, code: "400", message: "流转失败", data: null }`。旧实现不写 `staffId`、`planUserId`、`transferDesc`、状态、时间或历史记录，也没有事务、DB、rollback 或 residual 语义。
+
+禁止误判：`transferTask` 不再是 fallback-only，只代表关闭 fallback 时由独立 `apps/api` 明确 guard 承接；它不代表巡检转派业务完成，也不代表 inspection 模块真实写入完成。inspection 模块 fallback-only 已清零，但该结论仍不能升级为 `apps/app/server/**` delete-candidate，因为全局 fallbackOnly 仍为 111，且生产 app H5 Network、全局 shadow-off/fallback、DB_READY、dry-run rename/delete、真实巡检提交/转派 write/read-back/rollback/residual check 和 guard-restored 证据仍未完成。
+
+429 重试记录：本批开始前曾有三个 `transferTask` 子代理因 429 中断并关闭；按用户 2026-06-06/2026-06-07 误报可重试规则，本轮又补派窄范围 Lagrange 探索子代理并成功完成。该探索结论可采纳；此前 429 仅作为工具层重试记录，不作为 blocker。
+
+## 2026-06-06 app task438/task439 item-release 与 coupon 后续候选探索边界
+
+Goodall 只读探索子代理已完成 coupon 与 item-release 后续候选分析，未修改文件且未遇到 429。探索确认 coupon 仍有四条只读或列表类路径与三条写入口：`/app/couponProperty.listCouponPropertyUserDetail`、`/app/integral.listIntegralSetting`、`/app/integral.listIntegralUserDetail`、`/app/reserveOrder.listReserveGoodsConfirmOrder` 是读路径，`/app/couponProperty.writeOffCouponPropertyUser`、`/app/integral.useIntegral`、`/app/reserveOrder.saveReserveGoodsConfirmOrder` 会修改旧内存数组或记录，只能 guarded exact 或继续 blocked，不能在无 write/read-back/rollback/residual check 时真实写入。
+
+探索建议后续优先处理 item-release 的三条详情页只读接口：`/app/itemRelease.getItemRelease`、`/app/itemRelease.getItemReleaseRes` 与 `/app/itemRelease.queryOaWorkflowUser`。这三条旧源均支持 GET+POST，输入分别使用 `irId/page/row` 或 `id/page/row`，旧响应为 app legacy success envelope 内嵌分页结构，且都可用 deterministic compat seed 建立只读 exact，不需要 guarded exact。`/app/itemRelease.queryUndoItemReleaseV2` 与 `/app/itemRelease.queryFinishItemReleaseV2` 因与审核状态迁移强相关，暂不作为低风险首批；`/app/itemRelease.auditItemRelease` 会移动待办到已办并追加记录，只能 guarded exact 或继续 blocked。
+
+禁止误判：上述探索只为后续第十八批或更晚批次提供候选，不代表 item-release 或 coupon 已迁移完成，也不代表 `apps/app/server/**` 可以 dry-run rename 或 delete-candidate。activity 第十七批已在后续记录中完成三条状态写入口 guarded exact，但 Goodall 的 item-release 建议仍只能作为下一批候选，不能覆盖 activity 第十七批事实。
+
+## 2026-06-06 app task438/task439 activity 第十七批候选调整边界
+
+Darwin 只读探索子代理已完成 activity 模块 fallback-only 分类，确认当前已迁入 `apps/api` 的 activity 路径只有 `/app/activities.listActivitiess`，剩余八条全部是写入或状态变更路径：创建、更新、删除、浏览量增加、点赞、状态更新、点赞数设置和收藏数设置。旧 activity repository 使用模块级 in-memory mutable seed，`apps/api` 当前 activity repository 只是 deterministic compat seed 且没有真实 mutation repository；因此后续 activity 写入口只能先做 guarded exact 或继续 blocked，不能在无 DB-backed、write/read-back/rollback/residual check 与 guard-restored 证据时执行真实写入。
+
+第十七批候选已从最初的 `/app/activities.saveActivities`、`/app/activities.updateActivities`、`/app/activities.deleteActivities` 调整为 Darwin 建议的三条较低风险状态写入口：`/app/activities.likeActivity`、`/app/activities.increaseView` 与 `/app/activities.updateStatus`。调整原因是创建活动涉及随机 ID、随机姓名、动态时间和图片 URL，全量更新需要更明确读回和回滚证据，删除活动具有破坏性且旧 server 是 POST 而前端调用侧存在 DELETE 口径风险；这些不适合在当前批次顺手处理。
+
+禁止误判：第十七批即使完成，也只代表上述三条由 `apps/api` POST-only guarded exact fail-closed 承接，不代表 activity 创建、更新、删除、点赞数设置、收藏数设置完成，不代表 activity 真实业务写入完成，也不代表生产 app H5 Network、DB_READY、全局 shadow-off/fallback、dry-run rename 或 `apps/app/server/**` delete-candidate 达成。
+
+第十七批最终执行结果：`/app/activities.likeActivity`、`/app/activities.increaseView` 与 `/app/activities.updateStatus` 已进入 `apps/api` POST-only guarded exact，fallback disabled 时由 `apps/api` 返回 legacy 409 guard 和 `PHASE7_MUTATION_GUARDED`，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=104、unique=104，exactOldSource=103，fallbackOnly=108，diagnostic=3，apiOnly=1，activity fallback-only 从 8 降到 5。
+
+仍需保守保留的 activity 缺口：`/app/activities.saveActivities`、`/app/activities.updateActivities`、`/app/activities.deleteActivities`、`/app/activities.updateLike` 与 `/app/activities.updateCollect` 继续是 fallback-only；其中创建、更新、删除和计数字段设置都需要更明确的真实写入窗口、读回、回滚或 residual check 设计。不得用本批三条 guarded exact 替代这些剩余路径，也不得把 activity 模块写成 delete-candidate。
+
+## 2026-06-06 app task438/task439 item-release 第十八批 getItemRelease 只读 exact 边界
+
+`/app/itemRelease.getItemRelease` 已从 fallback-only 收敛为 `apps/api` item-release GET+POST 只读 exact：registry 同时注册 GET 与 POST，manifest 标记 `phase7-item-release-readonly-batch18`、`ownerModule=item-release`、`cutoverStatus=app-shadow-allowlist`。fallback disabled 时由 `apps/api` 直接返回 legacy `{ code, msg, data }` 分页 envelope，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=105、unique=105，exactOldSource=104，fallbackOnly=107，diagnostic=3，apiOnly=1；item-release 旧 source fallback-only 从 6 降到 5。
+
+旧语义边界：旧 endpoint 使用 `irId/page/row`，默认 `page=1`、`row=1`，返回分页结构 `{ list, total, page, pageSize, hasMore }`；本批 deterministic compat seed 只用于复刻详情页只读响应，不写 DB、不移动待办/已办、不追加审核记录、不执行 resource 模块里的 `itemRelease.*` 路径。第十八批完成时，`/app/itemRelease.getItemReleaseRes`、`/app/itemRelease.queryOaWorkflowUser`、`/app/itemRelease.queryUndoItemReleaseV2`、`/app/itemRelease.queryFinishItemReleaseV2` 与 `/app/itemRelease.auditItemRelease` 仍是 item-release 旧 source fallback-only；`/app/itemRelease.listItemRelease`、`/app/itemRelease.queryUndoItemRelease` 与 `/app/itemRelease.auditUndoItemRelease` 仍归入 resource 旧 source fallback-only。后续第十九批和第二十批已更新当前口径。
+
+复核记录：Godel 子代理初次复核代码 PASS、文档 FAIL，指出 `app-retirement-ledger.md` 和 `old-service-retirement-candidates.md` 仍残留 `item-release 6` 与第十七批 `fallbackOnly=108` 口径。主代理已按 fresh scan 更新台账。禁止误判：第十八批不代表 item-release 全模块完成，不代表 DB_READY、生产 app H5 Network、真实审核写入、write/read-back/rollback、residual check、全局 shadow-off/fallback、dry-run 或 `apps/app/server/**` delete-candidate。
+
+## 2026-06-07 app task438/task439 item-release 第十九批资源/评论只读 exact 边界
+
+`/app/itemRelease.getItemReleaseRes` 与 `/app/itemRelease.queryOaWorkflowUser` 已从 fallback-only 收敛为 `apps/api` item-release GET+POST 只读 exact：registry 同时注册 GET 与 POST，manifest 标记 `phase7-item-release-readonly-batch19`、`ownerModule=item-release`、`cutoverStatus=app-shadow-allowlist`。fallback disabled 时由 `apps/api` 直接返回 legacy `{ code, msg, data }` 分页 envelope，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=107、unique=107，exactOldSource=106，fallbackOnly=105，diagnostic=3，apiOnly=1；item-release 旧 source fallback-only 从 5 降到 3。
+
+旧语义边界：`getItemReleaseRes` 使用 `irId/page/row`，默认 `page=1`、`row=20`，只返回放行资源明细列表；`queryOaWorkflowUser` 使用 `id/page/row`，忽略 `flowId/communityId`，只返回流程评论分页列表。两者均使用 deterministic compat seed，不写 DB、不移动待办/已办、不追加审批 comment，也不处理 resource 旧 source 下的 `/app/itemRelease.listItemRelease`、`/app/itemRelease.queryUndoItemRelease`、`/app/itemRelease.auditUndoItemRelease`。
+
+失败尝试与复核记录：第十九批红灯阶段同一组 7 个 api 测试文件失败集中在 endpoint 未注册、dispatch 404、manifest/evidence 缺项和 fallback-off 未承接；首次实现后仅 `phase7-api-contracts.test.ts` 中 adapter evidence 仍残留 batch18 预期，Hume 编辑子代理已最小修正并验证单文件 52 tests passed。主代理随后重跑 7 文件矩阵通过 382 tests，`pnpm -F @01s-11comm/api run typecheck` 通过。禁止误判：第十九批不代表 item-release 全模块完成，不代表 DB_READY、生产 app H5 Network、待办/已办列表、审核写入、write/read-back/rollback、resource 旧 source 前缀路径、全局 shadow-off/fallback、dry-run 或 `apps/app/server/**` delete-candidate。
+
+## 2026-06-07 app task438/task439 item-release 第二十批 V2 列表只读 exact 边界
+
+`/app/itemRelease.queryUndoItemReleaseV2` 与 `/app/itemRelease.queryFinishItemReleaseV2` 已从 fallback-only 收敛为 `apps/api` item-release GET+POST 只读 exact：registry 同时注册 GET 与 POST，manifest 标记 `phase7-item-release-readonly-batch20`、`ownerModule=item-release`、`cutoverStatus=app-shadow-allowlist`。fallback disabled 时由 `apps/api` 直接返回 legacy `{ code, msg, data }` 分页 envelope，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=109、unique=109，exactOldSource=108，fallbackOnly=103，diagnostic=3，apiOnly=1；item-release 旧 source fallback-only 从 3 降到 1。
+
+旧语义边界：两条 V2 列表使用 deterministic compat seed 返回待办和已办分页数据，默认 `page=1`、`row=10`；待办列表样本保留 `IR_00001`、`FLOW_00001`、`TASK_00001` 与 `action=Audit`，已办列表样本保留 `IR_F_00001`、`FLOW_F_00001` 与 `action=View`。它们不写 DB、不移动待办/已办、不追加审批 comment、不执行审核动作，也不处理 resource 旧 source 下的 `/app/itemRelease.listItemRelease`、`/app/itemRelease.queryUndoItemRelease` 与 `/app/itemRelease.auditUndoItemRelease`。
+
+剩余风险：item-release 旧 source module 只剩 `/app/itemRelease.auditItemRelease` 一条 fallback-only，但 prefix-level `itemRelease.*` fallback 仍有 4 条，其中 3 条属于 resource 旧 source；后续统计必须按旧 source module 与 URL 前缀两种口径分开，避免把 resource 的三条前缀路径重复计入 item-release。`/app/itemRelease.auditItemRelease` 是审核写入口，仍需要 guarded exact、明确 blocked 或受控写入窗口、read-back、rollback、residual check 与 guard-restored 证据，不能用两条 V2 列表只读 exact 替代。
+
+失败尝试与工具记录：本次恢复后 `skills list -g` 两次超时，按工具环境问题记录，未作为实现 blocker；主代理改为使用会话暴露的 skills 清单和项目技能文件。Curie 编辑成员在主代理接管前确认未写入，Helmholtz 只读探索确认了 batch19 残留口径。禁止误判：第二十批不代表 item-release 全模块完成，不代表 DB_READY、生产 app H5 Network、审核写入、write/read-back/rollback、resource 旧 source 前缀路径、全局 shadow-off/fallback、dry-run 或 `apps/app/server/**` delete-candidate；task438/task439 仍必须保持 open，因为 fallbackOnly=103。
+
+## 2026-06-07 app task438/task439 item-release 第二十一批审核 guarded exact 边界
+
+`/app/itemRelease.auditItemRelease` 已从 fallback-only 收敛为 `apps/api` item-release POST-only guarded exact：registry 只注册 POST，不注册 GET；fallback disabled 时由 `apps/api` 直接返回 legacy 409 guard 和 `PHASE7_MUTATION_GUARDED`，不触发旧 app fallback fetch。manifest 标记 `phase7-item-release-guarded-write-batch21`、`ownerModule=item-release`、`cutoverStatus=blocked-for-execution`；`itemReleaseLegacyAdapterEvidence.scope` 为 `readonly-exact-handler-plus-guarded-write-batch21`。fresh scan 更新为 API legacy rows=110、unique=110，exactOldSource=109，fallbackOnly=102，diagnostic=3，apiOnly=1；item-release 旧 source fallback-only 从 1 降到 0。
+
+旧语义边界：旧 app runtime 的 `auditItemRelease` 会移动 in-memory 待办到已办、更新 detail remark 并追加审批 comment；本批没有执行真实审核写入，也没有 DB-backed、read-back、rollback、residual check 或 guard-restored 证据。因此它只能写成 guarded exact 和 `blocked-for-execution`，不能写成真实 CUD 完成、审核链路可用或目录级退役候选。prefix-level `itemRelease.*` fallback 当前仍有 3 条，均归 resource 旧 source：`/app/itemRelease.auditUndoItemRelease`、`/app/itemRelease.listItemRelease`、`/app/itemRelease.queryUndoItemRelease`；统计时不能把它们重新计入 item-release module。
+
+失败尝试与工具记录：本批 TDD 红灯阶段同一组 api 测试先失败在 endpoint 未注册、dispatch 404、manifest/evidence 缺项与 fallback-off 未承接；实现后 7 个相关测试文件 390 tests 通过，`pnpm -F @01s-11comm/api run typecheck` 通过。fresh scan 前两次 `rg` 命令因 PowerShell 引号解析失败而未产生可用统计，主代理改用 PowerShell 脚本得到当前计数。`skills list -g` 再次超时，按环境问题记录；Tesla、Avicenna、Laplace 等子代理曾因 429 中断并关闭，Chandrasekhar 只读审计返回 PASS 口径后已关闭。禁止误判：第二十一批不代表 item-release DB_READY、生产 app H5 Network、真实审核写入、write/read-back/rollback、guard-restored、resource 旧 source 前缀路径、全局 shadow-off/fallback、dry-run 或 `apps/app/server/**` delete-candidate；task438/task439 仍必须保持 open，因为 fallbackOnly=102。
+
+## 2026-06-07 app task438/task439 coupon/integral 第二十二批三条只读 exact 边界
+
+`/app/couponProperty.listCouponPropertyUserDetail`、`/app/integral.listIntegralSetting` 与 `/app/integral.listIntegralUserDetail` 已从 fallback-only 收敛为 `apps/api` coupon 模块 GET+POST 只读 exact：registry 同时注册 GET 与 POST，manifest 标记 `phase7-coupon-readonly-batch22`、`ownerModule=coupon`、`cutoverStatus=app-shadow-allowlist`。fallback disabled 时由 `apps/api` 直接返回 legacy `{ code, msg, data }` envelope，不触发旧 app fallback fetch。fresh scan 更新为 API legacy rows=113、unique=113，exactOldSource=112，fallbackOnly=99，diagnostic=3，apiOnly=1；coupon 旧 source exact 从 0 增到 3，fallback-only 从 7 降到 4。
+
+旧语义边界：`listCouponPropertyUserDetail` 使用 `page/row/couponQrcode` 做分页筛选，旧调用侧传入的 `communityId` 不参与过滤；`integral.listIntegralSetting` 忽略输入并返回数组，不是分页对象；`integral.listIntegralUserDetail` 使用 `page/row/ownerTel` 做分页筛选。三条路径都只读，不修改核销记录、积分余额或预约订单。当前 deterministic compat seed 只用于复刻旧 app shape，不是 Neon DB-backed，也没有生产 app H5 Network、真实库样本或全局 shadow-off/fallback 证据。
+
+剩余 coupon 风险：`/app/couponProperty.writeOffCouponPropertyUser` 与 `/app/integral.useIntegral` 是明确写入口，缺少受控写入窗口、read-back、rollback、residual check 与 guard-restored 证据；`/app/reserveOrder.listReserveGoodsConfirmOrder` 是 reserve 订单列表，旧语义还未在本批验证；`/app/reserveOrder.saveReserveGoodsConfirmOrder` 是 reserve 订单写入口。这四条仍未注册在 `apps/api` coupon 模块中，只能后续按只读 exact、guarded exact 或 explicit blocked 分别处理，不能因为本批三条只读 exact 被扣成完成。
+
+失败尝试与工具记录：本批 TDD 红灯阶段 6 个既有 runtime/infra 测试文件先失败在 coupon/integral endpoint 未注册、dispatch 404、manifest/evidence 缺项与 fallback-off 未承接；实现后补充 `coupon-legacy-endpoints.test.ts` 并运行 7 个相关 api 测试文件 401 tests 通过，`pnpm -F @01s-11comm/api run typecheck` 通过，限定代码 `git diff --check` 通过。Boyle 编辑子代理超时且未产出目标文件，已关闭并由主代理接管；Darwin 复核子代理 PASS，确认三条只读 exact 和四条未注册风险路径边界。fresh scan 中一次 PowerShell 引号解析失败、一次过度转义得到零计数，均不作为证据；最终采用 PowerShell URL 提取脚本得到当前计数。`skills list -g` 多次超时，按环境问题记录。禁止误判：第二十二批不代表 coupon/integral DB_READY、生产 app H5 Network、真实核销、积分使用、reserve 订单读写、write/read-back/rollback、guard-restored、全局 shadow-off/fallback、dry-run 或 `apps/app/server/**` delete-candidate；task438/task439 仍必须保持 open，因为 fallbackOnly=99。
+
+## 2026-06-07 app task438/task439 maintenance 下一批探索边界
+
+Carver 只读探索子代理确认 maintenance 当前仍有 7 条 fallback-only，且 `apps/api` 还没有 maintenance legacy 模块。低风险下一批候选是三条 GET+POST 只读 exact：`/app/maintenance.listMaintenanceTasks`、`/app/maintenance.queryMaintenanceTask` 与 `/app/maintenance.listMaintenanceTaskDetails`。四条写入口 `/app/maintenance.startMaintenanceTask`、`/app/maintenance.completeMaintenanceTask`、`/app/maintenance.submitMaintenanceSingle` 与 `/app/maintenance.transferMaintenanceTask` 会修改旧 in-memory 任务状态、明细或人员，只能 guarded/blocked 或继续 fallback-only。
+
+该探索只为后续第二十三批提供候选，不代表 maintenance 已迁移，不代表 `apps/api` 已有实现，也不关闭任何 checkbox。后续如果处理 maintenance，只能先补红灯测试，再新增模块与 runtime manifest，并保留生产 H5、DB_READY、写入 read-back/rollback、global fallback 和目录级 dry-run 的 no-go 边界。
+
+## 2026-06-07 app task438/task439 maintenance 第二十三批三条只读 exact 边界
+
+`/app/maintenance.listMaintenanceTasks`、`/app/maintenance.queryMaintenanceTask` 与 `/app/maintenance.listMaintenanceTaskDetails` 已从 fallback-only 收敛为 `apps/api` maintenance 模块 GET+POST 只读 exact：registry 同时注册 GET 与 POST，fallback disabled 时由 `apps/api` 直接返回旧 `{ success, code, message, data, timestamp }` envelope，不触发旧 app fallback fetch。fresh scan 更新为 appRows=219、appUnique=214、apiRows=116、apiUnique=116、exactOldSource=115、fallbackOnly=96、diagnostic=3、apiOnly=1、maintenanceExact=3、maintenanceFallback=4，apiOnlyPath=`/app/purchase/updatePurchaseApply`。
+
+旧语义边界：三条只读路径使用 deterministic compat seed 复刻旧 app shape，不是 Neon DB-backed，也没有生产 app H5 Network、真实库样本或全局 shadow-off/fallback 证据。旧 envelope 保留 `{ success, code, message, data, timestamp }`，不同于此前部分模块的 `{ code, msg, data }` envelope；后续记录不能把 envelope 混写。
+
+剩余 maintenance 风险：`/app/maintenance.startMaintenanceTask`、`/app/maintenance.completeMaintenanceTask`、`/app/maintenance.submitMaintenanceSingle` 与 `/app/maintenance.transferMaintenanceTask` 仍未 exact，继续保留 fallback/风险。它们会修改旧 in-memory 任务状态、明细或人员，缺少受控写入窗口、read-back、rollback、residual check 与 guard-restored 证据；不能因为本批三条只读 exact 被扣成完成。
+
+失败尝试与复核记录：Carver 探索 PASS；Newton 在红灯/缺模块阶段被 shutdown；Poincare 完成实现；Harvey 复核 PASS。验证记录为相关 7 个 api test files 通过，418 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过；maintenance 相关 `git diff --check` 通过。禁止误判：第二十三批不代表 maintenance DB_READY、真实 DB、四条保养写接口、生产 app H5 Network、write/read-back/rollback、guard-restored、全局 shadow-off/fallback、dry-run 或 `apps/app/server/**` delete-candidate；task438/task439 仍必须保持 open，因为 fallbackOnly=96。
+
+## 2026-06-07 app task438/task439 activity 第二十四批两条 guarded exact 边界
+
+`/app/activities.updateLike` 与 `/app/activities.updateCollect` 已从 fallback-only 收敛为 `apps/api` activity 模块 POST-only guarded exact：registry 只注册 POST，GET 明确不注册；fallback disabled 时由 `apps/api` 返回 legacy `{ code, msg, data }` guard envelope，`code=409`、`errorCode=PHASE7_MUTATION_GUARDED`，不触发旧 app fallback fetch。fresh scan 更新为 appRows=219、appUnique=214、apiRows=118、apiUnique=118、exactOldSource=117、fallbackOnly=94、diagnostic=3、apiOnly=1、activityExact=6、activityFallback=3，apiOnlyPath=`/app/purchase/updatePurchaseApply`。
+
+旧语义边界：James 只读探索确认 activity 剩余五条 fallback-only 均为 POST 写入口，旧 app 行为会修改 in-memory 状态；本批只选择计数字段设置类 `updateLike` 与 `updateCollect` 做 fail-closed guard。`apps/api` 没有真实 activity mutation repository，没有 DB-backed 写入窗口，也没有 read-back、rollback、residual check 或 guard-restored 证据；因此这两条不能写成真实点赞或收藏写入完成。
+
+剩余 activity 风险：`/app/activities.saveActivities`、`/app/activities.updateActivities` 与 `/app/activities.deleteActivities` 仍未 exact，继续保留 fallback/风险。它们涉及活动创建、整活动更新和删除，风险高于计数字段设置；后续只能继续 guarded/blocked 或在受控写入窗口、读回、回滚和 residual check 齐备后再评估，不能由本批 guard 证据外推。
+
+失败尝试与验证记录：Zeno 编辑子代理按 TDD 先得到两条 endpoint 未注册、dispatch 404、fallback disabled drill 404 的红灯，再完成代码和测试修改。主代理复跑 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/activity-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，7 files / 421 tests；`pnpm -F @01s-11comm/api run typecheck` 通过；activity 相关 `git diff --check` 通过。首次 fresh scan PowerShell 正则命令因引号解析失败无效，已改用单引号 `$pattern` 重跑得到当前统计。禁止误判：第二十四批不代表 activity DB_READY、真实 activity CUD、真实点赞收藏写入、生产 app H5 Network、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run 或 `apps/app/server/**` delete-candidate；task438/task439 仍必须保持 open，因为 fallbackOnly=94。
