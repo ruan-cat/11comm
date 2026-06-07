@@ -15,6 +15,7 @@ import { profileLegacyEndpointDefinitions } from "../../modules/profile/legacy-e
 import { propertyApplicationLegacyEndpointDefinitions } from "../../modules/property-application/legacy-endpoints";
 import { purchaseLegacyEndpointDefinitions } from "../../modules/purchase/legacy-endpoints";
 import { repairLegacyEndpointDefinitions } from "../../modules/repair/legacy-endpoints";
+import { resourceLegacyEndpointDefinitions } from "../../modules/resource/legacy-endpoints";
 import { roomUnitLegacyEndpointDefinitions } from "../../modules/room-unit/legacy-endpoints";
 import { videoLegacyEndpointDefinitions } from "../../modules/video/legacy-endpoints";
 import { visitLegacyEndpointDefinitions } from "../../modules/visit/legacy-endpoints";
@@ -64,6 +65,7 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/purchase/updatePurchaseApply",
 	"/app/purchase/purchaseApply",
 	"/app/purchase/urgentPurchaseApply",
+	"/app/resourceStore.saveAllocationStorehouse",
 	"/app/visit.auditVisit",
 	"/app/itemRelease.auditItemRelease",
 	"/app/inspection.submitInspection",
@@ -234,6 +236,12 @@ const runtimeEndpointEntries = [
 		phase: getPurchaseLegacyPhase(definition),
 		ownerModule: "purchase",
 		cutoverStatus: getPurchaseLegacyCutoverStatus(definition),
+	})),
+	...resourceLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getResourceLegacyPhase(definition),
+		ownerModule: "resource",
+		cutoverStatus: getResourceLegacyCutoverStatus(definition),
 	})),
 ];
 
@@ -1162,7 +1170,7 @@ function createAdminManifestEntry(
 }
 
 function getAppLegacyResponseContract(ownerModule: string): EndpointManifestResponseContract {
-	if (ownerModule === "maintenance") {
+	if (ownerModule === "maintenance" || ownerModule === "resource") {
 		return "{ success, code, message, data, timestamp }";
 	}
 
@@ -1484,4 +1492,20 @@ function getPurchaseLegacyPhase(definition: EndpointDefinition): string {
 	}
 
 	return "phase7-purchase-guarded-write";
+}
+
+function getResourceLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getResourceLegacyPhase(definition: EndpointDefinition): string {
+	if (definition.url === "/app/resourceStore.saveAllocationStorehouse") {
+		return "phase7-resource-guarded-write-batch30";
+	}
+
+	return "phase7-resource-readonly-batch30";
 }
