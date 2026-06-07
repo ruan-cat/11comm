@@ -132,6 +132,21 @@ describe("legacy-dispatch fallback drill", () => {
 			{ irId: "IR_00001", flowId: "FLOW_00001", taskId: "TASK_00001", auditCode: "1100" },
 			"itemRelease.auditItemRelease",
 		],
+		[
+			"/app/couponProperty.writeOffCouponPropertyUser",
+			{ couponQrcode: "CPN100000" },
+			"couponProperty.writeOffCouponPropertyUser",
+		],
+		[
+			"/app/integral.useIntegral",
+			{ ownerName: "积分业主01", ownerTel: "13800000001", integral: 10 },
+			"integral.useIntegral",
+		],
+		[
+			"/app/reserveOrder.saveReserveGoodsConfirmOrder",
+			{ timeId: "RSV200000" },
+			"reserveOrder.saveReserveGoodsConfirmOrder",
+		],
 	])("guarded exact endpoint is served by apps/api when fallback is disabled: %s", async (path, body, action) => {
 		process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
 		const fetchSpy = vi.spyOn(globalThis, "fetch");
@@ -413,6 +428,16 @@ describe("legacy-dispatch fallback drill", () => {
 				total: expect.any(Number),
 				page: 1,
 				pageSize: 1,
+			}),
+		],
+		[
+			"/app/reserveOrder.listReserveGoodsConfirmOrder",
+			{ page: 1, row: 2, reserveQrcode: "RSV20000" },
+			expect.objectContaining({
+				list: expect.arrayContaining([expect.objectContaining({ reserveQrcode: expect.stringContaining("RSV20000") })]),
+				total: expect.any(Number),
+				page: 1,
+				pageSize: 2,
 			}),
 		],
 		[

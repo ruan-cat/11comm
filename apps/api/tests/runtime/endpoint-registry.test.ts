@@ -207,8 +207,10 @@ describe("endpoint registry runtime", () => {
 		expect(findEndpointDefinition(registry, "POST", "/app/integral.listIntegralSetting")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/integral.listIntegralUserDetail")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/integral.listIntegralUserDetail")).toBeTruthy();
-		expect(findEndpointDefinition(registry, "POST", "/app/couponProperty.writeOffCouponPropertyUser")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/integral.useIntegral")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/couponProperty.writeOffCouponPropertyUser")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/couponProperty.writeOffCouponPropertyUser")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/integral.useIntegral")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/integral.useIntegral")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.listMaintenanceTasks")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.listMaintenanceTasks")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.queryMaintenanceTask")).toBeTruthy();
@@ -223,9 +225,10 @@ describe("endpoint registry runtime", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.completeMaintenanceTask")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.submitMaintenanceSingle")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.transferMaintenanceTask")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/reserveOrder.listReserveGoodsConfirmOrder")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/reserveOrder.listReserveGoodsConfirmOrder")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/reserveOrder.saveReserveGoodsConfirmOrder")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/reserveOrder.listReserveGoodsConfirmOrder")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/reserveOrder.listReserveGoodsConfirmOrder")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/reserveOrder.saveReserveGoodsConfirmOrder")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/reserveOrder.saveReserveGoodsConfirmOrder")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairDispatch")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.updateOwnerRepair")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairFinish")).toBeUndefined();

@@ -11,21 +11,40 @@ const couponReadonlyUrls = [
 	"/app/couponProperty.listCouponPropertyUserDetail",
 	"/app/integral.listIntegralSetting",
 	"/app/integral.listIntegralUserDetail",
+	"/app/reserveOrder.listReserveGoodsConfirmOrder",
 ] as const;
 
-describe("coupon legacy endpoints phase7 readonly batch22", () => {
+const guardedCouponUrls = [
+	[
+		"/app/couponProperty.writeOffCouponPropertyUser",
+		{ couponQrcode: "CPN100000" },
+		"couponProperty.writeOffCouponPropertyUser",
+	],
+	[
+		"/app/integral.useIntegral",
+		{ ownerName: "积分业主01", ownerTel: "13800000001", integral: 10 },
+		"integral.useIntegral",
+	],
+	[
+		"/app/reserveOrder.saveReserveGoodsConfirmOrder",
+		{ timeId: "RSV200000" },
+		"reserveOrder.saveReserveGoodsConfirmOrder",
+	],
+] as const;
+
+describe("coupon legacy endpoints phase7 readonly plus guarded batch28", () => {
 	const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
-	test("registers only the coupon and integral readonly exact handlers", () => {
+	test("registers coupon readonly endpoints and guarded writes with explicit method boundaries", () => {
 		for (const url of couponReadonlyUrls) {
 			expect(findEndpointDefinition(registry, "GET", url)).toBeTruthy();
 			expect(findEndpointDefinition(registry, "POST", url)).toBeTruthy();
 		}
 
-		expect(findEndpointDefinition(registry, "POST", "/app/couponProperty.writeOffCouponPropertyUser")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/integral.useIntegral")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/reserveOrder.listReserveGoodsConfirmOrder")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/reserveOrder.saveReserveGoodsConfirmOrder")).toBeUndefined();
+		for (const [url] of guardedCouponUrls) {
+			expect(findEndpointDefinition(registry, "GET", url)).toBeUndefined();
+			expect(findEndpointDefinition(registry, "POST", url)).toBeTruthy();
+		}
 	});
 
 	test("lists coupon write-off orders with legacy pagination and ignores communityId", async () => {
@@ -134,4 +153,58 @@ describe("coupon legacy endpoints phase7 readonly batch22", () => {
 		expect(response).not.toHaveProperty("success");
 		expect(response).not.toHaveProperty("message");
 	});
+
+	test("lists reserve confirm orders with legacy pagination", async () => {
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/reserveOrder.listReserveGoodsConfirmOrder",
+			query: { page: 1, row: 2, reserveQrcode: "RSV20000", communityId: "IGNORED" },
+		});
+
+		expect(response).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				list: expect.arrayContaining([
+					expect.objectContaining({
+						orderId: expect.stringMatching(/^RO_/),
+						reserveQrcode: expect.stringContaining("RSV20000"),
+						goodsName: expect.any(String),
+						quantity: expect.any(Number),
+						appointmentTime: expect.any(String),
+						hours: expect.any(String),
+						personName: expect.any(String),
+						personTel: expect.any(String),
+						createTime: expect.any(String),
+					}),
+				]),
+				total: expect.any(Number),
+				page: 1,
+				pageSize: 2,
+			},
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+	});
+
+	test.each(guardedCouponUrls)(
+		"returns the legacy coupon guard envelope for POST-only write endpoint: %s",
+		async (path, body, action) => {
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path,
+				body,
+			});
+
+			expect(response).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		},
+	);
 });

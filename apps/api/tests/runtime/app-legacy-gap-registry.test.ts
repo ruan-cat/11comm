@@ -78,6 +78,11 @@ const migratedOrGuardedRuntimePaths = [
 	["POST", "/app/integral.listIntegralSetting"],
 	["GET", "/app/integral.listIntegralUserDetail"],
 	["POST", "/app/integral.listIntegralUserDetail"],
+	["POST", "/app/couponProperty.writeOffCouponPropertyUser"],
+	["POST", "/app/integral.useIntegral"],
+	["GET", "/app/reserveOrder.listReserveGoodsConfirmOrder"],
+	["POST", "/app/reserveOrder.listReserveGoodsConfirmOrder"],
+	["POST", "/app/reserveOrder.saveReserveGoodsConfirmOrder"],
 	["GET", "/app/maintenance.listMaintenanceTasks"],
 	["POST", "/app/maintenance.listMaintenanceTasks"],
 	["GET", "/app/maintenance.queryMaintenanceTask"],
@@ -92,10 +97,6 @@ const migratedOrGuardedRuntimePaths = [
 ] as const;
 
 const remainingAppLegacyGapPaths = [
-	["POST", "/app/couponProperty.writeOffCouponPropertyUser"],
-	["POST", "/app/integral.useIntegral"],
-	["GET", "/app/reserveOrder.listReserveGoodsConfirmOrder"],
-	["POST", "/app/reserveOrder.saveReserveGoodsConfirmOrder"],
 	["GET", "/app/oa/workflow/query"],
 	["GET", "/app/oa/workflow/form/query"],
 	["GET", "/app/oa/workflow/form/data/query"],

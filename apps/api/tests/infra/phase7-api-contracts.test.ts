@@ -1463,6 +1463,21 @@ describe("phase7 apps-api dual client contracts", () => {
 					hasMore: false,
 				},
 			},
+			{
+				path: "/app/reserveOrder.listReserveGoodsConfirmOrder",
+				query: { page: 1, row: 2, reserveQrcode: "RSV20000", communityId: "IGNORED" },
+				data: {
+					list: expect.arrayContaining([
+						expect.objectContaining({
+							orderId: expect.stringMatching(/^RO_/),
+							reserveQrcode: expect.stringContaining("RSV20000"),
+						}),
+					]),
+					total: expect.any(Number),
+					page: 1,
+					pageSize: 2,
+				},
+			},
 		]) {
 			const response = await dispatchEndpoint(registry, {
 				method: "GET",
@@ -1481,29 +1496,72 @@ describe("phase7 apps-api dual client contracts", () => {
 		}
 	});
 
-	test("coupon readonly adapter evidence stays scoped to three exact read handlers", () => {
+	test.each([
+		[
+			"/app/couponProperty.writeOffCouponPropertyUser",
+			{ couponQrcode: "CPN100000" },
+			"couponProperty.writeOffCouponPropertyUser",
+		],
+		[
+			"/app/integral.useIntegral",
+			{ ownerName: "积分业主01", ownerTel: "13800000001", integral: 10 },
+			"integral.useIntegral",
+		],
+		[
+			"/app/reserveOrder.saveReserveGoodsConfirmOrder",
+			{ timeId: "RSV200000" },
+			"reserveOrder.saveReserveGoodsConfirmOrder",
+		],
+	])(
+		"coupon guarded app legacy write endpoint returns the unified code msg data guard envelope: %s",
+		async (path, body, action) => {
+			const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path,
+				body,
+			});
+
+			expect(response).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		},
+	);
+
+	test("coupon adapter evidence separates readonly handlers from guarded writes", () => {
 		expect(couponLegacyAdapterEvidence).toMatchObject({
-			scope: "readonly-exact-handler-batch22",
+			scope: "readonly-exact-handler-plus-guarded-write-batch28",
 			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 			responseContract: "{ code, msg, data }",
 			endpoints: [
 				"/app/couponProperty.listCouponPropertyUserDetail",
 				"/app/integral.listIntegralSetting",
 				"/app/integral.listIntegralUserDetail",
+				"/app/reserveOrder.listReserveGoodsConfirmOrder",
 			],
+			guardedEndpoints: [
+				"/app/couponProperty.writeOffCouponPropertyUser",
+				"/app/integral.useIntegral",
+				"/app/reserveOrder.saveReserveGoodsConfirmOrder",
+			],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
 		});
 		expect(couponLegacyAdapterEvidence.notCovered).toEqual(
 			expect.arrayContaining([
-				"/app/couponProperty.writeOffCouponPropertyUser",
-				"/app/integral.useIntegral",
-				"/app/reserveOrder.listReserveGoodsConfirmOrder",
-				"/app/reserveOrder.saveReserveGoodsConfirmOrder",
 				"db-backed-coupon-data",
-				"coupon-integral-write-read-back-rollback",
-				"reserve-order-readonly-and-write",
+				"coupon-integral-reserve-write-read-back-rollback",
 				"production-app-h5-coupon-integral-network",
 			]),
 		);
+		expect(couponLegacyAdapterEvidence.notCovered).not.toContain("/app/reserveOrder.listReserveGoodsConfirmOrder");
 	});
 
 	test("maintenance readonly app legacy endpoints keep the legacy maintenance envelope", async () => {
@@ -2333,6 +2391,10 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(urls).toContain("/app/maintenance.completeMaintenanceTask");
 		expect(urls).toContain("/app/maintenance.submitMaintenanceSingle");
 		expect(urls).toContain("/app/maintenance.transferMaintenanceTask");
+		expect(urls).toContain("/app/couponProperty.writeOffCouponPropertyUser");
+		expect(urls).toContain("/app/integral.useIntegral");
+		expect(urls).toContain("/app/reserveOrder.listReserveGoodsConfirmOrder");
+		expect(urls).toContain("/app/reserveOrder.saveReserveGoodsConfirmOrder");
 	});
 
 	test("manifest marks high-risk app legacy mutation actions as blocked for execution", () => {
@@ -2360,6 +2422,9 @@ describe("phase7 apps-api dual client contracts", () => {
 			"/app/activities.saveActivities",
 			"/app/activities.updateActivities",
 			"/app/activities.deleteActivities",
+			"/app/couponProperty.writeOffCouponPropertyUser",
+			"/app/integral.useIntegral",
+			"/app/reserveOrder.saveReserveGoodsConfirmOrder",
 		]) {
 			expectManifestEntry(url, {
 				targetClient: "app",

@@ -289,6 +289,10 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/couponProperty.listCouponPropertyUserDetail");
 		expect(urls).toContain("/app/integral.listIntegralSetting");
 		expect(urls).toContain("/app/integral.listIntegralUserDetail");
+		expect(urls).toContain("/app/couponProperty.writeOffCouponPropertyUser");
+		expect(urls).toContain("/app/integral.useIntegral");
+		expect(urls).toContain("/app/reserveOrder.listReserveGoodsConfirmOrder");
+		expect(urls).toContain("/app/reserveOrder.saveReserveGoodsConfirmOrder");
 		expect(urls).toContain("/app/maintenance.listMaintenanceTasks");
 		expect(urls).toContain("/app/maintenance.queryMaintenanceTask");
 		expect(urls).toContain("/app/maintenance.listMaintenanceTaskDetails");
@@ -389,10 +393,6 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).not.toContain("/app/resourceStore.listResourceStores");
 		expect(urls).not.toContain("/app/owner.queryOwnerCars");
 		expect(urls).not.toContain("/app/machine/openDoor");
-		expect(urls).not.toContain("/app/couponProperty.writeOffCouponPropertyUser");
-		expect(urls).not.toContain("/app/integral.useIntegral");
-		expect(urls).not.toContain("/app/reserveOrder.listReserveGoodsConfirmOrder");
-		expect(urls).not.toContain("/app/reserveOrder.saveReserveGoodsConfirmOrder");
 	});
 
 	test("exposes readonly endpoint manifest without database configuration", async () => {
@@ -950,6 +950,28 @@ describe("phase7 endpoint manifest", () => {
 						phase: "phase7-coupon-readonly-batch22",
 						responseContract: "{ code, msg, data }",
 						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				expect.objectContaining({
+					url: "/app/reserveOrder.listReserveGoodsConfirmOrder",
+					method: ["GET", "POST"],
+					ownerModule: "coupon",
+					phase: "phase7-coupon-readonly-batch28",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				...[
+					"/app/couponProperty.writeOffCouponPropertyUser",
+					"/app/integral.useIntegral",
+					"/app/reserveOrder.saveReserveGoodsConfirmOrder",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "coupon",
+						phase: "phase7-coupon-guarded-write-batch28",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "blocked-for-execution",
 					}),
 				),
 				...[
