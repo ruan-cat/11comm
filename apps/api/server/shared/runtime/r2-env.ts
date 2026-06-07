@@ -16,6 +16,12 @@ export const R2_ENV_KEYS = [
 
 export type R2EnvKey = (typeof R2_ENV_KEYS)[number];
 
+export interface R2EnvReadinessResult {
+	requiredKeys: R2EnvKey[];
+	configured: boolean;
+	missingKeys: R2EnvKey[];
+}
+
 type RuntimeConfigWithR2 = Record<string, any> & {
 	r2?: Record<string, unknown>;
 };
@@ -34,6 +40,15 @@ export function getR2EnvRequired(key: R2EnvKey, event?: H3Event | Record<string,
 		throw new Error(`Missing required R2 environment variable: ${key}.`);
 	}
 	return value;
+}
+
+export function probeR2EnvReadiness(event?: H3Event | Record<string, any>): R2EnvReadinessResult {
+	const missingKeys = R2_ENV_KEYS.filter((key) => !resolveR2EnvValue(key, event));
+	return {
+		requiredKeys: [...R2_ENV_KEYS],
+		configured: missingKeys.length === 0,
+		missingKeys,
+	};
 }
 
 function resolveR2EnvValue(key: R2EnvKey, event?: H3Event | Record<string, any>): string | undefined {

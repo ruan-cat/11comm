@@ -2,6 +2,7 @@ import { defineHandler, setResponseStatus } from "nitro/h3";
 import { hasDatabaseUrl, useDb } from "../../db";
 import { probeDatabaseReadiness, type DatabaseReadinessProbeResult } from "../../db/readiness";
 import { getPublicRuntimeConfig } from "../../shared/runtime/env";
+import { probeR2EnvReadiness, type R2EnvReadinessResult } from "../../shared/runtime/r2-env";
 import { getApiRequestContext } from "../../shared/runtime/request-context";
 
 export default defineHandler(async (event) => {
@@ -29,17 +30,16 @@ export default defineHandler(async (event) => {
 	if (phase7DbReadinessCheckEnabled) {
 		try {
 			const probe = await probeDatabaseReadiness(useDb(event));
-			const ready = probe.connected && probe.schema.requiredTablesPresent && probe.migrations.upToDate;
+			const r2 = probeR2EnvReadiness(event);
+			const ready = probe.connected && probe.schema.requiredTablesPresent && probe.migrations.upToDate && r2.configured;
 
 			if (!ready) {
 				setResponseStatus(event, 503);
 				return buildReadyResponse({
 					success: false,
 					ready: false,
-					code: probe.schema.requiredTablesPresent ? "DATABASE_MIGRATIONS_NOT_READY" : "DATABASE_SCHEMA_MISSING",
-					message: probe.schema.requiredTablesPresent
-						? "Database is reachable, but Drizzle migrations are not ready."
-						: "Database is reachable, but required Phase7 tables are missing.",
+					code: resolvePhase7ReadinessFailureCode(probe, r2),
+					message: resolvePhase7ReadinessFailureMessage(probe, r2),
 					requestId: requestContext.requestId,
 					service: publicConfig.serviceName,
 					phase: publicConfig.phase,
@@ -47,6 +47,7 @@ export default defineHandler(async (event) => {
 					connected: probe.connected,
 					probeEnabled: true,
 					probe,
+					r2,
 				});
 			}
 
@@ -63,6 +64,7 @@ export default defineHandler(async (event) => {
 				connected: true,
 				probeEnabled: true,
 				probe,
+				r2,
 			});
 		} catch (error) {
 			setResponseStatus(event, 503);
@@ -109,6 +111,7 @@ function buildReadyResponse(input: {
 	connected: boolean | null;
 	probeEnabled: boolean;
 	probe?: DatabaseReadinessProbeResult;
+	r2?: R2EnvReadinessResult;
 	error?: string;
 }) {
 	return {
@@ -133,8 +136,39 @@ function buildReadyResponse(input: {
 					: {}),
 				...(input.error ? { error: input.error } : {}),
 			},
+			...(input.r2
+				? {
+						r2: input.r2,
+					}
+				: {}),
 		},
 	};
+}
+
+function resolvePhase7ReadinessFailureCode(probe: DatabaseReadinessProbeResult, r2: R2EnvReadinessResult): string {
+	if (!probe.schema.requiredTablesPresent) {
+		return "DATABASE_SCHEMA_MISSING";
+	}
+	if (!probe.migrations.upToDate) {
+		return "DATABASE_MIGRATIONS_NOT_READY";
+	}
+	if (!r2.configured) {
+		return "R2_ENV_MISSING";
+	}
+	return "PHASE7_READINESS_NOT_READY";
+}
+
+function resolvePhase7ReadinessFailureMessage(probe: DatabaseReadinessProbeResult, r2: R2EnvReadinessResult): string {
+	if (!probe.schema.requiredTablesPresent) {
+		return "Database is reachable, but required Phase7 tables are missing.";
+	}
+	if (!probe.migrations.upToDate) {
+		return "Database is reachable, but Drizzle migrations are not ready.";
+	}
+	if (!r2.configured) {
+		return "R2 environment variables are not fully configured.";
+	}
+	return "Phase7 readiness checks are not ready.";
 }
 
 function isPhase7DbReadinessCheckEnabled(): boolean {

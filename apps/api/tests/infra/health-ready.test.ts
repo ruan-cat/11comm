@@ -10,6 +10,11 @@ describe("api health and ready endpoints", () => {
 		DATABASE_URL: process.env.DATABASE_URL,
 		NITRO_DATABASE_URL: process.env.NITRO_DATABASE_URL,
 		RUN_PHASE7_DB_READINESS_CHECK: process.env.RUN_PHASE7_DB_READINESS_CHECK,
+		R2_ENDPOINT: process.env.R2_ENDPOINT,
+		R2_BUCKET: process.env.R2_BUCKET,
+		R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
+		R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
+		R2_PUBLIC_BASE_URL: process.env.R2_PUBLIC_BASE_URL,
 	};
 
 	beforeEach(() => {
@@ -17,6 +22,7 @@ describe("api health and ready endpoints", () => {
 		delete process.env.DATABASE_URL;
 		delete process.env.NITRO_DATABASE_URL;
 		delete process.env.RUN_PHASE7_DB_READINESS_CHECK;
+		deleteRequiredR2Env();
 	});
 
 	afterEach(() => {
@@ -24,6 +30,11 @@ describe("api health and ready endpoints", () => {
 		restoreEnv("DATABASE_URL", snapshot.DATABASE_URL);
 		restoreEnv("NITRO_DATABASE_URL", snapshot.NITRO_DATABASE_URL);
 		restoreEnv("RUN_PHASE7_DB_READINESS_CHECK", snapshot.RUN_PHASE7_DB_READINESS_CHECK);
+		restoreEnv("R2_ENDPOINT", snapshot.R2_ENDPOINT);
+		restoreEnv("R2_BUCKET", snapshot.R2_BUCKET);
+		restoreEnv("R2_ACCESS_KEY_ID", snapshot.R2_ACCESS_KEY_ID);
+		restoreEnv("R2_SECRET_ACCESS_KEY", snapshot.R2_SECRET_ACCESS_KEY);
+		restoreEnv("R2_PUBLIC_BASE_URL", snapshot.R2_PUBLIC_BASE_URL);
 	});
 
 	test("health stays available without database configuration", async () => {
@@ -111,12 +122,15 @@ describe("api health and ready endpoints", () => {
 	test("ready probes database connection, required tables, and migrations when phase7 DB readiness gate is enabled", async () => {
 		process.env.NITRO_DATABASE_URL = "postgresql://configured";
 		process.env.RUN_PHASE7_DB_READINESS_CHECK = "1";
+		setRequiredR2Env();
 		const execute = vi
 			.fn()
 			.mockResolvedValueOnce({ rows: [{ ok: 1 }] })
 			.mockResolvedValueOnce({
 				rows: [
 					{ table_name: "cm_communities" },
+					{ table_name: "ct_upload_session_parts" },
+					{ table_name: "ct_upload_sessions" },
 					{ table_name: "ex_expense_items" },
 					{ table_name: "ex_house_charges" },
 					{ table_name: "hp_houses" },
@@ -158,6 +172,10 @@ describe("api health and ready endpoints", () => {
 						upToDate: true,
 					},
 				},
+				r2: {
+					configured: true,
+					missingKeys: [],
+				},
 			},
 		});
 	});
@@ -165,12 +183,15 @@ describe("api health and ready endpoints", () => {
 	test("ready fails when phase7 DB readiness probe cannot find all required tables", async () => {
 		process.env.NITRO_DATABASE_URL = "postgresql://configured";
 		process.env.RUN_PHASE7_DB_READINESS_CHECK = "1";
+		setRequiredR2Env();
 		const execute = vi
 			.fn()
 			.mockResolvedValueOnce({ rows: [{ ok: 1 }] })
 			.mockResolvedValueOnce({
 				rows: [
 					{ table_name: "cm_communities" },
+					{ table_name: "ct_upload_session_parts" },
+					{ table_name: "ct_upload_sessions" },
 					{ table_name: "ex_expense_items" },
 					{ table_name: "hp_houses" },
 					{ table_name: "rpt_expense_summaries" },
@@ -207,6 +228,51 @@ describe("api health and ready endpoints", () => {
 			},
 		});
 	});
+
+	test("ready fails when phase7 DB readiness is ready but R2 env is missing", async () => {
+		process.env.NITRO_DATABASE_URL = "postgresql://configured";
+		process.env.RUN_PHASE7_DB_READINESS_CHECK = "1";
+		const execute = vi
+			.fn()
+			.mockResolvedValueOnce({ rows: [{ ok: 1 }] })
+			.mockResolvedValueOnce({
+				rows: [
+					{ table_name: "cm_communities" },
+					{ table_name: "ct_upload_session_parts" },
+					{ table_name: "ct_upload_sessions" },
+					{ table_name: "ex_expense_items" },
+					{ table_name: "ex_house_charges" },
+					{ table_name: "hp_houses" },
+					{ table_name: "rpt_expense_summaries" },
+					{ table_name: "rpt_payment_details" },
+				],
+			})
+			.mockResolvedValueOnce({ rows: [{ table_schema: "drizzle", table_name: "__drizzle_migrations" }] })
+			.mockResolvedValueOnce({ rows: [{ applied_count: "2" }] });
+		const event = {
+			context: {
+				db: {
+					execute,
+				},
+			},
+			res: { headers: new Headers() },
+		} as any;
+
+		const response = await readyHandler(event);
+
+		expect(event.res.status).toBe(503);
+		expect(response).toMatchObject({
+			success: false,
+			ready: false,
+			code: "R2_ENV_MISSING",
+			checks: {
+				r2: {
+					configured: false,
+					missingKeys: ["R2_ENDPOINT", "R2_BUCKET", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_PUBLIC_BASE_URL"],
+				},
+			},
+		});
+	});
 });
 
 function restoreEnv(name: string, value: string | undefined): void {
@@ -215,4 +281,20 @@ function restoreEnv(name: string, value: string | undefined): void {
 		return;
 	}
 	process.env[name] = value;
+}
+
+function setRequiredR2Env(): void {
+	process.env.R2_ENDPOINT = "https://r2.example.com";
+	process.env.R2_BUCKET = "bucket";
+	process.env.R2_ACCESS_KEY_ID = "access-key";
+	process.env.R2_SECRET_ACCESS_KEY = "secret-key";
+	process.env.R2_PUBLIC_BASE_URL = "https://cdn.example.com";
+}
+
+function deleteRequiredR2Env(): void {
+	delete process.env.R2_ENDPOINT;
+	delete process.env.R2_BUCKET;
+	delete process.env.R2_ACCESS_KEY_ID;
+	delete process.env.R2_SECRET_ACCESS_KEY;
+	delete process.env.R2_PUBLIC_BASE_URL;
 }

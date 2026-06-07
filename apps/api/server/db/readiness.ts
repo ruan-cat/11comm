@@ -8,6 +8,8 @@ export const phase7RequiredDatabaseTables = [
 	"hp_houses",
 	"rpt_expense_summaries",
 	"rpt_payment_details",
+	"ct_upload_sessions",
+	"ct_upload_session_parts",
 ] as const;
 
 export const expectedDrizzleMigrationCount = 2;
