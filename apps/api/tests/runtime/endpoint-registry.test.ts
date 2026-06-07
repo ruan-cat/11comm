@@ -69,6 +69,52 @@ describe("endpoint registry runtime", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listOwnerRepairs")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/repairSetting.listRepairSettings")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/dict.queryRepairStates")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/dict.queryPayTypes")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/dict.queryPayTypes")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.getRepairStatistics")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.getRepairStatistics")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listRepairStaffRecords")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.listRepairStaffRecords")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listRepairStaffs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.listRepairStaffs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/repair.listRepairTypeUsers")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/repair.listRepairTypeUsers")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listResources")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/resourceStore.listResources")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/staff.listStaffs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/staff.listStaffs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/inspection.getTodayReport")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/inspection.getTodayReport")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/inspection.listInspectionItemTitles")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/inspection.listInspectionItemTitles")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/inspection.listInspectionTasks")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/inspection.listInspectionTasks")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/inspection.listInspectionTaskDetails")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/inspection.listInspectionTaskDetails")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/inspection.submitInspection")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/inspection.submitInspection")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/inspection.transferTask")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/inspection.transferTask")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.queryFeeTypes")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.queryFeeTypes")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.queryFeeTypesItems")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.queryFeeTypesItems")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.listMeterType")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.listMeterType")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.listMeterWaters")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.listMeterWaters")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.queryPreMeterWater")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.queryPreMeterWater")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.listFloorShareReading")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.listFloorShareReading")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.listFloorShareMeter")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.listFloorShareMeter")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.saveMeterWater")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.saveFloorShareReading")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/meter.auditFloorShareReading")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.saveMeterWater")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.saveFloorShareReading")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/meter.auditFloorShareReading")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/workorder/todo/list")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/workorder/detail")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/workorder/copy/list")).toBeTruthy();
@@ -120,23 +166,112 @@ describe("endpoint registry runtime", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/owner.saveRoomOwner")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/owner.editOwner")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/owner.deleteOwner")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/feeDiscount/queryFeeDiscount")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/feeDiscount/queryFeeDiscount")).toBeTruthy();
+		expect(
+			findEndpointDefinition(registry, "GET", "/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail"),
+		).toBeTruthy();
+		expect(
+			findEndpointDefinition(registry, "POST", "/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail"),
+		).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/itemRelease.getItemRelease")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/itemRelease.getItemRelease")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/itemRelease.getItemReleaseRes")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/itemRelease.getItemReleaseRes")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/itemRelease.queryOaWorkflowUser")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/itemRelease.queryOaWorkflowUser")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/itemRelease.queryUndoItemReleaseV2")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/itemRelease.queryUndoItemReleaseV2")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/itemRelease.queryFinishItemReleaseV2")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/itemRelease.queryFinishItemReleaseV2")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/itemRelease.auditItemRelease")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/itemRelease.auditItemRelease")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/applyRoomDiscount/queryApplyRoomDiscount")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/applyRoomDiscount/updateApplyRoomDiscount")).toBeUndefined();
+		expect(
+			findEndpointDefinition(registry, "POST", "/app/applyRoomDiscount/updateReviewApplyRoomDiscount"),
+		).toBeUndefined();
+		expect(
+			findEndpointDefinition(registry, "GET", "/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord"),
+		).toBeUndefined();
+		expect(
+			findEndpointDefinition(registry, "POST", "/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord"),
+		).toBeUndefined();
+		expect(
+			findEndpointDefinition(registry, "POST", "/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord"),
+		).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/purchase/updatePurchaseApply")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/couponProperty.listCouponPropertyUserDetail")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/couponProperty.listCouponPropertyUserDetail")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/integral.listIntegralSetting")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/integral.listIntegralSetting")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/integral.listIntegralUserDetail")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/integral.listIntegralUserDetail")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/couponProperty.writeOffCouponPropertyUser")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/integral.useIntegral")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.listMaintenanceTasks")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.listMaintenanceTasks")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.queryMaintenanceTask")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.queryMaintenanceTask")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.listMaintenanceTaskDetails")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.listMaintenanceTaskDetails")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.startMaintenanceTask")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.completeMaintenanceTask")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.submitMaintenanceSingle")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.transferMaintenanceTask")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/reserveOrder.listReserveGoodsConfirmOrder")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/reserveOrder.listReserveGoodsConfirmOrder")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/reserveOrder.saveReserveGoodsConfirmOrder")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairDispatch")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/workorder/create")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/workorder/copy/finish")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/visit.auditVisit")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/profile.changeCommunity")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/profile.changePassword")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listResources")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineBmoImpl")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/machine/listMachineRecords")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/activities.saveActivities")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/activities.updateActivities")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/activities.deleteActivities")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/activities.increaseView")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/activities.likeActivity")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/activities.updateStatus")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/activities.updateLike")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/activities.updateCollect")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.updateOwnerRepair")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairFinish")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairEnd")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairStart")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairStop")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.grabbingRepair")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/repair.replyRepairAppraise")).toBeUndefined();
+		for (const url of [
+			"/app/workorder/create",
+			"/app/workorder/update",
+			"/app/workorder/start",
+			"/app/workorder/complete",
+			"/app/workorder/audit",
+			"/app/workorder/cancel",
+			"/app/workorder/copy/finish",
+		]) {
+			expect(findEndpointDefinition(registry, "POST", url)).toBeTruthy();
+			expect(findEndpointDefinition(registry, "GET", url)).toBeUndefined();
+		}
+		expect(findEndpointDefinition(registry, "POST", "/app/visit.auditVisit")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/visit.auditVisit")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/profile.changeCommunity")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/profile.changePassword")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/profile.changeCommunity")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/profile.changePassword")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineBmoImpl")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/iot/listChargeMachineBmoImpl")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachineOrderBmoImpl")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/iot/listChargeMachineOrderBmoImpl")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/iot/listChargeMachinePortBmoImpl")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/iot/listChargeMachinePortBmoImpl")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/machine/listMachineRecords")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/machine/listMachineRecords")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/machine/openDoor")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/activities.likeActivity")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/activities.increaseView")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/activities.updateStatus")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/activities.updateLike")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/activities.updateCollect")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/activities.saveActivities")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/activities.updateActivities")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/activities.deleteActivities")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.likeActivity")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.increaseView")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.updateStatus")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.updateLike")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.updateCollect")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.saveActivities")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.updateActivities")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/activities.deleteActivities")).toBeUndefined();
 	});
 });
