@@ -27,11 +27,7 @@
     "dev": "pnpm run dev:h5",
     "dev:h5:mock": "uni --mode development",
     "dev:h5:nitro": "node ./scripts/dev-h5-nitro.mjs",
-    "dev:nitro": "cross-env NODE_OPTIONS=--experimental-strip-types NITRO_BUILDER=rollup NITRO_APP_MODE=development-nitro-api nitro dev",
-    "build:nitro": "pnpm run build:nitro:node",
-    "build:nitro:node": "cross-env NODE_OPTIONS=--experimental-strip-types NITRO_BUILDER=rollup NITRO_PRESET=node NODE_ENV=production NITRO_APP_MODE=production-nitro-api nitro build",
-    "build:nitro:vercel": "cross-env NODE_OPTIONS=--experimental-strip-types NITRO_BUILDER=rollup NITRO_PRESET=vercel NODE_ENV=production NITRO_APP_MODE=production-nitro-api nitro build",
-    "preview:nitro": "cross-env NODE_ENV=production NITRO_APP_MODE=production-nitro-api VITE_API_RUNTIME=nitro-standalone NITRO_DATA_SOURCE=mock NITRO_PORT=3101 node .output/server/index.mjs",
+    "dev:nitro": "node ./scripts/dev-h5-nitro.mjs",
     "dev:mp-weixin:nitro": "node ./scripts/dev-mp-weixin-nitro.mjs",
     "dev:mp": "uni -p mp-weixin",
     "dev:mp:test": "uni -p mp-weixin --mode test",
@@ -106,7 +102,7 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs --base=/11comm-app/",
     "preinstall": "npx only-allow pnpm",
-    "ci": "turbo run build:nitro:vercel --filter=@01s-11comm/app"
+    "ci": "turbo run build:h5:prod --filter=@01s-11comm/app"
   },
   "dependencies": {
     "@alova/adapter-uniapp": "^2.0.16",
