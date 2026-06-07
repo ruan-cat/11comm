@@ -13,10 +13,18 @@ import { activityLegacyAdapterEvidence } from "../../server/modules/activity/leg
 import { appointmentLegacyAdapterEvidence } from "../../server/modules/appointment/legacy-adapter";
 import { complaintLegacyAdapterEvidence } from "../../server/modules/complaint/legacy-adapter";
 import { contactLegacyAdapterEvidence } from "../../server/modules/contact/legacy-adapter";
+import { couponLegacyAdapterEvidence } from "../../server/modules/coupon/legacy-adapter";
+import { feeLegacyAdapterEvidence } from "../../server/modules/fee/legacy-adapter";
+import { inspectionLegacyAdapterEvidence } from "../../server/modules/inspection/legacy-adapter";
+import { itemReleaseLegacyAdapterEvidence } from "../../server/modules/item-release/legacy-adapter";
+import { maintenanceLegacyAdapterEvidence } from "../../server/modules/maintenance/legacy-adapter";
+import { meterLegacyAdapterEvidence } from "../../server/modules/meter/legacy-adapter";
 import { noticeLegacyAdapterEvidence } from "../../server/modules/notice/legacy-adapter";
 import { ownerLegacyAdapterEvidence } from "../../server/modules/owner/legacy-adapter";
 import { profileLegacyAdapterEvidence } from "../../server/modules/profile/legacy-adapter";
+import { propertyApplicationLegacyAdapterEvidence } from "../../server/modules/property-application/legacy-adapter";
 import { purchaseLegacyGuardEvidence } from "../../server/modules/purchase/legacy-adapter";
+import { repairLegacyAdapterEvidence } from "../../server/modules/repair/legacy-adapter";
 import { roomUnitLegacyAdapterEvidence } from "../../server/modules/room-unit/legacy-adapter";
 import { videoLegacyAdapterEvidence } from "../../server/modules/video/legacy-adapter";
 import { visitLegacyAdapterEvidence } from "../../server/modules/visit/legacy-adapter";
@@ -471,6 +479,21 @@ describe("phase7 apps-api dual client contracts", () => {
 			responseContract: "{ code, msg, data }",
 			cutoverStatus: "app-shadow-allowlist",
 		});
+		for (const url of [
+			"/app/iot/listChargeMachineBmoImpl",
+			"/app/iot/listChargeMachineOrderBmoImpl",
+			"/app/iot/listChargeMachinePortBmoImpl",
+		]) {
+			expectManifestEntry(url, {
+				method: ["GET", "POST"],
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "fee",
+				phase: "phase7-fee-charge-machine-readonly",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
 		expectManifestEntry("/app/workorder/todo/list", {
 			method: ["GET", "POST"],
 			targetClient: "app",
@@ -500,6 +523,25 @@ describe("phase7 apps-api dual client contracts", () => {
 				cutoverStatus: "app-shadow-allowlist",
 			});
 		}
+		for (const url of [
+			"/app/workorder/create",
+			"/app/workorder/update",
+			"/app/workorder/start",
+			"/app/workorder/complete",
+			"/app/workorder/audit",
+			"/app/workorder/cancel",
+			"/app/workorder/copy/finish",
+		]) {
+			expectManifestEntry(url, {
+				method: "POST",
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "work-order",
+				phase: "phase7-work-order-guarded-write",
+				cutoverStatus: "blocked-for-execution",
+			});
+		}
 		for (const url of ["/app/visit.getVisit", "/app/visit.getVisitDetail"]) {
 			expectManifestEntry(url, {
 				method: ["GET", "POST"],
@@ -511,6 +553,15 @@ describe("phase7 apps-api dual client contracts", () => {
 				cutoverStatus: "app-shadow-allowlist",
 			});
 		}
+		expectManifestEntry("/app/visit.auditVisit", {
+			method: "POST",
+			targetClient: "app",
+			routeKind: "app-legacy",
+			responseContract: "{ code, msg, data }",
+			ownerModule: "visit",
+			phase: "phase7-visit-guarded-write",
+			cutoverStatus: "blocked-for-execution",
+		});
 		for (const url of [
 			"/app/profile.getUserProfile",
 			"/app/profile.listCommunities",
@@ -550,6 +601,23 @@ describe("phase7 apps-api dual client contracts", () => {
 			phase: "phase7-notice-readonly",
 			cutoverStatus: "app-shadow-allowlist",
 		});
+		for (const url of [
+			"/app/itemRelease.getItemRelease",
+			"/app/itemRelease.getItemReleaseRes",
+			"/app/itemRelease.queryOaWorkflowUser",
+			"/app/itemRelease.queryUndoItemReleaseV2",
+			"/app/itemRelease.queryFinishItemReleaseV2",
+		]) {
+			expectManifestEntry(url, {
+				method: ["GET", "POST"],
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "item-release",
+				phase: "phase7-item-release-readonly-batch20",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
 		expectManifestEntry("/app/activities.listActivitiess", {
 			method: ["GET", "POST"],
 			targetClient: "app",
@@ -559,6 +627,47 @@ describe("phase7 apps-api dual client contracts", () => {
 			phase: "phase7-activity-readonly",
 			cutoverStatus: "app-shadow-allowlist",
 		});
+		for (const url of [
+			"/app/activities.likeActivity",
+			"/app/activities.increaseView",
+			"/app/activities.updateStatus",
+		]) {
+			expectManifestEntry(url, {
+				method: "POST",
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "activity",
+				phase: "phase7-activity-guarded-write-batch17",
+				cutoverStatus: "blocked-for-execution",
+			});
+		}
+		for (const url of ["/app/activities.updateLike", "/app/activities.updateCollect"]) {
+			expectManifestEntry(url, {
+				method: "POST",
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "activity",
+				phase: "phase7-activity-guarded-write-batch24",
+				cutoverStatus: "blocked-for-execution",
+			});
+		}
+		for (const url of [
+			"/app/activities.saveActivities",
+			"/app/activities.updateActivities",
+			"/app/activities.deleteActivities",
+		]) {
+			expectManifestEntry(url, {
+				method: "POST",
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				ownerModule: "activity",
+				phase: "phase7-activity-guarded-write-batch25",
+				cutoverStatus: "blocked-for-execution",
+			});
+		}
 		expectManifestEntry("/app/communitySpace.listCommunitySpaceConfirmOrder", {
 			method: ["GET", "POST"],
 			targetClient: "app",
@@ -710,6 +819,82 @@ describe("phase7 apps-api dual client contracts", () => {
 		});
 		expect(response).not.toHaveProperty("success");
 		expect(response).not.toHaveProperty("message");
+	});
+
+	test("fee charge-machine readonly app legacy endpoints return the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/iot/listChargeMachineBmoImpl",
+				query: { page: 1, row: 10, communityId: "COMM_001", machineNameLike: "1" },
+				expectedItem: { machineId: "MACHINE_001" },
+			},
+			{
+				path: "/app/iot/listChargeMachineOrderBmoImpl",
+				query: { page: 1, row: 10, communityId: "UNKNOWN_COMMUNITY", machineId: "MACHINE_001" },
+				expectedItem: { orderId: "CHARGE_ORDER_001" },
+			},
+			{
+				path: "/app/iot/listChargeMachinePortBmoImpl",
+				query: { page: 1, row: 10, communityId: "COMM_001", machineId: "MACHINE_001" },
+				expectedItem: { portId: "PORT_001" },
+			},
+			{
+				path: "/app/machine/listMachineRecords",
+				query: { page: 1, row: 10, communityId: "UNKNOWN_COMMUNITY" },
+				expectedItem: { logId: "OPEN_LOG_001" },
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: {
+					list: expect.arrayContaining([expect.objectContaining(request.expectedItem)]),
+				},
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
+	});
+
+	test("fee charge-machine adapter evidence stays scoped to deterministic readonly exact handlers", () => {
+		expect(feeLegacyAdapterEvidence).toMatchObject({
+			scope: "fee-payment-report-plus-charge-machine-and-machine-record-readonly-and-guarded-write",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: expect.arrayContaining([
+				"/app/iot/listChargeMachineBmoImpl",
+				"/app/iot/listChargeMachineOrderBmoImpl",
+				"/app/iot/listChargeMachinePortBmoImpl",
+				"/app/machine/listMachineRecords",
+			]),
+			guardedEndpoints: [
+				"/app/payment.nativeQrcodePayment",
+				"/app/oweFeeCallable.writeOweFeeCallable",
+				"/app/fee.saveRoomCreateFee",
+			],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
+		});
+		expect(feeLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"db-backed-charge-machine-data",
+				"db-backed-machine-record-data",
+				"production-app-h5-fee-network",
+			]),
+		);
+		expect(feeLegacyAdapterEvidence.notCovered).not.toContain("/app/machine/listMachineRecords");
+		expect(feeLegacyAdapterEvidence).not.toMatchObject({
+			dataSourceStatus: expect.stringContaining("DB_READY"),
+		});
 	});
 
 	test("floor batch2 app legacy endpoint returns the old code msg data envelope", async () => {
@@ -926,9 +1111,38 @@ describe("phase7 apps-api dual client contracts", () => {
 		}
 	});
 
-	test("work-order readonly adapter evidence stays scoped to exact read handlers", () => {
+	test("work-order guarded write endpoints return the mutation guard envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{ path: "/app/workorder/create", action: "create" },
+			{ path: "/app/workorder/update", action: "update" },
+			{ path: "/app/workorder/start", action: "start" },
+			{ path: "/app/workorder/complete", action: "complete" },
+			{ path: "/app/workorder/audit", action: "audit" },
+			{ path: "/app/workorder/cancel", action: "cancel" },
+			{ path: "/app/workorder/copy/finish", action: "copy/finish" },
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path: request.path,
+				body: { workId: "WO_001" },
+			});
+
+			expect(response).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining(request.action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+		}
+	});
+
+	test("work-order adapter evidence separates readonly handlers from guarded writes", () => {
 		expect(workOrderLegacyAdapterEvidence).toMatchObject({
-			scope: "readonly-exact-handler-pilot",
+			scope: "readonly-exact-handler-plus-guarded-write",
 			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 			responseContract: "{ code, msg, data }",
 			endpoints: [
@@ -938,10 +1152,27 @@ describe("phase7 apps-api dual client contracts", () => {
 				"/app/workorder/task/list",
 				"/app/workorder/task/items",
 			],
+			guardedEndpoints: [
+				"/app/workorder/create",
+				"/app/workorder/update",
+				"/app/workorder/start",
+				"/app/workorder/complete",
+				"/app/workorder/audit",
+				"/app/workorder/cancel",
+				"/app/workorder/copy/finish",
+			],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
 		});
 		expect(workOrderLegacyAdapterEvidence.notCovered).toEqual(
-			expect.arrayContaining(["/app/workorder/create", "/app/workorder/update", "/app/workorder/cancel"]),
+			expect.arrayContaining([
+				"work-order-write-read-back-rollback",
+				"production-app-h5-work-order-network",
+				"db-ready-work-order-write-path",
+			]),
 		);
+		expect(workOrderLegacyAdapterEvidence.notCovered).not.toContain("/app/workorder/create");
+		expect(workOrderLegacyAdapterEvidence.notCovered).not.toContain("/app/workorder/copy/finish");
 	});
 
 	test("visit readonly app legacy endpoint returns the unified code msg data envelope", async () => {
@@ -978,14 +1209,36 @@ describe("phase7 apps-api dual client contracts", () => {
 		}
 	});
 
-	test("visit readonly adapter evidence stays scoped to exact read handlers", () => {
+	test("visit audit endpoint returns a guarded mutation envelope without write execution", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/visit.auditVisit",
+			body: { visitId: "VISIT_00001", taskId: "TASK_V_0001", state: "1" },
+		});
+
+		expect(response).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining("visit.auditVisit"),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+	});
+
+	test("visit adapter evidence separates readonly handlers from guarded audit write", () => {
 		expect(visitLegacyAdapterEvidence).toMatchObject({
-			scope: "readonly-exact-handler-pilot",
+			scope: "readonly-exact-handler-plus-guarded-audit-write",
 			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 			responseContract: "{ code, msg, data }",
 			endpoints: ["/app/visit.getVisit", "/app/visit.getVisitDetail"],
-			notCovered: ["/app/visit.auditVisit"],
+			guardedEndpoints: ["/app/visit.auditVisit"],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
 		});
+		expect(visitLegacyAdapterEvidence.notCovered).toEqual(expect.arrayContaining(["visit-audit-read-back-rollback"]));
 	});
 
 	test("profile readonly app legacy endpoint returns the unified code msg data envelope", async () => {
@@ -1023,11 +1276,12 @@ describe("phase7 apps-api dual client contracts", () => {
 
 	test("profile readonly adapter evidence stays scoped to exact read handlers", () => {
 		expect(profileLegacyAdapterEvidence).toMatchObject({
-			scope: "readonly-exact-handler-pilot",
+			scope: "readonly-plus-guarded-write-handler-pilot",
 			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 			responseContract: "{ code, msg, data }",
 			endpoints: ["/app/profile.getUserProfile", "/app/profile.listCommunities", "/app/profile.listAttendanceRecords"],
-			notCovered: ["/app/profile.changeCommunity", "/app/profile.changePassword"],
+			guardedEndpoints: ["/app/profile.changeCommunity", "/app/profile.changePassword"],
+			notCovered: ["profile-write-read-back-rollback", "production-app-h5-profile-network"],
 		});
 	});
 
@@ -1124,6 +1378,257 @@ describe("phase7 apps-api dual client contracts", () => {
 		);
 	});
 
+	test("property-application readonly app legacy endpoints return the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/feeDiscount/queryFeeDiscount",
+				query: { discountType: "3003", communityId: "COMM_001" },
+			},
+			{
+				path: "/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail",
+				query: { ardrId: "ARDR_001" },
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: expect.any(Array),
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
+	});
+
+	test("property-application readonly adapter evidence stays scoped to exact read handlers", () => {
+		expect(propertyApplicationLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-pilot",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/feeDiscount/queryFeeDiscount",
+				"/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail",
+			],
+		});
+		expect(propertyApplicationLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"/app/applyRoomDiscount/queryApplyRoomDiscount",
+				"/app/applyRoomDiscount/updateApplyRoomDiscount",
+				"/app/applyRoomDiscount/updateReviewApplyRoomDiscount",
+				"/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord",
+				"/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord",
+				"/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord",
+				"db-backed-property-application-data",
+				"property-application-write-read-back-rollback",
+			]),
+		);
+	});
+
+	test("coupon readonly app legacy endpoints return the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/couponProperty.listCouponPropertyUserDetail",
+				query: { page: 1, row: 1, couponQrcode: "CPN100000", communityId: "IGNORED" },
+				data: {
+					list: [expect.objectContaining({ couponQrcode: "CPN100000" })],
+					total: 1,
+					page: 1,
+					pageSize: 1,
+					hasMore: false,
+				},
+			},
+			{
+				path: "/app/integral.listIntegralSetting",
+				query: { communityId: "IGNORED" },
+				data: [expect.objectContaining({ settingId: "IS_001", onceMaxIntegral: 200 })],
+			},
+			{
+				path: "/app/integral.listIntegralUserDetail",
+				query: { page: 1, row: 1, ownerTel: "13800000001", communityId: "IGNORED" },
+				data: {
+					list: [expect.objectContaining({ ownerTel: "13800000001" })],
+					total: 1,
+					page: 1,
+					pageSize: 1,
+					hasMore: false,
+				},
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: request.data,
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
+	});
+
+	test("coupon readonly adapter evidence stays scoped to three exact read handlers", () => {
+		expect(couponLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-batch22",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/couponProperty.listCouponPropertyUserDetail",
+				"/app/integral.listIntegralSetting",
+				"/app/integral.listIntegralUserDetail",
+			],
+		});
+		expect(couponLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"/app/couponProperty.writeOffCouponPropertyUser",
+				"/app/integral.useIntegral",
+				"/app/reserveOrder.listReserveGoodsConfirmOrder",
+				"/app/reserveOrder.saveReserveGoodsConfirmOrder",
+				"db-backed-coupon-data",
+				"coupon-integral-write-read-back-rollback",
+				"reserve-order-readonly-and-write",
+				"production-app-h5-coupon-integral-network",
+			]),
+		);
+	});
+
+	test("maintenance readonly app legacy endpoints keep the legacy maintenance envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{
+				path: "/app/maintenance.listMaintenanceTasks",
+				query: { communityId: "COMM_001", status: "10001", page: 1, row: 2 },
+				data: expect.objectContaining({
+					list: [expect.objectContaining({ communityId: "COMM_001", status: "10001" })],
+					total: expect.any(Number),
+					page: 1,
+					pageSize: 2,
+				}),
+			},
+			{
+				path: "/app/maintenance.queryMaintenanceTask",
+				query: { taskId: "MT_001" },
+				data: expect.objectContaining({ task: expect.objectContaining({ taskId: "MT_001" }) }),
+			},
+			{
+				path: "/app/maintenance.listMaintenanceTaskDetails",
+				query: { taskId: "MT_001" },
+				data: expect.objectContaining({
+					items: expect.arrayContaining([
+						expect.objectContaining({ taskId: "MT_001", taskDetailId: expect.any(String) }),
+					]),
+				}),
+			},
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				success: true,
+				code: "0",
+				message: expect.any(String),
+				data: request.data,
+				timestamp: expect.any(Number),
+			});
+			expect(response).not.toHaveProperty("msg");
+		}
+	});
+
+	test("maintenance adapter evidence stays scoped to readonly exact handlers and excluded write paths", () => {
+		expect(maintenanceLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-batch23",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ success, code, message, data, timestamp }",
+			endpoints: [
+				"/app/maintenance.listMaintenanceTasks",
+				"/app/maintenance.queryMaintenanceTask",
+				"/app/maintenance.listMaintenanceTaskDetails",
+			],
+			excludedWriteEndpoints: [
+				"/app/maintenance.startMaintenanceTask",
+				"/app/maintenance.completeMaintenanceTask",
+				"/app/maintenance.submitMaintenanceSingle",
+				"/app/maintenance.transferMaintenanceTask",
+			],
+		});
+		expect(maintenanceLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"/app/maintenance.startMaintenanceTask",
+				"/app/maintenance.completeMaintenanceTask",
+				"/app/maintenance.submitMaintenanceSingle",
+				"/app/maintenance.transferMaintenanceTask",
+				"db-backed-maintenance-data",
+				"production-app-h5-maintenance-network",
+			]),
+		);
+	});
+
+	test("item-release readonly app legacy endpoint returns the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/itemRelease.getItemRelease",
+			query: { irId: "IR_00001" },
+		});
+
+		expect(response).toMatchObject({
+			code: 0,
+			msg: expect.any(String),
+			data: {
+				list: [expect.objectContaining({ irId: "IR_00001" })],
+				total: 1,
+				page: 1,
+				pageSize: 1,
+				hasMore: false,
+			},
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
+	});
+
+	test("item-release adapter evidence covers batch21 readonly exact handlers and guarded audit", () => {
+		expect(itemReleaseLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-plus-guarded-write-batch21",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/itemRelease.getItemRelease",
+				"/app/itemRelease.getItemReleaseRes",
+				"/app/itemRelease.queryOaWorkflowUser",
+				"/app/itemRelease.queryUndoItemReleaseV2",
+				"/app/itemRelease.queryFinishItemReleaseV2",
+			],
+			guardedEndpoints: ["/app/itemRelease.auditItemRelease"],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
+		});
+		expect(itemReleaseLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining(["db-backed-item-release-data", "item-release-write-read-back-rollback"]),
+		);
+		expect(itemReleaseLegacyAdapterEvidence.notCovered).not.toContain("/app/itemRelease.auditItemRelease");
+		expect(itemReleaseLegacyAdapterEvidence.notCovered).not.toContain("/app/itemRelease.queryUndoItemReleaseV2");
+		expect(itemReleaseLegacyAdapterEvidence.notCovered).not.toContain("/app/itemRelease.queryFinishItemReleaseV2");
+	});
+
 	test("activity readonly app legacy endpoint returns the unified code msg data envelope", async () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
@@ -1147,26 +1652,65 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(response).not.toHaveProperty("message");
 	});
 
-	test("activity readonly adapter evidence stays scoped to exact read handlers", () => {
+	test("activity adapter evidence separates readonly list from guarded writes through batch25", () => {
 		expect(activityLegacyAdapterEvidence).toMatchObject({
-			scope: "readonly-exact-handler-pilot",
+			scope: "readonly-exact-handler-plus-guarded-write-batch25",
 			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 			responseContract: "{ code, msg, data }",
 			endpoints: ["/app/activities.listActivitiess"],
-		});
-		expect(activityLegacyAdapterEvidence.notCovered).toEqual(
-			expect.arrayContaining([
-				"/app/activities.saveActivities",
-				"/app/activities.updateActivities",
-				"/app/activities.deleteActivities",
-				"/app/activities.increaseView",
+			guardedEndpoints: [
 				"/app/activities.likeActivity",
+				"/app/activities.increaseView",
 				"/app/activities.updateStatus",
 				"/app/activities.updateLike",
 				"/app/activities.updateCollect",
-				"db-backed-activity-data",
-			]),
-		);
+				"/app/activities.saveActivities",
+				"/app/activities.updateActivities",
+				"/app/activities.deleteActivities",
+			],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
+		});
+		expect(activityLegacyAdapterEvidence.notCovered).toEqual(expect.arrayContaining(["db-backed-activity-data"]));
+		expect(activityLegacyAdapterEvidence.notCovered).not.toContain("/app/activities.likeActivity");
+		expect(activityLegacyAdapterEvidence.notCovered).not.toContain("/app/activities.increaseView");
+		expect(activityLegacyAdapterEvidence.notCovered).not.toContain("/app/activities.updateStatus");
+		expect(activityLegacyAdapterEvidence.notCovered).not.toContain("/app/activities.updateLike");
+		expect(activityLegacyAdapterEvidence.notCovered).not.toContain("/app/activities.updateCollect");
+		expect(activityLegacyAdapterEvidence.notCovered).not.toContain("/app/activities.saveActivities");
+		expect(activityLegacyAdapterEvidence.notCovered).not.toContain("/app/activities.updateActivities");
+		expect(activityLegacyAdapterEvidence.notCovered).not.toContain("/app/activities.deleteActivities");
+	});
+
+	test("activity guarded write endpoints through batch25 return the mutation guard envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const [path, action] of [
+			["/app/activities.likeActivity", "activities.likeActivity"],
+			["/app/activities.increaseView", "activities.increaseView"],
+			["/app/activities.updateStatus", "activities.updateStatus"],
+			["/app/activities.updateLike", "activities.updateLike"],
+			["/app/activities.updateCollect", "activities.updateCollect"],
+			["/app/activities.saveActivities", "activities.saveActivities"],
+			["/app/activities.updateActivities", "activities.updateActivities"],
+			["/app/activities.deleteActivities", "activities.deleteActivities"],
+		] as const) {
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path,
+				body: { activitiesId: "ACT_001", title: "Blocked activity mutation" },
+			});
+
+			expect(response).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
 	});
 
 	test("appointment app legacy endpoints return list envelope and guarded write response", async () => {
@@ -1395,6 +1939,313 @@ describe("phase7 apps-api dual client contracts", () => {
 			responseContract: "{ code, msg, data }",
 			cutoverStatus: "app-shadow-allowlist",
 		});
+		for (const url of [
+			"/app/dict.queryPayTypes",
+			"/app/ownerRepair.getRepairStatistics",
+			"/app/ownerRepair.listRepairStaffRecords",
+			"/app/ownerRepair.listRepairStaffs",
+			"/app/repair.listRepairTypeUsers",
+			"/app/resourceStore.listResources",
+		]) {
+			expectManifestEntry(url, {
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ code, msg, data }",
+				phase: "phase7-repair-readonly",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
+		for (const url of [
+			"/app/staff.listStaffs",
+			"/app/inspection.getTodayReport",
+			"/app/inspection.listInspectionItemTitles",
+			"/app/inspection.listInspectionTasks",
+			"/app/inspection.listInspectionTaskDetails",
+		]) {
+			expectManifestEntry(url, {
+				targetClient: "app",
+				routeKind: "app-legacy",
+				ownerModule: "inspection",
+				responseContract: "{ code, msg, data }",
+				phase: "phase7-inspection-readonly",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
+		for (const url of ["/app/inspection.submitInspection", "/app/inspection.transferTask"]) {
+			expectManifestEntry(url, {
+				targetClient: "app",
+				routeKind: "app-legacy",
+				ownerModule: "inspection",
+				responseContract: "{ code, msg, data }",
+				phase: "phase7-inspection-guarded-write-batch16",
+				cutoverStatus: "blocked-for-execution",
+			});
+		}
+		for (const url of [
+			"/app/meter.queryFeeTypes",
+			"/app/meter.queryFeeTypesItems",
+			"/app/meter.listMeterType",
+			"/app/meter.listMeterWaters",
+			"/app/meter.queryPreMeterWater",
+			"/app/meter.listFloorShareReading",
+			"/app/meter.listFloorShareMeter",
+		]) {
+			expectManifestEntry(url, {
+				targetClient: "app",
+				routeKind: "app-legacy",
+				ownerModule: "meter",
+				responseContract: "{ code, msg, data }",
+				phase: "phase7-meter-readonly-batch13",
+				cutoverStatus: "app-shadow-allowlist",
+			});
+		}
+	});
+
+	test("repair readonly app legacy endpoints return the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{ path: "/app/dict.queryPayTypes", query: {} },
+			{ path: "/app/ownerRepair.getRepairStatistics", query: { ignored: "yes" } },
+			{ path: "/app/ownerRepair.listRepairStaffRecords", query: { repairId: "REPAIR_001" } },
+			{ path: "/app/ownerRepair.listRepairStaffs", query: { repairType: "1001" } },
+			{ path: "/app/repair.listRepairTypeUsers", query: { repairType: "1001" } },
+			{ path: "/app/resourceStore.listResources", query: { rstId: "RST_001_01" } },
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: expect.anything(),
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
+	});
+
+	test("repair adapter evidence separates readonly handlers from blocked write actions", () => {
+		expect(repairLegacyAdapterEvidence).toMatchObject({
+			scope: "phase4a-minimal-plus-phase7-readonly-and-guarded-write",
+			dataSourceStatus: "deterministic-compat-seed-db-read-fallback-mixed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/ownerRepair.listOwnerRepairs",
+				"/app/ownerRepair.queryOwnerRepair",
+				"/app/repairSetting.listRepairSettings",
+				"/app/dict.queryRepairStates",
+				"/callComponent/core/list",
+				"/app/dict.queryPayTypes",
+				"/app/ownerRepair.getRepairStatistics",
+				"/app/ownerRepair.listRepairStaffRecords",
+				"/app/ownerRepair.listRepairStaffs",
+				"/app/repair.listRepairTypeUsers",
+				"/app/resourceStore.listResources",
+			],
+			guardedEndpoints: ["/app/ownerRepair.saveOwnerRepair", "/callComponent/ownerRepair.appraiseRepair"],
+		});
+		expect(repairLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"/app/ownerRepair.updateOwnerRepair",
+				"/app/ownerRepair.repairDispatch",
+				"/app/ownerRepair.repairFinish",
+				"/app/ownerRepair.repairEnd",
+				"/app/ownerRepair.repairStart",
+				"/app/ownerRepair.repairStop",
+				"/app/ownerRepair.grabbingRepair",
+				"/app/repair.replyRepairAppraise",
+				"db-backed-repair-statistics-data",
+				"production-app-h5-repair-network",
+			]),
+		);
+	});
+
+	test("inspection readonly app legacy endpoints return the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{ path: "/app/staff.listStaffs", query: { communityId: "COMM_001" } },
+			{ path: "/app/inspection.getTodayReport", query: { communityId: "COMM_001", queryTime: "2026-06-06" } },
+			{ path: "/app/inspection.listInspectionItemTitles", query: { itemId: "ITEM_001", page: 1, row: 2 } },
+			{ path: "/app/inspection.listInspectionTasks", query: { page: 1, row: 2, moreState: "20200405" } },
+			{ path: "/app/inspection.listInspectionTaskDetails", query: { taskId: "TASK_001", state: "20200406" } },
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: expect.any(String),
+				data: expect.anything(),
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
+	});
+
+	test("inspection guarded submit endpoint returns a blocked mutation response", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/inspection.submitInspection",
+			body: {
+				taskId: "TASK_001",
+				taskDetailId: "DETAIL_TASK_001_001",
+				description: "巡检完成",
+				photos: ["https://example.test/inspection-a.png"],
+			},
+		});
+
+		expect(response).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining("inspection.submitInspection"),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+	});
+
+	test("inspection guarded transfer endpoint returns a blocked mutation response", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/inspection.transferTask",
+			body: {
+				taskId: "TASK_001",
+				staffName: "王巡检",
+			},
+		});
+
+		expect(response).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining("inspection.transferTask"),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+	});
+
+	test("inspection adapter evidence separates readonly handlers from guarded write actions", () => {
+		expect(inspectionLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-plus-guarded-writes-batch16",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/staff.listStaffs",
+				"/app/inspection.getTodayReport",
+				"/app/inspection.listInspectionItemTitles",
+				"/app/inspection.listInspectionTasks",
+				"/app/inspection.listInspectionTaskDetails",
+			],
+			guardedEndpoints: ["/app/inspection.submitInspection", "/app/inspection.transferTask"],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
+		});
+		expect(inspectionLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"db-backed-inspection-data",
+				"inspection-write-read-back-rollback",
+				"production-app-h5-inspection-network",
+			]),
+		);
+		expect(inspectionLegacyAdapterEvidence.notCovered).not.toContain("/app/inspection.transferTask");
+	});
+
+	test("meter readonly app legacy endpoints return the unified code msg data envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const request of [
+			{ path: "/app/meter.queryFeeTypes", query: {} },
+			{ path: "/app/meter.queryFeeTypesItems", query: { feeTypeCd: "888800010015" } },
+			{ path: "/app/meter.listMeterType", query: {} },
+			{ path: "/app/meter.listMeterWaters", query: { page: 1, row: 2, roomNum: "1-" } },
+			{ path: "/app/meter.queryPreMeterWater", query: { objId: "ROOM_0001", meterType: "1010" } },
+			{ path: "/app/meter.listFloorShareReading", query: { page: 1, row: 2 } },
+			{ path: "/app/meter.listFloorShareMeter", query: { page: 1, row: 1, fsmId: "FSM_0002" } },
+		]) {
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path: request.path,
+				query: request.query,
+			});
+
+			expect(response).toMatchObject({
+				code: 0,
+				msg: "查询成功",
+				data: expect.anything(),
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
+	});
+
+	test("meter adapter evidence separates readonly handlers from guarded write paths", () => {
+		expect(meterLegacyAdapterEvidence).toMatchObject({
+			scope: "readonly-exact-handler-plus-guarded-write-batch14",
+			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
+			responseContract: "{ code, msg, data }",
+			endpoints: [
+				"/app/meter.queryFeeTypes",
+				"/app/meter.queryFeeTypesItems",
+				"/app/meter.listMeterType",
+				"/app/meter.listMeterWaters",
+				"/app/meter.queryPreMeterWater",
+				"/app/meter.listFloorShareReading",
+				"/app/meter.listFloorShareMeter",
+			],
+			guardedEndpoints: [
+				"/app/meter.saveMeterWater",
+				"/app/meter.saveFloorShareReading",
+				"/app/meter.auditFloorShareReading",
+			],
+			defaultWriteBehavior: "blocked-for-execution",
+		});
+		expect(meterLegacyAdapterEvidence.notCovered).toEqual(
+			expect.arrayContaining([
+				"db-backed-meter-data",
+				"meter-write-read-back-rollback",
+				"production-app-h5-meter-network",
+			]),
+		);
+		expect(meterLegacyAdapterEvidence.notCovered).not.toContain("/app/meter.saveMeterWater");
+		expect(meterLegacyAdapterEvidence.notCovered).not.toContain("/app/meter.saveFloorShareReading");
+		expect(meterLegacyAdapterEvidence.notCovered).not.toContain("/app/meter.auditFloorShareReading");
+	});
+
+	test("meter guarded write endpoints return the mutation guard envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const [path, action] of [
+			["/app/meter.saveMeterWater", "meter.saveMeterWater"],
+			["/app/meter.saveFloorShareReading", "meter.saveFloorShareReading"],
+			["/app/meter.auditFloorShareReading", "meter.auditFloorShareReading"],
+		] as const) {
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path,
+				body: { objId: "ROOM_0001", meterType: "1010", readingId: "FSR_0001" },
+			});
+
+			expect(response).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+			expect(response).not.toHaveProperty("success");
+			expect(response).not.toHaveProperty("message");
+			expect(response).not.toHaveProperty("timestamp");
+		}
 	});
 
 	test("manifest does not claim uncut or unavailable endpoints are cut over", () => {
@@ -1433,17 +2284,20 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(urls).not.toContain("/api/property-manage/expense-manage/house-charge/create");
 		expect(urls).not.toContain("/api/property-manage/expense-manage/house-charge/update");
 		expect(urls).not.toContain("/api/property-manage/expense-manage/house-charge/delete");
-		expect(urls).not.toContain("/app/visit.auditVisit");
-		expect(urls).not.toContain("/app/profile.changeCommunity");
-		expect(urls).not.toContain("/app/profile.changePassword");
-		expect(urls).not.toContain("/app/activities.saveActivities");
-		expect(urls).not.toContain("/app/activities.updateActivities");
-		expect(urls).not.toContain("/app/activities.deleteActivities");
-		expect(urls).not.toContain("/app/activities.increaseView");
-		expect(urls).not.toContain("/app/activities.likeActivity");
-		expect(urls).not.toContain("/app/activities.updateStatus");
-		expect(urls).not.toContain("/app/activities.updateLike");
-		expect(urls).not.toContain("/app/activities.updateCollect");
+		expect(urls).toContain("/app/visit.auditVisit");
+		expect(urls).toContain("/app/profile.changeCommunity");
+		expect(urls).toContain("/app/profile.changePassword");
+		expect(urls).toContain("/app/meter.saveMeterWater");
+		expect(urls).toContain("/app/meter.saveFloorShareReading");
+		expect(urls).toContain("/app/meter.auditFloorShareReading");
+		expect(urls).toContain("/app/activities.likeActivity");
+		expect(urls).toContain("/app/activities.increaseView");
+		expect(urls).toContain("/app/activities.updateStatus");
+		expect(urls).toContain("/app/activities.updateLike");
+		expect(urls).toContain("/app/activities.updateCollect");
+		expect(urls).toContain("/app/activities.saveActivities");
+		expect(urls).toContain("/app/activities.updateActivities");
+		expect(urls).toContain("/app/activities.deleteActivities");
 	});
 
 	test("manifest marks high-risk app legacy mutation actions as blocked for execution", () => {
@@ -1457,6 +2311,20 @@ describe("phase7 apps-api dual client contracts", () => {
 			"/app/owner.saveRoomOwner",
 			"/app/owner.editOwner",
 			"/app/owner.deleteOwner",
+			"/app/profile.changeCommunity",
+			"/app/profile.changePassword",
+			"/app/visit.auditVisit",
+			"/app/meter.saveMeterWater",
+			"/app/meter.saveFloorShareReading",
+			"/app/meter.auditFloorShareReading",
+			"/app/activities.likeActivity",
+			"/app/activities.increaseView",
+			"/app/activities.updateStatus",
+			"/app/activities.updateLike",
+			"/app/activities.updateCollect",
+			"/app/activities.saveActivities",
+			"/app/activities.updateActivities",
+			"/app/activities.deleteActivities",
 		]) {
 			expectManifestEntry(url, {
 				targetClient: "app",

@@ -2,11 +2,17 @@ import { activityLegacyEndpointDefinitions } from "../../modules/activity/legacy
 import { appointmentLegacyEndpointDefinitions } from "../../modules/appointment/legacy-endpoints";
 import { complaintLegacyEndpointDefinitions } from "../../modules/complaint/legacy-endpoints";
 import { contactLegacyEndpointDefinitions } from "../../modules/contact/legacy-endpoints";
+import { couponLegacyEndpointDefinitions } from "../../modules/coupon/legacy-endpoints";
 import { feeLegacyEndpointDefinitions } from "../../modules/fee/legacy-endpoints";
 import { floorLegacyEndpointDefinitions } from "../../modules/floor/legacy-endpoints";
+import { inspectionLegacyEndpointDefinitions } from "../../modules/inspection/legacy-endpoints";
+import { itemReleaseLegacyEndpointDefinitions } from "../../modules/item-release/legacy-endpoints";
+import { maintenanceLegacyEndpointDefinitions } from "../../modules/maintenance/legacy-endpoints";
+import { meterLegacyEndpointDefinitions } from "../../modules/meter/legacy-endpoints";
 import { noticeLegacyEndpointDefinitions } from "../../modules/notice/legacy-endpoints";
 import { ownerLegacyEndpointDefinitions } from "../../modules/owner/legacy-endpoints";
 import { profileLegacyEndpointDefinitions } from "../../modules/profile/legacy-endpoints";
+import { propertyApplicationLegacyEndpointDefinitions } from "../../modules/property-application/legacy-endpoints";
 import { purchaseLegacyEndpointDefinitions } from "../../modules/purchase/legacy-endpoints";
 import { repairLegacyEndpointDefinitions } from "../../modules/repair/legacy-endpoints";
 import { roomUnitLegacyEndpointDefinitions } from "../../modules/room-unit/legacy-endpoints";
@@ -17,7 +23,10 @@ import type { EndpointDefinition } from "./endpoint-registry";
 
 type EndpointManifestTargetClient = "admin" | "app";
 type EndpointManifestRouteKind = "admin-canonical" | "app-legacy";
-type EndpointManifestResponseContract = "JsonVO" | "{ code, msg, data }";
+type EndpointManifestResponseContract =
+	| "JsonVO"
+	| "{ code, msg, data }"
+	| "{ success, code, message, data, timestamp }";
 type EndpointManifestCutoverStatus =
 	| "app-shadow-allowlist"
 	| "available-in-apps-api-not-caller-verified"
@@ -50,7 +59,31 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/owner.saveRoomOwner",
 	"/app/owner.editOwner",
 	"/app/owner.deleteOwner",
+	"/app/profile.changeCommunity",
+	"/app/profile.changePassword",
 	"/app/purchase/updatePurchaseApply",
+	"/app/visit.auditVisit",
+	"/app/itemRelease.auditItemRelease",
+	"/app/inspection.submitInspection",
+	"/app/inspection.transferTask",
+	"/app/meter.saveMeterWater",
+	"/app/meter.saveFloorShareReading",
+	"/app/meter.auditFloorShareReading",
+	"/app/activities.likeActivity",
+	"/app/activities.increaseView",
+	"/app/activities.updateStatus",
+	"/app/activities.updateLike",
+	"/app/activities.updateCollect",
+	"/app/activities.saveActivities",
+	"/app/activities.updateActivities",
+	"/app/activities.deleteActivities",
+	"/app/workorder/create",
+	"/app/workorder/update",
+	"/app/workorder/start",
+	"/app/workorder/complete",
+	"/app/workorder/audit",
+	"/app/workorder/cancel",
+	"/app/workorder/copy/finish",
 ]);
 
 const phase7RepairReadonlyAppShadowUrls = new Set([
@@ -58,12 +91,18 @@ const phase7RepairReadonlyAppShadowUrls = new Set([
 	"/app/ownerRepair.queryOwnerRepair",
 	"/app/repairSetting.listRepairSettings",
 	"/app/dict.queryRepairStates",
+	"/app/dict.queryPayTypes",
+	"/app/ownerRepair.getRepairStatistics",
+	"/app/ownerRepair.listRepairStaffRecords",
+	"/app/ownerRepair.listRepairStaffs",
+	"/app/repair.listRepairTypeUsers",
+	"/app/resourceStore.listResources",
 ]);
 
 const runtimeEndpointEntries = [
 	...activityLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase7-activity-readonly",
+		phase: getActivityLegacyPhase(definition),
 		ownerModule: "activity",
 		cutoverStatus: getActivityLegacyCutoverStatus(definition),
 	})),
@@ -85,6 +124,12 @@ const runtimeEndpointEntries = [
 		ownerModule: "contact",
 		cutoverStatus: getContactLegacyCutoverStatus(definition),
 	})),
+	...couponLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: "phase7-coupon-readonly-batch22",
+		ownerModule: "coupon",
+		cutoverStatus: "app-shadow-allowlist" as const,
+	})),
 	...roomUnitLegacyEndpointDefinitions.map((definition) => ({
 		definition,
 		phase: "phase7-room-unit-readonly",
@@ -99,15 +144,33 @@ const runtimeEndpointEntries = [
 	})),
 	...feeLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase2-fee-payment-report",
+		phase: getFeeLegacyPhase(definition),
 		ownerModule: "fee",
 		cutoverStatus: getFeeLegacyCutoverStatus(definition),
 	})),
 	...repairLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase4a-repair-minimal",
+		phase: getRepairLegacyPhase(definition),
 		ownerModule: "repair",
 		cutoverStatus: getRepairLegacyCutoverStatus(definition),
+	})),
+	...inspectionLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getInspectionLegacyPhase(definition),
+		ownerModule: "inspection",
+		cutoverStatus: getInspectionLegacyCutoverStatus(definition),
+	})),
+	...meterLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getMeterLegacyPhase(definition),
+		ownerModule: "meter",
+		cutoverStatus: getMeterLegacyCutoverStatus(definition),
+	})),
+	...maintenanceLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: "phase7-maintenance-readonly-batch23",
+		ownerModule: "maintenance",
+		cutoverStatus: "app-shadow-allowlist" as const,
 	})),
 	...floorLegacyEndpointDefinitions.map((definition) => ({
 		definition,
@@ -117,21 +180,27 @@ const runtimeEndpointEntries = [
 	})),
 	...workOrderLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase7-work-order-readonly",
+		phase: getWorkOrderLegacyPhase(definition),
 		ownerModule: "work-order",
 		cutoverStatus: getWorkOrderLegacyCutoverStatus(definition),
 	})),
 	...visitLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase7-visit-readonly",
+		phase: getVisitLegacyPhase(definition),
 		ownerModule: "visit",
 		cutoverStatus: getVisitLegacyCutoverStatus(definition),
 	})),
 	...profileLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase7-profile-readonly",
+		phase: getProfileLegacyPhase(definition),
 		ownerModule: "profile",
 		cutoverStatus: getProfileLegacyCutoverStatus(definition),
+	})),
+	...propertyApplicationLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: "phase7-property-application-readonly",
+		ownerModule: "property-application",
+		cutoverStatus: "app-shadow-allowlist" as const,
 	})),
 	...videoLegacyEndpointDefinitions.map((definition) => ({
 		definition,
@@ -144,6 +213,12 @@ const runtimeEndpointEntries = [
 		phase: "phase7-notice-readonly",
 		ownerModule: "notice",
 		cutoverStatus: getNoticeLegacyCutoverStatus(definition),
+	})),
+	...itemReleaseLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getItemReleaseLegacyPhase(definition),
+		ownerModule: "item-release",
+		cutoverStatus: getItemReleaseLegacyCutoverStatus(definition),
 	})),
 	...purchaseLegacyEndpointDefinitions.map((definition) => ({
 		definition,
@@ -1052,7 +1127,7 @@ export const runtimeEndpointManifest: RuntimeEndpointManifestItem[] = [
 		ownerModule: entry.ownerModule,
 		targetClient: "app" as const,
 		routeKind: "app-legacy" as const,
-		responseContract: "{ code, msg, data }" as const,
+		responseContract: getAppLegacyResponseContract(entry.ownerModule),
 		cutoverStatus: entry.cutoverStatus,
 	})),
 	...adminCanonicalEndpointManifestEntries,
@@ -1077,6 +1152,14 @@ function createAdminManifestEntry(
 	};
 }
 
+function getAppLegacyResponseContract(ownerModule: string): EndpointManifestResponseContract {
+	if (ownerModule === "maintenance") {
+		return "{ success, code, message, data, timestamp }";
+	}
+
+	return "{ code, msg, data }";
+}
+
 function getFeeLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
 	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
 		return "blocked-for-execution";
@@ -1085,8 +1168,43 @@ function getFeeLegacyCutoverStatus(definition: EndpointDefinition): EndpointMani
 	return "app-shadow-allowlist";
 }
 
+function getFeeLegacyPhase(definition: EndpointDefinition): string {
+	if (definition.url === "/app/machine/listMachineRecords") {
+		return "phase7-fee-machine-record-readonly";
+	}
+
+	if (definition.url.startsWith("/app/iot/listChargeMachine")) {
+		return "phase7-fee-charge-machine-readonly";
+	}
+
+	return "phase2-fee-payment-report";
+}
+
+function getActivityLegacyPhase(definition: EndpointDefinition): string {
+	if (definition.url === "/app/activities.updateLike" || definition.url === "/app/activities.updateCollect") {
+		return "phase7-activity-guarded-write-batch24";
+	}
+
+	if (
+		definition.url === "/app/activities.saveActivities" ||
+		definition.url === "/app/activities.updateActivities" ||
+		definition.url === "/app/activities.deleteActivities"
+	) {
+		return "phase7-activity-guarded-write-batch25";
+	}
+
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-activity-guarded-write-batch17";
+	}
+
+	return "phase7-activity-readonly";
+}
+
 function getActivityLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
-	void definition;
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
 	return "app-shadow-allowlist";
 }
 
@@ -1155,6 +1273,18 @@ function getRepairLegacyCutoverStatus(definition: EndpointDefinition): EndpointM
 	return "not-in-app-shadow-allowlist";
 }
 
+function getRepairLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7RepairReadonlyAppShadowUrls.has(definition.url) && definition.url !== "/app/ownerRepair.listOwnerRepairs") {
+		return definition.url === "/app/ownerRepair.queryOwnerRepair" ||
+			definition.url === "/app/repairSetting.listRepairSettings" ||
+			definition.url === "/app/dict.queryRepairStates"
+			? "phase4a-repair-minimal"
+			: "phase7-repair-readonly";
+	}
+
+	return "phase4a-repair-minimal";
+}
+
 function getRoomUnitLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
 	void definition;
 	return "app-shadow-allowlist";
@@ -1181,19 +1311,84 @@ function getFloorLegacyCutoverStatus(definition: EndpointDefinition): EndpointMa
 	return "app-shadow-allowlist";
 }
 
-function getWorkOrderLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
-	void definition;
+function getInspectionLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-inspection-guarded-write-batch16";
+	}
+
+	return "phase7-inspection-readonly";
+}
+
+function getInspectionLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
 	return "app-shadow-allowlist";
+}
+
+function getMeterLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-meter-guarded-write-batch14";
+	}
+
+	return "phase7-meter-readonly-batch13";
+}
+
+function getMeterLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getWorkOrderLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getWorkOrderLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-work-order-guarded-write";
+	}
+
+	return "phase7-work-order-readonly";
 }
 
 function getVisitLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
-	void definition;
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
 	return "app-shadow-allowlist";
 }
 
+function getVisitLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-visit-guarded-write";
+	}
+
+	return "phase7-visit-readonly";
+}
+
 function getProfileLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
-	void definition;
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
 	return "app-shadow-allowlist";
+}
+
+function getProfileLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-profile-guarded-write";
+	}
+
+	return "phase7-profile-readonly";
 }
 
 function getVideoLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
@@ -1203,6 +1398,22 @@ function getVideoLegacyCutoverStatus(definition: EndpointDefinition): EndpointMa
 
 function getNoticeLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
 	void definition;
+	return "app-shadow-allowlist";
+}
+
+function getItemReleaseLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-item-release-guarded-write-batch21";
+	}
+
+	return "phase7-item-release-readonly-batch20";
+}
+
+function getItemReleaseLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
 	return "app-shadow-allowlist";
 }
 

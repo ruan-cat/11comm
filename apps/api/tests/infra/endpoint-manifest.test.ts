@@ -198,11 +198,33 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/fee.listFee");
 		expect(urls).toContain("/app/payment.nativeQrcodePayment");
 		expect(urls).toContain("/app/reportFeeMonthStatistics.queryReportFeeSummary");
+		expect(urls).toContain("/app/iot/listChargeMachineBmoImpl");
+		expect(urls).toContain("/app/iot/listChargeMachineOrderBmoImpl");
+		expect(urls).toContain("/app/iot/listChargeMachinePortBmoImpl");
+		expect(urls).toContain("/app/machine/listMachineRecords");
 		expect(urls).toContain("/app/ownerRepair.listOwnerRepairs");
 		expect(urls).toContain("/app/ownerRepair.queryOwnerRepair");
 		expect(urls).toContain("/app/ownerRepair.saveOwnerRepair");
 		expect(urls).toContain("/app/repairSetting.listRepairSettings");
 		expect(urls).toContain("/app/dict.queryRepairStates");
+		expect(urls).toContain("/app/dict.queryPayTypes");
+		expect(urls).toContain("/app/ownerRepair.getRepairStatistics");
+		expect(urls).toContain("/app/ownerRepair.listRepairStaffRecords");
+		expect(urls).toContain("/app/ownerRepair.listRepairStaffs");
+		expect(urls).toContain("/app/repair.listRepairTypeUsers");
+		expect(urls).toContain("/app/resourceStore.listResources");
+		expect(urls).toContain("/app/staff.listStaffs");
+		expect(urls).toContain("/app/inspection.getTodayReport");
+		expect(urls).toContain("/app/inspection.listInspectionItemTitles");
+		expect(urls).toContain("/app/inspection.listInspectionTasks");
+		expect(urls).toContain("/app/inspection.listInspectionTaskDetails");
+		expect(urls).toContain("/app/meter.queryFeeTypes");
+		expect(urls).toContain("/app/meter.queryFeeTypesItems");
+		expect(urls).toContain("/app/meter.listMeterType");
+		expect(urls).toContain("/app/meter.listMeterWaters");
+		expect(urls).toContain("/app/meter.queryPreMeterWater");
+		expect(urls).toContain("/app/meter.listFloorShareReading");
+		expect(urls).toContain("/app/meter.listFloorShareMeter");
 		expect(urls).toContain("/callComponent/core/list");
 		expect(urls).toContain("/callComponent/ownerRepair.appraiseRepair");
 		expect(urls).toContain("/app/floor.queryFloors");
@@ -212,8 +234,16 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/workorder/copy/list");
 		expect(urls).toContain("/app/workorder/task/list");
 		expect(urls).toContain("/app/workorder/task/items");
+		expect(urls).toContain("/app/workorder/create");
+		expect(urls).toContain("/app/workorder/update");
+		expect(urls).toContain("/app/workorder/start");
+		expect(urls).toContain("/app/workorder/complete");
+		expect(urls).toContain("/app/workorder/audit");
+		expect(urls).toContain("/app/workorder/cancel");
+		expect(urls).toContain("/app/workorder/copy/finish");
 		expect(urls).toContain("/app/visit.getVisit");
 		expect(urls).toContain("/app/visit.getVisitDetail");
+		expect(urls).toContain("/app/visit.auditVisit");
 		expect(urls).toContain("/app/profile.getUserProfile");
 		expect(urls).toContain("/app/profile.listCommunities");
 		expect(urls).toContain("/app/profile.listAttendanceRecords");
@@ -247,7 +277,21 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/owner.saveRoomOwner");
 		expect(urls).toContain("/app/owner.editOwner");
 		expect(urls).toContain("/app/owner.deleteOwner");
+		expect(urls).toContain("/app/feeDiscount/queryFeeDiscount");
+		expect(urls).toContain("/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail");
+		expect(urls).toContain("/app/itemRelease.getItemRelease");
+		expect(urls).toContain("/app/itemRelease.getItemReleaseRes");
+		expect(urls).toContain("/app/itemRelease.queryOaWorkflowUser");
+		expect(urls).toContain("/app/itemRelease.queryUndoItemReleaseV2");
+		expect(urls).toContain("/app/itemRelease.queryFinishItemReleaseV2");
+		expect(urls).toContain("/app/itemRelease.auditItemRelease");
 		expect(urls).toContain("/app/purchase/updatePurchaseApply");
+		expect(urls).toContain("/app/couponProperty.listCouponPropertyUserDetail");
+		expect(urls).toContain("/app/integral.listIntegralSetting");
+		expect(urls).toContain("/app/integral.listIntegralUserDetail");
+		expect(urls).toContain("/app/maintenance.listMaintenanceTasks");
+		expect(urls).toContain("/app/maintenance.queryMaintenanceTask");
+		expect(urls).toContain("/app/maintenance.listMaintenanceTaskDetails");
 		for (const url of expenseManageAdminListEndpoints) {
 			expect(urls).toContain(url);
 		}
@@ -309,24 +353,46 @@ describe("phase7 endpoint manifest", () => {
 			expect(urls).toContain(url);
 		}
 		expect(urls).not.toContain("/app/ownerRepair.repairDispatch");
-		expect(urls).not.toContain("/app/workorder/create");
-		expect(urls).not.toContain("/app/workorder/copy/finish");
-		expect(urls).not.toContain("/app/visit.auditVisit");
-		expect(urls).not.toContain("/app/profile.changeCommunity");
-		expect(urls).not.toContain("/app/profile.changePassword");
-		expect(urls).not.toContain("/app/activities.saveActivities");
-		expect(urls).not.toContain("/app/activities.updateActivities");
-		expect(urls).not.toContain("/app/activities.deleteActivities");
-		expect(urls).not.toContain("/app/activities.increaseView");
-		expect(urls).not.toContain("/app/activities.likeActivity");
-		expect(urls).not.toContain("/app/activities.updateStatus");
-		expect(urls).not.toContain("/app/activities.updateLike");
-		expect(urls).not.toContain("/app/activities.updateCollect");
+		expect(urls).not.toContain("/app/ownerRepair.updateOwnerRepair");
+		expect(urls).not.toContain("/app/ownerRepair.repairFinish");
+		expect(urls).not.toContain("/app/ownerRepair.repairEnd");
+		expect(urls).not.toContain("/app/ownerRepair.repairStart");
+		expect(urls).not.toContain("/app/ownerRepair.repairStop");
+		expect(urls).not.toContain("/app/ownerRepair.grabbingRepair");
+		expect(urls).not.toContain("/app/repair.replyRepairAppraise");
+		expect(urls).toContain("/app/inspection.submitInspection");
+		expect(urls).toContain("/app/inspection.transferTask");
+		expect(urls).toContain("/app/meter.saveMeterWater");
+		expect(urls).toContain("/app/meter.saveFloorShareReading");
+		expect(urls).toContain("/app/meter.auditFloorShareReading");
+		expect(urls).toContain("/app/profile.changeCommunity");
+		expect(urls).toContain("/app/profile.changePassword");
+		expect(urls).toContain("/app/activities.likeActivity");
+		expect(urls).toContain("/app/activities.increaseView");
+		expect(urls).toContain("/app/activities.updateStatus");
+		expect(urls).toContain("/app/activities.updateLike");
+		expect(urls).toContain("/app/activities.updateCollect");
+		expect(urls).toContain("/app/activities.saveActivities");
+		expect(urls).toContain("/app/activities.updateActivities");
+		expect(urls).toContain("/app/activities.deleteActivities");
 		expect(urls).not.toContain("/app/ownerRepair.listStaffRepairs");
+		expect(urls).not.toContain("/app/applyRoomDiscount/queryApplyRoomDiscount");
+		expect(urls).not.toContain("/app/applyRoomDiscount/updateApplyRoomDiscount");
+		expect(urls).not.toContain("/app/applyRoomDiscount/updateReviewApplyRoomDiscount");
+		expect(urls).not.toContain("/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord");
+		expect(urls).not.toContain("/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord");
+		expect(urls).not.toContain("/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord");
 		expect(urls).not.toContain("/app/resourceStore.listResourceStores");
-		expect(urls).not.toContain("/app/resourceStore.listResources");
 		expect(urls).not.toContain("/app/owner.queryOwnerCars");
-		expect(urls).not.toContain("/app/machine/listMachineRecords");
+		expect(urls).not.toContain("/app/machine/openDoor");
+		expect(urls).not.toContain("/app/couponProperty.writeOffCouponPropertyUser");
+		expect(urls).not.toContain("/app/integral.useIntegral");
+		expect(urls).not.toContain("/app/reserveOrder.listReserveGoodsConfirmOrder");
+		expect(urls).not.toContain("/app/reserveOrder.saveReserveGoodsConfirmOrder");
+		expect(urls).not.toContain("/app/maintenance.startMaintenanceTask");
+		expect(urls).not.toContain("/app/maintenance.completeMaintenanceTask");
+		expect(urls).not.toContain("/app/maintenance.submitMaintenanceSingle");
+		expect(urls).not.toContain("/app/maintenance.transferMaintenanceTask");
 	});
 
 	test("exposes readonly endpoint manifest without database configuration", async () => {
@@ -341,6 +407,46 @@ describe("phase7 endpoint manifest", () => {
 					url: "/app/fee.listFee",
 					ownerModule: "fee",
 					phase: "phase2-fee-payment-report",
+				}),
+				expect.objectContaining({
+					url: "/app/iot/listChargeMachineBmoImpl",
+					method: ["GET", "POST"],
+					targetClient: "app",
+					routeKind: "app-legacy",
+					ownerModule: "fee",
+					phase: "phase7-fee-charge-machine-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/iot/listChargeMachineOrderBmoImpl",
+					method: ["GET", "POST"],
+					targetClient: "app",
+					routeKind: "app-legacy",
+					ownerModule: "fee",
+					phase: "phase7-fee-charge-machine-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/iot/listChargeMachinePortBmoImpl",
+					method: ["GET", "POST"],
+					targetClient: "app",
+					routeKind: "app-legacy",
+					ownerModule: "fee",
+					phase: "phase7-fee-charge-machine-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/machine/listMachineRecords",
+					method: ["GET", "POST"],
+					targetClient: "app",
+					routeKind: "app-legacy",
+					ownerModule: "fee",
+					phase: "phase7-fee-machine-record-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
 				}),
 				expect.objectContaining({
 					url: "/api/property-manage/report-manage/payment-details-form/list",
@@ -375,6 +481,111 @@ describe("phase7 endpoint manifest", () => {
 					phase: "phase4a-repair-minimal",
 					cutoverStatus: "app-shadow-allowlist",
 				}),
+				expect.objectContaining({
+					url: "/app/dict.queryPayTypes",
+					method: ["GET", "POST"],
+					ownerModule: "repair",
+					phase: "phase7-repair-readonly",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/ownerRepair.getRepairStatistics",
+					method: ["GET", "POST"],
+					ownerModule: "repair",
+					phase: "phase7-repair-readonly",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/ownerRepair.listRepairStaffRecords",
+					method: ["GET", "POST"],
+					ownerModule: "repair",
+					phase: "phase7-repair-readonly",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				...[
+					"/app/ownerRepair.listRepairStaffs",
+					"/app/repair.listRepairTypeUsers",
+					"/app/resourceStore.listResources",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: ["GET", "POST"],
+						ownerModule: "repair",
+						phase: "phase7-repair-readonly",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...[
+					"/app/staff.listStaffs",
+					"/app/inspection.getTodayReport",
+					"/app/inspection.listInspectionItemTitles",
+					"/app/inspection.listInspectionTasks",
+					"/app/inspection.listInspectionTaskDetails",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: ["GET", "POST"],
+						targetClient: "app",
+						routeKind: "app-legacy",
+						ownerModule: "inspection",
+						phase: "phase7-inspection-readonly",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				expect.objectContaining({
+					url: "/app/inspection.submitInspection",
+					method: "POST",
+					targetClient: "app",
+					routeKind: "app-legacy",
+					ownerModule: "inspection",
+					phase: "phase7-inspection-guarded-write-batch16",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "blocked-for-execution",
+				}),
+				expect.objectContaining({
+					url: "/app/inspection.transferTask",
+					method: "POST",
+					targetClient: "app",
+					routeKind: "app-legacy",
+					ownerModule: "inspection",
+					phase: "phase7-inspection-guarded-write-batch16",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "blocked-for-execution",
+				}),
+				...[
+					"/app/meter.queryFeeTypes",
+					"/app/meter.queryFeeTypesItems",
+					"/app/meter.listMeterType",
+					"/app/meter.listMeterWaters",
+					"/app/meter.queryPreMeterWater",
+					"/app/meter.listFloorShareReading",
+					"/app/meter.listFloorShareMeter",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: ["GET", "POST"],
+						targetClient: "app",
+						routeKind: "app-legacy",
+						ownerModule: "meter",
+						phase: "phase7-meter-readonly-batch13",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...["/app/meter.saveMeterWater", "/app/meter.saveFloorShareReading", "/app/meter.auditFloorShareReading"].map(
+					(url) =>
+						expect.objectContaining({
+							url,
+							method: "POST",
+							targetClient: "app",
+							routeKind: "app-legacy",
+							ownerModule: "meter",
+							phase: "phase7-meter-guarded-write-batch14",
+							responseContract: "{ code, msg, data }",
+							cutoverStatus: "blocked-for-execution",
+						}),
+				),
 				expect.objectContaining({
 					url: "/app/ownerRepair.saveOwnerRepair",
 					ownerModule: "repair",
@@ -435,6 +646,24 @@ describe("phase7 endpoint manifest", () => {
 					responseContract: "{ code, msg, data }",
 					cutoverStatus: "app-shadow-allowlist",
 				}),
+				...[
+					"/app/workorder/create",
+					"/app/workorder/update",
+					"/app/workorder/start",
+					"/app/workorder/complete",
+					"/app/workorder/audit",
+					"/app/workorder/cancel",
+					"/app/workorder/copy/finish",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "work-order",
+						phase: "phase7-work-order-guarded-write",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
 				expect.objectContaining({
 					url: "/app/visit.getVisit",
 					method: ["GET", "POST"],
@@ -450,6 +679,14 @@ describe("phase7 endpoint manifest", () => {
 					phase: "phase7-visit-readonly",
 					responseContract: "{ code, msg, data }",
 					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/visit.auditVisit",
+					method: "POST",
+					ownerModule: "visit",
+					phase: "phase7-visit-guarded-write",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "blocked-for-execution",
 				}),
 				expect.objectContaining({
 					url: "/app/profile.getUserProfile",
@@ -515,6 +752,40 @@ describe("phase7 endpoint manifest", () => {
 					responseContract: "{ code, msg, data }",
 					cutoverStatus: "app-shadow-allowlist",
 				}),
+				...["/app/activities.likeActivity", "/app/activities.increaseView", "/app/activities.updateStatus"].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "activity",
+						phase: "phase7-activity-guarded-write-batch17",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
+				...["/app/activities.updateLike", "/app/activities.updateCollect"].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "activity",
+						phase: "phase7-activity-guarded-write-batch24",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
+				...[
+					"/app/activities.saveActivities",
+					"/app/activities.updateActivities",
+					"/app/activities.deleteActivities",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "activity",
+						phase: "phase7-activity-guarded-write-batch25",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
 				expect.objectContaining({
 					url: "/app/communitySpace.listCommunitySpaceConfirmOrder",
 					method: ["GET", "POST"],
@@ -596,6 +867,70 @@ describe("phase7 endpoint manifest", () => {
 					cutoverStatus: "blocked-for-execution",
 				}),
 				expect.objectContaining({
+					url: "/app/feeDiscount/queryFeeDiscount",
+					method: ["GET", "POST"],
+					ownerModule: "property-application",
+					phase: "phase7-property-application-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecordDetail",
+					method: ["GET", "POST"],
+					ownerModule: "property-application",
+					phase: "phase7-property-application-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/itemRelease.getItemRelease",
+					method: ["GET", "POST"],
+					ownerModule: "item-release",
+					phase: "phase7-item-release-readonly-batch20",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/itemRelease.getItemReleaseRes",
+					method: ["GET", "POST"],
+					ownerModule: "item-release",
+					phase: "phase7-item-release-readonly-batch20",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/itemRelease.queryOaWorkflowUser",
+					method: ["GET", "POST"],
+					ownerModule: "item-release",
+					phase: "phase7-item-release-readonly-batch20",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/itemRelease.queryUndoItemReleaseV2",
+					method: ["GET", "POST"],
+					ownerModule: "item-release",
+					phase: "phase7-item-release-readonly-batch20",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/itemRelease.queryFinishItemReleaseV2",
+					method: ["GET", "POST"],
+					ownerModule: "item-release",
+					phase: "phase7-item-release-readonly-batch20",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/itemRelease.auditItemRelease",
+					method: "POST",
+					ownerModule: "item-release",
+					phase: "phase7-item-release-guarded-write-batch21",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "blocked-for-execution",
+				}),
+				expect.objectContaining({
 					url: "/app/purchase/updatePurchaseApply",
 					method: "POST",
 					ownerModule: "purchase",
@@ -603,6 +938,34 @@ describe("phase7 endpoint manifest", () => {
 					responseContract: "{ code, msg, data }",
 					cutoverStatus: "blocked-for-execution",
 				}),
+				...[
+					"/app/couponProperty.listCouponPropertyUserDetail",
+					"/app/integral.listIntegralSetting",
+					"/app/integral.listIntegralUserDetail",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: ["GET", "POST"],
+						ownerModule: "coupon",
+						phase: "phase7-coupon-readonly-batch22",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...[
+					"/app/maintenance.listMaintenanceTasks",
+					"/app/maintenance.queryMaintenanceTask",
+					"/app/maintenance.listMaintenanceTaskDetails",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: ["GET", "POST"],
+						ownerModule: "maintenance",
+						phase: "phase7-maintenance-readonly-batch23",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
 				...expenseManageAdminListEndpoints.map((url) =>
 					expect.objectContaining({
 						url,
