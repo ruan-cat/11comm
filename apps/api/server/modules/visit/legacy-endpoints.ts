@@ -13,4 +13,9 @@ export const visitLegacyEndpointDefinitions: EndpointDefinition[] = [
 		method: ["GET", "POST"],
 		handler: ({ query, body, event }) => getVisitRuntime(event).legacyAdapter.getVisitDetail(mergeInput(query, body)),
 	},
+	{
+		url: "/app/visit.auditVisit",
+		method: "POST",
+		handler: ({ query, body, event }) => getVisitRuntime(event).legacyAdapter.auditVisit(mergeInput(query, body)),
+	},
 ];

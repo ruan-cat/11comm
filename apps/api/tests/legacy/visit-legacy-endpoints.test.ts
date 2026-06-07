@@ -7,16 +7,17 @@ import {
 } from "../../server/shared/runtime/endpoint-registry";
 import { runtimeEndpointDefinitions } from "../../server/shared/runtime/runtime-endpoints";
 
-describe("visit legacy endpoints phase7 readonly slice", () => {
+describe("visit legacy endpoints phase7 readonly plus guarded audit slice", () => {
 	const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
-	test("registers only readonly exact handlers", () => {
+	test("registers readonly exact handlers and audit guarded POST only", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/visit.getVisit")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/visit.getVisit")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/visit.getVisitDetail")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/visit.getVisitDetail")).toBeTruthy();
 
-		expect(findEndpointDefinition(registry, "POST", "/app/visit.auditVisit")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/visit.auditVisit")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/visit.auditVisit")).toBeTruthy();
 	});
 
 	test("serves visit list through the unified app legacy envelope", async () => {
@@ -142,5 +143,22 @@ describe("visit legacy endpoints phase7 readonly slice", () => {
 				},
 			});
 		}
+	});
+
+	test("blocks audit visit by default with the legacy guarded mutation envelope", async () => {
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/visit.auditVisit",
+			body: { visitId: "VISIT_00001", taskId: "TASK_V_0001", state: "1" },
+		});
+
+		expect(response).toMatchObject({
+			code: 409,
+			msg: expect.stringContaining("visit.auditVisit"),
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+		});
+		expect(response).not.toHaveProperty("success");
+		expect(response).not.toHaveProperty("message");
 	});
 });

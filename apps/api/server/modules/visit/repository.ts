@@ -1,8 +1,16 @@
-import type { PaginationResult, VisitDetail, VisitDetailQuery, VisitListQuery, VisitRecord } from "./types";
+import type {
+	PaginationResult,
+	VisitDetail,
+	VisitDetailQuery,
+	VisitListQuery,
+	VisitRecord,
+	VisitWriteGuardDecision,
+} from "./types";
 
 export interface VisitRepository {
 	listVisits(query: VisitListQuery): Promise<PaginationResult<VisitRecord>>;
 	getVisitDetail(query: VisitDetailQuery): Promise<PaginationResult<VisitDetail>>;
+	getWriteGuardDecision(endpoint: string, input: Record<string, unknown>): Promise<VisitWriteGuardDecision>;
 }
 
 const visitDetails: VisitDetail[] = [
@@ -83,6 +91,15 @@ export function createVisitRepository(): VisitRepository {
 				query.page,
 				query.row,
 			);
+		},
+
+		async getWriteGuardDecision(endpoint, input) {
+			void input;
+			return {
+				code: 409,
+				message: `Phase7 mutation guard blocked ${endpoint}; no visit audit write read-back rollback evidence exists, so this endpoint stays guarded until a controlled audit window is designed.`,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			};
 		},
 	};
 }

@@ -36,3 +36,9 @@ export interface VisitDetailQuery {
 	row: number;
 	visitId: string;
 }
+
+export interface VisitWriteGuardDecision {
+	code: number;
+	message: string;
+	errorCode: "PHASE7_MUTATION_GUARDED";
+}
