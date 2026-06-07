@@ -150,6 +150,42 @@ describe("legacy-dispatch fallback drill", () => {
 	});
 
 	test.each([
+		["/app/maintenance.startMaintenanceTask", { taskId: "MT_001" }, "maintenance.startMaintenanceTask"],
+		["/app/maintenance.completeMaintenanceTask", { taskId: "MT_001" }, "maintenance.completeMaintenanceTask"],
+		[
+			"/app/maintenance.submitMaintenanceSingle",
+			{ taskDetailId: "MTD_MT_001_01", result: "OK" },
+			"maintenance.submitMaintenanceSingle",
+		],
+		[
+			"/app/maintenance.transferMaintenanceTask",
+			{ taskId: "MT_001", staffId: "STAFF_002" },
+			"maintenance.transferMaintenanceTask",
+		],
+	])(
+		"guarded maintenance endpoint keeps the legacy maintenance envelope when fallback is disabled: %s",
+		async (path, body, action) => {
+			process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
+			const fetchSpy = vi.spyOn(globalThis, "fetch");
+			mockLegacyPostRequest(path, body);
+
+			const response = await legacyDispatchHandler(createEvent());
+
+			expect(fetchSpy).not.toHaveBeenCalled();
+			expect(mockedSetResponseStatus).not.toHaveBeenCalled();
+			expect(response).toMatchObject({
+				success: false,
+				code: "409",
+				message: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+				timestamp: expect.any(Number),
+			});
+			expect(response).not.toHaveProperty("msg");
+		},
+	);
+
+	test.each([
 		[
 			"/app/feeDiscount/queryFeeDiscount",
 			{ discountType: "3003", communityId: "COMM_001" },

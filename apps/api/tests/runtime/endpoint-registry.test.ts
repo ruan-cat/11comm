@@ -215,10 +215,14 @@ describe("endpoint registry runtime", () => {
 		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.queryMaintenanceTask")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.listMaintenanceTaskDetails")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.listMaintenanceTaskDetails")).toBeTruthy();
-		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.startMaintenanceTask")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.completeMaintenanceTask")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.submitMaintenanceSingle")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.transferMaintenanceTask")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.startMaintenanceTask")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.completeMaintenanceTask")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.submitMaintenanceSingle")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/maintenance.transferMaintenanceTask")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.startMaintenanceTask")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.completeMaintenanceTask")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.submitMaintenanceSingle")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/maintenance.transferMaintenanceTask")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/reserveOrder.listReserveGoodsConfirmOrder")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/reserveOrder.listReserveGoodsConfirmOrder")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/reserveOrder.saveReserveGoodsConfirmOrder")).toBeUndefined();

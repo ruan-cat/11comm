@@ -77,6 +77,10 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/activities.saveActivities",
 	"/app/activities.updateActivities",
 	"/app/activities.deleteActivities",
+	"/app/maintenance.startMaintenanceTask",
+	"/app/maintenance.completeMaintenanceTask",
+	"/app/maintenance.submitMaintenanceSingle",
+	"/app/maintenance.transferMaintenanceTask",
 	"/app/workorder/create",
 	"/app/workorder/update",
 	"/app/workorder/start",
@@ -168,9 +172,9 @@ const runtimeEndpointEntries = [
 	})),
 	...maintenanceLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase7-maintenance-readonly-batch23",
+		phase: getMaintenanceLegacyPhase(definition),
 		ownerModule: "maintenance",
-		cutoverStatus: "app-shadow-allowlist" as const,
+		cutoverStatus: getMaintenanceLegacyCutoverStatus(definition),
 	})),
 	...floorLegacyEndpointDefinitions.map((definition) => ({
 		definition,
@@ -1336,6 +1340,22 @@ function getMeterLegacyPhase(definition: EndpointDefinition): string {
 }
 
 function getMeterLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getMaintenanceLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-maintenance-guarded-write-batch27";
+	}
+
+	return "phase7-maintenance-readonly-batch23";
+}
+
+function getMaintenanceLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
 	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
 		return "blocked-for-execution";
 	}

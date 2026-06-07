@@ -84,6 +84,10 @@ const migratedOrGuardedRuntimePaths = [
 	["POST", "/app/maintenance.queryMaintenanceTask"],
 	["GET", "/app/maintenance.listMaintenanceTaskDetails"],
 	["POST", "/app/maintenance.listMaintenanceTaskDetails"],
+	["POST", "/app/maintenance.startMaintenanceTask"],
+	["POST", "/app/maintenance.completeMaintenanceTask"],
+	["POST", "/app/maintenance.submitMaintenanceSingle"],
+	["POST", "/app/maintenance.transferMaintenanceTask"],
 	["GET", "/callComponent/core/list"],
 ] as const;
 
@@ -92,10 +96,6 @@ const remainingAppLegacyGapPaths = [
 	["POST", "/app/integral.useIntegral"],
 	["GET", "/app/reserveOrder.listReserveGoodsConfirmOrder"],
 	["POST", "/app/reserveOrder.saveReserveGoodsConfirmOrder"],
-	["POST", "/app/maintenance.startMaintenanceTask"],
-	["POST", "/app/maintenance.completeMaintenanceTask"],
-	["POST", "/app/maintenance.submitMaintenanceSingle"],
-	["POST", "/app/maintenance.transferMaintenanceTask"],
 	["GET", "/app/oa/workflow/query"],
 	["GET", "/app/oa/workflow/form/query"],
 	["GET", "/app/oa/workflow/form/data/query"],

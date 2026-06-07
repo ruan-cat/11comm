@@ -292,6 +292,10 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/maintenance.listMaintenanceTasks");
 		expect(urls).toContain("/app/maintenance.queryMaintenanceTask");
 		expect(urls).toContain("/app/maintenance.listMaintenanceTaskDetails");
+		expect(urls).toContain("/app/maintenance.startMaintenanceTask");
+		expect(urls).toContain("/app/maintenance.completeMaintenanceTask");
+		expect(urls).toContain("/app/maintenance.submitMaintenanceSingle");
+		expect(urls).toContain("/app/maintenance.transferMaintenanceTask");
 		for (const url of expenseManageAdminListEndpoints) {
 			expect(urls).toContain(url);
 		}
@@ -389,10 +393,6 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).not.toContain("/app/integral.useIntegral");
 		expect(urls).not.toContain("/app/reserveOrder.listReserveGoodsConfirmOrder");
 		expect(urls).not.toContain("/app/reserveOrder.saveReserveGoodsConfirmOrder");
-		expect(urls).not.toContain("/app/maintenance.startMaintenanceTask");
-		expect(urls).not.toContain("/app/maintenance.completeMaintenanceTask");
-		expect(urls).not.toContain("/app/maintenance.submitMaintenanceSingle");
-		expect(urls).not.toContain("/app/maintenance.transferMaintenanceTask");
 	});
 
 	test("exposes readonly endpoint manifest without database configuration", async () => {
@@ -964,6 +964,21 @@ describe("phase7 endpoint manifest", () => {
 						phase: "phase7-maintenance-readonly-batch23",
 						responseContract: "{ success, code, message, data, timestamp }",
 						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...[
+					"/app/maintenance.startMaintenanceTask",
+					"/app/maintenance.completeMaintenanceTask",
+					"/app/maintenance.submitMaintenanceSingle",
+					"/app/maintenance.transferMaintenanceTask",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "maintenance",
+						phase: "phase7-maintenance-guarded-write-batch27",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "blocked-for-execution",
 					}),
 				),
 				...expenseManageAdminListEndpoints.map((url) =>

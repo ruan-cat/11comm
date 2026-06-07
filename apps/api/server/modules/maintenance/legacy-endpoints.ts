@@ -21,4 +21,40 @@ export const maintenanceLegacyEndpointDefinitions: EndpointDefinition[] = [
 		handler: ({ query, body, event }) =>
 			getMaintenanceRuntime(event).legacyAdapter.listMaintenanceTaskDetails(mergeInput(query, body)),
 	},
+	{
+		url: "/app/maintenance.startMaintenanceTask",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getMaintenanceRuntime(event).legacyAdapter.guardedWrite(
+				"maintenance.startMaintenanceTask",
+				mergeInput(query, body),
+			),
+	},
+	{
+		url: "/app/maintenance.completeMaintenanceTask",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getMaintenanceRuntime(event).legacyAdapter.guardedWrite(
+				"maintenance.completeMaintenanceTask",
+				mergeInput(query, body),
+			),
+	},
+	{
+		url: "/app/maintenance.submitMaintenanceSingle",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getMaintenanceRuntime(event).legacyAdapter.guardedWrite(
+				"maintenance.submitMaintenanceSingle",
+				mergeInput(query, body),
+			),
+	},
+	{
+		url: "/app/maintenance.transferMaintenanceTask",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getMaintenanceRuntime(event).legacyAdapter.guardedWrite(
+				"maintenance.transferMaintenanceTask",
+				mergeInput(query, body),
+			),
+	},
 ];

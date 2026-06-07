@@ -1,5 +1,25 @@
 # 代理发现记录
 
+## 2026-06-07 app task438/task439 maintenance 第二十七批两条 guarded exact 边界
+
+`/app/maintenance.submitMaintenanceSingle` 与 `/app/maintenance.transferMaintenanceTask` 已从 fallback-only 收敛为 `apps/api` maintenance 模块 POST-only guarded exact：registry 只注册 POST，不注册 GET；fallback disabled 时由 `apps/api` 直接返回 maintenance legacy envelope 的 409 guard，不触发旧 app fallback fetch。返回 shape 继续保持 `{ success, code, message, data, timestamp }`，并额外带 `errorCode=PHASE7_MUTATION_GUARDED`；不能改写成其它模块常见的 `{ code, msg, data }`。
+
+旧语义边界：Euler 只读复核确认旧 app 端两条路径都是 POST-only，`submitMaintenanceSingle` 会写入明细 `result/remark/photos`，`transferMaintenanceTask` 会修改任务人员。当前仍没有 maintenance DB-backed、受控写入窗口、read-back、rollback、residual check、guard-restored 或生产 App H5 Network 证据，因此本批只能 fail-closed guard，不能真实提交单项保养或转派保养任务。
+
+TDD 与统计记录：红灯阶段同一组 7 个 api 测试文件先失败在 endpoint 未注册、dispatch 404、manifest/evidence 缺 batch27 和 fallback-off 未承接；实现后 7 files / 437 tests 通过，`pnpm -F @01s-11comm/api run typecheck` 通过，限定 `git diff --check` 通过。fresh scan 从 apiRows=123、exactOldSource=122、fallbackOnly=89、maintenanceExact=5、maintenanceFallback=2 更新为 apiRows=125、exactOldSource=124、fallbackOnly=87、maintenanceExact=7、maintenanceFallback=0。maintenance 旧 source 已无 fallback-only URL；task438/task439 仍 open，因为全局 fallbackOnly=87 未清零。
+
+禁止误判：第二十七批不代表 maintenance DB_READY、真实保养写入、生产 app H5 Network、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate 或旧 app server 删除许可。
+
+## 2026-06-07 app task438/task439 maintenance 第二十六批两条 guarded exact 边界
+
+`/app/maintenance.startMaintenanceTask` 与 `/app/maintenance.completeMaintenanceTask` 已从 fallback-only 收敛为 `apps/api` maintenance 模块 POST-only guarded exact：registry 只注册 POST，不注册 GET；fallback disabled 时由 `apps/api` 直接返回 maintenance legacy envelope 的 409 guard，不触发旧 app fallback fetch。返回 shape 必须保持 `{ success, code, message, data, timestamp }`，并额外带 `errorCode=PHASE7_MUTATION_GUARDED`；不能改写成其它模块常见的 `{ code, msg, data }`。
+
+旧语义边界：Popper 只读复核确认旧 app 端两条路径都是 POST-only，读取 `body.taskId` 并修改 in-memory maintenance 状态。当前没有 maintenance DB-backed、受控写入窗口、read-back、rollback、residual check、guard-restored 或生产 App H5 Network 证据，因此本批只允许 fail-closed guard，不能真实开始或完成保养任务。
+
+TDD 与统计记录：红灯阶段同一组 7 个 api 测试文件先失败在 endpoint 未注册、dispatch 404、manifest/evidence 缺项和 fallback-off 未承接；实现后 7 files / 433 tests 通过，`pnpm -F @01s-11comm/api run typecheck` 通过，限定 `git diff --check` 与 OpenSpec strict 通过。fresh scan 从 apiRows=121、exactOldSource=120、fallbackOnly=91、maintenanceExact=3、maintenanceFallback=4 更新为 apiRows=123、exactOldSource=122、fallbackOnly=89、maintenanceExact=5、maintenanceFallback=2。剩余 maintenance fallback-only 只剩 `/app/maintenance.submitMaintenanceSingle` 与 `/app/maintenance.transferMaintenanceTask`；task438/task439 仍 open，因为全局 fallbackOnly=89 未清零。
+
+禁止误判：第二十六批不代表 maintenance DB_READY、真实保养写入、submit/transfer 完成、生产 app H5 Network、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate 或旧 app server 删除许可。本轮按用户当前约束未执行新的 git commit 或 push。
+
 ## 2026-06-07 用户暂停长任务边界
 
 用户明确要求“及时暂停，记录任务进度”后，主代理已停止继续推进，不再进入 maintenance 实现。Wegener 复核子代理已经完成并返回 batch25 PASS；Hubble 编辑子代理在 maintenance 下一批任务中仍处于 running 时被关闭，返回状态为 shutdown，不能把它视为完成了任何 maintenance 修改、红绿灯验证或任务进度。后续恢复时必须先重新读取当前工作区和 `tasks.md`，确认是否存在 Hubble 关闭前留下的文件改动；若有，只能按普通未验证改动处理，不能自动归入已完成 checkpoint。

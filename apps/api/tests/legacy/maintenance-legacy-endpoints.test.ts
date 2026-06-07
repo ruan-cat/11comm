@@ -13,15 +13,23 @@ const readonlyMaintenanceEndpoints = [
 	"/app/maintenance.listMaintenanceTaskDetails",
 ] as const;
 
-const writeMaintenanceEndpoints = [
-	"/app/maintenance.startMaintenanceTask",
-	"/app/maintenance.completeMaintenanceTask",
-	"/app/maintenance.submitMaintenanceSingle",
-	"/app/maintenance.transferMaintenanceTask",
+const guardedMaintenanceEndpoints = [
+	["/app/maintenance.startMaintenanceTask", { taskId: "MT_001" }, "maintenance.startMaintenanceTask"],
+	["/app/maintenance.completeMaintenanceTask", { taskId: "MT_001" }, "maintenance.completeMaintenanceTask"],
+	[
+		"/app/maintenance.submitMaintenanceSingle",
+		{ taskDetailId: "MTD_MT_001_01", result: "OK" },
+		"maintenance.submitMaintenanceSingle",
+	],
+	[
+		"/app/maintenance.transferMaintenanceTask",
+		{ taskId: "MT_001", staffId: "STAFF_002" },
+		"maintenance.transferMaintenanceTask",
+	],
 ] as const;
 
 describe("maintenance app legacy exact endpoints", () => {
-	test("registers only the readonly maintenance exact endpoints for GET and POST", () => {
+	test("registers readonly endpoints and guarded maintenance writes with explicit method boundaries", () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
 		for (const url of readonlyMaintenanceEndpoints) {
@@ -29,11 +37,34 @@ describe("maintenance app legacy exact endpoints", () => {
 			expect(findEndpointDefinition(registry, "POST", url)).toBeTruthy();
 		}
 
-		for (const url of writeMaintenanceEndpoints) {
+		for (const [url] of guardedMaintenanceEndpoints) {
 			expect(findEndpointDefinition(registry, "GET", url)).toBeUndefined();
-			expect(findEndpointDefinition(registry, "POST", url)).toBeUndefined();
+			expect(findEndpointDefinition(registry, "POST", url)).toBeTruthy();
 		}
 	});
+
+	test.each(guardedMaintenanceEndpoints)(
+		"returns the legacy maintenance guard envelope for POST-only write endpoint: %s",
+		async (path, body, action) => {
+			const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path,
+				body,
+			});
+
+			expect(response).toMatchObject({
+				success: false,
+				code: "409",
+				message: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+				timestamp: expect.any(Number),
+			});
+			expect(response).not.toHaveProperty("msg");
+		},
+	);
 
 	test("returns the legacy maintenance success envelope for paginated task list", async () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);

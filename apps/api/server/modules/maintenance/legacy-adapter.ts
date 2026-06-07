@@ -2,7 +2,7 @@ import type { MaintenanceService } from "./service";
 import type { MaintenanceLegacyResponse } from "./types";
 
 export const maintenanceLegacyAdapterEvidence = {
-	scope: "readonly-exact-handler-batch23",
+	scope: "readonly-exact-handler-plus-guarded-write-batch27",
 	dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 	responseContract: "{ success, code, message, data, timestamp }",
 	endpoints: [
@@ -10,20 +10,20 @@ export const maintenanceLegacyAdapterEvidence = {
 		"/app/maintenance.queryMaintenanceTask",
 		"/app/maintenance.listMaintenanceTaskDetails",
 	],
-	excludedWriteEndpoints: [
+	guardedEndpoints: [
 		"/app/maintenance.startMaintenanceTask",
 		"/app/maintenance.completeMaintenanceTask",
 		"/app/maintenance.submitMaintenanceSingle",
 		"/app/maintenance.transferMaintenanceTask",
 	],
+	excludedWriteEndpoints: [],
 	notCovered: [
-		"/app/maintenance.startMaintenanceTask",
-		"/app/maintenance.completeMaintenanceTask",
-		"/app/maintenance.submitMaintenanceSingle",
-		"/app/maintenance.transferMaintenanceTask",
 		"db-backed-maintenance-data",
+		"maintenance-write-read-back-rollback",
 		"production-app-h5-maintenance-network",
 	],
+	defaultWriteBehavior: "blocked-for-execution",
+	writeVerification: "no-read-back-or-rollback-evidence",
 } as const;
 
 export function createLegacyMaintenanceAdapter(service: MaintenanceService) {
@@ -68,6 +68,15 @@ export function createLegacyMaintenanceAdapter(service: MaintenanceService) {
 
 			return maintenanceSuccess({ items });
 		},
+
+		async guardedWrite(endpoint: string, input: Record<string, unknown>) {
+			void input;
+			return maintenanceFailure(
+				`Phase7 mutation guard blocked ${endpoint}; no maintenance write read-back rollback evidence exists, so this endpoint stays guarded in apps/api.`,
+				"409",
+				{ errorCode: "PHASE7_MUTATION_GUARDED" },
+			);
+		},
 	};
 }
 
@@ -81,13 +90,18 @@ function maintenanceSuccess<T>(data: T, message = "success"): MaintenanceLegacyR
 	};
 }
 
-function maintenanceFailure(message: string, code: string): MaintenanceLegacyResponse<null> {
+function maintenanceFailure(
+	message: string,
+	code: string,
+	extra: Record<string, unknown> = {},
+): MaintenanceLegacyResponse<null> & Record<string, unknown> {
 	return {
 		success: false,
 		code,
 		message,
 		data: null,
 		timestamp: Date.now(),
+		...extra,
 	};
 }
 

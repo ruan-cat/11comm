@@ -1552,9 +1552,36 @@ describe("phase7 apps-api dual client contracts", () => {
 		}
 	});
 
-	test("maintenance adapter evidence stays scoped to readonly exact handlers and excluded write paths", () => {
+	test("maintenance guarded write endpoints keep the legacy maintenance guard envelope", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		for (const [path, action] of [
+			["/app/maintenance.startMaintenanceTask", "maintenance.startMaintenanceTask"],
+			["/app/maintenance.completeMaintenanceTask", "maintenance.completeMaintenanceTask"],
+			["/app/maintenance.submitMaintenanceSingle", "maintenance.submitMaintenanceSingle"],
+			["/app/maintenance.transferMaintenanceTask", "maintenance.transferMaintenanceTask"],
+		] as const) {
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path,
+				body: { taskId: "MT_001", taskDetailId: "MTD_MT_001_01", staffId: "STAFF_002" },
+			});
+
+			expect(response).toMatchObject({
+				success: false,
+				code: "409",
+				message: expect.stringContaining(action),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+				timestamp: expect.any(Number),
+			});
+			expect(response).not.toHaveProperty("msg");
+		}
+	});
+
+	test("maintenance adapter evidence separates readonly handlers from guarded write paths", () => {
 		expect(maintenanceLegacyAdapterEvidence).toMatchObject({
-			scope: "readonly-exact-handler-batch23",
+			scope: "readonly-exact-handler-plus-guarded-write-batch27",
 			dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 			responseContract: "{ success, code, message, data, timestamp }",
 			endpoints: [
@@ -1562,23 +1589,27 @@ describe("phase7 apps-api dual client contracts", () => {
 				"/app/maintenance.queryMaintenanceTask",
 				"/app/maintenance.listMaintenanceTaskDetails",
 			],
-			excludedWriteEndpoints: [
+			guardedEndpoints: [
 				"/app/maintenance.startMaintenanceTask",
 				"/app/maintenance.completeMaintenanceTask",
 				"/app/maintenance.submitMaintenanceSingle",
 				"/app/maintenance.transferMaintenanceTask",
 			],
+			excludedWriteEndpoints: [],
+			defaultWriteBehavior: "blocked-for-execution",
+			writeVerification: "no-read-back-or-rollback-evidence",
 		});
 		expect(maintenanceLegacyAdapterEvidence.notCovered).toEqual(
 			expect.arrayContaining([
-				"/app/maintenance.startMaintenanceTask",
-				"/app/maintenance.completeMaintenanceTask",
-				"/app/maintenance.submitMaintenanceSingle",
-				"/app/maintenance.transferMaintenanceTask",
 				"db-backed-maintenance-data",
+				"maintenance-write-read-back-rollback",
 				"production-app-h5-maintenance-network",
 			]),
 		);
+		expect(maintenanceLegacyAdapterEvidence.notCovered).not.toContain("/app/maintenance.startMaintenanceTask");
+		expect(maintenanceLegacyAdapterEvidence.notCovered).not.toContain("/app/maintenance.completeMaintenanceTask");
+		expect(maintenanceLegacyAdapterEvidence.notCovered).not.toContain("/app/maintenance.submitMaintenanceSingle");
+		expect(maintenanceLegacyAdapterEvidence.notCovered).not.toContain("/app/maintenance.transferMaintenanceTask");
 	});
 
 	test("item-release readonly app legacy endpoint returns the unified code msg data envelope", async () => {
@@ -2298,6 +2329,10 @@ describe("phase7 apps-api dual client contracts", () => {
 		expect(urls).toContain("/app/activities.saveActivities");
 		expect(urls).toContain("/app/activities.updateActivities");
 		expect(urls).toContain("/app/activities.deleteActivities");
+		expect(urls).toContain("/app/maintenance.startMaintenanceTask");
+		expect(urls).toContain("/app/maintenance.completeMaintenanceTask");
+		expect(urls).toContain("/app/maintenance.submitMaintenanceSingle");
+		expect(urls).toContain("/app/maintenance.transferMaintenanceTask");
 	});
 
 	test("manifest marks high-risk app legacy mutation actions as blocked for execution", () => {
@@ -2330,6 +2365,20 @@ describe("phase7 apps-api dual client contracts", () => {
 				targetClient: "app",
 				routeKind: "app-legacy",
 				responseContract: "{ code, msg, data }",
+				cutoverStatus: "blocked-for-execution",
+			});
+		}
+
+		for (const url of [
+			"/app/maintenance.startMaintenanceTask",
+			"/app/maintenance.completeMaintenanceTask",
+			"/app/maintenance.submitMaintenanceSingle",
+			"/app/maintenance.transferMaintenanceTask",
+		]) {
+			expectManifestEntry(url, {
+				targetClient: "app",
+				routeKind: "app-legacy",
+				responseContract: "{ success, code, message, data, timestamp }",
 				cutoverStatus: "blocked-for-execution",
 			});
 		}
