@@ -16,6 +16,16 @@ export function isLegacyAppFallbackPath(path: string): boolean {
 	return path.startsWith("/app/") || path.startsWith("/callComponent/");
 }
 
+export function isLegacyAppFallbackEnabled(): boolean {
+	const configuredValue = String(process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED ?? "")
+		.trim()
+		.toLowerCase();
+	if (!configuredValue) {
+		return true;
+	}
+	return !["0", "false", "off", "disabled", "no"].includes(configuredValue);
+}
+
 export function buildLegacyAppFallbackUrl(baseUrl: string, path: string, query: Record<string, unknown> = {}): string {
 	const url = new URL(path, ensureTrailingSlash(baseUrl));
 	for (const [name, value] of Object.entries(query)) {
@@ -39,6 +49,11 @@ export async function proxyLegacyAppRequest(
 ): Promise<LegacyAppFallbackResponse> {
 	if (!isLegacyAppFallbackPath(input.path)) {
 		const error = new Error(`Legacy fallback path is not allowed: ${input.path}`);
+		(error as any).statusCode = 404;
+		throw error;
+	}
+	if (!isLegacyAppFallbackEnabled()) {
+		const error = new Error(`Legacy app fallback is disabled: ${input.path}`);
 		(error as any).statusCode = 404;
 		throw error;
 	}
