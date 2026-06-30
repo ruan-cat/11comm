@@ -47,8 +47,10 @@ describe("repair legacy endpoints wave4a", () => {
 		expect(findEndpointDefinition(registry, "POST", "/app/repair.replyRepairAppraise")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listStaffRepairs")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/resourceStoreType.listResourceStoreTypes")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/owner.queryOwnerCars")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/machine/openDoor")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "GET", "/app/owner.queryOwnerCars")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/owner.queryOwnerCars")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/machine/openDoor")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/machine/openDoor")).toBeUndefined();
 	});
 
 	test("blocks owner repair create by default in phase7 execution guard", async () => {

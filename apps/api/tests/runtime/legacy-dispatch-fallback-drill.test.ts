@@ -176,6 +176,58 @@ describe("legacy-dispatch fallback drill", () => {
 	});
 
 	test.each([
+		["/app/staff/update-online-status", { staffId: "STAFF_001", isOnline: false }],
+		["/app/staff/add", { name: "Blocked Staff", tel: "13800009999", orgName: "Security" }],
+	])("guarded staff endpoint keeps the legacy staff envelope when fallback is disabled: %s", async (path, body) => {
+		process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
+		const fetchSpy = vi.spyOn(globalThis, "fetch");
+		mockLegacyPostRequest(path, body);
+
+		const response = await legacyDispatchHandler(createEvent());
+
+		expect(fetchSpy).not.toHaveBeenCalled();
+		expect(mockedSetResponseStatus).not.toHaveBeenCalled();
+		expect(response).toMatchObject({
+			success: false,
+			code: "409",
+			message: `Phase7 guarded write blocked staff legacy endpoint: ${path}`,
+			data: null,
+			timestamp: expect.any(Number),
+		});
+		expect(response).not.toHaveProperty("msg");
+	});
+
+	test("staff detail exact sample is served by apps/api when fallback is disabled", async () => {
+		process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
+		const fetchSpy = vi.spyOn(globalThis, "fetch");
+		mockLegacyGetRequest("/app/staff/STAFF_001");
+
+		const response = await legacyDispatchHandler(createEvent());
+
+		expect(fetchSpy).not.toHaveBeenCalled();
+		expect(mockedSetResponseStatus).not.toHaveBeenCalled();
+		expect(response).toMatchObject({
+			success: true,
+			code: "0",
+			message: expect.any(String),
+			data: expect.objectContaining({
+				id: "STAFF_001",
+				name: "Alice Zhang",
+				tel: "13800000001",
+				orgName: "Property Management",
+				initials: "AZ",
+				position: "Property Manager",
+				email: "alice.zhang@property.example",
+				avatar: "https://example.test/staff-001.png",
+				isOnline: true,
+			}),
+			timestamp: expect.any(Number),
+		});
+		expect(response).not.toHaveProperty("msg");
+		expect(response).not.toHaveProperty("errorCode");
+	});
+
+	test.each([
 		["/app/maintenance.startMaintenanceTask", { taskId: "MT_001" }, "maintenance.startMaintenanceTask"],
 		["/app/maintenance.completeMaintenanceTask", { taskId: "MT_001" }, "maintenance.completeMaintenanceTask"],
 		[
@@ -217,6 +269,21 @@ describe("legacy-dispatch fallback drill", () => {
 			{ fromShId: "SH_001", toShId: "SH_002", resourceStores: [{ resName: "Office Desk" }] },
 			"resourceStore.saveAllocationStorehouse",
 		],
+		[
+			"/app/purchaseApply.auditApplyOrder",
+			{ applyOrderId: "PA_20240301_001", taskId: "TASK_001", auditCode: "1100" },
+			"purchaseApply.auditApplyOrder",
+		],
+		[
+			"/app/itemRelease.auditUndoItemRelease",
+			{ applyOrderId: "IO_20240301_001", taskId: "TASK_002", auditCode: "1100" },
+			"itemRelease.auditUndoItemRelease",
+		],
+		[
+			"/app/resourceStore.auditAllocationStoreOrder",
+			{ allocationId: "AL_20240301_001", taskId: "TASK_003", auditCode: "1100" },
+			"resourceStore.auditAllocationStoreOrder",
+		],
 	])(
 		"guarded resource endpoint keeps the legacy resource envelope when fallback is disabled: %s",
 		async (path, body, action) => {
@@ -239,6 +306,30 @@ describe("legacy-dispatch fallback drill", () => {
 			expect(response).not.toHaveProperty("msg");
 		},
 	);
+
+	test.each([
+		["/app/machine/openDoor", { machineCode: "MC_001" }],
+		["/app/machine/closeDoor", { machineCode: "MC_001" }],
+		["/app/machine.customCarInOutCmd", {}],
+	])("guarded parking endpoint keeps the legacy parking envelope when fallback is disabled: %s", async (path, body) => {
+		process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
+		const fetchSpy = vi.spyOn(globalThis, "fetch");
+		mockLegacyPostRequest(path, body);
+
+		const response = await legacyDispatchHandler(createEvent());
+
+		expect(fetchSpy).not.toHaveBeenCalled();
+		expect(mockedSetResponseStatus).not.toHaveBeenCalled();
+		expect(response).toMatchObject({
+			success: false,
+			code: "409",
+			message: `Phase7 mutation guard blocked parking legacy write endpoint: ${path}`,
+			data: null,
+			errorCode: "PHASE7_MUTATION_GUARDED",
+			timestamp: expect.any(Number),
+		});
+		expect(response).not.toHaveProperty("msg");
+	});
 
 	test.each([
 		[
@@ -470,6 +561,76 @@ describe("legacy-dispatch fallback drill", () => {
 				pageSize: 10,
 			}),
 		],
+		[
+			"/app/purchaseApply.listPurchaseApplys",
+			{ page: 1, row: 1 },
+			expect.objectContaining({
+				list: [expect.objectContaining({ applyOrderId: "PA_20240301_001" })],
+				total: 2,
+				page: 1,
+				pageSize: 1,
+			}),
+		],
+		[
+			"/app/itemRelease.listItemRelease",
+			{ page: 1, row: 2 },
+			expect.objectContaining({
+				list: expect.arrayContaining([expect.objectContaining({ applyOrderId: "IO_20240301_001" })]),
+				total: 2,
+				page: 1,
+				pageSize: 2,
+			}),
+		],
+		[
+			"/app/purchaseApply.listMyAuditOrders",
+			{ page: 1, row: 1 },
+			expect.objectContaining({
+				list: [expect.objectContaining({ taskId: "TASK_001", businessType: "Purchase Audit" })],
+				total: 1,
+				page: 1,
+				pageSize: 1,
+			}),
+		],
+		[
+			"/app/itemRelease.queryUndoItemRelease",
+			{ page: 1, row: 1 },
+			expect.objectContaining({
+				list: [expect.objectContaining({ taskId: "TASK_002", businessType: "Item Release Audit" })],
+				total: 1,
+				page: 1,
+				pageSize: 1,
+			}),
+		],
+		[
+			"/app/resourceStore.listAllocationStoreAuditOrders",
+			{ page: 1, row: 1 },
+			expect.objectContaining({
+				list: [expect.objectContaining({ taskId: "TASK_003", businessType: "Allocation Audit" })],
+				total: 1,
+				page: 1,
+				pageSize: 1,
+			}),
+		],
+		[
+			"/app/resourceStore.listAllocationStorehouses",
+			{ page: 1, row: 2 },
+			expect.objectContaining({
+				list: expect.arrayContaining([expect.objectContaining({ resId: "RES_001", resName: "Office Desk" })]),
+				total: 3,
+				page: 1,
+				pageSize: 2,
+			}),
+		],
+		[
+			"/app/resourceStore.queryMyResourceStoreInfo",
+			{ page: 1, row: 10, resName: "Desk", searchUserName: "Admin" },
+			expect.objectContaining({
+				list: [expect.objectContaining({ resId: "MY_RES_001", resName: "Office Desk", userName: "Admin" })],
+				total: 1,
+				page: 1,
+				pageSize: 10,
+			}),
+		],
 	])(
 		"readonly resource exact endpoint keeps the legacy resource envelope when fallback is disabled: %s",
 		async (path, query, expectedData) => {
@@ -491,6 +652,114 @@ describe("legacy-dispatch fallback drill", () => {
 			expect(response).not.toHaveProperty("msg");
 		},
 	);
+
+	test.each([
+		[
+			"/app/owner.queryOwnerCars",
+			{ page: 1, row: 1, carNumLike: "B123", ownerName: "Zhang" },
+			expect.objectContaining({
+				list: [expect.objectContaining({ carId: "CAR_0001", carNum: "B12345", ownerName: "Zhang San" })],
+				total: 1,
+				page: 1,
+				pageSize: 1,
+			}),
+		],
+		[
+			"/app/parkingArea.listParkingAreas",
+			{ page: 1, row: 10, communityId: "IGNORED_COMMUNITY" },
+			[expect.objectContaining({ paId: "PA_001", num: "P1" }), expect.objectContaining({ paId: "PA_002", num: "P2" })],
+		],
+		[
+			"/app/machine.listParkingAreaMachines",
+			{ paNum: "P1", page: 1, row: 10, communityId: "IGNORED_COMMUNITY" },
+			[
+				expect.objectContaining({ machineId: "M_001", machineCode: "MC_001" }),
+				expect.objectContaining({ machineId: "M_002", machineCode: "MC_002" }),
+			],
+		],
+		[
+			"/app/machine.getBarrierCloudVideo",
+			{ machineId: "M_002" },
+			{ url: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" },
+		],
+		[
+			"/app/carInout.listCarInParkingAreaCmd",
+			{ carNum: "B123", paId: "PA_001", page: 1, row: 10, communityId: "IGNORED_COMMUNITY", paNum: "IGNORED" },
+			[expect.objectContaining({ inoutId: "IO_0001", paId: "PA_001", carNum: "B12345" })],
+		],
+		[
+			"/app/parkingCoupon.listParkingCouponCar",
+			{ paId: "PA_001", page: 1, row: 1, state: "2000", carNum: "IGNORED_CAR" },
+			[
+				expect.objectContaining({ pccId: "PCC_001", typeCd: "2002", value: 5 }),
+				expect.objectContaining({ pccId: "PCC_002", typeCd: "1001", value: 30 }),
+				expect.objectContaining({ pccId: "PCC_003", typeCd: "3003", value: 8 }),
+			],
+		],
+		["/app/tempCarFee.getTempCarFeeOrder", { pccIds: "PCC_001,PCC_002" }, { amount: 14 }],
+		[
+			"/app/carInoutDetail.listCarInoutDetail",
+			{ page: 1, row: 1, paNum: "P2", communityId: "IGNORED_COMMUNITY" },
+			expect.objectContaining({
+				list: [expect.objectContaining({ inoutId: "IOD_0003", paNum: "P2", carNum: "B34567" })],
+				total: 1,
+				page: 1,
+				pageSize: 1,
+			}),
+		],
+		[
+			"/app/carInoutPayment.listCarInoutPayment",
+			{ page: 1, row: 10, paNum: "P2", communityId: "IGNORED_COMMUNITY" },
+			expect.objectContaining({
+				list: expect.arrayContaining([
+					expect.objectContaining({ inoutId: "IOP_0001", carNum: "B12345" }),
+					expect.objectContaining({ inoutId: "IOP_0003", carNum: "B34567" }),
+				]),
+				total: 3,
+				page: 1,
+				pageSize: 10,
+			}),
+		],
+	])(
+		"readonly parking exact endpoint keeps the legacy parking envelope when fallback is disabled: %s",
+		async (path, query, expectedData) => {
+			process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
+			const fetchSpy = vi.spyOn(globalThis, "fetch");
+			mockLegacyGetRequest(path, query);
+
+			const response = await legacyDispatchHandler(createEvent());
+
+			expect(fetchSpy).not.toHaveBeenCalled();
+			expect(mockedSetResponseStatus).not.toHaveBeenCalled();
+			expect(response).toMatchObject({
+				success: true,
+				code: "0",
+				message: expect.any(String),
+				data: expectedData,
+				timestamp: expect.any(Number),
+			});
+			expect(response).not.toHaveProperty("msg");
+		},
+	);
+
+	test("readonly parking barrier video endpoint keeps legacy 404 envelope when machine is missing", async () => {
+		process.env.PHASE7_LEGACY_APP_FALLBACK_ENABLED = "0";
+		const fetchSpy = vi.spyOn(globalThis, "fetch");
+		mockLegacyGetRequest("/app/machine.getBarrierCloudVideo", { machineId: "UNKNOWN_MACHINE" });
+
+		const response = await legacyDispatchHandler(createEvent());
+
+		expect(fetchSpy).not.toHaveBeenCalled();
+		expect(mockedSetResponseStatus).not.toHaveBeenCalled();
+		expect(response).toMatchObject({
+			success: false,
+			code: "404",
+			message: "设备不存在",
+			data: null,
+			timestamp: expect.any(Number),
+		});
+		expect(response).not.toHaveProperty("msg");
+	});
 
 	test.each([
 		[

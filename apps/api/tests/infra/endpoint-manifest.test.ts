@@ -168,6 +168,37 @@ const parkingAdminListEndpoints = [
 	"/api/property-manage/parking-manage/parking-lot/list",
 ] as const;
 
+const parkingReadonlyBatch34Endpoints = [
+	"/app/carInout.listCarInParkingAreaCmd",
+	"/app/parkingCoupon.listParkingCouponCar",
+	"/app/tempCarFee.getTempCarFeeOrder",
+] as const;
+
+const parkingReadonlyBatch35Endpoints = [
+	"/app/carInoutDetail.listCarInoutDetail",
+	"/app/carInoutPayment.listCarInoutPayment",
+] as const;
+
+const parkingReadonlyBatch36Endpoints = ["/app/machine.getBarrierCloudVideo"] as const;
+
+const parkingGuardedWriteBatch37Endpoints = [
+	"/app/machine.customCarInOutCmd",
+	"/app/machine/closeDoor",
+	"/app/machine/openDoor",
+] as const;
+
+const staffReadonlyBatch38Endpoints = [
+	"/app/staff/organizations",
+	"/app/staff/online",
+	"/app/staff/by-department",
+] as const;
+
+const staffReadonlyBatch39Endpoints = ["/app/query.staff.infos", "/app/staff/search"] as const;
+
+const staffGuardedWriteBatch40Endpoints = ["/app/staff/update-online-status", "/app/staff/add"] as const;
+
+const staffDetailSampleBatch41Endpoints = ["/app/staff/STAFF_001"] as const;
+
 const communityManageAdminListEndpoints = [
 	"/api/property-manage/community-manage/building-space-structure-diagram/list",
 	"/api/property-manage/community-manage/handing-business/list",
@@ -291,7 +322,41 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/purchase/urgentPurchaseApply");
 		expect(urls).toContain("/app/resourceStore.listStorehouses");
 		expect(urls).toContain("/app/resourceStore.listAllocationStorehouseApplys");
+		expect(urls).toContain("/app/purchaseApply.listPurchaseApplys");
+		expect(urls).toContain("/app/itemRelease.listItemRelease");
+		expect(urls).toContain("/app/purchaseApply.listMyAuditOrders");
+		expect(urls).toContain("/app/itemRelease.queryUndoItemRelease");
+		expect(urls).toContain("/app/resourceStore.listAllocationStoreAuditOrders");
+		expect(urls).toContain("/app/resourceStore.listAllocationStorehouses");
+		expect(urls).toContain("/app/resourceStore.queryMyResourceStoreInfo");
 		expect(urls).toContain("/app/resourceStore.saveAllocationStorehouse");
+		expect(urls).toContain("/app/owner.queryOwnerCars");
+		expect(urls).toContain("/app/parkingArea.listParkingAreas");
+		expect(urls).toContain("/app/machine.listParkingAreaMachines");
+		for (const url of parkingReadonlyBatch34Endpoints) {
+			expect(urls).toContain(url);
+		}
+		for (const url of parkingReadonlyBatch35Endpoints) {
+			expect(urls).toContain(url);
+		}
+		for (const url of parkingReadonlyBatch36Endpoints) {
+			expect(urls).toContain(url);
+		}
+		for (const url of parkingGuardedWriteBatch37Endpoints) {
+			expect(urls).toContain(url);
+		}
+		for (const url of staffReadonlyBatch38Endpoints) {
+			expect(urls).toContain(url);
+		}
+		for (const url of staffReadonlyBatch39Endpoints) {
+			expect(urls).toContain(url);
+		}
+		for (const url of staffGuardedWriteBatch40Endpoints) {
+			expect(urls).toContain(url);
+		}
+		for (const url of staffDetailSampleBatch41Endpoints) {
+			expect(urls).toContain(url);
+		}
 		expect(urls).toContain("/app/couponProperty.listCouponPropertyUserDetail");
 		expect(urls).toContain("/app/integral.listIntegralSetting");
 		expect(urls).toContain("/app/integral.listIntegralUserDetail");
@@ -396,8 +461,6 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).not.toContain("/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord");
 		expect(urls).not.toContain("/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord");
 		expect(urls).not.toContain("/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord");
-		expect(urls).not.toContain("/app/owner.queryOwnerCars");
-		expect(urls).not.toContain("/app/machine/openDoor");
 	});
 
 	test("exposes readonly endpoint manifest without database configuration", async () => {
@@ -961,6 +1024,35 @@ describe("phase7 endpoint manifest", () => {
 						cutoverStatus: "app-shadow-allowlist",
 					}),
 				),
+				...[
+					"/app/purchaseApply.listPurchaseApplys",
+					"/app/itemRelease.listItemRelease",
+					"/app/purchaseApply.listMyAuditOrders",
+					"/app/itemRelease.queryUndoItemRelease",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "GET",
+						ownerModule: "resource",
+						phase: "phase7-resource-readonly-batch31",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...[
+					"/app/resourceStore.listAllocationStoreAuditOrders",
+					"/app/resourceStore.listAllocationStorehouses",
+					"/app/resourceStore.queryMyResourceStoreInfo",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "GET",
+						ownerModule: "resource",
+						phase: "phase7-resource-readonly-batch32",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
 				expect.objectContaining({
 					url: "/app/resourceStore.saveAllocationStorehouse",
 					method: "POST",
@@ -969,6 +1061,100 @@ describe("phase7 endpoint manifest", () => {
 					responseContract: "{ success, code, message, data, timestamp }",
 					cutoverStatus: "blocked-for-execution",
 				}),
+				...[
+					"/app/purchaseApply.auditApplyOrder",
+					"/app/itemRelease.auditUndoItemRelease",
+					"/app/resourceStore.auditAllocationStoreOrder",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "resource",
+						phase: "phase7-resource-guarded-write-batch42",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
+				...parkingReadonlyBatch34Endpoints.map((url) =>
+					expect.objectContaining({
+						url,
+						method: "GET",
+						ownerModule: "parking",
+						phase: "phase7-parking-readonly-batch34",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...parkingReadonlyBatch35Endpoints.map((url) =>
+					expect.objectContaining({
+						url,
+						method: "GET",
+						ownerModule: "parking",
+						phase: "phase7-parking-readonly-batch35",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...parkingReadonlyBatch36Endpoints.map((url) =>
+					expect.objectContaining({
+						url,
+						method: "GET",
+						ownerModule: "parking",
+						phase: "phase7-parking-readonly-batch36",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...parkingGuardedWriteBatch37Endpoints.map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "parking",
+						phase: "phase7-parking-guarded-write-batch37",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
+				...staffReadonlyBatch38Endpoints.map((url) =>
+					expect.objectContaining({
+						url,
+						method: url === "/app/staff/by-department" ? ["GET", "POST"] : "GET",
+						ownerModule: "staff",
+						phase: "phase7-staff-readonly-batch38",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...staffReadonlyBatch39Endpoints.map((url) =>
+					expect.objectContaining({
+						url,
+						method: ["GET", "POST"],
+						ownerModule: "staff",
+						phase: "phase7-staff-readonly-batch39",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...staffGuardedWriteBatch40Endpoints.map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "staff",
+						phase: "phase7-staff-guarded-write-batch40",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
+				...staffDetailSampleBatch41Endpoints.map((url) =>
+					expect.objectContaining({
+						url,
+						method: "GET",
+						ownerModule: "staff",
+						phase: "phase7-staff-detail-sample-batch41",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
 				...["/app/purchase/purchaseApply", "/app/purchase/urgentPurchaseApply"].map((url) =>
 					expect.objectContaining({
 						url,

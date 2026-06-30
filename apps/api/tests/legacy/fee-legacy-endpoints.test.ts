@@ -54,7 +54,8 @@ describe("fee legacy endpoints", () => {
 			expect(findEndpointDefinition(registry, "POST", path)).toBeTruthy();
 		}
 		expect(findEndpointDefinition(registry, "POST", "/app/payment.nativeQrcodePayment")).toBeTruthy();
-		expect(findEndpointDefinition(registry, "POST", "/app/machine/openDoor")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/machine/openDoor")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/machine/openDoor")).toBeUndefined();
 	});
 
 	test("blocks payment, callable write, and fee-create actions by default in phase7 execution guard", async () => {

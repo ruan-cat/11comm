@@ -10,6 +10,13 @@ import { runtimeEndpointDefinitions } from "../../server/shared/runtime/runtime-
 const readonlyResourceEndpoints = [
 	"/app/resourceStore.listStorehouses",
 	"/app/resourceStore.listAllocationStorehouseApplys",
+	"/app/purchaseApply.listPurchaseApplys",
+	"/app/itemRelease.listItemRelease",
+	"/app/purchaseApply.listMyAuditOrders",
+	"/app/itemRelease.queryUndoItemRelease",
+	"/app/resourceStore.listAllocationStoreAuditOrders",
+	"/app/resourceStore.listAllocationStorehouses",
+	"/app/resourceStore.queryMyResourceStoreInfo",
 ] as const;
 
 const guardedResourceEndpoints = [
@@ -18,10 +25,25 @@ const guardedResourceEndpoints = [
 		{ fromShId: "SH_001", toShId: "SH_002", resourceStores: [{ resName: "Office Desk" }] },
 		"resourceStore.saveAllocationStorehouse",
 	],
+	[
+		"/app/purchaseApply.auditApplyOrder",
+		{ applyOrderId: "PA_20240301_001", taskId: "TASK_001", auditCode: "1100" },
+		"purchaseApply.auditApplyOrder",
+	],
+	[
+		"/app/itemRelease.auditUndoItemRelease",
+		{ applyOrderId: "IO_20240301_001", taskId: "TASK_002", auditCode: "1100" },
+		"itemRelease.auditUndoItemRelease",
+	],
+	[
+		"/app/resourceStore.auditAllocationStoreOrder",
+		{ allocationId: "AL_20240301_001", taskId: "TASK_003", auditCode: "1100" },
+		"resourceStore.auditAllocationStoreOrder",
+	],
 ] as const;
 
 describe("resource app legacy exact endpoints", () => {
-	test("registers readonly resource endpoints and guarded allocation write with explicit method boundaries", () => {
+	test("registers readonly resource endpoints and guarded resource writes with explicit method boundaries", () => {
 		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
 
 		for (const url of readonlyResourceEndpoints) {
@@ -78,6 +100,148 @@ describe("resource app legacy exact endpoints", () => {
 			message: expect.any(String),
 			data: {
 				list: [expect.objectContaining({ allocationId: "AL_20240301_001", state: 1200 })],
+				total: 1,
+				page: 1,
+				pageSize: 10,
+				hasMore: false,
+			},
+			timestamp: expect.any(Number),
+		});
+		expect(response).not.toHaveProperty("msg");
+	});
+
+	test.each([
+		[
+			"/app/purchaseApply.listPurchaseApplys",
+			{ page: 1, row: 1, communityId: "IGNORED_COMMUNITY" },
+			{
+				list: [
+					expect.objectContaining({ applyOrderId: "PA_20240301_001", resourceNames: "Office Desk, Office Chair" }),
+				],
+				total: 2,
+				page: 1,
+				pageSize: 1,
+				hasMore: true,
+			},
+		],
+		[
+			"/app/itemRelease.listItemRelease",
+			{ page: 1, row: 2, communityId: "IGNORED_COMMUNITY" },
+			{
+				list: expect.arrayContaining([
+					expect.objectContaining({ applyOrderId: "IO_20240301_001", resourceNames: "Desktop Computer" }),
+				]),
+				total: 2,
+				page: 1,
+				pageSize: 2,
+				hasMore: false,
+			},
+		],
+		[
+			"/app/purchaseApply.listMyAuditOrders",
+			{ page: 1, row: 1, communityId: "IGNORED_COMMUNITY" },
+			{
+				list: [
+					expect.objectContaining({
+						taskId: "TASK_001",
+						businessId: "PA_20240301_001",
+						businessType: "Purchase Audit",
+					}),
+				],
+				total: 1,
+				page: 1,
+				pageSize: 1,
+				hasMore: false,
+			},
+		],
+		[
+			"/app/itemRelease.queryUndoItemRelease",
+			{ page: 1, row: 1, communityId: "IGNORED_COMMUNITY" },
+			{
+				list: [
+					expect.objectContaining({
+						taskId: "TASK_002",
+						businessId: "IO_20240301_001",
+						businessType: "Item Release Audit",
+					}),
+				],
+				total: 1,
+				page: 1,
+				pageSize: 1,
+				hasMore: false,
+			},
+		],
+		[
+			"/app/resourceStore.listAllocationStoreAuditOrders",
+			{ page: 1, row: 1, communityId: "IGNORED_COMMUNITY" },
+			{
+				list: [
+					expect.objectContaining({
+						taskId: "TASK_003",
+						businessId: "AL_20240301_001",
+						businessType: "Allocation Audit",
+					}),
+				],
+				total: 1,
+				page: 1,
+				pageSize: 1,
+				hasMore: false,
+			},
+		],
+		[
+			"/app/resourceStore.listAllocationStorehouses",
+			{ page: 1, row: 2, communityId: "IGNORED_COMMUNITY" },
+			{
+				list: expect.arrayContaining([expect.objectContaining({ resId: "RES_001", resName: "Office Desk" })]),
+				total: 3,
+				page: 1,
+				pageSize: 2,
+				hasMore: true,
+			},
+		],
+	])(
+		"returns the legacy resource success envelope for readonly resource old source endpoint: %s",
+		async (path, query, data) => {
+			const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+			const response = await dispatchEndpoint(registry, {
+				method: "GET",
+				path,
+				query,
+			});
+
+			expect(response).toMatchObject({
+				success: true,
+				code: "0",
+				message: expect.any(String),
+				data,
+				timestamp: expect.any(Number),
+			});
+			expect(response).not.toHaveProperty("msg");
+		},
+	);
+
+	test("filters personal resource store info by resource name and user name", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/resourceStore.queryMyResourceStoreInfo",
+			query: { page: 1, row: 10, resName: "Desk", searchUserName: "Admin" },
+		});
+
+		expect(response).toMatchObject({
+			success: true,
+			code: "0",
+			message: expect.any(String),
+			data: {
+				list: [
+					expect.objectContaining({
+						resId: "MY_RES_001",
+						resName: "Office Desk",
+						userName: "Admin",
+					}),
+				],
 				total: 1,
 				page: 1,
 				pageSize: 10,
