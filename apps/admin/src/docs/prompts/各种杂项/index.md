@@ -660,3 +660,15 @@ admin 仍有 legacy db/seed、nitro config、drizzle compatibility、R2/upload �
 我需要你设计一个能够被 codex goal 完整执行的长任务。并扫清，解决掉上述的问题，最后达到可以安全删除 app 和 admin 内置的 nitro 接口，确保独立的 api 项目能够同时支撑两个前端项目。
 
 我觉得本质上是 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 这个长任务没做好。你应该继续让这个长任务，拓展，补全 task 任务清单，然后继续推进剩余的任务。最终达到可以安全删除 app 和 admin 项目内部的 nitro 接口的目的。
+
+### 06 <!-- TODO: --> 及时删改 APP 项目仍旧使用的旧 nitro 接口命令
+
+工作流出现以下错误：
+
+```log
+Run pnpm -F @01s-11comm/app run build:nitro:vercel
+[ERR_PNPM_RECURSIVE_RUN_NO_SCRIPT] None of the selected packages has a "build:nitro:vercel" script
+Error: Process completed with exit code 1.
+```
+
+我们现在已经评估 admin 和 APP 的 nitro 接口都可以退役了，这是退役的部分删除不干净的情况。请你处理这个问题。按理说你应该在 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 内继续增加该内容，然后继续跟进 nitro 接口退役的事情。
