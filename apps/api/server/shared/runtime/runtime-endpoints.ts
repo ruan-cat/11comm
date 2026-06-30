@@ -11,12 +11,14 @@ import { maintenanceLegacyEndpointDefinitions } from "../../modules/maintenance/
 import { meterLegacyEndpointDefinitions } from "../../modules/meter/legacy-endpoints";
 import { noticeLegacyEndpointDefinitions } from "../../modules/notice/legacy-endpoints";
 import { ownerLegacyEndpointDefinitions } from "../../modules/owner/legacy-endpoints";
+import { parkingLegacyEndpointDefinitions } from "../../modules/parking/legacy-endpoints";
 import { profileLegacyEndpointDefinitions } from "../../modules/profile/legacy-endpoints";
 import { propertyApplicationLegacyEndpointDefinitions } from "../../modules/property-application/legacy-endpoints";
 import { purchaseLegacyEndpointDefinitions } from "../../modules/purchase/legacy-endpoints";
 import { repairLegacyEndpointDefinitions } from "../../modules/repair/legacy-endpoints";
 import { resourceLegacyEndpointDefinitions } from "../../modules/resource/legacy-endpoints";
 import { roomUnitLegacyEndpointDefinitions } from "../../modules/room-unit/legacy-endpoints";
+import { staffLegacyEndpointDefinitions } from "../../modules/staff/legacy-endpoints";
 import { videoLegacyEndpointDefinitions } from "../../modules/video/legacy-endpoints";
 import { visitLegacyEndpointDefinitions } from "../../modules/visit/legacy-endpoints";
 import { workOrderLegacyEndpointDefinitions } from "../../modules/work-order/legacy-endpoints";
@@ -66,6 +68,9 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/purchase/purchaseApply",
 	"/app/purchase/urgentPurchaseApply",
 	"/app/resourceStore.saveAllocationStorehouse",
+	"/app/purchaseApply.auditApplyOrder",
+	"/app/itemRelease.auditUndoItemRelease",
+	"/app/resourceStore.auditAllocationStoreOrder",
 	"/app/visit.auditVisit",
 	"/app/itemRelease.auditItemRelease",
 	"/app/inspection.submitInspection",
@@ -95,6 +100,8 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/workorder/audit",
 	"/app/workorder/cancel",
 	"/app/workorder/copy/finish",
+	"/app/staff/update-online-status",
+	"/app/staff/add",
 ]);
 
 const phase7RepairReadonlyAppShadowUrls = new Set([
@@ -109,6 +116,62 @@ const phase7RepairReadonlyAppShadowUrls = new Set([
 	"/app/repair.listRepairTypeUsers",
 	"/app/resourceStore.listResources",
 ]);
+
+const phase7ResourceReadonlyBatch31Urls = new Set([
+	"/app/purchaseApply.listPurchaseApplys",
+	"/app/itemRelease.listItemRelease",
+	"/app/purchaseApply.listMyAuditOrders",
+	"/app/itemRelease.queryUndoItemRelease",
+]);
+
+const phase7ResourceReadonlyBatch32Urls = new Set([
+	"/app/resourceStore.listAllocationStoreAuditOrders",
+	"/app/resourceStore.listAllocationStorehouses",
+	"/app/resourceStore.queryMyResourceStoreInfo",
+]);
+
+const phase7ResourceGuardedWriteBatch42Urls = new Set([
+	"/app/purchaseApply.auditApplyOrder",
+	"/app/itemRelease.auditUndoItemRelease",
+	"/app/resourceStore.auditAllocationStoreOrder",
+]);
+
+const phase7ParkingReadonlyBatch33Urls = new Set([
+	"/app/owner.queryOwnerCars",
+	"/app/parkingArea.listParkingAreas",
+	"/app/machine.listParkingAreaMachines",
+]);
+
+const phase7ParkingReadonlyBatch34Urls = new Set([
+	"/app/carInout.listCarInParkingAreaCmd",
+	"/app/parkingCoupon.listParkingCouponCar",
+	"/app/tempCarFee.getTempCarFeeOrder",
+]);
+
+const phase7ParkingReadonlyBatch35Urls = new Set([
+	"/app/carInoutDetail.listCarInoutDetail",
+	"/app/carInoutPayment.listCarInoutPayment",
+]);
+
+const phase7ParkingReadonlyBatch36Urls = new Set(["/app/machine.getBarrierCloudVideo"]);
+
+const phase7ParkingGuardedWriteBatch37Urls = new Set([
+	"/app/machine/openDoor",
+	"/app/machine/closeDoor",
+	"/app/machine.customCarInOutCmd",
+]);
+
+const phase7StaffReadonlyBatch38Urls = new Set([
+	"/app/staff/organizations",
+	"/app/staff/online",
+	"/app/staff/by-department",
+]);
+
+const phase7StaffReadonlyBatch39Urls = new Set(["/app/query.staff.infos", "/app/staff/search"]);
+
+const phase7StaffGuardedWriteBatch40Urls = new Set(["/app/staff/update-online-status", "/app/staff/add"]);
+
+const phase7StaffDetailSampleBatch41Urls = new Set(["/app/staff/STAFF_001"]);
 
 const runtimeEndpointEntries = [
 	...activityLegacyEndpointDefinitions.map((definition) => ({
@@ -242,6 +305,18 @@ const runtimeEndpointEntries = [
 		phase: getResourceLegacyPhase(definition),
 		ownerModule: "resource",
 		cutoverStatus: getResourceLegacyCutoverStatus(definition),
+	})),
+	...parkingLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getParkingLegacyPhase(definition),
+		ownerModule: "parking",
+		cutoverStatus: getParkingLegacyCutoverStatus(definition),
+	})),
+	...staffLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getStaffLegacyPhase(definition),
+		ownerModule: "staff",
+		cutoverStatus: getStaffLegacyCutoverStatus(definition),
 	})),
 ];
 
@@ -1170,7 +1245,12 @@ function createAdminManifestEntry(
 }
 
 function getAppLegacyResponseContract(ownerModule: string): EndpointManifestResponseContract {
-	if (ownerModule === "maintenance" || ownerModule === "resource") {
+	if (
+		ownerModule === "maintenance" ||
+		ownerModule === "resource" ||
+		ownerModule === "parking" ||
+		ownerModule === "staff"
+	) {
 		return "{ success, code, message, data, timestamp }";
 	}
 
@@ -1503,9 +1583,81 @@ function getResourceLegacyCutoverStatus(definition: EndpointDefinition): Endpoin
 }
 
 function getResourceLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7ResourceGuardedWriteBatch42Urls.has(definition.url)) {
+		return "phase7-resource-guarded-write-batch42";
+	}
+
 	if (definition.url === "/app/resourceStore.saveAllocationStorehouse") {
 		return "phase7-resource-guarded-write-batch30";
 	}
 
+	if (phase7ResourceReadonlyBatch31Urls.has(definition.url)) {
+		return "phase7-resource-readonly-batch31";
+	}
+
+	if (phase7ResourceReadonlyBatch32Urls.has(definition.url)) {
+		return "phase7-resource-readonly-batch32";
+	}
+
 	return "phase7-resource-readonly-batch30";
+}
+
+function getParkingLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7ParkingGuardedWriteBatch37Urls.has(definition.url)) {
+		return "phase7-parking-guarded-write-batch37";
+	}
+
+	if (phase7ParkingReadonlyBatch33Urls.has(definition.url)) {
+		return "phase7-parking-readonly-batch33";
+	}
+
+	if (phase7ParkingReadonlyBatch34Urls.has(definition.url)) {
+		return "phase7-parking-readonly-batch34";
+	}
+
+	if (phase7ParkingReadonlyBatch35Urls.has(definition.url)) {
+		return "phase7-parking-readonly-batch35";
+	}
+
+	if (phase7ParkingReadonlyBatch36Urls.has(definition.url)) {
+		return "phase7-parking-readonly-batch36";
+	}
+
+	return "phase7-parking-readonly-batch33";
+}
+
+function getParkingLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7ParkingGuardedWriteBatch37Urls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getStaffLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7StaffDetailSampleBatch41Urls.has(definition.url)) {
+		return "phase7-staff-detail-sample-batch41";
+	}
+
+	if (phase7StaffGuardedWriteBatch40Urls.has(definition.url)) {
+		return "phase7-staff-guarded-write-batch40";
+	}
+
+	if (phase7StaffReadonlyBatch39Urls.has(definition.url)) {
+		return "phase7-staff-readonly-batch39";
+	}
+
+	if (phase7StaffReadonlyBatch38Urls.has(definition.url)) {
+		return "phase7-staff-readonly-batch38";
+	}
+
+	return "phase7-staff-readonly-batch38";
+}
+
+function getStaffLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7StaffGuardedWriteBatch40Urls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
 }
