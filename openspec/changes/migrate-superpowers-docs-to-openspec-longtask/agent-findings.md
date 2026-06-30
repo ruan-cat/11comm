@@ -1,5 +1,101 @@
 # 代理发现记录
 
+## 2026-06-08 app task438/task439 resource 第四十二批 POST-only guarded exact 边界
+
+`phase7-resource-guarded-write-batch42` 已将 `/app/purchaseApply.auditApplyOrder`、`/app/itemRelease.auditUndoItemRelease` 与 `/app/resourceStore.auditAllocationStoreOrder` 收敛为 `apps/api` resource 模块 POST-only guarded exact。三条只注册 POST，GET 为 undefined；fallback disabled 时不调用旧 app fallback fetch，直接返回 resource fail-closed envelope：`{ success:false, code:"409", message, data:null, timestamp, errorCode:"PHASE7_MUTATION_GUARDED" }`，且无 `msg` 字段。该 guard 只阻断执行，不校验旧 body，不执行真实采购申请审核、待办放行审核或调拨审核。
+
+验证记录：目标矩阵 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/resource-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，7 files / 522 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过。工具记录：Einstein 只读复核指出实现、runtime 与 API contract evidence 缺口；Lagrange 后续已把实现和 runtime 接入当前 diff，但未在超时前返回总结；主代理关闭运行句柄后完成测试验证与文档补丁。Kuhn、Lagrange、Avicenna 均因超时被关闭，未保留为独立完成证明。
+
+禁止误判：`/app/resourceStoreType.listResourceStoreTypes` 仍未完成，且共享 repair/resource 旧语义复杂，不能因第四十二批关闭而误删、误标退休或从 no-go 边界移除。第四十二批后 resource 局部 remaining 不应再包含这三条审核 POST，但 `/app/collection/resourceOut`、`/app/purchase/resourceEnter`、`/app/purchaseApply.deletePurchaseApply`、`/app/resourceStore.deleteAllocationStorehouse`、`/app/resourceStore.allocationStoreEnter`、`/app/resourceStore.saveAllocationUserStorehouse`、`/app/resourceStore.saveResourceReturn`、`/app/resourceStore.saveResourceScrap` 等仍不属于本批完成范围。不得把本批写成 resource DB_READY、真实审核写入、生产 App H5 Network、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate 或旧服务退役证据。task438/task439 仍保持 open。
+
+## 2026-06-08 app task438/task439 staff 第四十一批 exact 样例详情边界
+
+`phase7-staff-detail-sample-batch41` 只把 exact URL `/app/staff/STAFF_001` 收敛到 `apps/api` staff 模块。该路径只注册 GET，POST 为 undefined；fallback disabled 时不调用旧 app fallback fetch，直接返回旧 staff success envelope：`{ success:true, code:"0", message, data, timestamp }`，其中 `data.id = "STAFF_001"`。该 envelope 仍保持 staff 模块 `{ success, code, message, data, timestamp }` 契约，不新增 `msg` 或 `errorCode`。本批没有实现泛化动态 `/app/staff/:staffId` 路由匹配。
+
+验证记录：目标矩阵 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/staff-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，7 files / 519 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过。工具记录：Leibniz 只读探索建议 exact 样例详情；Feynman 与 Boyle 两个编辑子代理均超时并被关闭，主代理接手当前 half-diff 后完成收敛验证，因此本批没有可采纳的编辑子代理 RED 摘要。
+
+禁止误判：第四十一批后 staff 局部 remaining 只应保留动态 `/app/staff/:staffId`；`/app/staff/STAFF_001` 已不应继续出现在 remaining gap 或 `staffLegacyAdapterEvidence.notCovered` 中。不得把 exact 样例详情写成动态详情泛化、真实员工新增、在线状态更新、DB-backed staff、生产 App H5 Network、拼音搜索完整兼容、write/read-back/rollback、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate 或旧服务退役证据。task438/task439 仍保持 open。
+
+## 2026-06-08 app task438/task439 staff 第四十批 guarded write 边界
+
+`phase7-staff-guarded-write-batch40` 已将 `/app/staff/update-online-status` 与 `/app/staff/add` 收敛为 `apps/api` staff 模块 POST-only guarded exact。两条只注册 POST，GET 为 undefined；fallback disabled 时不调用旧 app fallback fetch，直接返回旧 staff fail-closed envelope：`{ success:false, code:"409", message:"Phase7 guarded write blocked staff legacy endpoint: <path>", data:null, timestamp }`。该 envelope 故意保持 staff 模块现有 `{ success, code, message, data, timestamp }` 契约，不新增 `msg` 或 `errorCode`。
+
+验证记录：staff/gap 两文件通过 184 tests；runtime registry/fallback drill 两文件通过 101 tests；infra manifest/module layering/API contracts 三文件通过 231 tests；合并矩阵七文件通过 516 tests；`pnpm -F @01s-11comm/api run typecheck` 通过。typecheck 失败路径曾定位到 `staff-legacy-endpoints.test.ts` 中 `dispatchEndpoint` 返回宽类型导致在线员工数组元素被推断为 `any`，已通过 `StaffOnlineResult` 显式收窄测试数据类型修复。探索子代理 PASS，确认 `legacy-dispatch-fallback-drill.test.ts` 已覆盖两条 staff guarded writes；编辑子代理完成补测并单文件 98 tests passed。
+
+禁止误判：第四十批后 staff 局部 remaining 只应保留动态 `/app/staff/:staffId` 与样例 `/app/staff/STAFF_001`，且该动态详情仍由 `staffLegacyAdapterEvidence.notCovered`、`app-legacy-gap-registry.test.ts` 与 `phase7-api-contracts.test.ts` 显式保护。不得把两条 guarded writes 写成真实员工新增、在线状态更新、DB-backed staff、生产 App H5 Network、拼音搜索完整兼容、write/read-back/rollback、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate 或旧服务退役证据。task438/task439 仍保持 open。
+
+## 2026-06-08 app task438/task439 staff 第三十九批 readonly exact 边界
+
+`phase7-staff-readonly-batch39` 已将 `/app/query.staff.infos` 与 `/app/staff/search` 收敛到 `apps/api` staff 模块。两条均注册 GET+POST，且通过 `mergeInput(query, body)` 维持旧调用端的 body 覆盖 query 行为。`query.staff.infos` 支持分页、name/orgName/initials 过滤和 initials 排序；`staff/search` 支持 keyword 搜索 `name/orgName/position/email/tel/initials/id`，缺 keyword 返回旧 staff 400 失败 envelope。两条成功响应均返回 `{ success, code, message, data, timestamp }`，且无 `msg` 字段；数据来自 deterministic compat seed，不写 DB，不触发旧 app fallback。
+
+验证记录：RED `pnpm -F @01s-11comm/api exec vitest run tests/legacy/staff-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts` 先失败于 query/search 未注册，2 files failed / 11 failed；实现后同命令通过，2 files / 183 tests passed。扩展矩阵 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/staff-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，6 files / 415 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过。agent team 已按要求创建探索、编辑和复核成员，但 multi-agent 执行通道在本轮多次返回 429 或超时，主代理关闭运行句柄后完成本批最小实现与验证。
+
+禁止误判：第三十九批后 staff 局部 remaining 应保留 `/app/staff/update-online-status`、`/app/staff/add` 与动态 `/app/staff/:staffId`/样例 `/app/staff/STAFF_001`。本批不升级 retirementDecision，不代表 staff DB_READY、生产 App H5 Network、真实通讯录数据、员工新增、在线状态更新、动态详情、拼音搜索完整兼容、write/read-back/rollback、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate、旧服务退役或旧 app server 删除许可。task438/task439 仍保持 open。
+
+## 2026-06-08 app task438/task439 staff 第三十八批 readonly exact 边界
+
+`phase7-staff-readonly-batch38` 已将 `/app/staff/organizations`、`/app/staff/online` 与 `/app/staff/by-department` 收敛到 `apps/api` staff 模块。`organizations` 与 `online` 只注册 GET，POST 为 undefined；`by-department` 同时注册 GET 与 POST，但语义仍是只读筛选，POST body 通过 `mergeInput(query, body)` 覆盖 query。三条都返回旧 app staff `{ success, code, message, data, timestamp }` envelope，且无 `msg` 字段；数据来自 deterministic compat seed，不写 DB，不触发旧 app fallback。
+
+验证记录：RED `pnpm -F @01s-11comm/api exec vitest run tests/legacy/staff-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts` 先失败于 staff endpoint 未注册，2 files failed / 12 failed；实现后同命令通过，2 files / 175 tests passed。扩展矩阵 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/staff-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，6 files / 407 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过。收尾验证：`openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过；`git diff --check` 通过。本轮未复跑全量 fresh scan，不刷新 overall fallbackOnly；本批只记录 staff 局部 batch38 事实。
+
+禁止误判：第三十八批后 staff 局部 remaining 应保留 `/app/query.staff.infos`、`/app/staff/search`、`/app/staff/update-online-status`、`/app/staff/add` 与动态 `/app/staff/:staffId`/`/app/staff/STAFF_001`。本批不升级 retirementDecision，不代表 staff DB_READY、生产 App H5 Network、真实通讯录数据、员工新增、在线状态更新、动态详情、拼音搜索、write/read-back/rollback、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate、旧服务退役或旧 app server 删除许可。task438/task439 仍保持 open。
+
+## 2026-06-08 app task438/task439 parking 第三十七批 POST-only guarded exact 边界
+
+`phase7-parking-guarded-write-batch37` 已将 `/app/machine/openDoor`、`/app/machine/closeDoor` 与 `/app/machine.customCarInOutCmd` 收敛为 `apps/api` parking 模块 POST-only guarded exact。三条从 `excludedWriteEndpoints` 移入 `guardedEndpoints`，`defaultWriteBehavior = "blocked-for-execution"`；三条只注册 POST，GET 为 undefined。fallback disabled 时由 `apps/api` 直接返回 parking legacy fail-closed envelope：`{ success:false, code:"409", message:"Phase7 mutation guard blocked parking legacy write endpoint: <path>", data:null, timestamp, errorCode:"PHASE7_MUTATION_GUARDED" }`，无 `msg` 字段；不校验旧 body，不执行真实开闸、关闸或车辆进出场，不调用旧 app fallback，不写 DB，不访问真实 IoT 或设备。
+
+验证记录：目标矩阵 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/parking-legacy-endpoints.test.ts tests/legacy/repair-legacy-endpoints.test.ts tests/legacy/fee-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，9 files / 519 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过；`git diff --check` 通过。本轮未执行 `git add`、`git commit` 或 `git push`。`parkingLegacyAdapterEvidence.scope = "readonly-exact-handler-batch36-plus-guarded-write-batch37"`；runtime phase 为 `phase7-parking-guarded-write-batch37`，cutoverStatus 为 `blocked-for-execution`，responseContract 为 `{ success, code, message, data, timestamp }`。本轮未复跑全量 fresh scan，不记录新的 overall fallbackOnly；本批只记录 parking 局部 remaining 从三条变为 0。
+
+禁止误判：第三十七批不升级 retirementDecision，不代表 parking DB_READY、生产 App H5 Network、真实设备控制、真实车辆进出场、真实停车写入、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate、旧服务退役或旧 app server 删除许可。task438/task439 仍保持 open。
+
+## 2026-06-08 app task438/task439 parking 第三十六批 GET-only readonly exact 边界
+
+`phase7-parking-readonly-batch36` 已将 `/app/machine.getBarrierCloudVideo` 收敛为 `apps/api` parking 模块 GET-only readonly exact。该路径仅注册 GET，POST 为 undefined；fallback disabled 时返回旧 `{ success, code, message, data, timestamp }` envelope，且无 `msg` 字段。成功 `data` 为 `{ url }`；缺失或未知 `machineId` 返回旧错误 envelope `{ success: false, code: "404", message: "设备不存在", data: null, timestamp }`。数据来源为 deterministic/in-memory compat seed，不写 DB，不访问真实摄像头或真实道闸设备，不触发旧 app fallback fetch。
+
+验证记录：目标矩阵 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/parking-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，7 files / 490 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过；`git diff --check` 通过。本轮未执行 `git add`、`git commit` 或 `git push`。检查复核子代理 PASS，确认 POST 未注册、错误 envelope 正确、runtime metadata 正确、高风险写命令未开放。本轮未复跑全量 fresh scan，不记录新的 overall fallbackOnly；本批只记录局部 batch36 事实，并修正 parking 局部 remaining。
+
+禁止误判：第三十六批后 parking 局部 remaining 应只保留 `/app/machine.customCarInOutCmd`、`/app/machine/closeDoor` 与 `/app/machine/openDoor` 三条。`/app/machine.customCarInOutCmd`、`/app/machine/closeDoor`、`/app/machine/openDoor` 三条高风险写入口仍未迁移，保持未注册/排除。第三十六批不代表 parking 模块完成、fallback 清零、DB_READY、生产 app H5、真实摄像头、真实设备控制、真实车辆进出场、真实支付或扣费，不代表 write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate、旧服务退役或旧 app server 删除许可。task438/task439 仍保持 open。
+
+## 2026-06-07 app task438/task439 parking 第三十五批 GET-only readonly exact 边界
+
+`phase7-parking-readonly-batch35` 已将 `/app/carInoutDetail.listCarInoutDetail` 与 `/app/carInoutPayment.listCarInoutPayment` 收敛为 `apps/api` parking 模块 GET-only readonly exact。两条路径仅注册 GET，POST 为 undefined；fallback disabled 时返回旧 `{ success, code, message, data, timestamp }` envelope，且无 `msg` 字段。`data` 为分页对象 `{ list, total, page, pageSize, hasMore }`；数据来源为 deterministic/in-memory compat seed，不写 DB，不触发旧 app fallback fetch。`carInoutPayment` 保留旧兼容语义：不按 `paNum` 过滤，不执行真实支付或扣费。
+
+验证记录：目标矩阵 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/parking-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，7 files / 486 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过。本轮未复跑全量 fresh scan，不记录新的 overall fallbackOnly；本批只记录局部 batch35 事实，并修正 parking 局部 remaining。
+
+禁止误判：第三十五批后 parking 局部 remaining 应只保留 `/app/machine.customCarInOutCmd`、`/app/machine.getBarrierCloudVideo`、`/app/machine/closeDoor` 与 `/app/machine/openDoor` 四条。第三十五批不代表 parking 模块完成、fallback 清零、DB_READY、生产 app H5、真实设备控制、真实车辆进出场、真实支付或扣费，不代表 write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate、旧服务退役或旧 app server 删除许可。task438/task439 仍保持 open。
+
+## 2026-06-07 app task438/task439 parking 第三十四批 GET-only readonly exact 边界
+
+`phase7-parking-readonly-batch34` 已将 `/app/carInout.listCarInParkingAreaCmd`、`/app/parkingCoupon.listParkingCouponCar` 与 `/app/tempCarFee.getTempCarFeeOrder` 收敛为 `apps/api` parking 模块 GET-only readonly exact。三条路径仅注册 GET，POST 为 undefined；fallback disabled 时返回旧 `{ success, code, message, data, timestamp }` envelope，且无 `msg` 字段。数据来源为 deterministic/in-memory compat seed，不写 DB，不触发旧 app fallback fetch。`tempCarFee` 只按 `pccIds` 公式计算 amount，不写 DB、不真实扣费。
+
+验证记录：目标矩阵 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/parking-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，7 files / 482 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过。本轮未复跑全量 fresh scan，不记录新的 overall fallbackOnly；本批只记录局部 batch34 事实，并修正 parking 局部 remaining。
+
+禁止误判：第三十四批后 parking 局部 remaining 应只保留 `/app/carInoutDetail.listCarInoutDetail`、`/app/carInoutPayment.listCarInoutPayment`、`/app/machine.customCarInOutCmd`、`/app/machine.getBarrierCloudVideo`、`/app/machine/closeDoor` 与 `/app/machine/openDoor` 六条。第三十四批不代表 parking 模块完成、fallback 清零、DB_READY、生产 app H5、真实设备控制、真实扣费或支付、真实停车写入，不代表 write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate、旧服务退役或旧 app server 删除许可。task438/task439 仍保持 open。
+
+## 2026-06-07 app task438/task439 parking 第三十三批 GET-only readonly exact 边界
+
+`parking-readonly-batch33` 已将 `/app/owner.queryOwnerCars`、`/app/parkingArea.listParkingAreas` 与 `/app/machine.listParkingAreaMachines` 收敛为 `apps/api` parking/owner 模块 GET-only readonly exact。三条路径仅注册 GET，POST 为 undefined；fallback disabled 时返回旧 `{ success, code, message, data, timestamp }` envelope，且无 `msg` 字段。数据来源为 deterministic/in-memory compat seed，不写 DB，不触发旧 app fallback fetch。
+
+验证记录：目标矩阵 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/parking-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，7 files / 476 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过。本轮未复跑全量 fresh scan，不记录新的 overall fallbackOnly；本批测试矩阵已证明三条从 remaining gap 移出，下一次全量 scan 再刷新 overall fallbackOnly。
+
+禁止误判：`owner/legacy-adapter.ts` 只把 `/app/owner.queryOwnerCars` 从 notCovered 移出；`/app/resourceStoreType.listResourceStoreTypes` 仍未完成，并由 repair 测试保护；`/app/machine/openDoor`、`/app/machine/closeDoor` 与 `/app/machine/customCarInOutCmd` 仍未迁移。第三十三批不代表 parking 模块完成、fallback 清零、DB_READY、生产 app H5、真实停车开闸、关闸或自定义进出场写入，不代表 write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate、旧服务退役或旧 app server 删除许可。task438/task439 仍保持 open。
+
+## 2026-06-07 app task438/task439 resource 第三十二批 GET-only readonly exact 边界
+
+batch32 已将 `/app/resourceStore.listAllocationStoreAuditOrders`、`/app/resourceStore.listAllocationStorehouses` 与 `/app/resourceStore.queryMyResourceStoreInfo` 收敛为 `apps/api` resource 模块 GET-only readonly exact。三条路径只注册 GET，不注册 POST；fallback disabled 时返回 deterministic compat seed 的 `{ success, code, message, data, timestamp }` resource legacy envelope，不触发旧 app fallback fetch，不写 DB。
+
+验证与统计记录：7 个 api 测试文件通过，结果为 7 files / 471 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过；文档补丁后 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过；`git diff --check` 通过。fresh scan 为 appRows=219、appUnique=214、apiRows=142、apiUnique=142、exactOldSource=141、fallbackOnly=70、diagnostic=3、apiOnly=1，apiOnlyPath=`/app/purchase/updatePurchaseApply`。当前剩余 resourceFallback 为 `/app/collection/resourceOut`、`/app/itemRelease.auditUndoItemRelease`、`/app/purchase/resourceEnter`、`/app/purchaseApply.auditApplyOrder`、`/app/purchaseApply.deletePurchaseApply`、`/app/query.staff.infos`、`/app/resourceStore.allocationStoreEnter`、`/app/resourceStore.auditAllocationStoreOrder`、`/app/resourceStore.deleteAllocationStorehouse`、`/app/resourceStore.listUserStorehouses`、`/app/resourceStore.saveAllocationUserStorehouse`、`/app/resourceStore.saveResourceReturn`、`/app/resourceStore.saveResourceScrap`、`/app/resourceStoreType.listResourceStoreTypes`。
+
+禁止误判：第三十二批不代表 `/app/resourceStoreType.listResourceStoreTypes`、`/app/resourceStore.listUserStorehouses` 或 `/app/query.staff.infos` 完成，也不代表 resource DB_READY、真实资源出库、入库、调拨、审核、删除、归还或报废写入，不代表生产 app H5 Network、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、fallback 清零、dry-run、`apps/app/server/**` delete-candidate、旧服务退役或旧 app server 删除许可。task438/task439 仍保持 open，因为全局 fallbackOnly=70 未清零。
+
+## 2026-06-07 app task438/task439 resource 第三十与第三十一批 exact/guard 边界
+
+batch30 已将 `/app/resourceStore.listStorehouses` 与 `/app/resourceStore.listAllocationStorehouseApplys` 收敛为 GET-only readonly exact，并将 `/app/resourceStore.saveAllocationStorehouse` 收敛为 POST-only guarded exact。batch31 已将 `/app/purchaseApply.listPurchaseApplys`、`/app/itemRelease.listItemRelease`、`/app/purchaseApply.listMyAuditOrders` 与 `/app/itemRelease.queryUndoItemRelease` 收敛为 GET-only readonly exact。`resourceLegacyAdapterEvidence.scope` 当前为 `readonly-exact-handler-batch31-plus-guarded-write-batch30`，只记录 batch31 readonly exact 与 batch30 guarded write 的 evidence scope，不改变 endpoint 语义。
+
+验证与统计记录：7 个 api 测试文件通过，结果为 7 files / 465 tests passed；`pnpm -F @01s-11comm/api run typecheck` 通过。fresh scan 为 appRows=219、appUnique=214、apiRows=139、apiUnique=139、exactOldSource=138、fallbackOnly=76、diagnostic=0、apiOnly=1。当前剩余 resourceFallback 为 `/app/collection/resourceOut`、`/app/itemRelease.auditUndoItemRelease`、`/app/purchase/resourceEnter`、`/app/purchaseApply.auditApplyOrder`、`/app/purchaseApply.deletePurchaseApply`、`/app/query.staff.infos`、`/app/resourceStore.allocationStoreEnter`、`/app/resourceStore.auditAllocationStoreOrder`、`/app/resourceStore.deleteAllocationStorehouse`、`/app/resourceStore.listAllocationStoreAuditOrders`、`/app/resourceStore.listAllocationStorehouses`、`/app/resourceStore.listUserStorehouses`、`/app/resourceStore.queryMyResourceStoreInfo`、`/app/resourceStore.saveAllocationUserStorehouse`、`/app/resourceStore.saveResourceReturn`、`/app/resourceStore.saveResourceScrap`、`/app/resourceStoreType.listResourceStoreTypes`。
+
+禁止误判：第三十与第三十一批不代表 resource DB_READY、真实资源出库、入库、调拨、审核、删除、归还或报废写入，不代表生产 app H5 Network、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run、`apps/app/server/**` delete-candidate 或旧 app server 删除许可。task438/task439 仍保持 open，因为全局 fallbackOnly=76 未清零。
+
 ## 2026-06-07 app task438/task439 purchase 第二十九批 readonly/guarded exact 边界
 
 `/app/resourceStore.listResourceStores` 已从 fallback-only 收敛为 `apps/api` purchase 模块 GET-only readonly exact；`/app/purchase/purchaseApply` 与 `/app/purchase/urgentPurchaseApply` 已从 fallback-only 收敛为 POST-only guarded exact。registry 不为资源仓库列表注册 POST，也不为两条写入口注册 GET；fallback disabled 时三条路径都由 `apps/api` 承接，不触发旧 app fallback fetch。
