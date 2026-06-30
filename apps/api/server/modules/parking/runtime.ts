@@ -1,6 +1,7 @@
 import type { H3Event } from "nitro/h3";
 import { hasDatabaseUrl, useDb } from "../../db";
 import { createAdminParkingAdapter } from "./admin-adapter";
+import { createLegacyParkingAdapter } from "./legacy-adapter";
 import { createParkingRepository, type ParkingRepository } from "./repository";
 import { createParkingService, type ParkingService } from "./service";
 
@@ -8,6 +9,7 @@ export interface ParkingRuntime {
 	repository: ParkingRepository;
 	service: ParkingService;
 	adminAdapter: ReturnType<typeof createAdminParkingAdapter>;
+	legacyAdapter: ReturnType<typeof createLegacyParkingAdapter>;
 }
 
 const fallbackRuntime = createParkingRuntime(createParkingRepository());
@@ -33,5 +35,6 @@ function createParkingRuntime(repository: ParkingRepository): ParkingRuntime {
 		repository,
 		service,
 		adminAdapter: createAdminParkingAdapter(service),
+		legacyAdapter: createLegacyParkingAdapter(service),
 	};
 }

@@ -9,12 +9,7 @@ export const ownerLegacyAdapterEvidence = {
 	guardedEndpoints: ["/app/owner.saveRoomOwner", "/app/owner.editOwner", "/app/owner.deleteOwner"],
 	defaultWriteBehavior: "blocked-for-execution",
 	writeVerification: "no-read-back-or-rollback-evidence",
-	notCovered: [
-		"db-backed-owner-data",
-		"owner-write-read-back-rollback",
-		"production-app-h5-owner-network",
-		"/app/owner.queryOwnerCars",
-	],
+	notCovered: ["db-backed-owner-data", "owner-write-read-back-rollback", "production-app-h5-owner-network"],
 } as const;
 
 export function createLegacyOwnerAdapter(service: OwnerService) {
