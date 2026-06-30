@@ -18,6 +18,47 @@ export interface ResourceAllocationItem {
 	toShName: string;
 }
 
+export interface ResourceApplyItem {
+	applyOrderId: string;
+	resourceNames: string;
+	state: number;
+	stateName: string;
+	createUserId: string;
+	createUserName: string;
+	createTime: string;
+	description?: string;
+}
+
+export interface ResourceAuditTask {
+	taskId: string;
+	businessId: string;
+	businessType: string;
+	state: number;
+	stateName: string;
+	resourceNames: string;
+	createUserId: string;
+	createUserName: string;
+	createTime: string;
+}
+
+export interface ResourceStoreItem {
+	resId: string;
+	resName: string;
+	resCode: string;
+	parentRstName?: string;
+	rstName?: string;
+	price: number;
+	stock: number;
+	description: string;
+	unitCodeName?: string;
+	miniStock?: number;
+	miniUnitCodeName?: string;
+	isFixed?: string;
+	isFixedName?: string;
+	userId?: string;
+	userName?: string;
+}
+
 export interface ResourcePageResult<T> {
 	list: T[];
 	total: number;
@@ -43,6 +84,11 @@ export interface ResourceStorehouseQuery {
 export interface ResourcePageQuery {
 	page: number;
 	row: number;
+}
+
+export interface ResourceMyStoreQuery extends ResourcePageQuery {
+	resName?: string;
+	searchUserName?: string;
 }
 
 export interface ResourceWriteInput {

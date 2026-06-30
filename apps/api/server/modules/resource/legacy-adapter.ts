@@ -2,17 +2,29 @@ import type { ResourceService } from "./service";
 import type { ResourceLegacyResponse } from "./types";
 
 export const resourceLegacyAdapterEvidence = {
-	scope: "readonly-exact-handler-plus-guarded-write-batch30",
+	scope: "readonly-exact-handler-batch32-plus-guarded-write-batch30-batch42",
 	dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 	responseContract: "{ success, code, message, data, timestamp }",
-	endpoints: ["/app/resourceStore.listStorehouses", "/app/resourceStore.listAllocationStorehouseApplys"],
-	guardedEndpoints: ["/app/resourceStore.saveAllocationStorehouse"],
-	excludedWriteEndpoints: [],
-	notCovered: [
-		"/app/resourceStoreType.listResourceStoreTypes",
+	endpoints: [
+		"/app/resourceStore.listStorehouses",
+		"/app/resourceStore.listAllocationStorehouseApplys",
+		"/app/purchaseApply.listPurchaseApplys",
+		"/app/itemRelease.listItemRelease",
+		"/app/purchaseApply.listMyAuditOrders",
+		"/app/itemRelease.queryUndoItemRelease",
 		"/app/resourceStore.listAllocationStoreAuditOrders",
 		"/app/resourceStore.listAllocationStorehouses",
 		"/app/resourceStore.queryMyResourceStoreInfo",
+	],
+	guardedEndpoints: [
+		"/app/resourceStore.saveAllocationStorehouse",
+		"/app/purchaseApply.auditApplyOrder",
+		"/app/itemRelease.auditUndoItemRelease",
+		"/app/resourceStore.auditAllocationStoreOrder",
+	],
+	excludedWriteEndpoints: [],
+	notCovered: [
+		"/app/resourceStoreType.listResourceStoreTypes",
 		"db-backed-resource-data",
 		"resource-write-read-back-rollback",
 		"production-app-h5-resource-network",
@@ -36,6 +48,57 @@ export function createLegacyResourceAdapter(service: ResourceService) {
 			const row = toNumber(input.row, 10);
 
 			return resourceSuccess(await service.listAllocationStorehouseApplys({ page, row }));
+		},
+
+		async listPurchaseApplys(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+
+			return resourceSuccess(await service.listPurchaseApplys({ page, row }));
+		},
+
+		async listItemReleases(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+
+			return resourceSuccess(await service.listItemReleases({ page, row }));
+		},
+
+		async listMyAuditOrders(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+
+			return resourceSuccess(await service.listMyAuditOrders({ page, row }));
+		},
+
+		async queryUndoItemRelease(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+
+			return resourceSuccess(await service.queryUndoItemRelease({ page, row }));
+		},
+
+		async listAllocationStoreAuditOrders(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+
+			return resourceSuccess(await service.listAllocationStoreAuditOrders({ page, row }));
+		},
+
+		async listAllocationStorehouses(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+
+			return resourceSuccess(await service.listAllocationStorehouses({ page, row }));
+		},
+
+		async queryMyResourceStoreInfo(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+			const resName = toString(input.resName);
+			const searchUserName = toString(input.searchUserName);
+
+			return resourceSuccess(await service.queryMyResourceStoreInfo({ page, row, resName, searchUserName }));
 		},
 
 		async guardedWrite(endpoint: string, input: Record<string, unknown>) {
