@@ -6,6 +6,7 @@ import {
 	findEndpointDefinition,
 } from "../../server/shared/runtime/endpoint-registry";
 import type { StaffOnlineResult } from "../../server/modules/staff/types";
+import { staffLegacyAdapterEvidence } from "../../server/modules/staff/legacy-adapter";
 import { runtimeEndpointDefinitions } from "../../server/shared/runtime/runtime-endpoints";
 
 const readonlyStaffEndpoints = [
@@ -382,5 +383,19 @@ describe("staff app legacy exact endpoints", () => {
 
 		expect(afterOnlineData.total).toBe(beforeOnlineData.total);
 		expect(afterIds).toEqual(beforeIds);
+	});
+
+	test("marks /app/staff/:staffId as not-candidate because the exact registry cannot match dynamic route parameters", () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		expect(findEndpointDefinition(registry, "GET", "/app/staff/:staffId")).toBeUndefined();
+		expect(findEndpointDefinition(registry, "POST", "/app/staff/:staffId")).toBeUndefined();
+
+		expect(staffLegacyAdapterEvidence.notCovered).toContain("/app/staff/:staffId");
+		expect(staffLegacyAdapterEvidence.notCovered).toContain(
+			"dynamic-route-not-supported-by-exact-string-registry",
+		);
+		expect(staffLegacyAdapterEvidence.endpoints).not.toContain("/app/staff/:staffId");
+		expect(staffLegacyAdapterEvidence.guardedEndpoints).not.toContain("/app/staff/:staffId");
 	});
 });

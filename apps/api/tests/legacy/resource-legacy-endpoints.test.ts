@@ -19,6 +19,11 @@ const readonlyResourceEndpoints = [
 	"/app/resourceStore.queryMyResourceStoreInfo",
 ] as const;
 
+const dualReadonlyResourceEndpoints = [
+	"/app/resourceStore.listUserStorehouses",
+	"/app/resourceStoreType.listResourceStoreTypes",
+] as const;
+
 const guardedResourceEndpoints = [
 	[
 		"/app/resourceStore.saveAllocationStorehouse",
@@ -40,6 +45,46 @@ const guardedResourceEndpoints = [
 		{ allocationId: "AL_20240301_001", taskId: "TASK_003", auditCode: "1100" },
 		"resourceStore.auditAllocationStoreOrder",
 	],
+	[
+		"/app/collection/resourceOut",
+		{ resourceStores: [{ resName: "Office Desk" }], description: "compat out" },
+		"/app/collection/resourceOut",
+	],
+	[
+		"/app/purchase/resourceEnter",
+		{ applyOrderId: "PA_20240301_001" },
+		"/app/purchase/resourceEnter",
+	],
+	[
+		"/app/purchaseApply.deletePurchaseApply",
+		{ applyOrderId: "PA_20240301_001" },
+		"/app/purchaseApply.deletePurchaseApply",
+	],
+	[
+		"/app/resourceStore.allocationStoreEnter",
+		{ allocationId: "AL_20240301_001" },
+		"/app/resourceStore.allocationStoreEnter",
+	],
+	[
+		"/app/resourceStore.deleteAllocationStorehouse",
+		{ allocationId: "AL_20240301_001" },
+		"/app/resourceStore.deleteAllocationStorehouse",
+	],
+	[
+		"/app/resourceStore.saveAllocationUserStorehouse",
+		{ fromShId: "SH_001", toShId: "SH_002", resourceStores: [{ resName: "Office Desk" }] },
+		"/app/resourceStore.saveAllocationUserStorehouse",
+	],
+	[
+		"/app/resourceStore.saveResourceReturn",
+		{ resId: "RES_001" },
+		"/app/resourceStore.saveResourceReturn",
+	],
+	[
+		"/app/resourceStore.saveResourceScrap",
+		{ resId: "RES_001" },
+		"/app/resourceStore.saveResourceScrap",
+	],
 ] as const;
 
 describe("resource app legacy exact endpoints", () => {
@@ -49,6 +94,11 @@ describe("resource app legacy exact endpoints", () => {
 		for (const url of readonlyResourceEndpoints) {
 			expect(findEndpointDefinition(registry, "GET", url)).toBeTruthy();
 			expect(findEndpointDefinition(registry, "POST", url)).toBeUndefined();
+		}
+
+		for (const url of dualReadonlyResourceEndpoints) {
+			expect(findEndpointDefinition(registry, "GET", url)).toBeTruthy();
+			expect(findEndpointDefinition(registry, "POST", url)).toBeTruthy();
 		}
 
 		for (const [url] of guardedResourceEndpoints) {
@@ -80,6 +130,51 @@ describe("resource app legacy exact endpoints", () => {
 				pageSize: 2,
 				hasMore: false,
 			},
+			timestamp: expect.any(Number),
+		});
+		expect(response).not.toHaveProperty("msg");
+	});
+
+	test("returns the legacy resource success envelope for user storehouse list", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/resourceStore.listUserStorehouses",
+			query: { page: 1, row: 10, keyword: "Office" },
+		});
+
+		expect(response).toMatchObject({
+			success: true,
+			code: "0",
+			message: expect.any(String),
+			data: {
+				resources: expect.arrayContaining([
+					expect.objectContaining({ resId: "RES_001", resName: "Office Desk" }),
+				]),
+				total: expect.any(Number),
+			},
+			timestamp: expect.any(Number),
+		});
+		expect(response).not.toHaveProperty("msg");
+	});
+
+	test("returns the legacy resource success envelope for resource store types", async () => {
+		const registry = createEndpointRegistry(runtimeEndpointDefinitions);
+
+		const response = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/resourceStoreType.listResourceStoreTypes",
+			body: { parentId: "" },
+		});
+
+		expect(response).toMatchObject({
+			success: true,
+			code: "0",
+			message: expect.any(String),
+			data: expect.arrayContaining([
+				expect.objectContaining({ rstId: "RST_001", rstName: "Office Furniture" }),
+			]),
 			timestamp: expect.any(Number),
 		});
 		expect(response).not.toHaveProperty("msg");

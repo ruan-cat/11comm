@@ -5,6 +5,9 @@ import {
 	dispatchEndpoint,
 	findEndpointDefinition,
 } from "../../server/shared/runtime/endpoint-registry";
+import {
+	repairLegacyEndpointDefinitions,
+} from "../../server/modules/repair/legacy-endpoints";
 import { runtimeEndpointDefinitions } from "../../server/shared/runtime/runtime-endpoints";
 
 describe("repair legacy endpoints wave4a", () => {
@@ -37,20 +40,27 @@ describe("repair legacy endpoints wave4a", () => {
 		expect(findEndpointDefinition(registry, "GET", "/app/resourceStore.listResources")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/resourceStore.listResources")).toBeTruthy();
 
-		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.updateOwnerRepair")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairDispatch")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairFinish")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairEnd")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairStart")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairStop")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.grabbingRepair")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "POST", "/app/repair.replyRepairAppraise")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listStaffRepairs")).toBeUndefined();
-		expect(findEndpointDefinition(registry, "GET", "/app/resourceStoreType.listResourceStoreTypes")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "GET", "/app/owner.queryOwnerCars")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "POST", "/app/owner.queryOwnerCars")).toBeUndefined();
 		expect(findEndpointDefinition(registry, "POST", "/app/machine/openDoor")).toBeTruthy();
 		expect(findEndpointDefinition(registry, "GET", "/app/machine/openDoor")).toBeUndefined();
+	});
+
+	test("registers batch 11-14 repair fallback-only endpoints in the module registry", () => {
+		const registry = createEndpointRegistry(repairLegacyEndpointDefinitions);
+
+		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listStaffRepairs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.listStaffRepairs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "GET", "/app/ownerRepair.listStaffFinishRepairs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.listStaffFinishRepairs")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.updateOwnerRepair")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairDispatch")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairFinish")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairEnd")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairStart")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.repairStop")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/ownerRepair.grabbingRepair")).toBeTruthy();
+		expect(findEndpointDefinition(registry, "POST", "/app/repair.replyRepairAppraise")).toBeTruthy();
 	});
 
 	test("blocks owner repair create by default in phase7 execution guard", async () => {
@@ -435,6 +445,74 @@ describe("repair legacy endpoints wave4a", () => {
 				total: expect.any(Number),
 			},
 		});
+	});
+
+	test("serves staff repair list and staff finished repair list legacy shapes", async () => {
+		const registry = createEndpointRegistry(repairLegacyEndpointDefinitions);
+
+		const staffRepairs = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/ownerRepair.listStaffRepairs",
+			query: { page: 1, row: 10, communityId: "COMM_001" },
+		});
+		expect(staffRepairs).toMatchObject({
+			code: 0,
+			msg: "查询成功",
+			data: { ownerRepairs: expect.any(Array), total: expect.any(Number), page: 1, row: 10 },
+		});
+		expect(staffRepairs.data.ownerRepairs.every((item: { statusCd: string }) => item.statusCd === "10002")).toBe(true);
+
+		const staffRepairsWithStatus = await dispatchEndpoint(registry, {
+			method: "POST",
+			path: "/app/ownerRepair.listStaffRepairs",
+			body: { page: 1, row: 10, communityId: "COMM_001", statusCd: "10004" },
+		});
+		expect(staffRepairsWithStatus).toMatchObject({
+			code: 0,
+			data: { ownerRepairs: expect.any(Array), total: expect.any(Number) },
+		});
+		expect(staffRepairsWithStatus.data.ownerRepairs.every((item: { statusCd: string }) => item.statusCd === "10004")).toBe(true);
+
+		const finishRepairs = await dispatchEndpoint(registry, {
+			method: "GET",
+			path: "/app/ownerRepair.listStaffFinishRepairs",
+			query: { page: 1, row: 10, communityId: "COMM_001" },
+		});
+		expect(finishRepairs).toMatchObject({
+			code: 0,
+			msg: "查询成功",
+			data: { ownerRepairs: expect.any(Array), total: expect.any(Number), page: 1, row: 10 },
+		});
+		expect(finishRepairs.data.ownerRepairs.every((item: { statusCd: string }) => item.statusCd === "10004")).toBe(true);
+	});
+
+	test("blocks all batch 12-14 repair mutations by default in phase7 execution guard", async () => {
+		const registry = createEndpointRegistry(repairLegacyEndpointDefinitions);
+
+		const guardedPaths = [
+			"/app/ownerRepair.updateOwnerRepair",
+			"/app/ownerRepair.repairDispatch",
+			"/app/ownerRepair.repairFinish",
+			"/app/ownerRepair.repairEnd",
+			"/app/ownerRepair.repairStart",
+			"/app/ownerRepair.repairStop",
+			"/app/ownerRepair.grabbingRepair",
+			"/app/repair.replyRepairAppraise",
+		];
+
+		for (const path of guardedPaths) {
+			const response = await dispatchEndpoint(registry, {
+				method: "POST",
+				path,
+				body: { repairId: "REPAIR_001", staffId: "STAFF_001", action: "DISPATCH" },
+			});
+			expect(response).toMatchObject({
+				code: 409,
+				msg: expect.stringContaining("Phase7"),
+				data: null,
+				errorCode: "PHASE7_MUTATION_GUARDED",
+			});
+		}
 	});
 
 	test("allows owner repair create only when legacy mutations are explicitly enabled", async () => {

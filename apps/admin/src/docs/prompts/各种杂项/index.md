@@ -661,7 +661,7 @@ admin 仍有 legacy db/seed、nitro config、drizzle compatibility、R2/upload �
 
 我觉得本质上是 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 这个长任务没做好。你应该继续让这个长任务，拓展，补全 task 任务清单，然后继续推进剩余的任务。最终达到可以安全删除 app 和 admin 项目内部的 nitro 接口的目的。
 
-### 06 <!-- TODO: --> 及时删改 APP 项目仍旧使用的旧 nitro 接口命令
+### 06 <!-- TODO: ZCode正在做 --> 及时删改 APP 项目仍旧使用的旧 nitro 接口命令
 
 工作流出现以下错误：
 
@@ -672,3 +672,7 @@ Error: Process completed with exit code 1.
 ```
 
 我们现在已经评估 admin 和 APP 的 nitro 接口都可以退役了，这是退役的部分删除不干净的情况。请你处理这个问题。按理说你应该在 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 内继续增加该内容，然后继续跟进 nitro 接口退役的事情。
+
+---
+
+这个是一次及其疯狂的删除，我希望你去看看 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 目录内的全部文档，搞清楚我们是否真实的完成了独立 nitro 接口的制作任务？所以我们可以进入到收尾阶段么？ `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 的任务清单还有那些没做完？

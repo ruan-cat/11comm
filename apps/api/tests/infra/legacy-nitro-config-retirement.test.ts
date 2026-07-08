@@ -28,7 +28,9 @@ describe("legacy built-in nitro config retirement", () => {
 		const appScripts = appPackageJson.scripts;
 		const appViteConfig = readFileSync(path.join(workspaceRoot, "apps/app/vite.config.ts"), "utf8");
 
-		expect(appScripts["dev:nitro"]).toBe("node ./scripts/dev-h5-nitro.mjs");
+		expect(appScripts).not.toHaveProperty("dev:nitro");
+		expect(appScripts).not.toHaveProperty("dev:h5:nitro");
+		expect(appScripts).not.toHaveProperty("dev:mp-weixin:nitro");
 		expect(appScripts).not.toHaveProperty("build:nitro");
 		expect(appScripts).not.toHaveProperty("build:nitro:node");
 		expect(appScripts).not.toHaveProperty("build:nitro:vercel");
