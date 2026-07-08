@@ -16,7 +16,14 @@ export const staffLegacyAdapterEvidence = {
 	guardedEndpoints: ["/app/staff/update-online-status", "/app/staff/add"],
 	defaultWriteBehavior: "blocked-for-execution",
 	writeVerification: "no-read-back-or-rollback-evidence",
-	notCovered: ["/app/staff/:staffId", "db-backed-staff-data", "production-app-h5-staff-network"],
+	// `/app/staff/:staffId` 是动态路由，当前 endpoint registry 为精确字符串匹配，无法承载参数化路径。
+	// 现有 `/app/staff/STAFF_001` 仅作为样例 exact endpoint 存在；泛化员工详情需改造 registry 或迁移为 admin-canonical REST 路径。
+	notCovered: [
+		"/app/staff/:staffId",
+		"dynamic-route-not-supported-by-exact-string-registry",
+		"db-backed-staff-data",
+		"production-app-h5-staff-network",
+	],
 } as const;
 
 export function createLegacyStaffAdapter(service: StaffService) {

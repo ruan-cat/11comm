@@ -33,6 +33,10 @@ export interface RepairListQuery {
 	repairType?: string;
 }
 
+export interface StaffRepairListQuery extends RepairListQuery {}
+
+export interface StaffFinishRepairListQuery extends RepairListQuery {}
+
 export interface RepairListResult {
 	list: RepairItem[];
 	total: number;

@@ -36,6 +36,8 @@ export interface RepairRepository {
 	listCoreDict: (params: { name?: string; type?: string; domain?: string }) => Promise<CoreDictItem[]>;
 	appraiseOwnerRepair: (params: { repairId: string; context: string }) => Promise<RepairItem | undefined>;
 	listRepairsHaveDone: (params: ListRepairsHaveDoneParams) => Promise<{ list: RepairsHaveDoneDbItem[]; total: number }>;
+	listStaffRepairs: (params: RepairListQuery) => Promise<RepairListResult>;
+	listStaffFinishRepairs: (params: RepairListQuery) => Promise<RepairListResult>;
 }
 
 interface InMemoryRepairSeed {
@@ -363,6 +365,38 @@ class InMemoryRepairRepository implements RepairRepository {
 	}
 
 	async listOwnerRepairs(params: RepairListQuery): Promise<RepairListResult> {
+		let data = [...this.repairs];
+		if (params.communityId) {
+			data = data.filter((item) => item.communityId === params.communityId);
+		}
+		if (params.statusCd) {
+			data = data.filter((item) => item.statusCd === params.statusCd);
+		}
+		if (params.repairType) {
+			data = data.filter((item) => item.repairType === params.repairType);
+		}
+		if (params.keyword) {
+			const keyword = params.keyword.toLowerCase();
+			data = data.filter((item) =>
+				[item.workOrderNumber, item.title, item.context, item.repairName, item.tel, item.address]
+					.join(" ")
+					.toLowerCase()
+					.includes(keyword),
+			);
+		}
+		data.sort((left, right) => right.createTime.localeCompare(left.createTime));
+		return paginate(data, params.page, params.row);
+	}
+
+	async listStaffRepairs(params: RepairListQuery): Promise<RepairListResult> {
+		return this.listRepairsByStatus({ ...params, statusCd: params.statusCd || "10002" });
+	}
+
+	async listStaffFinishRepairs(params: RepairListQuery): Promise<RepairListResult> {
+		return this.listRepairsByStatus({ ...params, statusCd: "10004" });
+	}
+
+	private listRepairsByStatus(params: RepairListQuery): RepairListResult {
 		let data = [...this.repairs];
 		if (params.communityId) {
 			data = data.filter((item) => item.communityId === params.communityId);

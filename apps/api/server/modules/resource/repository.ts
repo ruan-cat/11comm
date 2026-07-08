@@ -8,12 +8,17 @@ import type {
 	ResourcePageResult,
 	ResourceStoreItem,
 	ResourceStoreHouse,
+	ResourceStoreType,
 	ResourceStorehouseQuery,
+	ResourceUserStorehouseQuery,
+	ResourceUserStorehouseResult,
 	ResourceWriteInput,
 } from "./types";
 
 export interface ResourceRepository {
 	listStorehouses(query: ResourceStorehouseQuery): Promise<ResourcePageResult<ResourceStoreHouse>>;
+	listUserStorehouses(query: ResourceUserStorehouseQuery): Promise<ResourceUserStorehouseResult>;
+	listResourceStoreTypes(parentId?: string): Promise<ResourceStoreType[]>;
 	listAllocationStorehouseApplys(query: ResourcePageQuery): Promise<ResourcePageResult<ResourceAllocationItem>>;
 	listPurchaseApplys(query: ResourcePageQuery): Promise<ResourcePageResult<ResourceApplyItem>>;
 	listItemReleases(query: ResourcePageQuery): Promise<ResourcePageResult<ResourceApplyItem>>;
@@ -46,6 +51,24 @@ const storeHouseList: ResourceStoreHouse[] = [
 		shCode: "TMP-003",
 		address: "Building 3",
 		allowPurchase: "OFF",
+	},
+];
+
+const resourceStoreTypes: ResourceStoreType[] = [
+	{
+		rstId: "RST_001",
+		rstName: "Office Furniture",
+		parentRstId: "",
+	},
+	{
+		rstId: "RST_002",
+		rstName: "Office Supplies",
+		parentRstId: "",
+	},
+	{
+		rstId: "RST_003",
+		rstName: "Electronic Equipment",
+		parentRstId: "",
 	},
 ];
 
@@ -278,6 +301,28 @@ export function createResourceRepository(): ResourceRepository {
 				: storeHouseList;
 
 			return paginate(filteredStorehouses, query);
+		},
+
+		async listUserStorehouses(query) {
+			let list = resourceStoreList;
+			if (query.keyword) {
+				const keyword = query.keyword.toLowerCase();
+				list = list.filter(
+					(item) =>
+						item.resName.toLowerCase().includes(keyword) || (item.parentRstName ?? "").toLowerCase().includes(keyword),
+				);
+			}
+
+			const result = paginate(list, query);
+			return {
+				resources: result.list,
+				total: result.total,
+			};
+		},
+
+		async listResourceStoreTypes(parentId) {
+			const types = parentId ? resourceStoreTypes.filter((type) => type.parentRstId === parentId) : resourceStoreTypes;
+			return structuredClone(types);
 		},
 
 		async listAllocationStorehouseApplys(query) {

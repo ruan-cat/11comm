@@ -8,6 +8,8 @@ export const repairLegacyAdapterEvidence = {
 	endpoints: [
 		"/app/ownerRepair.listOwnerRepairs",
 		"/app/ownerRepair.queryOwnerRepair",
+		"/app/ownerRepair.listStaffRepairs",
+		"/app/ownerRepair.listStaffFinishRepairs",
 		"/app/repairSetting.listRepairSettings",
 		"/app/dict.queryRepairStates",
 		"/callComponent/core/list",
@@ -18,10 +20,9 @@ export const repairLegacyAdapterEvidence = {
 		"/app/repair.listRepairTypeUsers",
 		"/app/resourceStore.listResources",
 	],
-	guardedEndpoints: ["/app/ownerRepair.saveOwnerRepair", "/callComponent/ownerRepair.appraiseRepair"],
-	defaultWriteBehavior: "blocked-for-execution",
-	writeVerification: "no-read-back-or-rollback-evidence",
-	notCovered: [
+	guardedEndpoints: [
+		"/app/ownerRepair.saveOwnerRepair",
+		"/callComponent/ownerRepair.appraiseRepair",
 		"/app/ownerRepair.updateOwnerRepair",
 		"/app/ownerRepair.repairDispatch",
 		"/app/ownerRepair.repairFinish",
@@ -30,9 +31,10 @@ export const repairLegacyAdapterEvidence = {
 		"/app/ownerRepair.repairStop",
 		"/app/ownerRepair.grabbingRepair",
 		"/app/repair.replyRepairAppraise",
-		"db-backed-repair-statistics-data",
-		"production-app-h5-repair-network",
 	],
+	defaultWriteBehavior: "blocked-for-execution",
+	writeVerification: "no-read-back-or-rollback-evidence",
+	notCovered: ["db-backed-repair-statistics-data", "production-app-h5-repair-network"],
 } as const;
 
 export function createLegacyRepairAdapter(service: RepairService) {
@@ -49,6 +51,31 @@ export function createLegacyRepairAdapter(service: RepairService) {
 				repairType: toString(input.repairType),
 			});
 			return legacySuccess({ ownerRepairs: result.list, total: result.total, page, row }, "query success");
+		},
+		async listStaffRepairs(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+			const result = await service.listStaffRepairs({
+				page,
+				row,
+				communityId: toString(input.communityId) || "COMM_001",
+				keyword: toString(input.keyword),
+				statusCd: toString(input.statusCd || input.status),
+				repairType: toString(input.repairType),
+			});
+			return legacySuccess({ ownerRepairs: result.list, total: result.total, page, row }, "查询成功");
+		},
+		async listStaffFinishRepairs(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 10);
+			const result = await service.listStaffFinishRepairs({
+				page,
+				row,
+				communityId: toString(input.communityId) || "COMM_001",
+				keyword: toString(input.keyword),
+				repairType: toString(input.repairType),
+			});
+			return legacySuccess({ ownerRepairs: result.list, total: result.total, page, row }, "查询成功");
 		},
 		async queryOwnerRepair(input: Record<string, unknown>) {
 			const repairId = toString(input.repairId);
@@ -79,6 +106,30 @@ export function createLegacyRepairAdapter(service: RepairService) {
 				communityId: toString(input.communityId) || "COMM_001",
 			});
 			return legacySuccess({ ownerRepair: created }, "create success");
+		},
+		async updateOwnerRepair(_input: Record<string, unknown>) {
+			return legacyMutationGuarded("ownerRepair.updateOwnerRepair");
+		},
+		async repairDispatch(_input: Record<string, unknown>) {
+			return legacyMutationGuarded("ownerRepair.repairDispatch");
+		},
+		async repairFinish(_input: Record<string, unknown>) {
+			return legacyMutationGuarded("ownerRepair.repairFinish");
+		},
+		async repairEnd(_input: Record<string, unknown>) {
+			return legacyMutationGuarded("ownerRepair.repairEnd");
+		},
+		async repairStart(_input: Record<string, unknown>) {
+			return legacyMutationGuarded("ownerRepair.repairStart");
+		},
+		async repairStop(_input: Record<string, unknown>) {
+			return legacyMutationGuarded("ownerRepair.repairStop");
+		},
+		async grabbingRepair(_input: Record<string, unknown>) {
+			return legacyMutationGuarded("ownerRepair.grabbingRepair");
+		},
+		async replyRepairAppraise(_input: Record<string, unknown>) {
+			return legacyMutationGuarded("repair.replyRepairAppraise");
 		},
 		async listRepairSettings(input: Record<string, unknown>) {
 			return legacySuccess(

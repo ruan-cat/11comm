@@ -2,11 +2,13 @@ import type { ResourceService } from "./service";
 import type { ResourceLegacyResponse } from "./types";
 
 export const resourceLegacyAdapterEvidence = {
-	scope: "readonly-exact-handler-batch32-plus-guarded-write-batch30-batch42",
+	scope: "readonly-exact-batch15-32-plus-guarded-write-batch16-18-30-42",
 	dataSourceStatus: "deterministic-compat-seed-no-db-ready",
 	responseContract: "{ success, code, message, data, timestamp }",
 	endpoints: [
 		"/app/resourceStore.listStorehouses",
+		"/app/resourceStore.listUserStorehouses",
+		"/app/resourceStoreType.listResourceStoreTypes",
 		"/app/resourceStore.listAllocationStorehouseApplys",
 		"/app/purchaseApply.listPurchaseApplys",
 		"/app/itemRelease.listItemRelease",
@@ -18,17 +20,20 @@ export const resourceLegacyAdapterEvidence = {
 	],
 	guardedEndpoints: [
 		"/app/resourceStore.saveAllocationStorehouse",
+		"/app/collection/resourceOut",
+		"/app/purchase/resourceEnter",
+		"/app/purchaseApply.deletePurchaseApply",
+		"/app/resourceStore.allocationStoreEnter",
+		"/app/resourceStore.deleteAllocationStorehouse",
+		"/app/resourceStore.saveAllocationUserStorehouse",
+		"/app/resourceStore.saveResourceReturn",
+		"/app/resourceStore.saveResourceScrap",
 		"/app/purchaseApply.auditApplyOrder",
 		"/app/itemRelease.auditUndoItemRelease",
 		"/app/resourceStore.auditAllocationStoreOrder",
 	],
 	excludedWriteEndpoints: [],
-	notCovered: [
-		"/app/resourceStoreType.listResourceStoreTypes",
-		"db-backed-resource-data",
-		"resource-write-read-back-rollback",
-		"production-app-h5-resource-network",
-	],
+	notCovered: ["db-backed-resource-data", "resource-write-read-back-rollback", "production-app-h5-resource-network"],
 	defaultWriteBehavior: "blocked-for-execution",
 	writeVerification: "no-read-back-or-rollback-evidence",
 } as const;
@@ -41,6 +46,20 @@ export function createLegacyResourceAdapter(service: ResourceService) {
 			const allowPurchase = toString(input.allowPurchase);
 
 			return resourceSuccess(await service.listStorehouses({ page, row, allowPurchase }));
+		},
+
+		async listUserStorehouses(input: Record<string, unknown>) {
+			const page = toNumber(input.page, 1);
+			const row = toNumber(input.row, 20);
+			const keyword = toString(input.keyword);
+
+			return resourceSuccess(await service.listUserStorehouses({ page, row, keyword }));
+		},
+
+		async listResourceStoreTypes(input: Record<string, unknown>) {
+			const parentId = toString(input.parentId);
+
+			return resourceSuccess(await service.listResourceStoreTypes(parentId));
 		},
 
 		async listAllocationStorehouseApplys(input: Record<string, unknown>) {

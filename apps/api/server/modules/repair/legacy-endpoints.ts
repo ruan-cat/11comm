@@ -10,6 +10,18 @@ export const repairLegacyEndpointDefinitions: EndpointDefinition[] = [
 			getRepairRuntime(event).legacyAdapter.listOwnerRepairs(mergeInput(query, body)),
 	},
 	{
+		url: "/app/ownerRepair.listStaffRepairs",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getRepairRuntime(event).legacyAdapter.listStaffRepairs(mergeInput(query, body)),
+	},
+	{
+		url: "/app/ownerRepair.listStaffFinishRepairs",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getRepairRuntime(event).legacyAdapter.listStaffFinishRepairs(mergeInput(query, body)),
+	},
+	{
 		url: "/app/ownerRepair.queryOwnerRepair",
 		method: ["GET", "POST"],
 		handler: ({ query, body, event }) =>
@@ -19,6 +31,46 @@ export const repairLegacyEndpointDefinitions: EndpointDefinition[] = [
 		url: "/app/ownerRepair.saveOwnerRepair",
 		method: "POST",
 		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.saveOwnerRepair(asRecord(body)),
+	},
+	{
+		url: "/app/ownerRepair.updateOwnerRepair",
+		method: "POST",
+		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.updateOwnerRepair(asRecord(body)),
+	},
+	{
+		url: "/app/ownerRepair.repairDispatch",
+		method: "POST",
+		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.repairDispatch(asRecord(body)),
+	},
+	{
+		url: "/app/ownerRepair.repairFinish",
+		method: "POST",
+		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.repairFinish(asRecord(body)),
+	},
+	{
+		url: "/app/ownerRepair.repairEnd",
+		method: "POST",
+		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.repairEnd(asRecord(body)),
+	},
+	{
+		url: "/app/ownerRepair.repairStart",
+		method: "POST",
+		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.repairStart(asRecord(body)),
+	},
+	{
+		url: "/app/ownerRepair.repairStop",
+		method: "POST",
+		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.repairStop(asRecord(body)),
+	},
+	{
+		url: "/app/ownerRepair.grabbingRepair",
+		method: "POST",
+		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.grabbingRepair(asRecord(body)),
+	},
+	{
+		url: "/app/repair.replyRepairAppraise",
+		method: "POST",
+		handler: ({ body, event }) => getRepairRuntime(event).legacyAdapter.replyRepairAppraise(asRecord(body)),
 	},
 	{
 		url: "/app/repairSetting.listRepairSettings",

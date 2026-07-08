@@ -59,6 +59,12 @@ export interface ResourceStoreItem {
 	userName?: string;
 }
 
+export interface ResourceStoreType {
+	rstId: string;
+	rstName: string;
+	parentRstId: string;
+}
+
 export interface ResourcePageResult<T> {
 	list: T[];
 	total: number;
@@ -79,6 +85,15 @@ export interface ResourceStorehouseQuery {
 	allowPurchase?: string;
 	page: number;
 	row: number;
+}
+
+export interface ResourceUserStorehouseQuery extends ResourcePageQuery {
+	keyword?: string;
+}
+
+export interface ResourceUserStorehouseResult {
+	resources: ResourceStoreItem[];
+	total: number;
 }
 
 export interface ResourcePageQuery {

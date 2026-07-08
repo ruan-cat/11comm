@@ -10,6 +10,18 @@ export const resourceLegacyEndpointDefinitions: EndpointDefinition[] = [
 			getResourceRuntime(event).legacyAdapter.listStorehouses(mergeInput(query, body)),
 	},
 	{
+		url: "/app/resourceStore.listUserStorehouses",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.listUserStorehouses(mergeInput(query, body)),
+	},
+	{
+		url: "/app/resourceStoreType.listResourceStoreTypes",
+		method: ["GET", "POST"],
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.listResourceStoreTypes(mergeInput(query, body)),
+	},
+	{
 		url: "/app/resourceStore.listAllocationStorehouseApplys",
 		method: "GET",
 		handler: ({ query, body, event }) =>
@@ -84,6 +96,72 @@ export const resourceLegacyEndpointDefinitions: EndpointDefinition[] = [
 		handler: ({ query, body, event }) =>
 			getResourceRuntime(event).legacyAdapter.guardedWrite(
 				"resourceStore.auditAllocationStoreOrder",
+				mergeInput(query, body),
+			),
+	},
+	{
+		url: "/app/collection/resourceOut",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.guardedWrite("/app/collection/resourceOut", mergeInput(query, body)),
+	},
+	{
+		url: "/app/purchase/resourceEnter",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.guardedWrite("/app/purchase/resourceEnter", mergeInput(query, body)),
+	},
+	{
+		url: "/app/purchaseApply.deletePurchaseApply",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.guardedWrite(
+				"/app/purchaseApply.deletePurchaseApply",
+				mergeInput(query, body),
+			),
+	},
+	{
+		url: "/app/resourceStore.allocationStoreEnter",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.guardedWrite(
+				"/app/resourceStore.allocationStoreEnter",
+				mergeInput(query, body),
+			),
+	},
+	{
+		url: "/app/resourceStore.deleteAllocationStorehouse",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.guardedWrite(
+				"/app/resourceStore.deleteAllocationStorehouse",
+				mergeInput(query, body),
+			),
+	},
+	{
+		url: "/app/resourceStore.saveAllocationUserStorehouse",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.guardedWrite(
+				"/app/resourceStore.saveAllocationUserStorehouse",
+				mergeInput(query, body),
+			),
+	},
+	{
+		url: "/app/resourceStore.saveResourceReturn",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.guardedWrite(
+				"/app/resourceStore.saveResourceReturn",
+				mergeInput(query, body),
+			),
+	},
+	{
+		url: "/app/resourceStore.saveResourceScrap",
+		method: "POST",
+		handler: ({ query, body, event }) =>
+			getResourceRuntime(event).legacyAdapter.guardedWrite(
+				"/app/resourceStore.saveResourceScrap",
 				mergeInput(query, body),
 			),
 	},

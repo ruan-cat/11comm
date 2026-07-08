@@ -1,8 +1,16 @@
 import type { ResourceRepository } from "./repository";
-import type { ResourceMyStoreQuery, ResourcePageQuery, ResourceStorehouseQuery, ResourceWriteInput } from "./types";
+import type {
+	ResourceMyStoreQuery,
+	ResourcePageQuery,
+	ResourceStorehouseQuery,
+	ResourceUserStorehouseQuery,
+	ResourceWriteInput,
+} from "./types";
 
 export interface ResourceService {
 	listStorehouses(query: ResourceStorehouseQuery): ReturnType<ResourceRepository["listStorehouses"]>;
+	listUserStorehouses(query: ResourceUserStorehouseQuery): ReturnType<ResourceRepository["listUserStorehouses"]>;
+	listResourceStoreTypes(parentId?: string): ReturnType<ResourceRepository["listResourceStoreTypes"]>;
 	listAllocationStorehouseApplys(
 		query: ResourcePageQuery,
 	): ReturnType<ResourceRepository["listAllocationStorehouseApplys"]>;
@@ -24,6 +32,8 @@ export interface ResourceService {
 export function createResourceService(repository: ResourceRepository): ResourceService {
 	return {
 		listStorehouses: (query) => repository.listStorehouses(query),
+		listUserStorehouses: (query) => repository.listUserStorehouses(query),
+		listResourceStoreTypes: (parentId) => repository.listResourceStoreTypes(parentId),
 		listAllocationStorehouseApplys: (query) => repository.listAllocationStorehouseApplys(query),
 		listPurchaseApplys: (query) => repository.listPurchaseApplys(query),
 		listItemReleases: (query) => repository.listItemReleases(query),

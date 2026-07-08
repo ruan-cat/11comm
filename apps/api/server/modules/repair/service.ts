@@ -29,6 +29,8 @@ export interface RepairService {
 	listCoreDict: (params: CoreDictQuery) => Promise<CoreDictItem[]>;
 	appraiseRepair: (params: { repairId: string; context: string }) => Promise<{ success: boolean } | undefined>;
 	listRepairsHaveDone: (params: ListRepairsHaveDoneParams) => Promise<{ list: RepairsHaveDoneDbItem[]; total: number }>;
+	listStaffRepairs: RepairRepository["listStaffRepairs"];
+	listStaffFinishRepairs: RepairRepository["listStaffFinishRepairs"];
 }
 
 export function createRepairService(repository: RepairRepository): RepairService {
@@ -50,5 +52,7 @@ export function createRepairService(repository: RepairRepository): RepairService
 			return repair ? { success: true } : undefined;
 		},
 		listRepairsHaveDone: (params) => repository.listRepairsHaveDone(params),
+		listStaffRepairs: (params) => repository.listStaffRepairs(params),
+		listStaffFinishRepairs: (params) => repository.listStaffFinishRepairs(params),
 	};
 }
