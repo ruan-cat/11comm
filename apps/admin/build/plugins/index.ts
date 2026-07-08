@@ -61,14 +61,29 @@ export function getPluginsList(
 		return VITE_IS_REVERSE_PROXY === "true";
 	}
 
-	const vercelPlugin = IS_REVERSE_PROXY() /**
+	/**
 	 * 生成指定vercel目录结构
 	 * @description
 	 * Bundle your Vite application as supported by Vercel Output API (v3).
 	 * @see https://github.com/magne4000/vite-plugin-vercel/tree/v9
+	 *
+	 * 注意：即使 VITE_IS_REVERSE_PROXY 为 false，也要启用 vercel()，因为 Vercel 构建
+	 * 需要 .vercel/output 目录结构。rewrites 配置只在反向代理启用时才需要。
 	 */
-		? vercel()
-		: [];
+	const vercelPlugin = vercel(
+		IS_REVERSE_PROXY()
+			? {
+					rewrites: [
+						// https://cloud.tencent.com/developer/ask/sof/107190446
+						// { source: "/backend/:path(.*)", destination: "http://47.93.160.11:10001/:path" },
+						// { source: "/(.*)", destination: "/index.html" },
+
+						// https://segmentfault.com/a/1190000042276351
+						{ source: "/backend/(.*)", destination: "/api/proxy" },
+					],
+				}
+			: {},
+	);
 
 	return [
 		tailwindcss(),

@@ -52,9 +52,17 @@
 
 当前仓库并不是保持在 `unibest` 模板原始状态，而是在其基础上演进出来的智慧社区物业管理系统。
 
-这意味着下面 README 中原本的模板信息仍然保留，便于理解上游能力；与此同时，本仓库还额外引入了面向真实接口联调的 `Nitro v3` 双运行时方案，因此你在使用本仓库时，应优先参考本节补充说明和后续新增命令说明。
-
-注：`apps/app` 内置的 Nitro 相关命令已退役，统一后端入口已迁移至 `apps/api`。以下 Nitro 相关内容保留为历史上下文。
+> **⚠️ 重要变更通知（Phase7）**
+>
+> `apps/app` **已不再是 Nitro 服务端项目**。从 Phase7 起：
+>
+> - App 前端构建产物为**纯 SPA**，部署到 Vercel 静态托管。
+> - 所有业务 API 已迁移至独立的 `apps/api` Nitro 服务（`https://01s-11-server.ruan-cat.com`）。
+> - `apps/app/server/**` 目录已物理删除（commit `c7112831`）。
+>
+> 以下 Nitro 相关内容保留为历史上下文，所有新接口开发应在 `apps/api` 中进行。
+>
+> 详见：[OpenSpec 变更 `migrate-superpowers-docs-to-openspec-longtask`](../../openspec/changes/migrate-superpowers-docs-to-openspec-longtask/)
 
 ### 1.2. Nitro 双运行时改造背景
 
@@ -76,18 +84,18 @@
 
 ### 1.3. 当前三套接口运行时
 
-|       运行时       |                              典型命令                               |                                 用途说明                                  |
-| :----------------: | :-----------------------------------------------------------------: | :-----------------------------------------------------------------------: |
-|       `mock`       |                     `pnpm dev` / `pnpm dev:h5`                      |                       H5 默认开发，继续走 Vite mock                       |
-|    `nitro-vite`    |                 逻辑上对应 `development-nitro` 模式                 |      设计目标是 H5 全栈同进程联调；当前受 `Vite 6` 限制尚未真正落地       |
-| `nitro-standalone` | `pnpm dev:nitro` / `pnpm dev:h5:nitro` / `pnpm dev:mp-weixin:nitro`（已退役） | 统一后端入口已迁移至 `apps/api`（历史上下文） |
+|       运行时       |                                   典型命令                                    |                            用途说明                            |
+| :----------------: | :---------------------------------------------------------------------------: | :------------------------------------------------------------: |
+|       `mock`       |                          `pnpm dev` / `pnpm dev:h5`                           |                 H5 默认开发，继续走 Vite mock                  |
+|    `nitro-vite`    |                      逻辑上对应 `development-nitro` 模式                      | 设计目标是 H5 全栈同进程联调；当前受 `Vite 6` 限制尚未真正落地 |
+| `nitro-standalone` | `pnpm dev:nitro` / `pnpm dev:h5:nitro` / `pnpm dev:mp-weixin:nitro`（已退役） |         统一后端入口已迁移至 `apps/api`（历史上下文）          |
 
 ### 1.4. 当前仓库新增的 Nitro 相关命令
 
-|          场景           |            命令            |                               说明                                |              当前状态               |
-| :---------------------: | :------------------------: | :---------------------------------------------------------------: | :---------------------------------: |
-|    H5 mock 默认开发     |       `pnpm dev:h5`        |                   当前等价于 `pnpm dev:h5:mock`                   |                可用                 |
-|    H5 mock 明确入口     |     `pnpm dev:h5:mock`     |                  只启动 H5 + Vite mock 开发链路                   |                可用                 |
+|          场景           |            命令            |                               说明                                |               当前状态                |
+| :---------------------: | :------------------------: | :---------------------------------------------------------------: | :-----------------------------------: |
+|    H5 mock 默认开发     |       `pnpm dev:h5`        |                   当前等价于 `pnpm dev:h5:mock`                   |                 可用                  |
+|    H5 mock 明确入口     |     `pnpm dev:h5:mock`     |                  只启动 H5 + Vite mock 开发链路                   |                 可用                  |
 |    H5 Nitro 联调入口    |    `pnpm dev:h5:nitro`     | 当前在 `Vite 6` 下会自动回退为 “standalone Nitro + H5” 双进程联调 | 已退役，统一后端入口迁移至 `apps/api` |
 |   独立 Nitro API 开发   |      `pnpm dev:nitro`      |              只启动 Nitro API 服务，默认端口 `3101`               | 已退役，统一后端入口迁移至 `apps/api` |
 | 微信小程序 + Nitro 联调 | `pnpm dev:mp-weixin:nitro` |         先确保 Nitro health ready，再启动微信小程序编译链         | 已退役，统一后端入口迁移至 `apps/api` |
@@ -129,13 +137,47 @@ http://127.0.0.1:3101/__nitro/health
 
 ### 1.7. Vercel 双项目生产部署约定
 
-|        Vercel 项目        |       生产构建命令        |                           生产域名                           | Production Branch |
-| :-----------------------: | :-----------------------: | :----------------------------------------------------------: | :---------------: |
-|      `11comm-app-h5`      |   `pnpm build:h5:prod`    |          `resolve11CommH5BaseUrl()` / `11commAppH5`          |       `dev`       |
+|        Vercel 项目        |            生产构建命令             |                           生产域名                           | Production Branch |
+| :-----------------------: | :---------------------------------: | :----------------------------------------------------------: | :---------------: |
+|      `11comm-app-h5`      |        `pnpm build:h5:prod`         |          `resolve11CommH5BaseUrl()` / `11commAppH5`          |       `dev`       |
 | `11comm-app-nitro-server` | `pnpm build:nitro:vercel`（已退役） | `resolve11CommNitroServerBaseUrl()` / `11commAppNitroServer` |       `dev`       |
 
 - H5 生产环境固定直连 `@ruan-cat/domains` 中 `11commAppNitroServer` 别名解析出的 Nitro 生产域名，不再依赖本地 proxy。
 - GitHub Actions 里的 `pnpm run ci` 只做构建健壮性自检，不承担任何 Vercel 部署职责。
+
+## 1B. Phase7 部署架构
+
+> **Phase7 架构**：App H5 为纯前端 SPA，部署到 Vercel 静态托管。所有 API 请求直接发往 `https://01s-11-server.ruan-cat.com`。
+
+```plain
+apps/app (SPA)                              apps/api (Nitro Serverless)
+┌─────────────────────────┐               ┌──────────────────────────────┐
+│ https://01s-11-app     │ ─── API ───▶  │ https://01s-11-server       │
+│ .ruan-cat.com           │               │ .ruan-cat.com               │
+│ (Vercel Static)        │               │ (Vercel Serverless Functions)│
+└─────────────────────────┘               └──────────────────────────────┘
+```
+
+### 生产环境变量（关键配置）
+
+| 变量名                          | 值                                   | 说明                           |
+| :------------------------------ | :----------------------------------- | :----------------------------- |
+| `VITE_SERVER_BASEURL`           | `https://01s-11-server.ruan-cat.com` | 独立 Nitro API 服务地址        |
+| `VITE_API_RUNTIME`              | `nitro-standalone`                   | 运行时模式                     |
+| `VITE_APP_PROXY_ENABLE`         | `false`                              | 不走 Vite 开发代理             |
+| `VITE_11COMM_API_BASE_URL`      | `https://01s-11-server.ruan-cat.com` | Phase6+ API 兼容地址           |
+| `VITE_11COMM_API_SHADOW_ENABLE` | `true`                               | 启用 shadow 流量镜像（调试用） |
+
+> **不兼容旧架构**：`apps/app/server/**` 内置 Nitro 服务已物理删除，`.env.production` 中不再配置 `VITE_SERVER_BASEURL` 指向自身 server。
+
+### 构建命令
+
+```bash
+# H5 生产构建
+pnpm build:h5:prod
+```
+
+> **Phase7 不再使用**：`build:nitro`、`build:nitro:node`、`build:nitro:vercel` 均已退役，统一后端入口已迁移至 `apps/api`。
 
 ## 2. 平台兼容性
 

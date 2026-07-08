@@ -23,17 +23,64 @@
 
 ## 部署项目
 
+> **Phase7 架构说明**：本 monorepo 从 Phase7 起统一后端入口至 `apps/api`，`apps/admin` 和 `apps/app` 均已转型为纯前端 SPA。
+
 生产部署、环境变量与构建产物说明不在根 README 展开。admin 侧请阅读 **[admin 项目的文档](./apps/admin/README.md)**；app H5 与统一 API server 以各自 `apps/*/package.json` 的 scripts、env 文件和 `homepage` 字段为准。
+
+### Phase7 Monorepo 部署架构
+
+```plain
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         Phase7 Monorepo 部署架构                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   开发者/CI                              Vercel                             │
+│                                                                             │
+│   git push dev ─── GitHub Actions ────► Vercel deployments                  │
+│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
+│   │  apps/admin (SPA)     apps/app (SPA)      apps/api (Nitro Serverless)│   │
+│   │  ────────────────     ──────────────      ─────────────────────────  │   │
+│   │  https://01s-11comm   https://01s-11-app   https://01s-11-server    │   │
+│   │  .ruan-cat.com        .ruan-cat.com        .ruan-cat.com            │   │
+│   │  Vercel Static        Vercel Static        Vercel Serverless Funcs  │   │
+│   │                                                                 │   │
+│   │  .output/public/**    dist/build/h5/**    server/routes/api/**    │   │
+│   │  (纯静态文件)         (H5 构建产物)       (Nitro handlers)         │   │
+│   └─────────────────────────────────────────────────────────────────────┘   │
+│                                      ▲                                       │
+│                                      │ API 请求                               │
+│                                      └─────────────────────────────────────   │
+│   consumers ───► browsers ─────────────────────────────────────────────────►│
+│                                                                             │
+│   apps/type (共享类型库) ← 被所有子包通过 workspace:^ 依赖                   │
+│   ├── business/**/schema.ts  (Drizzle Table + Zod Schemas)                  │
+│   └── shared/**             (通用类型与工具)                                │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| 子项目       | 产物类型         | 构建命令示例                            | 部署平台                    |
+| :----------- | :--------------- | :-------------------------------------- | :-------------------------- |
+| `apps/admin` | 纯 SPA           | `pnpm -F @01s-11comm/admin build:prod`  | Vercel Static               |
+| `apps/app`   | H5 SPA           | `pnpm -F @01s-11comm/app build:h5:prod` | Vercel Static               |
+| `apps/api`   | Nitro Serverless | `pnpm -F @01s-11comm/api build`         | Vercel Serverless Functions |
+| `apps/type`  | 共享类型库       | `pnpm -F @01s-11comm/type build`        | N/A（被依赖）               |
+
+> **变更历史**：Phase6 时 `apps/admin` 和 `apps/app` 各自带内置 Nitro 服务端，Phase7 统一迁移至独立 `apps/api` 服务。详见 [OpenSpec 变更 `migrate-superpowers-docs-to-openspec-longtask`](./openspec/changes/migrate-superpowers-docs-to-openspec-longtask/)。
 
 ## 项目结构
 
 ```plain
 01s-11comm/
 ├─ apps/
-│  ├─ admin/              # 管理端（Vue 3 + Vite + Nitro 等）
-│  ├─ app/                # 移动端 H5 / uni-app 子应用
-│  ├─ api/                # 独立统一 Nitro API server
+│  ├─ admin/              # 管理端（Vue 3 + Vite SPA，Phase7 不再内置 Nitro）
+│  ├─ app/                # 移动端 H5 / uni-app 子应用（Phase7 不再内置 Nitro）
+│  ├─ api/                # 独立统一 Nitro API server（Phase7 新增）
 │  └─ type/               # 共享类型与 DB schema（workspace 包）
+├─ openspec/
+│  └─ changes/
+│     └─ migrate-superpowers-docs-to-openspec-longtask/  # Phase7 Nitro 退役变更
 ├─ examples/              # 示例（pnpm-workspace 中排除，非工作区子包）
 ├─ apps/admin/src/docs/  # 技术说明、报告与 prompts
 ├─ scripts/              # 仓库辅助脚本

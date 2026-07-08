@@ -2,7 +2,6 @@ import { getPluginsList } from "./build/plugins/index";
 import { include, exclude } from "./build/optimize";
 import { type UserConfigExport, type ConfigEnv, loadEnv } from "vite";
 import { consola } from "consola";
-import { type ViteVercelConfig } from "vite-plugin-vercel";
 import { root, alias, wrapperEnv, pathResolve, __APP_INFO__ } from "./build/utils";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
@@ -60,20 +59,6 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 	function IS_REVERSE_PROXY() {
 		return VITE_IS_REVERSE_PROXY === "true";
 	}
-
-	/** @see https://github.com/magne4000/vite-plugin-vercel/tree/v9 */
-	const vercel: ViteVercelConfig = IS_REVERSE_PROXY()
-		? {
-				rewrites: [
-					// https://cloud.tencent.com/developer/ask/sof/107190446
-					// { source: "/backend/:path(.*)", destination: "http://47.93.160.11:10001/:path" },
-					// { source: "/(.*)", destination: "/index.html" },
-
-					// https://segmentfault.com/a/1190000042276351
-					{ source: "/backend/(.*)", destination: "/api/proxy" },
-				],
-			}
-		: {};
 
 	return {
 		base: VITE_PUBLIC_PATH,
@@ -201,6 +186,5 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
 			__INTLIFY_PROD_DEVTOOLS__: false,
 			__APP_INFO__: JSON.stringify(__APP_INFO__),
 		},
-		vercel,
 	};
 };

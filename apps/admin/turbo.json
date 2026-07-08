@@ -15,7 +15,11 @@
 		},
 		"vite:build:prod": {
 			"cache": true,
-			"outputs": ["dist/**"]
+			"outputs": ["dist/**", ".vercel/output/**"]
+		},
+		"move-vercel-output-to-root": {
+			"cache": false,
+			"dependsOn": ["vite:build:prod"]
 		},
 		"vite:build:prod:cloudflare": {
 			"cache": true,
@@ -24,11 +28,7 @@
 		"vite:build:prod:vercel": {
 			"cache": true,
 			"env": ["ENABLE_EXPERIMENTAL_COREPACK"],
-			"outputs": [".vercel/output/**"]
-		},
-		"move-vercel-output-to-root": {
-			"cache": false,
-			"dependsOn": ["vite:build:prod:vercel"]
+			"outputs": ["dist/**"]
 		},
 		"typedoc": {
 			"cache": false

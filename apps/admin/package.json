@@ -19,7 +19,7 @@
 		"build:staging": "turbo vite:build:staging",
 		"build:prod": "turbo vite:build:prod",
 		"build:prod:cloudflare": "turbo vite:build:prod:cloudflare",
-		"build:prod:vercel": "turbo move-vercel-output-to-root",
+		"build:prod:vercel": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" vite build --mode production --configLoader runner",
 		"report": "pnpm build",
 		"preview": "pnpm vite:preview",
 		"preview:build": "pnpm build && pnpm preview",
@@ -45,8 +45,7 @@
 		"env:pull": "npx tsx ./scripts/env-pull.ts",
 		"rm:types": "tsx ./scripts/del-types.ts",
 		"format": "pnpm lint:prettier",
-		"build:github": "pnpm vite:build:prod:github",
-		"move-vercel-output-to-root": "move-vercel-output-to-root"
+		"build:github": "pnpm vite:build:prod:github"
 	},
 	"keywords": [
 		"vue-pure-admin",

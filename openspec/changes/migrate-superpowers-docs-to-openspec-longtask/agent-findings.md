@@ -5,6 +5,7 @@
 本轮完成 7 个 checkbox 批量关闭与全量本地验证后，确认 6 个生产环境依赖任务均无法在 dev 分支推进，已全部标记 BLOCKED。
 
 **生产门禁前置条件（已写入 tasks.md §7D 顶部）：**
+
 1. 所有 Nitro 退役变更通过 PR 合并到 `main` 分支。
 2. GitHub Actions CI（`admin-ci`、`app-ci`、`api-ci`）在 `main` 分支全部通过。
 3. 三个 Vercel 项目（`apps/admin`、`apps/app`、`apps/api`）在 Vercel 完成生产部署，状态 Deployed。
@@ -15,16 +16,50 @@
 
 **BLOCKED 任务清单：**
 
-| Task | 内容 | BLOCKED 原因 |
-|------|------|-------------|
+| Task     | 内容                 | BLOCKED 原因                         |
+| -------- | -------------------- | ------------------------------------ |
 | task1210 | R2 upload live drill | 需 Vercel 部署 + 真实 R2 bucket 凭证 |
-| task1318 | admin 生产 Network 验证 | 需 dev→main + CI + Vercel + Chrome DevTools |
-| task1319 | app 生产 Network 验证 | 同上 |
-| task1320 | shadow-off drill | 同上 |
-| task1321 | 记录生产 evidence 到 `.tmp/phase7-dev-browser/**` | BLOCKED by task1318-1320 |
-| task1330 | 最终物理删除 `apps/admin/server/**` | 需 §7D 全部生产 evidence 通过 |
+
+---
+
+## 2026-07-09 §7E Phase7 文档更新记录
+
+本轮对 4 个 README 文件进行 Phase7 Nitro 退役文档更新：
+
+**更新的文件：**
+
+1. **根 `README.md`**：新增 `Phase7 Monorepo 部署架构` 章节，以 ASCII 图展示三子包部署关系；更新项目结构说明注释。
+2. **`apps/admin/README.md`**：大幅更新，添加 Phase7 警告通知、更新技术栈表（标记 Nitro 退役）、重写 API 开发规范章节指向 `apps/api`、重写部署章节含 ASCII 架构图与生产环境变量表、更新构建命令列表标记废弃命令。
+3. **`apps/api/README.md`**：新建文件，完整描述独立 Nitro API 服务的定位、技术栈、目录结构、开发命令、构建部署与数据库命令。
+4. **`apps/app/README.md`**：添加 Phase7 警告通知、新增 `1B. Phase7 部署架构` 章节（含架构图与生产环境变量表）。
+
+**关键变更摘要：**
+
+| 文件                   | 行变更          |
+| ---------------------- | --------------- |
+| `README.md`            | +53 行          |
+| `apps/admin/README.md` | +119/-38 行     |
+| `apps/app/README.md`   | +47 行          |
+| `apps/api/README.md`   | 新建（~160 行） |
+
+**发现：**
+
+- `vite-plugin-vercel` 插件通过识别构建产物中的 `_api` 目录前缀来决定是否部署 serverless functions；admin 构建产物若出现 `_api` 可能是残留构建缓存。
+- `apps/app` README 已有大量 "已退役" 标注，说明 Phase6 已做部分文档更新，本轮是 Phase7 收尾。
+
+**未更新（不在本次 scope）：**
+
+- `apps/app/vite.config.ts` 注释（Phase6 已标注）
+- `apps/app/nitro.config.ts`（已退役文件）
+- 根目录其他文档
+  | task1318 | admin 生产 Network 验证 | 需 dev→main + CI + Vercel + Chrome DevTools |
+  | task1319 | app 生产 Network 验证 | 同上 |
+  | task1320 | shadow-off drill | 同上 |
+  | task1321 | 记录生产 evidence 到 `.tmp/phase7-dev-browser/**` | BLOCKED by task1318-1320 |
+  | task1330 | 最终物理删除 `apps/admin/server/**` | 需 §7D 全部生产 evidence 通过 |
 
 **本地验证通过记录：**
+
 - `pnpm -F @01s-11comm/api exec vitest run tests/runtime tests/legacy tests/infra`：45 files / **840 tests passed**
 - `pnpm -F @01s-11comm/admin run typecheck`：通过
 - `pnpm -F @01s-11comm/api run typecheck`：通过

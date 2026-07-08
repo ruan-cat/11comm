@@ -676,3 +676,11 @@ Error: Process completed with exit code 1.
 ---
 
 这个是一次及其疯狂的删除，我希望你去看看 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 目录内的全部文档，搞清楚我们是否真实的完成了独立 nitro 接口的制作任务？所以我们可以进入到收尾阶段么？ `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 的任务清单还有那些没做完？
+
+---
+
+admin 项目能不能不使用 vite-plugin-vercel 插件？因为 .vercel/output 中仍有 functions/api/proxy.func/ ，就是因为 这个 vite-plugin-vercel 插件生成的。
+
+我们的目的是需要生成 .vercel/output 目录。我们能不能用其他合适的手段来生成这个目录？或者是通过这个 vite-plugin-vercel 插件的合适配置，避免生成干扰性质的 functions/api/proxy.func/ ？
+我觉得我们可以直接忽略掉 functions/api/proxy.func/ 对 vercel 项目的影响。毕竟 admin 项目部署到 vercel 项目了，未来在生产环境内，也还是需要对 api 子包的内容做 vercel 生产环境层面的反向代理，所以在 .vercel/output 中仍有 functions/api/proxy.func/ 有这个边缘云函数来承担 vercel 层面的反向代理，是合理的。
+你调研一下这几个方向，我倾向于保留这个配置，保留 vercel 生产环境的反向代理函数。

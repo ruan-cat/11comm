@@ -1,20 +1,31 @@
-# 11comm 智慧社区项目
+# 11comm 智慧社区项目 — Admin 后台
 
 ## 项目技术架构
 
-本项目是一个基于 **Vue 3 + TypeScript** 的全栈管理后台，采用 **Monorepo** 结构管理多个子项目。
+本项目是一个基于 **Vue 3 + TypeScript** 的纯前端管理后台，采用 **Monorepo** 结构管理多个子项目。
+
+> **⚠️ 重要变更通知（Phase7）**
+>
+> `apps/admin` **已不再是 Nitro 服务端项目**。从 Phase7 起：
+>
+> - Admin 前端构建产物为**纯 SPA**（`.output/public/`），部署到 Vercel 静态托管。
+> - 所有业务 API 已迁移至独立的 `apps/api` Nitro 服务（`https://01s-11-server.ruan-cat.com`）。
+> - `apps/admin/server/**` 目录处于 `delete-candidate` 状态，待生产验证通过后物理删除。
+>
+> 详见：[OpenSpec 变更 `migrate-superpowers-docs-to-openspec-longtask`](../../openspec/changes/migrate-superpowers-docs-to-openspec-longtask/)
 
 ### 核心技术栈
 
-| 层级      | 技术选型                           |
-| :-------- | :--------------------------------- |
-| 前端框架  | Vue 3 + Vite + TypeScript          |
-| UI 组件库 | Element Plus + Plus Pro Components |
-| 状态管理  | Pinia                              |
-| 后端框架  | Nitro v3 (Nitro v3 + H3)           |
-| 数据库    | Neon Serverless Postgres           |
-| ORM       | Drizzle ORM                        |
-| 类型库    | @01s-11comm/type (同构运行时库)    |
+| 层级         | 技术选型                                          |
+| :----------- | :------------------------------------------------ |
+| 前端框架     | Vue 3 + Vite + TypeScript                         |
+| UI 组件库    | Element Plus + Plus Pro Components                |
+| 状态管理     | Pinia                                             |
+| ~~后端框架~~ | ~~Nitro v3 (Phase6 退役)~~ → 独立 `apps/api` 服务 |
+| 数据库       | Neon Serverless Postgres（通过 `apps/api` 访问）  |
+| ORM          | Drizzle ORM（Schema 定义在 `apps/type`）          |
+
+> **架构决策**：Admin 不再内置 Nitro 服务端。历史遗留的 `apps/admin/server/**` 代码仅作过渡兼容，最终将物理删除。所有业务 API 由 `apps/api` 提供。
 
 ### Schema 架构 (Trinity Pattern)
 
@@ -32,18 +43,17 @@
 - 房产管理：`apps/type/src/business/property-manage/house-property-manage/schema.ts`
 - 费用管理：`apps/type/src/business/property-manage/expense-manage/house-charge/schema.ts`
 
-### API 开发规范
+### API 开发规范（Phase7 独立 Nitro 服务）
 
-所有 Nitro 接口遵循统一的开发规范：
+> **历史说明**：Admin 曾内置 Nitro 服务端（Phase6），Phase7 已迁移至独立 `apps/api` Nitro 服务。
+>
+> **当前状态**：`apps/admin/server/**` 目录处于 `delete-candidate` 状态，**不要再向其中新增接口**。所有新接口开发应在 `apps/api` 中进行。
 
-- 使用 `defineHandler` 与 `nitro/h3` 导入
-- 响应必须使用 `JsonVO<T>` 类型注解约束
-- 统一使用 `message` 字段（不是 `msg`）
-- 入参通过 `readValidatedBody` + Zod Schema 校验
-- Insert 操作使用 `as unknown as NewX` 类型回填
-- 错误响应包含 `error` 和 `stack` 字段
+**Admin 前端调用 API 的方式**：`@ruan-cat/domains` 的 `11commAppNitroServer` 别名指向生产环境 `https://01s-11-server.ruan-cat.com`。
 
-详见：[Nitro API 开发技能](../.claude/skills/nitro-api-development/SKILL.md)
+生产 API 调用由 `@ruan-cat/domains` 中的 hooks 自动处理，详见：[Domain Hooks 文档](https://github.com/ruan-cat/domains)。
+
+**服务端开发规范**（适用于 `apps/api`）：详见 [Nitro API 开发技能](../../.claude/skills/nitro-api-development/SKILL.md)
 
 ### 类型共享架构
 
@@ -90,9 +100,56 @@ pnpm db:reset
 - [pure-admin 在线预览界面](https://pure-admin.github.io/vue-pure-admin/#/login)
 - [pure-admin 文档](https://pure-admin.cn/)
 
-## 项目部署
+## 项目部署（Phase7）
 
-点此[阅读文档](./src/docs/deploy/index.md)。
+> **Phase7 架构**：Admin 为纯前端 SPA，部署到 Vercel 静态托管。所有 API 请求直接发往 `https://01s-11-server.ruan-cat.com`。
+
+### 部署架构
+
+```plain
+apps/admin (SPA)                          apps/api (Nitro Serverless)
+┌─────────────────────────┐               ┌──────────────────────────────┐
+│ https://01s-11comm      │ ─── API ───▶  │ https://01s-11-server        │
+│ .ruan-cat.com           │               │ .ruan-cat.com                │
+│ (Vercel Static)        │               │ (Vercel Serverless Functions) │
+└─────────────────────────┘               └──────────────────────────────┘
+```
+
+### 生产环境变量（关键配置）
+
+| 变量名                          | 值                                   | 说明                           |
+| :------------------------------ | :----------------------------------- | :----------------------------- |
+| `VITE_11COMM_API_BASE_URL`      | `https://01s-11-server.ruan-cat.com` | 独立 Nitro API 服务地址        |
+| `VITE_11COMM_API_USE_PROXY`     | `false`                              | 不走 Vite 开发代理             |
+| `VITE_IS_REVERSE_PROXY`         | `false`                              | 不使用反向代理                 |
+| `VITE_11COMM_API_SHADOW_ENABLE` | `true`                               | 启用 shadow 流量镜像（调试用） |
+
+> **不兼容旧架构**：`apps/admin/server/**` 内置 Nitro 服务已退役，`.env.production` 中不再配置 `NITRO_*` 或指向自身 server 的地址。
+
+### 构建命令
+
+```bash
+# 生产构建（纯 SPA，不含服务端）
+pnpm build:prod
+
+# 预览构建产物
+pnpm preview
+```
+
+> 注意：`build:prod` 与 `build:prod:vercel` 的区别：
+>
+> - `build:prod`：纯 SPA，构建产物在 `.output/public/`，直接部署到 Vercel 静态托管。
+> - `build:prod:vercel`：含内置 Nitro 服务端（Phase6 遗留），**Phase7 不再使用**。
+
+### 部署步骤
+
+1. **本地构建**：`pnpm build:prod`
+2. **部署到 Vercel**：Vercel 检测到 `.output/public/` 目录，自动以静态模式部署。
+   - 无需额外配置 `vercel.json`。
+   - 无需使用 `move-vercel-output-to-root` 脚本。
+3. **健康检查**：`https://01s-11comm.ruan-cat.com` 应返回 SPA 首页。
+
+详细部署文档：[./src/docs/deploy/index.md](./src/docs/deploy/index.md)
 
 ## package.json 命令
 
@@ -115,34 +172,33 @@ pnpm db:reset
 
 #### 2.2 构建命令列表
 
-|             命令             |                       说明                        |       构建模式        |
-| :--------------------------: | :-----------------------------------------------: | :-------------------: |
-|         `pnpm build`         |        构建生产环境（等同于 `build:prod`）        |  纯客户端构建（SPA）  |
-|      `pnpm build:prod`       |              构建生产环境客户端版本               |  纯客户端构建（SPA）  |
-| `pnpm build:prod:cloudflare` | **构建 Cloudflare 部署版本（包含 Nitro 服务端）** | **Nitro 全栈构建** ⭐ |
-|   `pnpm build:prod:vercel`   |   **构建 Vercel 部署版本（包含 Nitro 服务端）**   | **Nitro 全栈构建** ⭐ |
-|     `pnpm build:staging`     |             构建预发布环境客户端版本              |  纯客户端构建（SPA）  |
-|     `pnpm build:github`      |         构建 GitHub Pages 部署客户端版本          |  纯客户端构建（SPA）  |
-|      `pnpm docs:build`       |                构建 VitePress 文档                |           -           |
+> **Phase7 重要变更**：`apps/admin` 已转型为纯前端 SPA，所有构建命令默认产出 `.output/public/` 静态文件。
+
+|             命令             |                     说明                      |      构建模式       |
+| :--------------------------: | :-------------------------------------------: | :-----------------: |
+|         `pnpm build`         |      构建生产环境（等同于 `build:prod`）      | 纯客户端构建（SPA） |
+|      `pnpm build:prod`       |            构建生产环境客户端版本             | 纯客户端构建（SPA） |
+| `pnpm build:prod:cloudflare` | ~~构建 Cloudflare 部署版本~~（Phase7 已废弃） | ~~Nitro 全栈构建~~  |
+|   `pnpm build:prod:vercel`   |   ~~构建 Vercel 部署版本~~（Phase7 已废弃）   | ~~Nitro 全栈构建~~  |
+|     `pnpm build:staging`     |           构建预发布环境客户端版本            | 纯客户端构建（SPA） |
+|     `pnpm build:github`      |       构建 GitHub Pages 部署客户端版本        | 纯客户端构建（SPA） |
+|      `pnpm docs:build`       |              构建 VitePress 文档              |          -          |
 
 #### 2.3 重要说明
 
-⚠️ **生产环境部署必须使用 Nitro 全栈构建命令**
-
-- **Cloudflare 部署**：使用 `pnpm build:prod:cloudflare`
-- **Vercel 部署**：使用 `pnpm build:prod:vercel`
-
-**区别**：
-
-- **纯客户端构建**：只生成 `.output/public/` 目录，包含静态 HTML/CSS/JS 文件
-- **Nitro 全栈构建**：生成 `.output/server/` 和 `.output/public/` 目录，包含服务端 API 和客户端文件
+> **Phase7 不再使用 Nitro 全栈构建**：
+>
+> - `build:prod:cloudflare` 和 `build:prod:vercel` 已废弃，保留仅作历史参考。
+> - **生产部署统一使用** `pnpm build:prod`（纯 SPA）。
+> - 构建产物在 `.output/public/`，由 Vercel 以静态模式托管。
+> - 无需 `move-vercel-output-to-root` 脚本。
 
 **验证方法**：
 
 ```bash
-# Nitro 全栈构建成功后，应该存在以下文件：
-ls .output/nitro.json        # Nitro 配置文件
-ls .output/server/index.mjs  # 服务端入口文件
+# Phase7 正确构建后，应该只存在 .output/public/ 目录
+ls .output/public/index.html  # ✓ 应存在
+# .output/nitro.json 不应存在（Phase6 遗留）
 ```
 
 ### 3. 预览和测试命令
@@ -164,7 +220,9 @@ ls .output/server/index.mjs  # 服务端入口文件
 |    `pnpm format`     | 格式化代码（等同于 lint:prettier） |
 |   `pnpm typecheck`   |      运行 TypeScript 类型检查      |
 
-### 5. Drizzle ORM 数据库命令
+### 5. Drizzle ORM 数据库命令（通过 apps/api 访问）
+
+> **Phase7 变更**：Drizzle 配置、迁移目录和数据库运维入口已全部迁移至 `apps/api`。Admin 的 `db:*` 脚本仅保留兼容转发。
 
 |                 命令                  |                           说明                           |
 | :-----------------------------------: | :------------------------------------------------------: |
