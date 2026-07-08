@@ -48,5 +48,5 @@ jobs:
       - name: 运行 App 单元测试
         run: pnpm -F @01s-11comm/app exec vitest run
 
-      - name: 验证 App API runtime 策略
-        run: pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/runtime-base-url.test.ts
+      - name: 验证 App API runtime 基址策略
+        run: pnpm -F @01s-11comm/app exec vitest run src/tests/runtime-base/runtime-base-url.test.ts
