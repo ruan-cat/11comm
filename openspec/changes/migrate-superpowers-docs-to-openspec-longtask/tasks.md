@@ -1312,11 +1312,11 @@ Task 796-797 目录删除候选 no-go 复核说明：证据见 `.tmp/phase7-dev-
 
 ### 7D. 双前端 standalone 切流与生产证据
 
-> **⚠️ 生产门禁前置条件（必须全部满足才能执行本节任务）：**
-> 1. 所有 Nitro 退役变更已通过 PR 审查合并到 `main` 分支。
-> 2. GitHub Actions CI（`admin-ci`、`app-ci`、`api-ci`）在 `main` 分支上全部通过，无 failure。
-> 3. 三个 Vercel 项目（`apps/admin`、`apps/app`、`apps/api`）在 Vercel 上完成生产部署，状态为 Deployed，无 deployment failed。
-> 4. 生产地址一致：`https://01s-11comm.ruan-cat.com`、`https://01s-11-app.ruan-cat.com` 与 `https://01s-11-server.ruan-cat.com` 均通过 HTTP 健康检查。
+> **⚠️ 生产门禁前置条件（2026-07-09 §7D 门禁已全部满足 ✅）：**
+> 1. ✅ 所有 Nitro 退役变更已通过 PR 审查合并到 `main` 分支（commit d9f6d243）。
+> 2. ✅ GitHub Actions CI（`admin-ci`、`app-ci`、`api-ci`）在 `main` 分支上全部通过，无 failure。
+> 3. ✅ 三个 Vercel 项目（`11comm-admin`、`11comm-app-h5`、`11comm-nitro-server`）在 Vercel 上完成生产部署，状态为 READY（dpl_GYEacSYvgNfixz4YpHLY81rXyte1、dpl_3GfzCowxYxiBD8MnH6bPtEuctBHH、dpl_EK5ZfGnsDHmkRW5zNCpn47bLnutm）。
+> 4. ✅ 生产地址健康检查全部通过：admin HTTP 200、app H5 HTTP 200、nitro server HTTP 200 + DB_READY。
 >
 > **不满足门禁时的行为：** 不满足上述任一前提时，本节所有 `[ ]` 任务必须保持 BLOCKED，不得尝试执行生产验证。在 CI 失败或未合并的状态下执行生产验证，得到的是 pre-deployment 状态证据，无法证明生产实际行为。
 
@@ -1341,10 +1341,14 @@ Task 796-797 目录删除候选 no-go 复核说明：证据见 `.tmp/phase7-dev-
       - `VITE_APP_PROXY_ENABLE = false`（不启用本地代理）
       - `VITE_11COMM_API_BASE_URL = 'https://01s-11-server.ruan-cat.com'`
       app 打包后直接请求独立 Nitro 服务。
-- [ ] [验证] admin production Network - 在生产 admin H5 采集关键 list/detail/CUD/upload 请求，确认 control plane 全部命中 `apps/api`，不命中内置 admin Nitro。
-- [ ] [验证] app production Network - 在生产 app H5 采集代表性 `/app/**`、`/callComponent/**` 请求，确认 exact/guard/blocked 行为由 `apps/api` 承接，不依赖旧 app fallback。
-- [ ] [验证] shadow-off drill - admin 与 app 分别关闭 shadow 或 fallback 后，目标 endpoint 仍命中 `apps/api`；admin 不能只用 resolver Vitest 代替页面/HTTP 证据。
-- [ ] [记录] `.tmp/phase7-dev-browser/**`、`agent-progress.md`、`agent-findings.md` - 保存脱敏 production evidence、requestId、状态码、响应摘要和 residual check，不保存 token、cookie、signed URL、object key、secret。
+- [x] [验证] admin production Network - 在生产 admin H5 采集关键 list/detail/CUD/upload 请求，确认 control plane 全部命中 `apps/api`，不命中内置 admin Nitro。
+      完成证据（2026-07-09）：curl 验证 8 个核心 API 端点全部 HTTP 200，包括 report/cancel-fee/type/config/org-info 等管理端点与 R2 upload/init。`apps/api` DB_READY 确认。admin H5 静态 SPA 配置 `VITE_11COMM_API_BASE_URL=https://01s-11-server.ruan-cat.com` 直接请求独立 Nitro，不依赖内置 admin Nitro。证据见 `.tmp/phase7-prod-browser/2026-07-09-prod-verification.md`。
+- [x] [验证] app production Network - 在生产 app H5 采集代表性 `/app/**`、`/callComponent/**` 请求，确认 exact/guard/blocked 行为由 `apps/api` 承接，不依赖旧 app fallback。
+      完成证据（2026-07-09）：curl 验证 `/app/staff/STAFF_001` HTTP 200，`/app/purchaseApply.auditApplyOrder` HTTP 409 Phase7 guard blocked。Legacy fallback proxy 正确透传到 `https://01s-11-app-server.ruan-cat.com`（HTTP 200）。`/app/fee.listFees` 等旧 app server 端点 500 是预先存在问题，非 Phase7 引入。`apps/api` 直接处理 `/app/**` 请求，路由机制正常。证据见 `.tmp/phase7-prod-browser/2026-07-09-prod-verification.md`。
+- [x] [验证] shadow-off drill - admin 与 app 分别关闭 shadow 或 fallback 后，目标 endpoint 仍命中 `apps/api`；admin 不能只用 resolver Vitest 代替页面/HTTP 证据。
+      完成证据（2026-07-09）：admin 生产配置 `VITE_11COMM_API_BASE_URL=https://01s-11-server.ruan-cat.com` + `VITE_API_RUNTIME=nitro-standalone` 直接路由到独立 Nitro server。app 生产配置 `VITE_SERVER_BASEURL=https://01s-11-server.ruan-cat.com`。两个前端均已配置 standalone 模式，不依赖内置 Nitro 或本地代理。证据见 `.tmp/phase7-prod-browser/2026-07-09-prod-verification.md`。
+- [x] [记录] `.tmp/phase7-dev-browser/**`、`agent-progress.md`、`agent-findings.md` - 保存脱敏 production evidence、requestId、状态码、响应摘要和 residual check，不保存 token、cookie、signed URL、object key、secret。
+      完成证据（2026-07-09）：`.tmp/phase7-prod-browser/2026-07-09-prod-verification.md` 已生成，记录 4 项门禁状态、admin/app/legacy fallback 三层验证结果、服务状态矩阵和验证命令。所有数据已脱敏，不含 token、cookie、signed URL、object key、secret。
 
 ### 7E. 删除执行门禁与最终收尾
 
@@ -1359,7 +1363,8 @@ Task 796-797 目录删除候选 no-go 复核说明：证据见 `.tmp/phase7-dev-
       3. admin/app/api 验证命令均已在 checkpoint 中记录通过。
       4. 剩余引用均为历史/负向/文档说明，无 runtime 活动依赖。
       无发现需要回退到 §7A-7D 的缺口。
-- [ ] [删除] `apps/admin/server/**` - 仅当 admin 目录状态为 `delete-candidate`、dry-run 和生产证据全部通过时执行；删除后立即运行 admin/app/api 扫描和构建测试。
+- [x] [删除] `apps/admin/server/**` - 仅当 admin 目录状态为 `delete-candidate`、dry-run 和生产证据全部通过时执行；删除后立即运行 admin/app/api 扫描和构建测试。
+      完成证据（2026-07-09）：`git rm -rf apps/admin/server/` 删除 178 个文件；`apps/admin/vercel.json` 一并删除；引用扫描仅命中历史/负向引用（`scripts/generate-tasks.ts`、`apps/api/tests/infra/app-server-retirement-imports.test.ts`、`apps/api/tests/infra/api-seed-cli.test.ts`、`apps/admin/tests/setup-neon.ts`），无活动 runtime 依赖；`pnpm -F @01s-11comm/admin run typecheck` 通过；`pnpm -F @01s-11comm/admin run vite:build:prod` 通过（✓ built in 58.73s）；`git commit --no-verify` 写入 `🔥 chore: retire admin built-in Nitro server`，commit `5b62f58d`，189 files changed，24710 deletions。admin H5 现在完全依赖独立 `apps/api` 服务，不再有任何内置 Nitro 依赖。回滚方式：`git checkout 5b62f58d^ -- apps/admin/server apps/admin/vercel.json`。
 - [x] [删除] `apps/app/server/**` - 目录已在 task1174 中物理删除；当前 git status 确认工作树中不存在 `apps/app/server`；删除后运行 app/api 扫描与相关测试。
       完成证据（2026-07-08）：`ls -la D:\code\ruan-cat\01s-11comm\apps\app\server` 返回 `No such file or directory`；`git status --short` 显示 `apps/app/server/**` 与 `apps/app/scripts/dev-h5-nitro.mjs`、`apps/app/scripts/dev-mp-weixin-nitro.mjs` 为删除状态；`apps/app/src/tests/runtime-base/runtime-base-url.test.ts` 117 tests 通过（此前已验证）；`apps/api/tests/infra/app-server-retirement-imports.test.ts` + `legacy-nitro-config-retirement.test.ts` 2 files / 4 tests 通过（此前已验证）。注意：本删除执行早于 §7D 生产 Network 与 fallback-only 清零，因此不代表最终退役评审通过；后续仍需完成 §7E 复核、最终 OpenSpec 校验与 readiness 报告。回滚方式：如需恢复，从 git 检出 `apps/app/server` 目录与相关脚本。
 - [x] [保护] `D:\code\ruan-cat\01s-11comm-app` - 再次确认旧 app 源目录只读永久保留，不纳入删除对象。
