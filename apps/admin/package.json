@@ -17,7 +17,7 @@
 		"docs:build": "vitepress build src",
 		"test": "vitest --ui --watch --api.port=4000",
 		"build:staging": "turbo vite:build:staging",
-		"build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" pnpm exec vite build --mode production --configLoader runner",
+		"build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" node node_modules/vite/bin/vite.js build --mode production --configLoader runner",
 		"build:prod:cloudflare": "turbo vite:build:prod:cloudflare",
 		"build:prod:vercel": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" vite build --mode production --configLoader runner",
 		"report": "pnpm build",
