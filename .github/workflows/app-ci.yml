@@ -50,6 +50,3 @@ jobs:
 
       - name: 验证 App API runtime 策略
         run: pnpm -F @01s-11comm/app exec vitest run src/tests/nitro-runtime/runtime-base-url.test.ts
-
-      - name: 构建 App Nitro Vercel 产物
-        run: pnpm -F @01s-11comm/app run build:nitro:vercel
