@@ -431,14 +431,16 @@ describe("phase7 endpoint manifest", () => {
 		for (const url of housePropertyManageAdminListEndpoints) {
 			expect(urls).toContain(url);
 		}
-		expect(urls).not.toContain("/app/ownerRepair.repairDispatch");
-		expect(urls).not.toContain("/app/ownerRepair.updateOwnerRepair");
-		expect(urls).not.toContain("/app/ownerRepair.repairFinish");
-		expect(urls).not.toContain("/app/ownerRepair.repairEnd");
-		expect(urls).not.toContain("/app/ownerRepair.repairStart");
-		expect(urls).not.toContain("/app/ownerRepair.repairStop");
-		expect(urls).not.toContain("/app/ownerRepair.grabbingRepair");
-		expect(urls).not.toContain("/app/repair.replyRepairAppraise");
+		expect(urls).toContain("/app/ownerRepair.listStaffRepairs");
+		expect(urls).toContain("/app/ownerRepair.listStaffFinishRepairs");
+		expect(urls).toContain("/app/ownerRepair.updateOwnerRepair");
+		expect(urls).toContain("/app/ownerRepair.repairDispatch");
+		expect(urls).toContain("/app/ownerRepair.repairFinish");
+		expect(urls).toContain("/app/ownerRepair.repairEnd");
+		expect(urls).toContain("/app/ownerRepair.repairStart");
+		expect(urls).toContain("/app/ownerRepair.repairStop");
+		expect(urls).toContain("/app/ownerRepair.grabbingRepair");
+		expect(urls).toContain("/app/repair.replyRepairAppraise");
 		expect(urls).toContain("/app/inspection.submitInspection");
 		expect(urls).toContain("/app/inspection.transferTask");
 		expect(urls).toContain("/app/meter.saveMeterWater");
@@ -454,13 +456,45 @@ describe("phase7 endpoint manifest", () => {
 		expect(urls).toContain("/app/activities.saveActivities");
 		expect(urls).toContain("/app/activities.updateActivities");
 		expect(urls).toContain("/app/activities.deleteActivities");
-		expect(urls).not.toContain("/app/ownerRepair.listStaffRepairs");
-		expect(urls).not.toContain("/app/applyRoomDiscount/queryApplyRoomDiscount");
-		expect(urls).not.toContain("/app/applyRoomDiscount/updateApplyRoomDiscount");
-		expect(urls).not.toContain("/app/applyRoomDiscount/updateReviewApplyRoomDiscount");
-		expect(urls).not.toContain("/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord");
-		expect(urls).not.toContain("/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord");
-		expect(urls).not.toContain("/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord");
+		expect(urls).toContain("/app/ownerRepair.listStaffRepairs");
+		expect(urls).toContain("/app/ownerRepair.listStaffFinishRepairs");
+		expect(urls).toContain("/app/applyRoomDiscount/queryApplyRoomDiscount");
+		expect(urls).toContain("/app/applyRoomDiscount/updateApplyRoomDiscount");
+		expect(urls).toContain("/app/applyRoomDiscount/updateReviewApplyRoomDiscount");
+		expect(urls).toContain("/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord");
+		expect(urls).toContain("/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord");
+		expect(urls).toContain("/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord");
+		expect(urls).toContain("/app/resourceStore.listUserStorehouses");
+		expect(urls).toContain("/app/resourceStoreType.listResourceStoreTypes");
+		expect(urls).toContain("/app/collection/resourceOut");
+		expect(urls).toContain("/app/purchase/resourceEnter");
+		expect(urls).toContain("/app/purchaseApply.deletePurchaseApply");
+		expect(urls).toContain("/app/resourceStore.deleteAllocationStorehouse");
+		expect(urls).toContain("/app/resourceStore.allocationStoreEnter");
+		expect(urls).toContain("/app/resourceStore.saveAllocationUserStorehouse");
+		expect(urls).toContain("/app/resourceStore.saveResourceReturn");
+		expect(urls).toContain("/app/resourceStore.saveResourceScrap");
+		expect(urls).toContain("/app/oa/workflow/query");
+		expect(urls).toContain("/app/oa/workflow/form/query");
+		expect(urls).toContain("/app/oa/workflow/form/data/query");
+		expect(urls).toContain("/app/oa/workflow/form/save");
+		expect(urls).toContain("/app/oa/workflow/form/update");
+		expect(urls).toContain("/app/oa/workflow/task/undo/query");
+		expect(urls).toContain("/app/oa/workflow/task/his/query");
+		expect(urls).toContain("/app/oa/workflow/user/query");
+		expect(urls).toContain("/app/oa/workflow/image/run");
+		expect(urls).toContain("/app/oa/workflow/task/next");
+		expect(urls).toContain("/app/oa/workflow/audit");
+		expect(urls).toContain("/app/oa/workflow/undo/next-deal-user");
+		expect(urls).toContain("/app/oa/workflow/undo/audit");
+		expect(urls).toContain("/app/roomRenovation/queryRoomRenovation");
+		expect(urls).toContain("/app/roomRenovation/updateRoomToExamine");
+		expect(urls).toContain("/app/roomRenovation/saveRoomRenovationDetail");
+		expect(urls).toContain("/app/roomRenovation/updateRoomRenovationState");
+		expect(urls).toContain("/app/roomRenovation/queryRoomRenovationRecord");
+		expect(urls).toContain("/app/roomRenovation/queryRoomRenovationRecordDetail");
+		expect(urls).toContain("/app/roomRenovation/updateRoomDecorationRecord");
+		expect(urls).toContain("/app/roomRenovation/deleteRoomRenovationRecord");
 	});
 
 	test("exposes readonly endpoint manifest without database configuration", async () => {
@@ -659,6 +693,22 @@ describe("phase7 endpoint manifest", () => {
 					ownerModule: "repair",
 					phase: "phase4a-repair-minimal",
 					cutoverStatus: "blocked-for-execution",
+				}),
+				expect.objectContaining({
+					url: "/app/ownerRepair.listStaffRepairs",
+					method: ["GET", "POST"],
+					ownerModule: "repair",
+					phase: "phase7-repair-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/ownerRepair.listStaffFinishRepairs",
+					method: ["GET", "POST"],
+					ownerModule: "repair",
+					phase: "phase7-repair-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
 				}),
 				expect.objectContaining({
 					url: "/app/floor.queryFloors",
@@ -951,6 +1001,37 @@ describe("phase7 endpoint manifest", () => {
 					cutoverStatus: "app-shadow-allowlist",
 				}),
 				expect.objectContaining({
+					url: "/app/applyRoomDiscount/queryApplyRoomDiscount",
+					method: ["GET", "POST"],
+					ownerModule: "property-application",
+					phase: "phase7-property-application-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				expect.objectContaining({
+					url: "/app/applyRoomDiscountRecord/queryApplyRoomDiscountRecord",
+					method: ["GET", "POST"],
+					ownerModule: "property-application",
+					phase: "phase7-property-application-readonly",
+					responseContract: "{ code, msg, data }",
+					cutoverStatus: "app-shadow-allowlist",
+				}),
+				...[
+					"/app/applyRoomDiscount/updateApplyRoomDiscount",
+					"/app/applyRoomDiscount/updateReviewApplyRoomDiscount",
+					"/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord",
+					"/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "property-application",
+						phase: "phase7-property-application-guarded-write",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
+				expect.objectContaining({
 					url: "/app/itemRelease.getItemRelease",
 					method: ["GET", "POST"],
 					ownerModule: "item-release",
@@ -1075,6 +1156,35 @@ describe("phase7 endpoint manifest", () => {
 						cutoverStatus: "blocked-for-execution",
 					}),
 				),
+				...["/app/resourceStore.listUserStorehouses", "/app/resourceStoreType.listResourceStoreTypes"].map((url) =>
+					expect.objectContaining({
+						url,
+						method: ["GET", "POST"],
+						ownerModule: "resource",
+						phase: "phase7-resource-readonly-batch15",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...[
+					"/app/collection/resourceOut",
+					"/app/purchase/resourceEnter",
+					"/app/purchaseApply.deletePurchaseApply",
+					"/app/resourceStore.allocationStoreEnter",
+					"/app/resourceStore.deleteAllocationStorehouse",
+					"/app/resourceStore.saveAllocationUserStorehouse",
+					"/app/resourceStore.saveResourceReturn",
+					"/app/resourceStore.saveResourceScrap",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "resource",
+						phase: "phase7-resource-guarded-write-batch16",
+						responseContract: "{ success, code, message, data, timestamp }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
 				...parkingReadonlyBatch34Endpoints.map((url) =>
 					expect.objectContaining({
 						url,
@@ -1161,6 +1271,71 @@ describe("phase7 endpoint manifest", () => {
 						method: "POST",
 						ownerModule: "purchase",
 						phase: "phase7-purchase-guarded-write-batch29",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
+				...[
+					"/app/oa/workflow/query",
+					"/app/oa/workflow/form/query",
+					"/app/oa/workflow/form/data/query",
+					"/app/oa/workflow/task/undo/query",
+					"/app/oa/workflow/task/his/query",
+					"/app/oa/workflow/user/query",
+					"/app/oa/workflow/image/run",
+					"/app/oa/workflow/task/next",
+					"/app/oa/workflow/undo/next-deal-user",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: ["GET", "POST"],
+						ownerModule: "oa-workflow",
+						phase: "phase7-oa-workflow-readonly",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...[
+					"/app/oa/workflow/form/save",
+					"/app/oa/workflow/form/update",
+					"/app/oa/workflow/audit",
+					"/app/oa/workflow/undo/audit",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "oa-workflow",
+						phase: "phase7-oa-workflow-guarded-write",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "blocked-for-execution",
+					}),
+				),
+				...[
+					"/app/roomRenovation/queryRoomRenovation",
+					"/app/roomRenovation/queryRoomRenovationRecord",
+					"/app/roomRenovation/queryRoomRenovationRecordDetail",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: ["GET", "POST"],
+						ownerModule: "renovation",
+						phase: "phase7-renovation-readonly",
+						responseContract: "{ code, msg, data }",
+						cutoverStatus: "app-shadow-allowlist",
+					}),
+				),
+				...[
+					"/app/roomRenovation/updateRoomToExamine",
+					"/app/roomRenovation/saveRoomRenovationDetail",
+					"/app/roomRenovation/updateRoomRenovationState",
+					"/app/roomRenovation/updateRoomDecorationRecord",
+					"/app/roomRenovation/deleteRoomRenovationRecord",
+				].map((url) =>
+					expect.objectContaining({
+						url,
+						method: "POST",
+						ownerModule: "renovation",
+						phase: "phase7-renovation-guarded-write",
 						responseContract: "{ code, msg, data }",
 						cutoverStatus: "blocked-for-execution",
 					}),

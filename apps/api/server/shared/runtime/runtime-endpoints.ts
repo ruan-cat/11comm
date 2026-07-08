@@ -10,11 +10,13 @@ import { itemReleaseLegacyEndpointDefinitions } from "../../modules/item-release
 import { maintenanceLegacyEndpointDefinitions } from "../../modules/maintenance/legacy-endpoints";
 import { meterLegacyEndpointDefinitions } from "../../modules/meter/legacy-endpoints";
 import { noticeLegacyEndpointDefinitions } from "../../modules/notice/legacy-endpoints";
+import { oaWorkflowLegacyEndpointDefinitions } from "../../modules/oa-workflow/legacy-endpoints";
 import { ownerLegacyEndpointDefinitions } from "../../modules/owner/legacy-endpoints";
 import { parkingLegacyEndpointDefinitions } from "../../modules/parking/legacy-endpoints";
 import { profileLegacyEndpointDefinitions } from "../../modules/profile/legacy-endpoints";
 import { propertyApplicationLegacyEndpointDefinitions } from "../../modules/property-application/legacy-endpoints";
 import { purchaseLegacyEndpointDefinitions } from "../../modules/purchase/legacy-endpoints";
+import { renovationLegacyEndpointDefinitions } from "../../modules/renovation/legacy-endpoints";
 import { repairLegacyEndpointDefinitions } from "../../modules/repair/legacy-endpoints";
 import { resourceLegacyEndpointDefinitions } from "../../modules/resource/legacy-endpoints";
 import { roomUnitLegacyEndpointDefinitions } from "../../modules/room-unit/legacy-endpoints";
@@ -102,11 +104,42 @@ const phase7BlockedAppLegacyMutationUrls = new Set([
 	"/app/workorder/copy/finish",
 	"/app/staff/update-online-status",
 	"/app/staff/add",
+	"/app/applyRoomDiscount/updateApplyRoomDiscount",
+	"/app/applyRoomDiscount/updateReviewApplyRoomDiscount",
+	"/app/applyRoomDiscountRecord/addApplyRoomDiscountRecord",
+	"/app/applyRoomDiscountRecord/cutApplyRoomDiscountRecord",
+	"/app/ownerRepair.updateOwnerRepair",
+	"/app/ownerRepair.repairDispatch",
+	"/app/ownerRepair.repairFinish",
+	"/app/ownerRepair.repairEnd",
+	"/app/ownerRepair.repairStart",
+	"/app/ownerRepair.repairStop",
+	"/app/ownerRepair.grabbingRepair",
+	"/app/repair.replyRepairAppraise",
+	"/app/collection/resourceOut",
+	"/app/purchase/resourceEnter",
+	"/app/purchaseApply.deletePurchaseApply",
+	"/app/resourceStore.allocationStoreEnter",
+	"/app/resourceStore.deleteAllocationStorehouse",
+	"/app/resourceStore.saveAllocationUserStorehouse",
+	"/app/resourceStore.saveResourceReturn",
+	"/app/resourceStore.saveResourceScrap",
+	"/app/oa/workflow/form/save",
+	"/app/oa/workflow/form/update",
+	"/app/oa/workflow/audit",
+	"/app/oa/workflow/undo/audit",
+	"/app/roomRenovation/updateRoomToExamine",
+	"/app/roomRenovation/saveRoomRenovationDetail",
+	"/app/roomRenovation/updateRoomRenovationState",
+	"/app/roomRenovation/updateRoomDecorationRecord",
+	"/app/roomRenovation/deleteRoomRenovationRecord",
 ]);
 
 const phase7RepairReadonlyAppShadowUrls = new Set([
 	"/app/ownerRepair.listOwnerRepairs",
 	"/app/ownerRepair.queryOwnerRepair",
+	"/app/ownerRepair.listStaffRepairs",
+	"/app/ownerRepair.listStaffFinishRepairs",
 	"/app/repairSetting.listRepairSettings",
 	"/app/dict.queryRepairStates",
 	"/app/dict.queryPayTypes",
@@ -122,6 +155,11 @@ const phase7ResourceReadonlyBatch31Urls = new Set([
 	"/app/itemRelease.listItemRelease",
 	"/app/purchaseApply.listMyAuditOrders",
 	"/app/itemRelease.queryUndoItemRelease",
+]);
+
+const phase7ResourceReadonlyBatch15Urls = new Set([
+	"/app/resourceStore.listUserStorehouses",
+	"/app/resourceStoreType.listResourceStoreTypes",
 ]);
 
 const phase7ResourceReadonlyBatch32Urls = new Set([
@@ -222,6 +260,12 @@ const runtimeEndpointEntries = [
 		ownerModule: "fee",
 		cutoverStatus: getFeeLegacyCutoverStatus(definition),
 	})),
+	...renovationLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getRenovationLegacyPhase(definition),
+		ownerModule: "renovation",
+		cutoverStatus: getRenovationLegacyCutoverStatus(definition),
+	})),
 	...repairLegacyEndpointDefinitions.map((definition) => ({
 		definition,
 		phase: getRepairLegacyPhase(definition),
@@ -272,9 +316,9 @@ const runtimeEndpointEntries = [
 	})),
 	...propertyApplicationLegacyEndpointDefinitions.map((definition) => ({
 		definition,
-		phase: "phase7-property-application-readonly",
+		phase: getPropertyApplicationLegacyPhase(definition),
 		ownerModule: "property-application",
-		cutoverStatus: "app-shadow-allowlist" as const,
+		cutoverStatus: getPropertyApplicationLegacyCutoverStatus(definition),
 	})),
 	...videoLegacyEndpointDefinitions.map((definition) => ({
 		definition,
@@ -287,6 +331,12 @@ const runtimeEndpointEntries = [
 		phase: "phase7-notice-readonly",
 		ownerModule: "notice",
 		cutoverStatus: getNoticeLegacyCutoverStatus(definition),
+	})),
+	...oaWorkflowLegacyEndpointDefinitions.map((definition) => ({
+		definition,
+		phase: getOaWorkflowLegacyPhase(definition),
+		ownerModule: "oa-workflow",
+		cutoverStatus: getOaWorkflowLegacyCutoverStatus(definition),
 	})),
 	...itemReleaseLegacyEndpointDefinitions.map((definition) => ({
 		definition,
@@ -1591,6 +1641,14 @@ function getResourceLegacyPhase(definition: EndpointDefinition): string {
 		return "phase7-resource-guarded-write-batch30";
 	}
 
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-resource-guarded-write-batch16";
+	}
+
+	if (phase7ResourceReadonlyBatch15Urls.has(definition.url)) {
+		return "phase7-resource-readonly-batch15";
+	}
+
 	if (phase7ResourceReadonlyBatch31Urls.has(definition.url)) {
 		return "phase7-resource-readonly-batch31";
 	}
@@ -1656,6 +1714,54 @@ function getStaffLegacyPhase(definition: EndpointDefinition): string {
 
 function getStaffLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
 	if (phase7StaffGuardedWriteBatch40Urls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getPropertyApplicationLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-property-application-guarded-write";
+	}
+
+	return "phase7-property-application-readonly";
+}
+
+function getPropertyApplicationLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getOaWorkflowLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-oa-workflow-guarded-write";
+	}
+
+	return "phase7-oa-workflow-readonly";
+}
+
+function getOaWorkflowLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "blocked-for-execution";
+	}
+
+	return "app-shadow-allowlist";
+}
+
+function getRenovationLegacyPhase(definition: EndpointDefinition): string {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
+		return "phase7-renovation-guarded-write";
+	}
+
+	return "phase7-renovation-readonly";
+}
+
+function getRenovationLegacyCutoverStatus(definition: EndpointDefinition): EndpointManifestCutoverStatus {
+	if (phase7BlockedAppLegacyMutationUrls.has(definition.url)) {
 		return "blocked-for-execution";
 	}
 
