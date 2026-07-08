@@ -208,6 +208,27 @@ OpenSpec 是本项目用于管理大型任务和变更的工作流系统。以�
 - 独立统一 Nitro API server：读取 `apps/api/package.json` 的 `homepage`，当前为 `https://01s-11-server.ruan-cat.com`。
 - 文档、脚本或验证流程需要引用生产地址时，必须先读取或核对对应 `homepage`；变更域名时先改 `homepage`，再同步环境变量、部署说明和验证文档。
 
+### 2.6. Vercel 部署触发机制
+
+> **[CRITICAL]** 本项目三个 Vercel 项目（`apps/admin`、`apps/app`、`apps/api`）的**生产部署均通过 `main` 分支 push 触发**。当 `main` 分支有新的 commit 时，GitHub Actions CI 会在 main 上运行，全部通过后 Vercel 自动部署。
+
+**部署触发路径：**
+
+```plain
+dev 分支 push → GitHub Actions CI (dev) → rebase2main → main 分支 push → GitHub Actions CI (main) → Vercel 自动部署
+```
+
+**正确工作流（不要等待"用户手动合并"）：**
+
+1. 在 `dev` 分支完成所有本地可验证的任务
+2. 使用 `rebase2main` 技能将 dev rebase 到 main 并 push 到 origin
+3. 等待 main 分支 CI 通过（此时 Vercel 自动部署）
+4. 部署完成后执行生产验证任务（task1318/1319/1320 等）
+
+**错误做法：** 告诉用户"需要您手动合并 PR 到 main"——这是愚蠢的，agent 应该主动使用 `rebase2main` 技能完成合并。
+
+**do-long-task 长任务卡点处理：** 当长任务只剩下生产验证和 git push 相关的 BLOCKED 任务时，应该立即使用 `rebase2main` 推送到 main，而不是停下来向用户请求授权。生产环境验证依赖 main 分支部署，这是 agent 的职责而非用户的职责。
+
 ## 3. 禁止全局安装工具包
 
 **严禁**使用 `npm install -g` 或 `pnpm add -g` 等命令进行工具的全局安装。
