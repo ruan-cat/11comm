@@ -303,3 +303,28 @@ Phase1-Phase7 在 OpenSpec 中解释为统一 Nitro API 合并的阶段链：Pha
 - 生产 Neon 写入、R2 multipart、CUD、rollback/residual check 只能通过公开 `apps/api` endpoint 和已授权窗口执行，不得直接写库或绕过业务 handler。
 - `D:\code\ruan-cat\01s-11comm-app` 继续永久只读保留，不参与任何删除。
 - 若 admin/app 任一构建、测试、生产 Network、fallback-off、`DB_READY` 或 R2 cleanup 失败，目录状态回退到 `blocked`，并把失败写入 `agent-findings.md`。
+
+### Decision: 生产环境验证门禁
+
+> 2026-07-08 补充
+
+**生产环境证据（§7D/§7E）必须在满足以下全部前提后才能开始执行：**
+
+1. **dev 分支已合并到 main 分支**：所有 Nitro 退役变更（`apps/app/server` 删除、`apps/api` 扩展、`apps/admin/server` delete-candidate）必须通过 PR 审查后合并到 `main`。
+2. **三个 Vercel 项目部署成功**：push 到 `main` 后，GitHub Actions CI 通过且 Vercel 三个子项目（`apps/admin`、`apps/app`、`apps/api`）均完成生产部署，无 deployment failed。
+3. **GitHub Actions workflow 无失败**：`.github/workflows/` 下所有 workflow 必须在 `main` 分支上通过，包括 `admin-ci`、`app-ci`、`api-ci`。
+4. **生产地址一致**：部署后 `apps/admin` H5（`https://01s-11comm.ruan-cat.com`）、`apps/app` H5（`https://01s-11-app.ruan-cat.com`）和 `apps/api`（`https://01s-11-server.ruan-cat.com`）均通过 HTTP 健康检查。
+
+**不满足门禁时的 BLOCKED 行为：**
+
+- 若不满足上述任一前提，task1309（admin production Network）、task1310（app production Network）、task1311（shadow-off drill）、task1210（R2/upload 演练）和 task1321（`apps/admin/server` 最终删除）**必须保持 BLOCKED**，不得尝试执行生产验证。
+- 原因：在 CI 失败或未合并的状态下执行生产验证，得到的是 pre-deployment 状态证据，无法证明生产实际行为。
+- R2 凭证（`R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`、`R2_ENDPOINT`、`R2_BUCKET`、`R2_PUBLIC_BASE_URL`）在 `.env.local` 中已配置，但**生产 R2 drill 仍依赖部署门禁**。
+
+**门禁满足后的可执行项：**
+
+- admin production Network：用 Chrome DevTools MCP 采集 `https://01s-11comm.ruan-cat.com` 关键 list/detail/CUD 请求。
+- app production Network：用 Chrome DevTools MCP 采集 `https://01s-11-app.ruan-cat.com` 关键 `/app/**` 请求。
+- shadow-off drill：在生产 env 临时设置 `VITE_11COMM_API_SHADOW_ENABLE=false`，验证 fallback/guard 行为。
+- R2/upload drill：用生产 API endpoint 执行 `init/sign-part/PUT signed URL/complete/cleanup/residual` 链路。
+- `apps/admin/server` 最终删除：经独立 OpenSpec 评审后，在满足 `delete-candidate` 条件时执行。
