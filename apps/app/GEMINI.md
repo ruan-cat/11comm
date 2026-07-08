@@ -919,11 +919,13 @@ import type { XXX } from "wot-design-uni/components/wd-xxx/types";
 
 ## 19. Nitro 双运行时与 TypeScript 导入约束
 
+注：`apps/app` 内置的 Nitro 双运行时方案已退役，统一后端由 `apps/api` 承接。以下内容保留为历史上下文，供理解旧代码迁移过程。
+
 ### 19.1. 设计背景
 
 - 当前 Nitro 接入不是单纯“给项目多加一个后端”，而是要同时保住 `mock` 开发链路和 `nitro-standalone` 真实运行时链路。
 - 这项设计的核心目标是：H5 日常开发可以继续走 `vite-plugin-mock-dev-server`，同时微信小程序开发、独立 API 联调和未来独立部署可以走 standalone Nitro。
-- 对应脚本以 `package.json` 中的 `dev:nitro`、`build:nitro:node`、`preview:nitro` 为准；它们不是临时调试命令，而是这套运行模型的一部分。
+- 对应脚本曾以 `package.json` 中的 `dev:nitro`、`build:nitro:node`、`preview:nitro` 为准；这些脚本已从 `apps/app` 退役，统一后端入口请使用 `apps/api`。它们不是临时调试命令，而是这套运行模型的一部分。
 
 ### 19.2. 当前运行模型
 
