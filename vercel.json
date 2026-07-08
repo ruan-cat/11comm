@@ -1,0 +1,8 @@
+{
+	"projects": [
+		{
+			"path": "apps/admin",
+			"outputDirectory": "apps/admin/dist"
+		}
+	]
+}
