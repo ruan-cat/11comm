@@ -538,6 +538,9 @@ importers:
       code-inspector-plugin:
         specifier: ^1.5.1
         version: 1.5.1
+      cross-env:
+        specifier: ^10.1.0
+        version: 10.1.0
       cssnano:
         specifier: ^7.1.9
         version: 7.1.9(postcss@8.5.14)
