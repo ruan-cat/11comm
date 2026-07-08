@@ -1,7 +1,7 @@
 {
 	"$schema": "https://openapi.vercel.sh/vercel.json",
 	"rootDirectory": "..",
-	"buildCommand": "pnpm --filter @01s-11comm/admin run build:prod",
+	"buildCommand": "cd ../.. && pnpm --filter @01s-11comm/admin run vite:build:prod",
 	"installCommand": "pnpm install --no-frozen-lockfile",
 	"framework": null,
 	"build": {
