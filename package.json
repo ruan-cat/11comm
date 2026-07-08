@@ -29,6 +29,7 @@
 		"up-taze": "pnpm -w up @ruan-cat/taze-config -L && npx taze -r",
 		"git:dev-2-main": "git rebase dev main && pnpm run git:push",
 		"git:main-2-dev": "git rebase main dev",
+		"build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" pnpm --filter @01s-11comm/admin run vite:build:prod",
 		"build:docs": "turbo build:docs",
 		"test": "vitest --ui --watch --api.port=4000",
 		"format": "prettier --experimental-cli --write '**/*.{js,jsx,ts,tsx,mts,json,css,scss,md,yml,yaml,html}'",
