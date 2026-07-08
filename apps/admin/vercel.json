@@ -1,12 +1,4 @@
 {
-	"$schema": "https://openapi.vercel.sh/vercel.json",
-	"rootDirectory": "..",
 	"buildCommand": "cd ../.. && pnpm --filter @01s-11comm/admin run vite:build:prod",
-	"installCommand": "pnpm install --no-frozen-lockfile",
-	"framework": null,
-	"build": {
-		"env": {
-			"NODE_OPTIONS": "--max-old-space-size=8192"
-		}
-	}
+	"installCommand": "cd ../.. && pnpm install --no-frozen-lockfile"
 }
