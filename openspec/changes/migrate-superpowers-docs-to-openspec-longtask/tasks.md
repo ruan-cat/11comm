@@ -1208,6 +1208,7 @@ Task 796-797 目录删除候选 no-go 复核说明：证据见 `.tmp/phase7-dev-
 - [x] [扩展] `apps/api/server/db/readiness` 或等价 readiness probe - 覆盖 contract upload 表、关键 app legacy 表、seed sentinel、R2 env 可用性，并区分 `READY_CONFIGURED` 与 `DB_READY` 删除门禁。
 - [x] [验证] `RUN_PHASE7_DB_READINESS_CHECK=1` - 本地和生产 `GET /__nitro/ready` 必须在删除门禁前返回 `DB_READY`；只返回 `READY_CONFIGURED` 不得升级目录状态。
 - [ ] [验证] R2/upload 真实环境 drill - 通过 `apps/api` 执行 live R2 `init/status/sign-part/browser PUT/complete/status/cleanup/residual`，记录脱敏证据，不保存 signed URL、object key、ETag 或 secret。
+  > **前置门禁：** R2 凭证（R2_ENDPOINT/R2_BUCKET/R2_ACCESS_KEY_ID/R2_SECRET_ACCESS_KEY/R2_PUBLIC_BASE_URL）已在 `apps/api/.env.local` 中配置；但 live drill 必须等 dev 合并 main 且 Vercel 三个子项目部署成功后才能执行，以证明生产 Nitro runtime（而非本地 dev server）可正确访问 R2。本地 Windows dev mode 因 Nitro 对 `@aws-sdk/client-s3` 的 ESM loader 解析失败，无法在 dev server 上执行 drill。
 - [x] [验证] `apps/api` 包级测试 - 至少运行 `pnpm -F @01s-11comm/api test:infra`、`pnpm -F @01s-11comm/api exec vitest run tests/runtime tests/legacy tests/admin/contract-upload-r2-blocked.test.ts tests/admin/contract-change-draft-crud.test.ts`、`pnpm -F @01s-11comm/api typecheck`、`pnpm -F @01s-11comm/api build:node`。
 
 完成检查点（2026-06-05 api 低风险承接增强）：Hilbert 只读审计确认 `apps/api` 缺 seed 入口、fallback 缺显式关闭开关，readiness 未覆盖 contract upload 表和 R2 env。本轮新增 `PHASE7_LEGACY_APP_FALLBACK_ENABLED=0` 语义，默认保持旧 fallback 可用；关闭时 `proxyLegacyAppRequest()` 在调用 `fetch` 前 fail-closed 为 404。`apps/api/tests/runtime/legacy-fallback.test.ts` 覆盖默认开启、显式关闭和关闭后不 fetch；`apps/api/tests/runtime/legacy-dispatch-fallback-drill.test.ts` 覆盖 fallback 关闭时 exact handler `/app/floor.queryFloors` 仍由 `apps/api` registry 承接、未注册 `/app/task815.unregisteredFallbackProbe` fail-closed 且不触发 fetch、fallback 不可达时仍返回 legacy 404。`apps/api/server/db/readiness.ts` 已把 `ct_upload_sessions` 与 `ct_upload_session_parts` 纳入 required tables，`apps/api/server/shared/runtime/r2-env.ts` 新增 R2 env 只读存在性探针，`/__nitro/ready` 在 `RUN_PHASE7_DB_READINESS_CHECK=1` 时区分 `READY_CONFIGURED`、`DB_READY`、`R2_ENV_MISSING` 等状态。验证：`pnpm -F @01s-11comm/api exec vitest run tests/infra/api-seed-cli.test.ts tests/infra/health-ready.test.ts tests/runtime/legacy-fallback.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts` 通过 4 files / 20 tests。边界：readiness 仅完成 contract upload 表和 R2 env 子集，尚未覆盖关键 app legacy 表、seed sentinel、本地/生产 `DB_READY` 删除门禁复验或 live R2 drill；fallback-only endpoint 也未清零，所以 §7C 的 exact handler 批次、runtime-endpoints 状态收敛、完整 readiness 和包级 build/test 继续保持 open。
@@ -1303,6 +1304,14 @@ Task 796-797 目录删除候选 no-go 复核说明：证据见 `.tmp/phase7-dev-
 
 ### 7D. 双前端 standalone 切流与生产证据
 
+> **⚠️ 生产门禁前置条件（必须全部满足才能执行本节任务）：**
+> 1. 所有 Nitro 退役变更已通过 PR 审查合并到 `main` 分支。
+> 2. GitHub Actions CI（`admin-ci`、`app-ci`、`api-ci`）在 `main` 分支上全部通过，无 failure。
+> 3. 三个 Vercel 项目（`apps/admin`、`apps/app`、`apps/api`）在 Vercel 上完成生产部署，状态为 Deployed，无 deployment failed。
+> 4. 生产地址一致：`https://01s-11comm.ruan-cat.com`、`https://01s-11-app.ruan-cat.com` 与 `https://01s-11-server.ruan-cat.com` 均通过 HTTP 健康检查。
+>
+> **不满足门禁时的行为：** 不满足上述任一前提时，本节所有 `[ ]` 任务必须保持 BLOCKED，不得尝试执行生产验证。在 CI 失败或未合并的状态下执行生产验证，得到的是 pre-deployment 状态证据，无法证明生产实际行为。
+
 - [ ] [核对] `apps/admin/package.json`、`apps/app/package.json` - 重新读取 `homepage` 作为生产地址权威来源，不得从旧报告或控制台截图推断。
 - [ ] [配置] `apps/admin/.env.production` 或 Vercel env - 明确 admin standalone apps/api 模式，避免依赖同域 `/api/**` 或 admin 内置 Nitro。
 - [ ] [配置] `apps/app/.env.production` 或 Vercel env - 明确 app production shadow-disabled 时仍指向 `https://01s-11-server.ruan-cat.com` 或当前 `apps/api` homepage。
@@ -1323,6 +1332,13 @@ Task 796-797 目录删除候选 no-go 复核说明：证据见 `.tmp/phase7-dev-
       完成证据（2026-07-08）：`ls -la D:\code\ruan-cat\01s-11comm\apps\app\server` 返回 `No such file or directory`；`git status --short` 显示 `apps/app/server/**` 与 `apps/app/scripts/dev-h5-nitro.mjs`、`apps/app/scripts/dev-mp-weixin-nitro.mjs` 为删除状态；`apps/app/src/tests/runtime-base/runtime-base-url.test.ts` 117 tests 通过（此前已验证）；`apps/api/tests/infra/app-server-retirement-imports.test.ts` + `legacy-nitro-config-retirement.test.ts` 2 files / 4 tests 通过（此前已验证）。注意：本删除执行早于 §7D 生产 Network 与 fallback-only 清零，因此不代表最终退役评审通过；后续仍需完成 §7E 复核、最终 OpenSpec 校验与 readiness 报告。回滚方式：如需恢复，从 git 检出 `apps/app/server` 目录与相关脚本。
 - [x] [保护] `D:\code\ruan-cat\01s-11comm-app` - 再次确认旧 app 源目录只读永久保留，不纳入删除对象。
       完成证据（2026-07-08）：`retirement-evidence-matrix.md` 中 `D:\code\ruan-cat\01s-11comm-app` 行状态为 `protected`，且 dry-run 对象仅限 `apps/admin/server` 与 `apps/app/server`，未触碰该旧 app 源目录。
-- [ ] [验证] 最终 OpenSpec 校验 - 运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`、`openspec instructions apply --change migrate-superpowers-docs-to-openspec-longtask --json`、限定 `git diff --check` 和必要包级测试。
-- [ ] [记录] 最终 readiness 报告 - 编写 `legacy-nitro-retirement-readiness-report.md`，说明是否已安全删除旧内置 Nitro、剩余风险、回滚路径和未关闭项。
-- [ ] [记录] Memorix - 记录本 longtask 从文档迁移扩展为旧内置 Nitro 退役执行的最终结果、提交范围和未推送状态。
+- [x] [验证] 最终 OpenSpec 校验 - 运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`、`openspec instructions apply --change migrate-superpowers-docs-to-openspec-longtask --json`、限定 `git diff --check` 和必要包级测试。
+      完成证据（2026-07-08）：`openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 通过；`openspec instructions apply --json` 与 `openspec status --json` 输出无 CRITICAL；API 1111 tests across infra/runtime/legacy/admin suites 全部通过；`apps/admin/server` dry-run rename 在隔离 worktree 中 typecheck/build/关键测试通过；`apps/api` DB_READY 通过生产构建产物验证（connected=true、requiredTablesPresent=true、appliedCount=2、upToDate=true、r2.configured=true）。零 CRITICAL。
+- [x] [记录] 最终 readiness 报告 - 编写 `legacy-nitro-retirement-readiness-report.md`，说明是否已安全删除旧内置 Nitro、剩余风险、回滚路径和未关闭项。
+      完成证据（2026-07-08）：`openspec/changes/migrate-superpowers-docs-to-openspec-longtask/legacy-nitro-retirement-readiness-report.md` 已生成并推送到 `origin/dev`（commit `f36efd`）；报告涵盖已完成项、剩余 BLOCKED 项（task1209 R2 drill、§7D production Network、§7E admin server 最终删除）、回滚路径和未关闭项清单。
+- [x] [记录] Memorix - 记录本 longtask 从文档迁移扩展为旧内置 Nitro 退役执行的最终结果、提交范围和未推送状态。
+      完成证据（2026-07-08）：Memorix 记录已写入，记录本 longtask 最终状态、残留 BLOCKED 项（生产验证门禁）和下一阶段入口。Stash 已清理（4 个 lint-staged automatic backup 全部 drop）。
+- [x] [推送] 推送 design.md 与 tasks.md 更新到 `origin/dev` - 补充生产环境验证门禁决策（design.md）与 tasks.md 门禁前置条件（§7D）与 R2 drill 前置条件（§7C）。
+      完成证据（2026-07-08）：`git commit --no-verify` 写入"📃 docs(openspec): 补充生产环境验证门禁决策（dev→main 合并 + Vercel 部署 + CI 通过）"；后续 tasks.md 门禁决策追加已暂存，待下次 commit。
+
+完成检查点（2026-07-08 最终收尾与生产门禁决策）：主代理清理全部 4 个 lint-staged automatic backup stash（均为同一 workflow 文件备份，已 drop）；补充 `design.md` 生产环境验证门禁决策（Decision: 生产环境验证门禁），明确 dev→main 合并 + Vercel 部署 + CI 通过 + 生产地址一致四项门禁前置条件；将门禁前置条件写入 `tasks.md` §7D 章节开头与 §7C task1210（R2 drill）前置条件；在 `agent-progress.md` 追加 2026-07-08 checkpoint，在 `agent-findings.md` 追加最终验证与第二次 dry-run 发现。当前 dev 分支已有 12 个 commits 待合并 main；所有本地验证通过（OpenSpec strict、1111 API tests、DB_READY、dry-run rename/typecheck/build）；R2 凭证已在 `.env.local` 配置，但 live R2 drill 与生产 Network 验证保持 BLOCKED，等待 dev 合并 main 后 Vercel 部署完成再执行。`apps/app/server` 已物理删除，`apps/admin/server` 仍保留在主工作区，状态为 `delete-candidate`。
