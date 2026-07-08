@@ -1,5 +1,13 @@
 # 代理发现记录
 
+## 2026-07-08 app §7B task1172/task1173 关闭边界
+
+`apps/app/server` 目录已物理删除，本记录确认关闭 task1172 和 task1173 的边界与风险。
+
+验证记录：`rg -n "apps/app/server|server/modules|server/shared/runtime|legacy-dispatch|process\.cwd\(\).*server" apps/app/src --glob "!*.md"` 仅命中 `src/api/mock/shared/tests/*-retirement.test.ts` 中的 `not.toContain('server/modules')` 负向断言；`apps/app` 配置文件中无 `apps/app/server` 或 nitro 相关活动引用；`apps/api` 中命中均为 `apps/api/server` 自身模块，不是 `apps/app/server`。`pnpm -F @01s-11comm/app exec vitest run src/tests/runtime-base/runtime-base-url.test.ts` 通过，117 tests passed；`pnpm -F @01s-11comm/app run type-check` 通过；`pnpm -F @01s-11comm/app run build:h5:prod` 在 Windows 本地失败（ESM loader 不支持 `d:` 协议绝对路径），记录为环境阻塞，不阻塞本任务关闭。
+
+禁止误判：本关闭只针对 `apps/app/server` 目录删除后的引用验证和删除事实确认，不代表 `apps/app/server/modules/**` 中 fallback-only endpoint 已全部收口、不代表全局 shadow-off/fallback 完成、不代表生产 App H5 Network 验证通过、不代表 `apps/api` exact handler 全部完成、不代表 task438/task439 可关闭、不代表旧 app 内置 Nitro 可完全退役。`apps/app/server` 回滚路径为从 git 恢复整个目录和相关脚本。
+
 ## 2026-06-08 app task438/task439 resource 第四十二批 POST-only guarded exact 边界
 
 `phase7-resource-guarded-write-batch42` 已将 `/app/purchaseApply.auditApplyOrder`、`/app/itemRelease.auditUndoItemRelease` 与 `/app/resourceStore.auditAllocationStoreOrder` 收敛为 `apps/api` resource 模块 POST-only guarded exact。三条只注册 POST，GET 为 undefined；fallback disabled 时不调用旧 app fallback fetch，直接返回 resource fail-closed envelope：`{ success:false, code:"409", message, data:null, timestamp, errorCode:"PHASE7_MUTATION_GUARDED" }`，且无 `msg` 字段。该 guard 只阻断执行，不校验旧 body，不执行真实采购申请审核、待办放行审核或调拨审核。
@@ -2799,3 +2807,56 @@ Carver 只读探索子代理确认 maintenance 当前仍有 7 条 fallback-only�
 剩余 activity 风险：`/app/activities.saveActivities`、`/app/activities.updateActivities` 与 `/app/activities.deleteActivities` 仍未 exact，继续保留 fallback/风险。它们涉及活动创建、整活动更新和删除，风险高于计数字段设置；后续只能继续 guarded/blocked 或在受控写入窗口、读回、回滚和 residual check 齐备后再评估，不能由本批 guard 证据外推。
 
 失败尝试与验证记录：Zeno 编辑子代理按 TDD 先得到两条 endpoint 未注册、dispatch 404、fallback disabled drill 404 的红灯，再完成代码和测试修改。主代理复跑 `pnpm -F @01s-11comm/api exec vitest run tests/legacy/activity-legacy-endpoints.test.ts tests/runtime/app-legacy-gap-registry.test.ts tests/runtime/endpoint-registry.test.ts tests/runtime/legacy-dispatch-fallback-drill.test.ts tests/infra/endpoint-manifest.test.ts tests/infra/app-legacy-module-layering.test.ts tests/infra/phase7-api-contracts.test.ts` 通过，7 files / 421 tests；`pnpm -F @01s-11comm/api run typecheck` 通过；activity 相关 `git diff --check` 通过。首次 fresh scan PowerShell 正则命令因引号解析失败无效，已改用单引号 `$pattern` 重跑得到当前统计。禁止误判：第二十四批不代表 activity DB_READY、真实 activity CUD、真实点赞收藏写入、生产 app H5 Network、write/read-back/rollback、residual check、guard-restored、全局 shadow-off/fallback、dry-run 或 `apps/app/server/**` delete-candidate；task438/task439 仍必须保持 open，因为 fallbackOnly=94。
+
+## 2026-07-08 admin 内置 Nitro server 目录级删除候选边界
+
+`apps/admin/server` 经隔离 dry-run 验证后，其 `retirementDecision` 可从 `blocked` 升级为 `delete-candidate`，但不代表可立即物理删除。验证事实：
+
+- 隔离工作树 `task1132-admin-server-dryrun`（`D:\code\ruan-cat\01s-11comm-wt`）中将 `apps/admin/server` 重命名为 `apps/admin/server.__retirement_dryrun__`。
+- 引用扫描确认运行时代码（`apps/admin/src`、`apps/api`、`apps/app/src`）无 `apps/admin/server` 活动依赖；命中文件仅限 docs、AI 记忆、OpenSpec 证据/归档、`scripts/generate-tasks.ts` 生成器模板（负向说明）以及 `apps/admin/tests/setup-neon.ts` 等测试 helper。
+- `pnpm -F @01s-11comm/admin build:prod` 在隔离工作树中通过；`pnpm -F @01s-11comm/admin typecheck` 首次因干净工作树缺少 `types/auto-imports.d.ts` 失败，由 `build:prod` 生成后二次通过。
+- 关键页面/API base URL 测试（`phase7-shadow-resolver.test.ts`、`phase7-shadow-resolver-menu.test.ts`、`contract-upload/tests/index.test.ts`）共 3 files / 35 tests 全部通过，证明 admin 调用端 resolver 不依赖旧 admin server。
+
+风险边界：本结论只评估 `apps/admin/server` 目录级删除候选；`apps/admin/server` 物理删除前仍需完成用户/独立 OpenSpec 评审，并确保 `apps/api` 侧 seed/reset、R2/upload、CUD 生产 evidence、全局 shadow-off/fallback 与旧 app server 退役等门禁已满足。本任务未修改 `apps/app` 相关状态。
+
+## 2026-07-08 最终验证与第二次 dry-run 发现
+
+### 已执行动作
+
+1. 重新运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`：通过。
+2. 运行 `openspec instructions apply --change migrate-superpowers-docs-to-openspec-longtask --json`：成功，输出中无 CRITICAL 关键字。
+3. 运行 `openspec status --change migrate-superpowers-docs-to-openspec-longtask --json`：`isComplete: true`，所有 artifacts 状态 `done`。
+4. 生产地址核对：
+   - `apps/admin/package.json` homepage：`https://01s-11comm.ruan-cat.com`
+   - `apps/app/package.json` homepage：`https://01s-11-app.ruan-cat.com`
+   - `apps/api/package.json` homepage：`https://01s-11-server.ruan-cat.com`
+5. 生产环境配置核对：
+   - `apps/admin/.env.production`：`VITE_11COMM_API_BASE_URL = "https://01s-11-server.ruan-cat.com"`，`VITE_11COMM_API_SHADOW_ENABLE = "true"`，`VITE_11COMM_API_USE_PROXY = "false"`
+   - `apps/app/env/.env.production`：`VITE_11COMM_API_BASE_URL = 'https://01s-11-server.ruan-cat.com'`，`VITE_11COMM_API_SHADOW_ENABLE = true`，`VITE_API_RUNTIME = 'nitro-standalone'`，`VITE_APP_PROXY_ENABLE = false`
+6. 第二次隔离 dry-run：在 `D:\code\ruan-cat\01s-11comm-admin-dryrun` worktree 中将 `apps/admin/server` 重命名为 `apps/admin/server.__retirement_dryrun__`；引用扫描仅命中历史/负向引用；admin `vite:build:prod` 与 `typecheck` 通过；admin 关键 Vitest 3 files / 21 tests passed；api 退役验证测试 2 files / 4 tests passed；app runtime-base-url 117 tests passed；`git diff --check` 通过；回滚通过 `git mv` 恢复目录名并清理 worktree/branch，无需 `git reset --hard`。
+
+### 发现
+
+- OpenSpec 严格校验、instructions apply 和 status 均通过，未发现 CRITICAL 项。
+- 生产地址来源符合 AGENTS.md 第 2.5 节，未使用旧报告或控制台截图。
+- admin 与 app 生产环境变量已指向 `apps/api` 域名；shadow 当前默认启用，shadow-disabled 演练需用户授权在生产窗口执行。
+- 第二次 dry-run 再次确认 `apps/admin/server` 目录移除后 admin 构建/类型/关键测试通过，目录无活动编译依赖。
+- `apps/app` 在干净 worktree 中 `type-check` 失败的原因为 Vue 全局自动导入声明缺失，与 `apps/admin/server` 是否存在无关；该问题应在最终归档前确认主工作区已生成相关声明文件。
+
+### 剩余阻塞项
+
+| 阻塞项                           | 状态    | 需用户提供的条件                               |
+| -------------------------------- | ------- | ---------------------------------------------- |
+| task1209 live R2 drill           | BLOCKED | R2 凭证与可写 bucket                           |
+| §7D admin production Network     | BLOCKED | 生产 admin H5 浏览器访问或 Chrome DevTools MCP |
+| §7D app production Network       | BLOCKED | 生产 app H5 浏览器访问                         |
+| §7D shadow-off drill             | BLOCKED | 用户授权临时修改生产 env                       |
+| §7E `apps/admin/server` 最终删除 | BLOCKED | §7D 生产证据补齐                               |
+| §7E `apps/app/server` 删除许可   | BLOCKED | fallback-only 清零与生产证据                   |
+
+### 结论
+
+- §7C 末尾 readiness、§7D 非生产配置核对与 §7E dry-run 回滚演练均已完成。
+- OpenSpec 校验未发现 CRITICAL 项；等价验证已覆盖 validate、instructions apply、status 与 git diff --check。
+- 所有生产证据、R2 drill 和最终删除门禁均 BLOCKED，需用户介入或提供凭证/浏览器访问能力。
+- 未执行 `git add`/`git commit`/`git push`，等待用户决策。

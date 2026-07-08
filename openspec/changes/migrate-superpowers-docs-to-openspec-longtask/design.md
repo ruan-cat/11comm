@@ -12,7 +12,7 @@ proposal -> specs -> design -> tasks -> implement
 
 本 change 的目标是把统一 Nitro API 合并主线和 Phase7 接力入口迁到 OpenSpec，并明确 `tasks.md` 是唯一可执行任务源。`tasks.md` 必须承接未来继续推进的 Nitro 合并任务细则，而不是只记录旧文档迁移是否完成。`agent-progress.md` 和 `agent-findings.md` 只记录进度、验证结果、发现和失败路径，不记录新的任务树。
 
-长期 canonical 文件只包括本 change 下的 `proposal.md`、`design.md`、`tasks.md`、`specs/**/spec.md`、`agent-findings.md` 和 `agent-progress.md`。临时来源覆盖审计只服务于本次迁移核对，不作为后续执行入口、任务源或需要持续维护的第四份矩阵。
+长期 canonical 文件只包括本 change 下的 `proposal.md`、`design.md`、`tasks.md`、`specs/**/spec.md`、`agent-findings.md` 和 `agent-progress.md`。临时来源覆盖审计只服务于本次迁移核对，不作为后续执行入口、任务源或需要持续维护的第四份矩阵。任何 `agent-progress.md`、`agent-findings.md` 或类似进度/发现文档，必须落在本 OpenSpec change 的 canonical 目录内；禁止在仓库其他位置（如根目录、`apps/**`、`docs/**`、AI 记忆文件或临时 `.tmp` 目录）创建并行的进度/发现文档，避免形成新的隐藏任务源。
 
 后续执行 guidance：凡是涉及 Nitro 接口、legacy endpoint、模块分层或 caller/manifest/contract 对齐的批次，都必须先完成格式自检，再允许把任务从未完成改为完成；`legacy-endpoints.ts` 只能做分发，module files、runtime manifest、App shadow allowlist、legacy response contract 与 `*.test.ts` 必须同时对齐，只有四层齐备并且自检通过时才算完成，单层 HTTP 证据或人工阅读不能直接升级状态。
 
