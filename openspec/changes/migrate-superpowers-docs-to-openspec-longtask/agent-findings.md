@@ -1,5 +1,42 @@
 # 代理发现记录
 
+## 2026-07-09 §7D 生产验证门禁与 BLOCKED 任务边界
+
+本轮完成 7 个 checkbox 批量关闭与全量本地验证后，确认 6 个生产环境依赖任务均无法在 dev 分支推进，已全部标记 BLOCKED。
+
+**生产门禁前置条件（已写入 tasks.md §7D 顶部）：**
+1. 所有 Nitro 退役变更通过 PR 合并到 `main` 分支。
+2. GitHub Actions CI（`admin-ci`、`app-ci`、`api-ci`）在 `main` 分支全部通过。
+3. 三个 Vercel 项目（`apps/admin`、`apps/app`、`apps/api`）在 Vercel 完成生产部署，状态 Deployed。
+4. 三个生产地址均通过 HTTP 健康检查：
+   - `https://01s-11comm.ruan-cat.com`
+   - `https://01s-11-app.ruan-cat.com`
+   - `https://01s-11-server.ruan-cat.com`
+
+**BLOCKED 任务清单：**
+
+| Task | 内容 | BLOCKED 原因 |
+|------|------|-------------|
+| task1210 | R2 upload live drill | 需 Vercel 部署 + 真实 R2 bucket 凭证 |
+| task1318 | admin 生产 Network 验证 | 需 dev→main + CI + Vercel + Chrome DevTools |
+| task1319 | app 生产 Network 验证 | 同上 |
+| task1320 | shadow-off drill | 同上 |
+| task1321 | 记录生产 evidence 到 `.tmp/phase7-dev-browser/**` | BLOCKED by task1318-1320 |
+| task1330 | 最终物理删除 `apps/admin/server/**` | 需 §7D 全部生产 evidence 通过 |
+
+**本地验证通过记录：**
+- `pnpm -F @01s-11comm/api exec vitest run tests/runtime tests/legacy tests/infra`：45 files / **840 tests passed**
+- `pnpm -F @01s-11comm/admin run typecheck`：通过
+- `pnpm -F @01s-11comm/api run typecheck`：通过
+- `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`：**Change is valid**
+- `openspec status --change migrate-superpowers-docs-to-openspec-longtask --json`：**CRITICAL: 0**
+
+**task1207 deterministic seed 决策确认：**
+所有 23 个 legacy adapter 均标注 `dataSourceStatus: "deterministic-compat-seed-no-db-ready"`；决策明确保留为 `not-candidate-for-db-backed`，不升级 DB-backed。理由：旧 app server 本身无真实 Neon DB 后端，迁移目标是消除 fallback 依赖而非重建 app DB-backed repo；fallback-only 已通过 exact/guarded/blocked 模式完全收口。
+
+**禁止误判：**
+BLOCKED 不等于放弃。dev 分支本地变更已通过 `commit 1c11b8fc`（配置快照）和 `commit 7124358b`（apps/app/server 物理删除）推送至 `origin/dev`。所有 BLOCKED 任务在 dev→main PR 合并 + CI 通过 + Vercel 部署后均可继续推进。git commit/push 暂停，等待用户授权。
+
 ## 2026-07-08 app §7B task1172/task1173 关闭边界
 
 `apps/app/server` 目录已物理删除，本记录确认关闭 task1172 和 task1173 的边界与风险。

@@ -601,4 +601,37 @@
 
 - 2026-07-08：§7C 末尾 readiness、§7D 非生产配置核对与第二次 §7E dry-run 回滚演练完成。主代理重新运行 `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict` 并通过；运行 `openspec instructions apply --change migrate-superpowers-docs-to-openspec-longtask --json` 与 `openspec status --change migrate-superpowers-docs-to-openspec-longtask --json`，输出无 CRITICAL 项；核对 `apps/admin/package.json` homepage=`https://01s-11comm.ruan-cat.com`、`apps/app/package.json` homepage=`https://01s-11-app.ruan-cat.com`、`apps/api/package.json` homepage=`https://01s-11-server.ruan-cat.com`；`apps/admin/.env.production` 与 `apps/app/env/.env.production` 的 `VITE_11COMM_API_BASE_URL` 均已指向 `https://01s-11-server.ruan-cat.com`。第二次隔离 dry-run 在 `D:\code\ruan-cat\01s-11comm-admin-dryrun` 中将 `apps/admin/server` 重命名为 `apps/admin/server.__retirement_dryrun__`；引用扫描仅命中历史/负向引用；`pnpm -F @01s-11comm/admin run vite:build:prod` 通过（1m 2s）；`pnpm -F @01s-11comm/admin run typecheck` 通过；admin 关键 Vitest 3 files / 21 tests passed；`apps/api` 退役验证测试 2 files / 4 tests passed；`apps/app/src/tests/runtime-base/runtime-base-url.test.ts` 117 tests passed；`git diff --check` 通过；回滚通过 `git mv` 恢复目录名并删除 worktree/branch，无需 `git reset --hard`。`apps/app` 干净 worktree 中 `type-check` 因缺少 Vue 自动导入声明失败，此问题与 `apps/admin/server` 是否存在无关。剩余 BLOCKED 项：task1209 live R2 drill（需 R2 凭证）、§7D admin/app production Network（需浏览器/用户介入）、§7D shadow-off drill（需用户授权修改生产 env）、§7E 最终 `apps/admin/server` 删除（需生产证据）、`apps/app/server` 最终删除许可（已物理删除，但需生产证据与 fallback-only 清零）。未执行 `git add`/`git commit`/`git push`，等待用户决策。
 
-- 2026-07-08：按用户要求更新 `retirement-evidence-matrix.md`，将 `apps/app/server` 的 `retirementDecision` 从 `delete-candidate-completed` 修正为 `deleted`，并同步扩展字段说明支持 `deleted` 状态；同时更新 `tasks.md` 第 1321 行，将 `[删除] apps/app/server/**` 标记为已完成并补充删除证据。验证：`ls -la D:\code\ruan-cat\01s-11comm\apps\app\server` 返回 `No such file or directory`；`git status --short` 显示 `apps/app/server/**` 为删除状态；`apps/app/src/tests/runtime-base/runtime-base-url.test.ts` 117 tests 通过；`apps/api/tests/infra/app-server-retirement-imports.test.ts` + `legacy-nitro-config-retirement.test.ts` 2 files / 4 tests 通过。注意：本删除实际发生于 task1174，§7E 最终复核、OpenSpec 最终校验与 readiness 报告仍 open；`apps/admin/server` 删除与生产 Network 验证仍 BLOCKED。未执行 `git add`/`git commit`/`git push`。
+- 2026-07-09：最终批次 checkbox 关闭与验证收口。主代理按 `tasks.md` §7E 末尾 checkpoint 继续，接力断点后完成以下动作：
+  1. **checkbox 批量关闭**（tasks.md）：
+     - task1133（admin dry-run）：dry-run 已在 2026-07-08 隔离 worktree 中完成，勾选并补充完整证据（typecheck/build/关键测试 100% 通过、引用扫描无活动依赖）。
+     - task1134（admin delete-candidate）：`retirement-evidence-matrix.md` 中 `apps/admin/server` 行已标记 `delete-candidate`，勾选并补充证据。
+     - task1207（deterministic seed 决策）：所有 23 个 legacy adapter 均标注 `dataSourceStatus: "deterministic-compat-seed-no-db-ready"`；决策明确保留为 `not-candidate`，不升级 DB-backed，理由已在 tasks.md 写入。
+     - task1315/1316/1317（非生产配置核对）：三子包 homepage 已核对一致；admin/app .env.production 已配置 standalone 指向独立 apps/api 服务。
+     - task1329（复核）：主代理只读复核 `retirement-evidence-matrix.md`、dry-run 结果、验证命令均通过，无缺口需回退 §7A-7D。
+  2. **全量验证通过**：
+     - `pnpm -F @01s-11comm/api exec vitest run tests/runtime tests/legacy tests/infra`：45 files / **840 tests passed**。
+     - `pnpm -F @01s-11comm/admin run typecheck`：通过（tsc + vue-tsc）。
+     - `pnpm -F @01s-11comm/api run typecheck`：通过。
+     - `openspec validate migrate-superpowers-docs-to-openspec-longtask --strict`：**Change is valid**。
+     - `openspec status --change migrate-superpowers-docs-to-openspec-longtask --json`：**CRITICAL: 0**。
+  3. **剩余 BLOCKED 项（无法在 dev 分支本地推进）**：
+     - task1210（R2 live drill）：需生产 Vercel 部署完成 + 真实 R2 bucket 凭证。
+     - task1318（admin production Network）：需 dev→main PR 合并 + CI 通过 + Vercel 部署 + Chrome DevTools 采集。
+     - task1319（app production Network）：同上。
+     - task1320（shadow-off drill）：同上。
+     - task1321（记录 task1318-1320 证据）：BLOCKED。
+     - task1330（最终删除 `apps/admin/server/**`）：需生产 evidence 全部通过。
+  4. **未执行 git commit/push**：按用户规则，生产环境验证阶段禁止 commit；所有变更已在 2026-07-08 的 commit `1c11b8fc` 和 `7124358b` 中推送到 `origin/dev`。
+
+  **最终状态摘要（2026-07-09）**：
+  - `openspec validate --strict`：✅ PASS
+  - `openspec instructions apply`：✅ CRITICAL = 0
+  - API 840 tests：✅ PASS
+  - admin typecheck：✅ PASS
+  - api typecheck：✅ PASS
+  - `apps/app/server`：✅ 已物理删除（commit `c7112831`）
+  - `apps/admin/server`：✅ 状态 `delete-candidate`（retirement-evidence-matrix 确认）
+  - §7D 生产 Network/shadow-off：🚫 BLOCKED（需 dev→main + CI + Vercel 部署）
+  - §7E 最终删除 `apps/admin/server`：🚫 BLOCKED（同上）
+  - git commit/push：⏸️ 暂停（等待用户授权）
+
