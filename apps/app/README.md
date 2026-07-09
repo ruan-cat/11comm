@@ -50,11 +50,18 @@
 
 ### 1.0. 部署链接
 
-| 环境 | 地址 | 说明 |
-| :--- | :--- | :--- |
+| 环境            | 地址                                                               | 说明                   |
+| :-------------- | :----------------------------------------------------------------- | :--------------------- |
 | **Vercel 项目** | [11comm-app-h5](https://vercel.com/ruancat-projects/11comm-app-h5) | App H5 Vercel 部署管理 |
-| **生产地址** | [01s-11-app.ruan-cat.com](https://01s-11-app.ruan-cat.com) | App H5 生产域名 |
-| **API 服务** | [01s-11-server.ruan-cat.com](https://01s-11-server.ruan-cat.com) | 独立 Nitro API 服务 |
+| **生产地址**    | [01s-11-app.ruan-cat.com](https://01s-11-app.ruan-cat.com)         | App H5 生产域名        |
+| **API 服务**    | [01s-11-server.ruan-cat.com](https://01s-11-server.ruan-cat.com)   | 独立 Nitro API 服务    |
+
+### 1.1. vercel 云项目的部署配置
+
+- Framework Preset： other
+- Build Command： `pnpm run build:vercel:app`
+- Output Directory： .`vercel/output`
+- Install Command： `ls -A && pnpm install`
 
 ### 1.1. 当前仓库定位
 
@@ -252,13 +259,13 @@ pnpm -F @01s-11comm/app build:vercel
 - 独立 Nitro API 服务：`pnpm dev:nitro`（已退役，统一后端入口已迁移至 `apps/api`），只启动接口服务，默认监听 `3101` 端口，适合单独烟测和未来独立部署验证。
 - weixin 平台：`pnpm dev:mp` 然后打开微信开发者工具，导入本地文件夹，选择本项目的 `dist/dev/mp-weixin` 文件。
 - weixin 平台（Nitro 联调）：`pnpm dev:mp-weixin:nitro`（已退役），脚本会先检查或拉起 Nitro，再进入微信小程序编译链。
-- APP 平台：`pnpm dev:app`，然后打开 `HBuilderX`，导入刚刚生成的 `dist/dev/app` 文件夹，选择运行到模拟器(开发时优先使用)，或者运行的安卓/ios 基座。(如果是 `安卓` 和 `鸿蒙` 平台，则不用这个方式，可以把整个 unibest 项目导入到 hbx，通过 hbx 的菜单来运行到对应的平台。)
+- APP 平台：`pnpm dev:app`，然后打开 `HBuilderX`，导入刚刚生成的 `dist/dev/app` 文件夹，选择运行到模拟器（开发时优先使用），或者运行的安卓/ios 基座。（如果是 `安卓` 和 `鸿蒙` 平台，则不用这个方式，可以把整个 unibest 项目导入到 hbx，通过 hbx 的菜单来运行到对应的平台。)
 
 ## 6. 发布
 
 - web 平台： `pnpm build:h5`，打包后的文件在 `dist/build/h5`，可以放到 web 服务器，如 nginx 运行。如果最终不是放在根目录，可以在 `manifest.config.ts` 文件的 `h5.router.base` 属性进行修改。
 - weixin 平台：`pnpm build:mp`，打包后的文件在 `dist/build/mp-weixin`，然后通过微信开发者工具导入，并点击右上角的“上传”按钮进行上传。
-- APP 平台：`pnpm build:app`，然后打开 `HBuilderX`，导入刚刚生成的 `dist/build/app` 文件夹，选择发行 - APP 云打包。(如果是 `安卓` 和 `鸿蒙` 平台，则不用这个方式，可以把整个 unibest 项目导入到 hbx，通过 hbx 的菜单来发行到对应的平台。)
+- APP 平台：`pnpm build:app`，然后打开 `HBuilderX`，导入刚刚生成的 `dist/build/app` 文件夹，选择发行 - APP 云打包。（如果是 `安卓` 和 `鸿蒙` 平台，则不用这个方式，可以把整个 unibest 项目导入到 hbx，通过 hbx 的菜单来发行到对应的平台。)
 - 独立 Nitro Node 服务构建：`pnpm build:nitro` 或 `pnpm build:nitro:node`（均已退役，统一后端入口已迁移至 `apps/api`），构建完成后产物位于 `.output/` 目录。
 - Vercel Nitro 服务构建：`pnpm build:nitro:vercel`（已退役，统一后端入口已迁移至 `apps/api`），构建完成后使用 Nitro `vercel` preset 生成 Vercel 所需产物。
 - 独立 Nitro 服务预览：`pnpm preview:nitro`（已退役，统一后端入口已迁移至 `apps/api`），当前通过直接运行 `.output/server/index.mjs` 进行本地预览；它面向 Node 产物，不对应 Vercel 产物预览。
@@ -301,24 +308,3 @@ Copyright (c) 2025 菲鸽
 - wot-design-uni 组件库： https://wot-ui.cn/guide/quick-use.html
 - unibest 框架文档：https://unibest.tech/base/2-start
 - Nitro v3 文档：https://v3.nitro.build/
-
-## 12. 期望达到的学习目标
-
-1. 借此来学习 vue2 和 vue3 的 uniapp 代码编写差异。便于我日后上手公司项目。熟悉一大套 API。
-2. 尝试给出一个 claude code 代码迁移代理，迁移代码写法为 vue3。
-3. 接触一下 UI 生成类的 AI 工具，帮我生成合适的 UI 方案，并设计合适的 css 颜色变量。
-4. 在保留现有 mock 开发效率的前提下，把本项目逐步推进到可独立部署的 Nitro 接口体系，并为后续接入 Neon 数据库留好边界。
-
-## 13. 工作任务划分
-
-### 13.1. 阮喵喵
-
-做下面这 4 个静态页面。
-
-![2025-09-13-00-33-54](https://s2.loli.net/2025/09/13/gtkP7dIYfnyqZ6m.png)
-
-- 公告
-- 维修录单
-- 通讯录
-- 投诉录单
-# Trigger fresh deployment

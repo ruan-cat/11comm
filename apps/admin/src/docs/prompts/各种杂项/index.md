@@ -703,3 +703,12 @@ admin 项目能不能不使用 vite-plugin-vercel 插件？因为 .vercel/output
 4. 使用 vercel MCP 或 vercel cli，监听 App 项目，即 `https://vercel.com/ruancat-projects/11comm-app-h5` 项目的部署情况，确保部署成功；
 5. 使用 github MCP 或者是 gh cli，检查 github workflow 工作流是否出现报错，确保不要出现任何报错。
 6. 按照足够数量的子代理，完成这些任务，避免过渡占用主代理的上下文窗口。
+
+---
+
+`apps\app\package.json` 的 `build:h5:prod` 构建命令失败了，请你帮我修复这个故障。
+阅读 `apps\app\scripts\window-path-loader.js` 和 [https://github.com/unibest-tech/unibest/issues/219](https://github.com/unibest-tech/unibest/issues/219) ，看看能不能帮我修复，解决在 window 系统内完成 build:h5:prod 构建 。
+
+---
+
+在 `lint-staged.config.js` 内，我们 App 子项目的处理逻辑是 `"lint:fix": "pnpm run lint:oxlint && pnpm run lint:eslint"`。这个命令太离谱了，按理说 lint-staged 运行的命令应该是简单的，linter 处理的文件不应该是整个 App 项目的全部文件，而是被提交的少部分文件。所以这个 `lint-staged.config.js` 的 `commands.push("pnpm -F @01s-11comm/app lint:fix");` 命令存在明显的性能问题，这个处理逻辑就不对，请你修复掉！
