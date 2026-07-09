@@ -25,6 +25,7 @@
   },
   "scripts": {
     "dev": "pnpm run dev:h5",
+    "build:vercel": "turbo move-vercel-output-to-root",
     "dev:h5:mock": "uni --mode development",
     "dev:mp": "uni -p mp-weixin",
     "dev:mp:test": "uni -p mp-weixin --mode test",
@@ -66,7 +67,7 @@
     "build:h5": "uni build",
     "preview:h5": "cross-env VITE_PREVIEW=true VITE_ROOT_DIR=. UNI_INPUT_DIR=src UNI_PLATFORM=h5 vite preview --host 127.0.0.1 --outDir dist/build/h5",
     "build:h5:test": "uni build --mode test",
-    "build:h5:prod": "uni build --mode production",
+    "build:h5:prod": "node --import ./scripts/register-window-path-loader.js node_modules/@dcloudio/vite-plugin-uni/bin/uni.js build --mode production",
     "build": "uni build",
     "build:test": "uni build --mode test",
     "build:prod": "uni build --mode production",
@@ -99,7 +100,8 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs --base=/11comm-app/",
     "preinstall": "npx only-allow pnpm",
-    "ci": "turbo run build:h5:prod --filter=@01s-11comm/app"
+    "ci": "turbo run build:h5:prod --filter=@01s-11comm/app",
+    "move-vercel-output-to-root": "move-vercel-output-to-root --source-dir dist/build/h5 --target-dir .vercel/output"
   },
   "dependencies": {
     "@alova/adapter-uniapp": "^2.0.16",
