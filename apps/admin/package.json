@@ -12,6 +12,7 @@
 	"scripts": {
 		"dev": "turbo vite:dev",
 		"build": "pnpm build:prod",
+		"build:vercel": "turbo move-vercel-output-to-root",
 		"typecheck": "tsc --noEmit && vue-tsc --noEmit --skipLibCheck",
 		"docs:dev": "vitepress dev src --port 3000",
 		"docs:build": "vitepress build src",
@@ -45,7 +46,8 @@
 		"env:pull": "npx tsx ./scripts/env-pull.ts",
 		"rm:types": "tsx ./scripts/del-types.ts",
 		"format": "pnpm lint:prettier",
-		"build:github": "pnpm vite:build:prod:github"
+		"build:github": "pnpm vite:build:prod:github",
+		"move-vercel-output-to-root": "move-vercel-output-to-root --source-dir dist --target-dir .vercel/output"
 	},
 	"keywords": [
 		"vue-pure-admin",

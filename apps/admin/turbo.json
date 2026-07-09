@@ -17,9 +17,13 @@
 			"cache": true,
 			"outputs": ["dist/**", ".vercel/output/**"]
 		},
+		"build:prod": {
+			"cache": true,
+			"outputs": ["dist/**"]
+		},
 		"move-vercel-output-to-root": {
 			"cache": false,
-			"dependsOn": ["vite:build:prod"]
+			"dependsOn": ["build:prod"]
 		},
 		"vite:build:prod:cloudflare": {
 			"cache": true,
