@@ -2,11 +2,11 @@
 
 ## 部署链接
 
-| 环境 | 地址 | 说明 |
-| :--- | :--- | :--- |
+| 环境            | 地址                                                             | 说明                           |
+| :-------------- | :--------------------------------------------------------------- | :----------------------------- |
 | **Vercel 项目** | [11comm-admin](https://vercel.com/ruancat-projects/11comm-admin) | Admin 管理后台 Vercel 部署管理 |
-| **生产地址** | [01s-11comm.ruan-cat.com](https://01s-11comm.ruan-cat.com) | Admin H5 生产域名 |
-| **API 服务** | [01s-11-server.ruan-cat.com](https://01s-11-server.ruan-cat.com) | 独立 Nitro API 服务 |
+| **生产地址**    | [01s-11comm.ruan-cat.com](https://01s-11comm.ruan-cat.com)       | Admin H5 生产域名              |
+| **API 服务**    | [01s-11-server.ruan-cat.com](https://01s-11-server.ruan-cat.com) | 独立 Nitro API 服务            |
 
 ## 项目技术架构
 
@@ -16,7 +16,7 @@
 >
 > `apps/admin` **已不再是 Nitro 服务端项目**。从 Phase7 起：
 >
-> - Admin 前端构建产物为**纯 SPA**（`.output/public/`），部署到 Vercel 静态托管。
+> - Admin 前端构建产物为**纯 SPA**；本地生产构建输出 `dist/`，Vercel 云端入口把 `dist/` 搬运到仓库根 `.vercel/output`。
 > - 所有业务 API 已迁移至独立的 `apps/api` Nitro 服务（`https://01s-11-server.ruan-cat.com`）。
 > - `apps/admin/server/**` 目录处于 `delete-candidate` 状态，待生产验证通过后物理删除。
 >
@@ -24,18 +24,18 @@
 
 ### 核心技术栈
 
-| 层级         | 技术选型                                          |
-| :----------- | :------------------------------------------------ |
-| 前端框架     | Vue 3 + Vite + TypeScript                         |
-| UI 组件库    | Element Plus + Plus Pro Components                |
-| 状态管理     | Pinia                                             |
-| ~~后端框架~~ | ~~Nitro v3 (Phase6 退役)~~ → 独立 `apps/api` 服务 |
-| 数据库       | Neon Serverless Postgres（通过 `apps/api` 访问）  |
-| ORM          | Drizzle ORM（Schema 定义在 `apps/type`）          |
+| 层级         | 技术选型                                           |
+| :----------- | :------------------------------------------------- |
+| 前端框架     | Vue 3 + Vite + TypeScript                          |
+| UI 组件库    | Element Plus + Plus Pro Components                 |
+| 状态管理     | Pinia                                              |
+| ~~后端框架~~ | ~~Nitro v3 (Phase6 退役）~~ → 独立 `apps/api` 服务 |
+| 数据库       | Neon Serverless Postgres（通过 `apps/api` 访问）   |
+| ORM          | Drizzle ORM（Schema 定义在 `apps/type`）           |
 
 > **架构决策**：Admin 不再内置 Nitro 服务端。历史遗留的 `apps/admin/server/**` 代码仅作过渡兼容，最终将物理删除。所有业务 API 由 `apps/api` 提供。
 
-### Schema 架构 (Trinity Pattern)
+### Schema 架构 （Trinity Pattern）
 
 项目采用 **Schema 驱动开发**模式，所有数据库表定义遵循 **Trinity Pattern**：
 
@@ -134,30 +134,60 @@ apps/admin (SPA)                          apps/api (Nitro Serverless)
 
 > **不兼容旧架构**：`apps/admin/server/**` 内置 Nitro 服务已退役，`.env.production` 中不再配置 `NITRO_*` 或指向自身 server 的地址。
 
-### 构建命令
+### 构建与部署链路
 
 ```bash
-# 生产构建（纯 SPA，不含服务端）
+# 在 apps/admin 内执行：本地生产构建（纯 SPA，不含服务端）
 pnpm build:prod
 
 # 预览构建产物
 pnpm preview
+
+# 在仓库根目录执行：模拟 Vercel 云端构建入口
+pnpm run build:vercel:admin
 ```
 
-> 注意：`build:prod` 与 `build:prod:vercel` 的区别：
->
-> - `build:prod`：纯 SPA，构建产物在 `.output/public/`，直接部署到 Vercel 静态托管。
-> - `build:prod:vercel`：含内置 Nitro 服务端（Phase6 遗留），**Phase7 不再使用**。
+commit `d1c5b6f5` 的关键修复不是新增 `vercel.json`，而是把 Vercel 云端入口改成根命令串联子包构建与产物搬运：
+
+```plain
+pnpm run build:vercel:admin
+└─ pnpm -F=@01s-11comm/admin build:vercel
+   └─ turbo move-vercel-output-to-root
+      ├─ dependsOn: build:prod
+      │  └─ 生成 apps/admin/dist
+      └─ move-vercel-output-to-root --source-dir dist --target-dir .vercel/output
+```
+
+命令边界必须分清：
+
+- `build:prod`：纯 SPA 本地构建，构建产物在 `apps/admin/dist/`。
+- `build:vercel`：子包内的 Vercel 云端入口，由 `turbo` 先跑 `build:prod`，再把 `dist/` 搬运到仓库根 `.vercel/output`。
+- `build:vercel:admin`：仓库根目录的 Vercel Project Build Command，调用 admin 子包的 `build:vercel`。
+- `build:prod:vercel`：Phase6 遗留入口，Phase7 云端部署不再使用。
 
 ### 部署步骤
 
 1. **本地构建**：`pnpm build:prod`
-2. **部署到 Vercel**：Vercel 检测到 `.output/public/` 目录，自动以静态模式部署。
-   - 无需额外配置 `vercel.json`。
-   - 无需使用 `move-vercel-output-to-root` 脚本。
+2. **部署到 Vercel**：Vercel 云端 Project Settings 的 Build Command 使用 `pnpm run build:vercel:admin`，Output Directory 使用 `.vercel/output`。
+   - `build:vercel:admin` 会调用 `apps/admin` 的 `build:vercel`，由脚本把 `dist/` 搬运为 Vercel 需要的 `.vercel/output`。
+   - Vercel Project 专属配置以云端 Project Settings 为准，不要写入仓库根目录或子目录 `vercel.json`。
+   - 禁止通过仓库 `vercel.json` 指定 `apps/admin/dist`、`dist`、`.output/public` 或其他 admin 输出目录；根配置会被同仓库 app/api 项目读到，导致其他项目查找错误产物。
+   - 如果需要调整 Root Directory、Build Command、Output Directory 或 Install Command，只在 Vercel 云端 Project Settings 中维护。
 3. **健康检查**：`https://01s-11comm.ruan-cat.com` 应返回 SPA 首页。
 
 详细部署文档：[./src/docs/deploy/index.md](./src/docs/deploy/index.md)
+
+## Vercel 云项目部署配置
+
+以下配置只记录 Vercel 云端 Project Settings 的期望值，禁止写入仓库 `vercel.json`：
+
+- Root Directory：仓库根目录（保持默认/留空，不要设置为 `apps/admin`）
+- Framework Preset：Other
+- Build Command： `pnpm run build:vercel:admin`
+- Output Directory： `.vercel/output`
+- Install Command： `ls -A && pnpm install`
+
+不要把上面的配置复制成 `vercel.json`。Vercel 官方配置模型允许 `vercel.json` 覆盖 Project Settings；在当前 pnpm workspace monorepo 中，仓库内配置文件会变成跨项目污染源。
 
 ## package.json 命令
 
@@ -173,39 +203,47 @@ pnpm preview
 
 #### 2.1 构建模式说明
 
-本项目支持两种构建模式：
+本项目当前保留两类构建入口：
 
-1. **纯客户端构建（SPA）** - 构建纯前端单页应用，不包含服务端代码
-2. **Nitro 全栈构建** - 构建包含 Nitro 服务端的全栈应用
+1. **纯客户端构建（SPA）** - 构建纯前端单页应用到 `dist/`，不包含服务端代码。
+2. **Vercel 云端构建入口** - 在 SPA 构建后把 `dist/` 搬运到仓库根 `.vercel/output`，供 Vercel 读取。
+
+历史 Nitro 全栈构建入口仍保留在脚本中，但 Phase7 云端部署不再使用。
 
 #### 2.2 构建命令列表
 
-> **Phase7 重要变更**：`apps/admin` 已转型为纯前端 SPA，所有构建命令默认产出 `.output/public/` 静态文件。
+> **Phase7 重要变更**：`apps/admin` 已转型为纯前端 SPA。`build:prod` 产出 `dist/` 静态文件；Vercel 云端入口必须走根命令 `pnpm run build:vercel:admin`，再由子包 `build:vercel` 把 `dist/` 搬运到仓库根 `.vercel/output`。
 
-|             命令             |                     说明                      |      构建模式       |
-| :--------------------------: | :-------------------------------------------: | :-----------------: |
-|         `pnpm build`         |      构建生产环境（等同于 `build:prod`）      | 纯客户端构建（SPA） |
-|      `pnpm build:prod`       |            构建生产环境客户端版本             | 纯客户端构建（SPA） |
-| `pnpm build:prod:cloudflare` | ~~构建 Cloudflare 部署版本~~（Phase7 已废弃） | ~~Nitro 全栈构建~~  |
-|   `pnpm build:prod:vercel`   |   ~~构建 Vercel 部署版本~~（Phase7 已废弃）   | ~~Nitro 全栈构建~~  |
-|     `pnpm build:staging`     |           构建预发布环境客户端版本            | 纯客户端构建（SPA） |
-|     `pnpm build:github`      |       构建 GitHub Pages 部署客户端版本        | 纯客户端构建（SPA） |
-|      `pnpm docs:build`       |              构建 VitePress 文档              |          -          |
+|             命令             |                            说明                            |      构建模式       |
+| :--------------------------: | :--------------------------------------------------------: | :-----------------: |
+|         `pnpm build`         |            构建生产环境（等同于 `build:prod`）             | 纯客户端构建（SPA） |
+|      `pnpm build:prod`       |                   构建生产环境客户端版本                   | 纯客户端构建（SPA） |
+|     `pnpm build:vercel`      | Vercel 子包入口，先构建 `dist/`，再搬运到 `.vercel/output` | 纯客户端构建（SPA） |
+| `pnpm build:prod:cloudflare` |       ~~构建 Cloudflare 部署版本~~（Phase7 已废弃）        | ~~Nitro 全栈构建~~  |
+|   `pnpm build:prod:vercel`   |         ~~构建 Vercel 部署版本~~（Phase7 已废弃）          | ~~Nitro 全栈构建~~  |
+|     `pnpm build:staging`     |                  构建预发布环境客户端版本                  | 纯客户端构建（SPA） |
+|     `pnpm build:github`      |              构建 GitHub Pages 部署客户端版本              | 纯客户端构建（SPA） |
+|      `pnpm docs:build`       |                    构建 VitePress 文档                     |          -          |
 
 #### 2.3 重要说明
 
 > **Phase7 不再使用 Nitro 全栈构建**：
 >
 > - `build:prod:cloudflare` 和 `build:prod:vercel` 已废弃，保留仅作历史参考。
-> - **生产部署统一使用** `pnpm build:prod`（纯 SPA）。
-> - 构建产物在 `.output/public/`，由 Vercel 以静态模式托管。
-> - 无需 `move-vercel-output-to-root` 脚本。
+> - 本地生产构建使用 `pnpm build:prod`（纯 SPA），产物在 `dist/`。
+> - Vercel 云端 Project Settings 的 Build Command 使用根命令 `pnpm run build:vercel:admin`；最终产物在仓库根 `.vercel/output`。
+> - `move-vercel-output-to-root` 是当前 Vercel 云端入口需要保留的搬运脚本；不要用仓库 `vercel.json` 代替它，也不要把 Output Directory 改回 `apps/admin/dist`。
 
 **验证方法**：
 
 ```bash
-# Phase7 正确构建后，应该只存在 .output/public/ 目录
-ls .output/public/index.html  # ✓ 应存在
+# apps/admin 内：Phase7 本地生产构建后，应该存在 dist/ 目录
+ls dist/index.html  # ✓ 应存在
+
+# 仓库根目录：Vercel 云端构建入口会生成 .vercel/output
+pnpm run build:vercel:admin
+ls .vercel/output  # ✓ 应存在
+
 # .output/nitro.json 不应存在（Phase6 遗留）
 ```
 

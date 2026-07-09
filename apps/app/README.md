@@ -58,10 +58,16 @@
 
 ### 1.1. vercel 云项目的部署配置
 
+以下配置只记录 Vercel 云端 Project Settings 的期望值，禁止写入仓库 `vercel.json`：
+
 - Framework Preset： other
 - Build Command： `pnpm run build:vercel:app`
-- Output Directory： .`vercel/output`
+- Output Directory： `.vercel/output`
 - Install Command： `ls -A && pnpm install`
+
+禁止新增 `apps/app/vercel.json`，也禁止恢复仓库根目录 `vercel.json`。Vercel 会读取 Project Root 下的 `vercel.json` 并覆盖云端 `outputDirectory`、`buildCommand`、`installCommand` 等设置；在 monorepo 中，根配置会影响同仓库下多个 Vercel Project。
+
+`11comm-app-h5` 的云端 Build Command 必须是 `pnpm run build:vercel:app`。它会进入子包执行 `build:vercel`，先产出 `dist/build/h5`，再搬运为 Vercel 需要的根 `.vercel/output`。因此 Output Directory 必须以云端 Project Settings 中的 `.vercel/output` 为准，不要写入本地 `vercel.json`。
 
 ### 1.1. 当前仓库定位
 
@@ -154,11 +160,12 @@ http://127.0.0.1:3101/__nitro/health
 
 |        Vercel 项目        |            生产构建命令             |                           生产域名                           | Production Branch |
 | :-----------------------: | :---------------------------------: | :----------------------------------------------------------: | :---------------: |
-|      `11comm-app-h5`      |        `pnpm build:h5:prod`         |          `resolve11CommH5BaseUrl()` / `11commAppH5`          |       `dev`       |
+|      `11comm-app-h5`      |     `pnpm run build:vercel:app`     |          `resolve11CommH5BaseUrl()` / `11commAppH5`          |       `dev`       |
 | `11comm-app-nitro-server` | `pnpm build:nitro:vercel`（已退役） | `resolve11CommNitroServerBaseUrl()` / `11commAppNitroServer` |       `dev`       |
 
 - H5 生产环境固定直连 `@ruan-cat/domains` 中 `11commAppNitroServer` 别名解析出的 Nitro 生产域名，不再依赖本地 proxy。
 - GitHub Actions 里的 `pnpm run ci` 只做构建健壮性自检，不承担任何 Vercel 部署职责。
+- `build:h5:prod` 是 `apps/app` 子包内部的 H5 生产构建步骤，不是 `11comm-app-h5` Vercel Project 的直接 Build Command；云端入口必须走根脚本 `pnpm run build:vercel:app`。
 
 ## 1B. Phase7 部署架构
 
@@ -191,6 +198,8 @@ apps/app (SPA)                              apps/api (Nitro Serverless)
 # H5 生产构建
 pnpm build:h5:prod
 ```
+
+这条命令是子包内部生产构建步骤。Vercel 云端 Project Settings 的 Build Command 不直接填写它，而是填写根入口 `pnpm run build:vercel:app`，由该入口串联子包构建和 `.vercel/output` 搬运。
 
 ### `build:h5:prod` 的 Windows 路径兼容决策
 

@@ -27,6 +27,19 @@
 
 生产部署、环境变量与构建产物说明不在根 README 展开。admin 侧请阅读 **[admin 项目的文档](./apps/admin/README.md)**；app H5 与统一 API server 以各自 `apps/*/package.json` 的 scripts、env 文件和 `homepage` 字段为准。
 
+### Vercel 云端配置与 `vercel.json` 禁止事项
+
+本仓库是 pnpm workspace monorepo，同一个 Git 仓库会被 `apps/admin`、`apps/app`、`apps/api` 对应的多个 Vercel Project 读取。Vercel 的 `vercel.json` 位于项目根目录时，会覆盖该 Project 的 `outputDirectory`、`buildCommand`、`installCommand` 等 Project Settings；如果多个 Vercel Project 共用同一个仓库根目录，根 `vercel.json` 会被这些项目共同读到。
+
+2026-07-09，Vercel 项目 `11comm-app-h5` 曾因仓库根目录存在 `{"outputDirectory":"apps/admin/dist"}` 的 `vercel.json` 多次部署失败。该配置属于 admin 项目输出目录，却污染了 app H5 项目的构建产物查找。最终 commit `2707fcfd2acf0ff0948195b342470861ef395366` 删除根目录 `vercel.json` 后恢复 READY。
+
+为防止同类事故复发：
+
+- **禁止**在仓库根目录新增或恢复 `vercel.json`。
+- **禁止**在各子目录提交具体 Vercel 部署配置文件来固化 Project 专属配置。
+- Vercel Project 专属的 Framework Preset、Root Directory、Build Command、Output Directory、Install Command、Ignored Build Step 和环境变量，统一在 Vercel 云端 Project Settings 管理。
+- README 只能记录云端 Project Settings 的期望值，禁止把这些值写入仓库 `vercel.json`。
+
 ### Phase7 Monorepo 部署架构
 
 ```plain
@@ -45,8 +58,8 @@
 │   │  .ruan-cat.com        .ruan-cat.com        .ruan-cat.com            │   │
 │   │  Vercel Static        Vercel Static        Vercel Serverless Funcs  │   │
 │   │                                                                 │   │
-│   │  .output/public/**    dist/build/h5/**    server/routes/api/**    │   │
-│   │  (纯静态文件)         (H5 构建产物)       (Nitro handlers)         │   │
+│   │  dist/** → .vercel    dist/build/h5/**    server/routes/api/**    │   │
+│   │  /output/**           → .vercel/output/** (Nitro handlers)        │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                                      ▲                                       │
 │                                      │ API 请求                               │
@@ -60,7 +73,7 @@
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-| 子项目       | 产物类型         | 构建命令示例                            | 部署平台                    |
+| 子项目       | 产物类型         | 本地构建命令示例                        | 部署平台                    |
 | :----------- | :--------------- | :-------------------------------------- | :-------------------------- |
 | `apps/admin` | 纯 SPA           | `pnpm -F @01s-11comm/admin build:prod`  | Vercel Static               |
 | `apps/app`   | H5 SPA           | `pnpm -F @01s-11comm/app build:h5:prod` | Vercel Static               |
@@ -68,6 +81,8 @@
 | `apps/type`  | 共享类型库       | `pnpm -F @01s-11comm/type build`        | N/A（被依赖）               |
 
 > **变更历史**：Phase6 时 `apps/admin` 和 `apps/app` 各自带内置 Nitro 服务端，Phase7 统一迁移至独立 `apps/api` 服务。详见 [OpenSpec 变更 `migrate-superpowers-docs-to-openspec-longtask`](./openspec/changes/migrate-superpowers-docs-to-openspec-longtask/)。
+
+> **Vercel 云端入口**：Build Command / Output Directory 以各子项目 README 的“vercel 云项目的部署配置”章节为准，不从本地构建命令示例反推。
 
 ## 项目结构
 
@@ -135,7 +150,7 @@ pnpm --filter @01s-11comm/admin dev
 pnpm run release:sub && pnpm run release:root && pnpm run git:push
 ```
 
-### 子包入口：`relizy-runner`
+### 子包入口`relizy-runner`
 
 子包发版入口统一走 **`relizy-runner`**，该命令由 `@ruan-cat/utils@4.25.0+` 提供。它是 relizy 前面的**兼容与安全层**，不改变 relizy 的版本计算语义，只负责两件事：
 
@@ -144,7 +159,7 @@ pnpm run release:sub && pnpm run release:root && pnpm run git:push
 
 因此，**不要绕过 runner 直接在当前仓库里调用裸 `relizy release ...`** 作为日常发版入口。
 
-### 根包入口：`bumpp + changelogen`
+### 根包入口`bumpp + changelogen`
 
 根包不再通过 `conventional-changelog-cli` 生成 changelog，而是使用：
 
@@ -205,7 +220,7 @@ pnpm exec changelogen --output CHANGELOG.md
 pnpm exec relizy-runner release --no-publish --no-provider-release --no-yes
 ```
 
-### 已知上游差异：`changelog --dry-run --yes`
+### 已知上游差异`changelog --dry-run --yes`
 
 为了与全局 `init-release-base-relizy-and-bumpp` 技能文档保持一致，仓库文档保留以下技能原文验证命令：
 

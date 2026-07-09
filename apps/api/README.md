@@ -11,10 +11,16 @@
 
 ## vercel 云项目的部署配置
 
+以下配置只记录 Vercel 云端 Project Settings 的期望值，禁止写入仓库 `vercel.json`：
+
 - Framework Preset： other
 - Build Command： `pnpm run build:vercel:api`
-- Output Directory： .`vercel/output`
+- Output Directory： `.vercel/output`
 - Install Command： `ls -A && pnpm install`
+
+API 项目的 `.vercel/output` 是 `11comm-nitro-server` 自己的云端 Output Directory。不要依赖仓库根目录 `vercel.json` 配置它，也不要在 `apps/api` 提交项目专属 `vercel.json`。
+
+Vercel 会读取 Project Root 下的 `vercel.json` 并覆盖云端 `outputDirectory`、`buildCommand`、`installCommand` 等设置；在 monorepo 中，根配置会影响同仓库下的 admin/app/api 多个 Vercel Project。API 的 Framework Preset、Root Directory、Build Command、Output Directory、Install Command、Ignored Build Step 和环境变量统一在 Vercel 云端 Project Settings 管理。
 
 ## 项目定位
 
