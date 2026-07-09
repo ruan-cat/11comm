@@ -23,14 +23,92 @@
 		// 折叠 git配置
 		".gitignore": ".gitignore, .gitattributes"
 	},
-	/** 忽略特定的文件夹 不予搜索 */
-	"search.exclude": {
+	/** 文件树隐藏生成产物和缓存目录，减少大仓库打开时的无效扫描 */
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/.git": true,
 		"**/dist": true,
+		"**/dist-ssr": true,
+		"**/build": true,
+		"**/.next": true,
+		"**/.nuxt": true,
+		"**/.output": true,
+		"**/.vite": true,
+		"**/.vitepress/dist": true,
+		"**/.vitepress/cache": true,
+		"**/.vuepress/dist": true,
+		"**/.vuepress/cache": true,
+		"**/.turbo": true,
+		"**/.vercel": true,
 		"**/.cache": true,
 		"**/.temp": true,
+		"**/.tmp": true,
+		"**/coverage": true,
+		"**/*.map": true,
+		"**/*.tsbuildinfo": true,
+		"**/.eslintcache": true,
+		"**/.stylelintcache": true,
+		"**/logs": true,
+		"**/*.log": true
+	},
+	/** 忽略特定的文件夹 不予搜索 */
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/.git": true,
+		"**/dist": true,
+		"**/dist-ssr": true,
+		"**/build": true,
+		"**/.next": true,
+		"**/.nuxt": true,
+		"**/.output": true,
+		"**/.vite": true,
+		"**/.vitepress/dist": true,
+		"**/.vitepress/cache": true,
+		"**/.vuepress/dist": true,
+		"**/.vuepress/cache": true,
+		"**/.cache": true,
+		"**/.temp": true,
+		"**/.tmp": true,
 		"**/.vercel": true,
 		"**/.turbo": true,
-		"**/cache": true
+		"**/cache": true,
+		"**/coverage": true,
+		"**/*.map": true,
+		"**/*.tsbuildinfo": true,
+		"**/.eslintcache": true,
+		"**/.stylelintcache": true,
+		"**/logs": true,
+		"**/*.log": true
+	},
+	/** 减少大目录监听，避免构建产物和缓存拖慢编辑器 */
+	"files.watcherExclude": {
+		"**/.git/**": true,
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/node_modules/*/**": true,
+		"**/dist/**": true,
+		"**/dist-ssr/**": true,
+		"**/build/**": true,
+		"**/.next/**": true,
+		"**/.nuxt/**": true,
+		"**/.output/**": true,
+		"**/.vite/**": true,
+		"**/.vitepress/dist/**": true,
+		"**/.vitepress/cache/**": true,
+		"**/.vuepress/dist/**": true,
+		"**/.vuepress/cache/**": true,
+		"**/.turbo/**": true,
+		"**/.vercel/**": true,
+		"**/.cache/**": true,
+		"**/.temp/**": true,
+		"**/.tmp/**": true,
+		"**/coverage/**": true,
+		"**/*.map": true,
+		"**/*.tsbuildinfo": true,
+		"**/.eslintcache": true,
+		"**/.stylelintcache": true,
+		"**/logs/**": true,
+		"**/*.log": true
 	},
 	// 参考资料 https://github.com/mhutchie/vscode-git-graph/blob/develop/README.md
 	"git-graph.customBranchGlobPatterns": [
@@ -196,8 +274,40 @@
 		"v-ripple"
 	],
 	"vscodeCustomCodeColor.highlightValueColor": "#b392f0",
-	"search.indexing.maxFileSize": 524288000,
+	/** 限制 TypeScript Server 在大仓库中的内存和监听策略 */
+	"typescript.disableAutomaticTypeAcquisition": true,
+	"typescript.tsserver.maxTsServerMemory": 8192,
+	"typescript.tsserver.watchOptions": {
+		"watchFile": "useFsEvents",
+		"watchDirectory": "useFsEvents",
+		"fallbackPolling": "dynamicPriority",
+		"synchronousWatchDirectory": false,
+		"excludeDirectories": [
+			"**/node_modules",
+			"**/.git",
+			"**/dist",
+			"**/dist-ssr",
+			"**/build",
+			"**/.next",
+			"**/.nuxt",
+			"**/.output",
+			"**/.vite",
+			"**/.vitepress/dist",
+			"**/.vitepress/cache",
+			"**/.vuepress/dist",
+			"**/.vuepress/cache",
+			"**/.turbo",
+			"**/.vercel",
+			"**/.cache",
+			"**/.temp",
+			"**/.tmp",
+			"**/coverage",
+			"**/logs"
+		],
+		"excludeFiles": ["**/*.map", "**/*.tsbuildinfo", "**/.eslintcache", "**/.stylelintcache", "**/*.log"]
+	},
+	"search.indexing.maxFileSize": 1048576,
 	"search.indexing.batchSize": 1000,
-	// 允许代码索引
-	"Codegeex.RepoIndex": true
+	// 避免 AI 扩展对整个大型 monorepo 持续索引
+	"Codegeex.RepoIndex": false
 }
