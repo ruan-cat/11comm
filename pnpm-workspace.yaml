@@ -6,6 +6,7 @@ packages:
 shamefullyHoist: true
 
 allowBuilds:
+  "@logicflow/core": true
   "@parcel/watcher": true
   "@uni-helper/unocss-preset-uni": true
   core-js: true
