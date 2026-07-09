@@ -712,3 +712,21 @@ admin 项目能不能不使用 vite-plugin-vercel 插件？因为 .vercel/output
 ---
 
 在 `lint-staged.config.js` 内，我们 App 子项目的处理逻辑是 `"lint:fix": "pnpm run lint:oxlint && pnpm run lint:eslint"`。这个命令太离谱了，按理说 lint-staged 运行的命令应该是简单的，linter 处理的文件不应该是整个 App 项目的全部文件，而是被提交的少部分文件。所以这个 `lint-staged.config.js` 的 `commands.push("pnpm -F @01s-11comm/app lint:fix");` 命令存在明显的性能问题，这个处理逻辑就不对，请你修复掉！
+
+---
+
+记录惨痛的经验教训！
+
+1. 用你的 vercel MCP，阅读 `https://vercel.com/ruancat-projects/11comm-app-h5/deployments` ，阅读清楚 `11comm-app-h5` 项目为什么有那么多部署失败了。
+   > ![2026-07-09-16-41-45](https://gh-img-store.ruan-cat.com/01s-docs/11comm/2026-07-09-16-41-45.png)
+2. 认真看清楚，搞清楚 git commit `2707fcfd2acf0ff0948195b342470861ef395366` 的提交。认真理解清楚为什么我手动删除了多余的根目录 vercel.json 文件后，我们 monorepo 项目的 App 子包项目，就能够正常工作了。就是因为你误导了，你误会了！我们项目是 monorepo 项目，monorepo 项目子包部署的时候，怎么可以去编写根目录下面的 vercel.json 配置文件呢？这个思路完全不对！
+3. 你去认真看看 vercel 的官方文档，搞清楚为什么根目录错误的 vercel.json 配置文件，能够干扰子项目的部署。你的探究方案非常离谱！犯下大错了。
+4. 认真按照 `record-bug-fix-memory` 技能的要求，编写经验教训。
+5. 在各个子项目的 README.md 文档内，说明清楚为什么 vercel 配置要写到云端内，而不是写到项目根目录和子目录内的具体 vercel.json 文件。
+6. 最后编写一个事故报告，全面的检索好历史的 vercel 11comm-app-h5 云项目的部署失败情况，和错误的配置文件情况，全面的说明清楚经验教训。
+
+---
+
+更新文档
+apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个章节的内容，很多东西讲的不对。
+严格看看 `🐞 fix(turbo,config,package.json,admin)!: 修复admin项目在vercel部署失败的故障，避免强依赖具体的vercel.json文件。` 这个 git commit 提交的做法，认真的根据这个具体的提交写法和修复内容，去重写，改写`apps\admin\README.md`文档的部署部分，把东西写对！
