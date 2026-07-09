@@ -1,4 +1,0 @@
-{
-  "buildCommand": "pnpm -F=@01s-11comm/app run build:h5:prod",
-  "outputDirectory": "dist"
-}
