@@ -33,6 +33,30 @@ const contactList: Contact[] = Array.from({ length: 18 }, (_, index) => {
   }
 })
 
+/** 紧急联系人 mock 数据。 */
+const emergencyContacts: EmergencyContact[] = [
+  {
+    contactId: 'EMG_001',
+    name: '24小时值班室',
+    phone: '400-888-9999',
+    department: '物业管理处',
+    position: '值班',
+    description: '24小时为您服务',
+    isOnline: true,
+    priority: 'HIGH',
+  },
+  {
+    contactId: 'EMG_002',
+    name: '维修主管',
+    phone: '13800009999',
+    department: '维修部',
+    position: '主管',
+    description: '负责紧急维修事务',
+    isOnline: true,
+    priority: 'MEDIUM',
+  },
+]
+
 export default defineUniAppMock([
   {
     url: '/app/contact.listContacts',
@@ -132,30 +156,6 @@ export default defineUniAppMock([
     body: () => successResponse({ contacts: emergencyContacts }, '获取紧急联系人成功'),
   },
 ])
-
-/** 紧急联系人 mock 数据。 */
-const emergencyContacts: EmergencyContact[] = [
-  {
-    contactId: 'EMG_001',
-    name: '24小时值班室',
-    phone: '400-888-9999',
-    department: '物业管理处',
-    position: '值班',
-    description: '24小时为您服务',
-    isOnline: true,
-    priority: 'HIGH',
-  },
-  {
-    contactId: 'EMG_002',
-    name: '维修主管',
-    phone: '13800009999',
-    department: '维修部',
-    position: '主管',
-    description: '负责紧急维修事务',
-    isOnline: true,
-    priority: 'MEDIUM',
-  },
-]
 
 /** 按查询条件筛选联系人。 */
 function filterContacts(

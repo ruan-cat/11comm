@@ -1,5 +1,14 @@
 # @01s-11comm/api — 独立 Nitro API 服务
 
+## 部署链接
+
+| 环境 | 地址 | 说明 |
+| :--- | :--- | :--- |
+| **Vercel 项目** | [11comm-nitro-server](https://vercel.com/ruancat-projects/11comm-nitro-server) | Nitro API Vercel 部署管理 |
+| **生产地址** | [01s-11-server.ruan-cat.com](https://01s-11-server.ruan-cat.com) | 独立 Nitro API 服务 |
+| **Admin 前端** | [01s-11comm.ruan-cat.com](https://01s-11comm.ruan-cat.com) | Admin H5 生产域名 |
+| **App 前端** | [01s-11-app.ruan-cat.com](https://01s-11-app.ruan-cat.com) | App H5 生产域名 |
+
 ## 项目定位
 
 Phase7 起，`apps/api` 作为**独立 Nitro Serverless API 服务**，承接原来分散在 `apps/admin/server` 和 `apps/app/server` 中的所有业务接口。

@@ -48,6 +48,14 @@
 
 ## 1. 当前仓库补充说明
 
+### 1.0. 部署链接
+
+| 环境 | 地址 | 说明 |
+| :--- | :--- | :--- |
+| **Vercel 项目** | [11comm-app-h5](https://vercel.com/ruancat-projects/11comm-app-h5) | App H5 Vercel 部署管理 |
+| **生产地址** | [01s-11-app.ruan-cat.com](https://01s-11-app.ruan-cat.com) | App H5 生产域名 |
+| **API 服务** | [01s-11-server.ruan-cat.com](https://01s-11-server.ruan-cat.com) | 独立 Nitro API 服务 |
+
 ### 1.1. 当前仓库定位
 
 当前仓库并不是保持在 `unibest` 模板原始状态，而是在其基础上演进出来的智慧社区物业管理系统。

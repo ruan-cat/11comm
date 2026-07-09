@@ -1,5 +1,13 @@
 # 11comm 智慧社区项目 — Admin 后台
 
+## 部署链接
+
+| 环境 | 地址 | 说明 |
+| :--- | :--- | :--- |
+| **Vercel 项目** | [11comm-admin](https://vercel.com/ruancat-projects/11comm-admin) | Admin 管理后台 Vercel 部署管理 |
+| **生产地址** | [01s-11comm.ruan-cat.com](https://01s-11comm.ruan-cat.com) | Admin H5 生产域名 |
+| **API 服务** | [01s-11-server.ruan-cat.com](https://01s-11-server.ruan-cat.com) | 独立 Nitro API 服务 |
+
 ## 项目技术架构
 
 本项目是一个基于 **Vue 3 + TypeScript** 的纯前端管理后台，采用 **Monorepo** 结构管理多个子项目。

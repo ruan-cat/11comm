@@ -141,6 +141,45 @@ export function generateRealisticTitle(category: string, index: number): string 
   return `${generateStatus(templates)}${generateStatus(suffixes)}`
 }
 
+/**
+ * 仅用于在 `*.mock.ts` 文件内使用。
+ *
+ * ⚠️ 严格顺序声明要求 ⚠️
+ *
+ * 本文件遵循「定义即引用」的严格顺序规则：
+ *
+ * 1. ResultEnumMap（对象字面量）
+ *    - 必须在 successResponse、errorResponse 函数之前定义
+ *    - 原因：eslint(ts/no-use-before-define) 要求在引用前声明
+ *
+ * 2. successResponse、errorResponse（工具函数）
+ *    - 必须在 defineUniAppMock 的 mock 数据数组中引用之前定义
+ *    - 原因：mock 数据数组中的箭头函数在模块加载时立即求值
+ *
+ * 3. defineUniAppMock（高阶函数）
+ *    - 必须在具体 mock 数据文件（如 contact.mock.ts）引用之前定义
+ *    - 原因：mock 数据定义需要使用 defineUniAppMock
+ *
+ * @description
+ * FIXME: 在 `*.mock.ts` 文件内使用 `ResultEnum` 枚举，会导致项目启动失败。
+ * 故不得不提供字面量版本的对象，规避这个问题。
+ */
+export const ResultEnumMap = {
+  Success: '0',
+  Error: '400',
+  Unauthorized: '401',
+  Forbidden: '403',
+  NotFound: '404',
+  MethodNotAllowed: '405',
+  RequestTimeout: '408',
+  InternalServerError: '500',
+  NotImplemented: '501',
+  BadGateway: '502',
+  ServiceUnavailable: '503',
+  GatewayTimeout: '504',
+  HttpVersionNotSupported: '505',
+}
+
 /** 构造共享成功响应。 */
 export function successResponse<T>(data: T, message: string = '操作成功'): ApiResponse<T> {
   return {
@@ -161,28 +200,6 @@ export function errorResponse(message: string = '操作失败', code: string = R
     data: null,
     timestamp: Date.now(),
   }
-}
-
-/**
- * 仅用于在 `*.mock.ts` 文件内使用。
- * @description
- * FIXME: 在 `*.mock.ts` 文件内使用 `ResultEnum` 枚举，会导致项目启动失败。
- * 故不得不提供字面量版本的对象，规避这个问题。
- */
-export const ResultEnumMap = {
-  Success: '0',
-  Error: '400',
-  Unauthorized: '401',
-  Forbidden: '403',
-  NotFound: '404',
-  MethodNotAllowed: '405',
-  RequestTimeout: '408',
-  InternalServerError: '500',
-  NotImplemented: '501',
-  BadGateway: '502',
-  ServiceUnavailable: '503',
-  GatewayTimeout: '504',
-  HttpVersionNotSupported: '505',
 }
 
 /**
