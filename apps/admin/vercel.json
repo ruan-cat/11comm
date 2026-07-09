@@ -1,4 +1,0 @@
-{
-	"buildCommand": "cd ../.. && pnpm --filter @01s-11comm/admin run vite:build:prod",
-	"installCommand": "cd ../.. && pnpm install --no-frozen-lockfile"
-}
