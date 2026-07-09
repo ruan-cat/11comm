@@ -561,6 +561,14 @@ openspec validate {任务名称} --strict
 
 遇到「git status 显示 modified 但 git diff 为空」时，按此顺序排查。详见 `.claude/skills/fix-bug/record-bug-fix-memory/SKILL.md` 中的 CRLF 幽灵修改事故记录。
 
+## 11.2. `apps/app` H5 生产构建的 Windows ESM loader 约束
+
+`apps/app` 的 `build:h5:prod` 不要改回裸 `uni build --mode production`。Windows + 较新 Node ESM loader 下，uni-app/Vite 构建链可能动态导入 `D:\...` 这类绝对路径，Node 会把盘符识别成不支持的 URL scheme。
+
+当前决策是通过 `node --import ./scripts/register-window-path-loader.js` 启动 uni 构建，并且注册脚本只在 Windows 下用 `node:module.register()` 注册 `window-path-loader.js`；Linux/Vercel CI 不注册 loader，保持默认 ESM 解析。不要退回 `--experimental-loader`，该入口会产生 Node experimental warning，且历史上曾和 Vercel 输出目录问题混淆。
+
+修改这条链路后至少验证 `pnpm -F @01s-11comm/app build:h5:prod` 和 `pnpm -F @01s-11comm/app build:vercel`。详细复盘见 `.claude/skills/fix-bug/record-bug-fix-memory/2026-07-09-app-h5-prod-windows-esm-loader.md`，决策说明见 `apps/app/README.md`。
+
 ## 12. 获取技术栈对应的上下文
 
 以下是本项目使用的部分技术栈，你应该主动访问 github 仓库，或者使用 context7 MCP 来访问最新的文档。

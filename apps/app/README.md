@@ -185,6 +185,26 @@ apps/app (SPA)                              apps/api (Nitro Serverless)
 pnpm build:h5:prod
 ```
 
+### `build:h5:prod` 的 Windows 路径兼容决策
+
+`build:h5:prod` 有意不直接使用 `uni build --mode production`。在 Windows + 较新 Node ESM loader 下，uni-app/Vite 构建链会动态导入 `D:\...` 这类 Windows 绝对路径，Node 会把盘符识别成不支持的 URL scheme，并报类似错误：
+
+```log
+Only URLs with a scheme in: file, data, and node are supported by the default ESM loader.
+On Windows, absolute paths must be valid file:// URLs. Received protocol 'd:'
+```
+
+因此该命令通过 `node --import ./scripts/register-window-path-loader.js` 启动 `node_modules/@dcloudio/vite-plugin-uni/bin/uni.js build --mode production`。注册脚本只在 Windows 下用 `node:module.register()` 注册 `window-path-loader.js`，把 Windows 绝对路径转换成 `file://` URL；在 Linux/Vercel CI 中不注册 loader，保持 Node 默认 ESM 解析，避免影响线上构建链路。
+
+不要把 `build:h5:prod` 简单改回裸 `uni build --mode production`，也不建议改成 `--experimental-loader`。前者会重新触发 Windows 构建失败，后者会产生 Node experimental warning，且历史上曾和 Vercel 输出目录问题混淆。
+
+如果后续修改这条构建链路，至少同时验证：
+
+```bash
+pnpm -F @01s-11comm/app build:h5:prod
+pnpm -F @01s-11comm/app build:vercel
+```
+
 > **Phase7 不再使用**：`build:nitro`、`build:nitro:node`、`build:nitro:vercel` 均已退役，统一后端入口已迁移至 `apps/api`。
 
 ## 2. 平台兼容性

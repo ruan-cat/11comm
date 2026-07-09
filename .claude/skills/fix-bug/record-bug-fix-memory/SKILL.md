@@ -192,6 +192,12 @@ metadata:
 - 适用场景：lint-staged 中为了处理 App 文件而复用包级 `lint:fix`、`lint` 或 `format` 脚本。
 - 关键约束：lint-staged 必须把 staged 文件清单继续传给 linter，禁止用包级全量脚本替代文件级命令。
 
+### `apps/app` H5 生产构建的 Windows ESM loader 路径事故（2026-07-09）
+
+- 详细案例：`2026-07-09-app-h5-prod-windows-esm-loader.md`
+- 适用场景：Windows 本地执行 `pnpm -F @01s-11comm/app build:h5:prod` 时，Node ESM loader 把 `D:\...` 盘符路径识别为不支持的 URL scheme。
+- 关键约束：`build:h5:prod` 必须保留 Windows-only `node --import ./scripts/register-window-path-loader.js` 入口，修改后同时验证 `build:h5:prod` 和 `build:vercel`。
+
 ### `apps/admin/server` 的 drizzle-orm 多实例类型冲突事故（2026-05-26）
 
 - 详细案例：`2026-05-26-drizzle-orm-multi-instance-type-conflict.md`
