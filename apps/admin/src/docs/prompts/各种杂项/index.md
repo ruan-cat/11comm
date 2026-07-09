@@ -684,3 +684,22 @@ admin 项目能不能不使用 vite-plugin-vercel 插件？因为 .vercel/output
 我们的目的是需要生成 .vercel/output 目录。我们能不能用其他合适的手段来生成这个目录？或者是通过这个 vite-plugin-vercel 插件的合适配置，避免生成干扰性质的 functions/api/proxy.func/ ？
 我觉得我们可以直接忽略掉 functions/api/proxy.func/ 对 vercel 项目的影响。毕竟 admin 项目部署到 vercel 项目了，未来在生产环境内，也还是需要对 api 子包的内容做 vercel 生产环境层面的反向代理，所以在 .vercel/output 中仍有 functions/api/proxy.func/ 有这个边缘云函数来承担 vercel 层面的反向代理，是合理的。
 你调研一下这几个方向，我倾向于保留这个配置，保留 vercel 生产环境的反向代理函数。
+
+---
+
+及时更新各个子包对应的 README.md 文档，在 api、App、admin 三个子项目内，记录必要的 vercel 云项目的 url ，便于我快速查阅：
+
+- App 项目： https://vercel.com/ruancat-projects/11comm-app-h5
+- api nitro 接口项目： https://vercel.com/ruancat-projects/11comm-nitro-server
+- admin 管理后台项目： https://vercel.com/ruancat-projects/11comm-admin
+
+---
+
+你能确保 `window-path-loader.js` 这款特殊的 uniapp 构建脚本，在 vercel 和 github workflow 的 linux 环境内，在生产环境内，都能够正常的完成 build 吗？请你设计合适的测试流程，完成校验。
+
+1. 主动使用 git-commit 技能，对你的修改做 git-commit。
+2. 然后 git push，推送到 dev origin 远程。
+3. 使用 rebase2main 技能，完成 main origin 的同步。
+4. 使用 vercel MCP 或 vercel cli，监听 App 项目，即 `https://vercel.com/ruancat-projects/11comm-app-h5` 项目的部署情况，确保部署成功；
+5. 使用 github MCP 或者是 gh cli，检查 github workflow 工作流是否出现报错，确保不要出现任何报错。
+6. 按照足够数量的子代理，完成这些任务，避免过渡占用主代理的上下文窗口。
