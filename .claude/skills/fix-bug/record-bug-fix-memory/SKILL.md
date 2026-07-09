@@ -300,6 +300,12 @@ metadata:
 - 适用场景：附件上传保存成功但详情 VO 中合同编号和名称为空。
 - 关键约束：附件类详情物化时必须检查业务上下文字段是否透传。
 
+### Vercel monorepo 根目录配置污染子项目部署（2026-07-09）
+
+- 详细案例：`2026-07-09-vercel-monorepo-root-config-pollution.md`
+- 适用场景：同一 monorepo 仓库连接多个 Vercel Projects，某个子项目部署因根目录或子目录 `vercel.json` 反复失败
+- 关键约束：子项目专属的 Build Command、Output Directory、Root Directory 等配置只记录为云端 Project Settings 期望值，当前仓库禁止提交任何 `vercel.json`
+
 ## 14. 本仓库落点覆盖
 
 - 本仓库的 bug 经验优先记录在当前技能目录：`.claude/skills/fix-bug/record-bug-fix-memory/*.md`
