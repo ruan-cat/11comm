@@ -186,6 +186,12 @@ metadata:
 
 ## 13. 案例索引
 
+### `apps/app` lint-staged 误触发全量 lint 事故（2026-07-09）
+
+- 详细案例：`2026-07-09-app-lint-staged-full-project-lint.md`
+- 适用场景：lint-staged 中为了处理 App 文件而复用包级 `lint:fix`、`lint` 或 `format` 脚本。
+- 关键约束：lint-staged 必须把 staged 文件清单继续传给 linter，禁止用包级全量脚本替代文件级命令。
+
 ### `apps/admin/server` 的 drizzle-orm 多实例类型冲突事故（2026-05-26）
 
 - 详细案例：`2026-05-26-drizzle-orm-multi-instance-type-conflict.md`
