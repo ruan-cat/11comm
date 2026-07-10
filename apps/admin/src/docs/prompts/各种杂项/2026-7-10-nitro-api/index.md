@@ -271,7 +271,7 @@ admin 项目能不能不使用 vite-plugin-vercel 插件？因为 .vercel/output
 apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个章节的内容，很多东西讲的不对。
 严格看看 `🐞 fix(turbo,config,package.json,admin)!: 修复admin项目在vercel部署失败的故障，避免强依赖具体的vercel.json文件。` 这个 git commit 提交的做法，认真的根据这个具体的提交写法和修复内容，去重写，改写`apps\admin\README.md`文档的部署部分，把东西写对！
 
-## 07 <!-- TODO: claude code 正在做 --> 做好生产环境的代码评测
+## 07 <!-- 已完成，基本认定完成了全部的任务 ZCode 正在做 --> 做好生产环境的代码评测
 
 在 openspec 任务 `migrate-superpowers-docs-to-openspec-longtask` 内，我们的阶段七现在终于快到完成阶段了。
 
@@ -309,6 +309,7 @@ apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个
 - subagent-driven-development 我们的任务非常艰巨，不要什么工作都交给主代理完成，你应该大批量的新建子代理，用 agent team 的形式来完成你的任务。
 - neon-postgres 本仓库内的项目级别技能，用这个技能指导你完成 neon 数据库的操作。
 - `.claude\skills` 目录内其他的 openspec 技能。我们要遵循 openspec 规范来完成任务。
+- .claude\skills\neon-db-query neon 数据库查询技能
 - 其他 superpower 系列的技能。
 
 #### 触发生产环境更新
@@ -335,6 +336,8 @@ apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个
 
 1. 接口在 admin 或者是 app 内完成调用。
 2. 接口对应的 neon 数据库能够完成数据库表的真实操作。
+3. 你必须用谷歌浏览器 MCP，访问的每一个 admin 和 app 项目的具体前端路由页面，点击业务按钮，填写表单，触发接口请求。必须亲自模拟人类在浏览器的真实操作，来完成生产环境级别的功能测试！
+4. 然后用 neon MCP，去检查 neon 数据库的写表，确保你的操作真实的实现了 neon 数据库的写表行为。
 
 #### 有可能出现的问题
 
@@ -342,3 +345,41 @@ apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个
 
 1. 接口出现跨域问题，无法请求。
 2. 接口出现缺漏，有部分模块没有补全必要的接口，功能本身不闭环。
+
+---
+
+我觉得你的生产环境验证很不全面！你根本就没有在 api 项目内，列举全部要测试的接口，你只是测试了很少数的接口，大部分接口你都没有完成测试，也没有在谷歌浏览器 MCP 内完成真实的测试
+你的做法太偷懒了！你的测试非常不全面！
+你应该先扫描清楚现在 api 项目内，有多少需要在 admin 和 app 项目内，用浏览器真实完成测试的内容。然后设计清晰明确的任务清单，在 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 内把全部要测试的内容都列举清楚，路由页面，以及 api 接口路由的映射，neon 数据库的验证，都要体现在 task.md 任务清单内，这个任务清单必须非常详细清晰！
+逐路由，逐 api 的列举清楚全部的 api！不要偷懒！
+
+---
+
+你必须用谷歌浏览器 MCP，访问的每一个 admin 和 app 项目的具体前端路由页面，点击业务按钮，填写表单，触发接口请求。必须亲自模拟人类在浏览器的真实操作，来完成生产环境级别的功能测试！
+然后用 neon MCP，去检查 neon 数据库的写表，确保你的操作真实的实现了 neon 数据库的写表行为。
+
+## 08 <!-- TODO: ZCode 正在做 --> openspec 长任务的一系列文档组织与记忆问题
+
+为什么你会出现这种乱新建文档的错误呢？为什么你当初在执行 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 长任务时，完全没有一点任何标准，就胡乱的去新建文档呢？导致现在还要单独给你整理文档？是不是你当初执行 `do-long-task` 技能时就没有给你约束清楚怎么在具体的 openspec 工作目录内新建阶段性过程文档？你完全没有一点规范么？
+在 `docs\reports` 目录给我新建一个经验教训！确保你以后执行 `do-long-task` 技能时，不要再出现这样的胡乱新建文档的情况了！
+安排一个独立的子代理，完成经验教训的编写。
+
+---
+
+<!-- TODO: -->
+
+你在执行这一些列长任务时，出现了太多问题了！
+
+1. 你没有深刻的按照 openspec 的一系列规范来验证文档工件。
+   - 我们有很多 openspec 的技能指导你完成任务的，你为什么不去看 .claude\skills .codex\skills .agents\skills 目录内全部关于 openspec 的执行规范呢？这导致你每次执行的时候，都不严格按照 openspec 的规范来严格落地。总是出现缺斤少两，偷懒的任务。一个大量的，艰巨的重构与排查任务，你就出现了不严格拓展增长 task.md 任务清单，并且你也不认真落地执行，导致你每次都缺斤少两。是不是 `do-long-task` 技能没指导清楚你的执行方式啊？
+2. 你的一系列长任务都不去认真阅读，并动态地迭代 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\design.md` 和 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\proposal.md` 文档，导致我每次执行长任务时，你总是记不得这些必要的内容。
+3. 你的一系列长任务执行的时候，没有认真的看 openspec 历史沉淀的 spec 规范。
+   - openspec\changes\migrate-superpowers-docs-to-openspec-longtask\specs 目录内有好多现成的，严格的标准。你在执行的时候，都不认真去看，导致你总是去错过必要的执行规范。你根本就不看严格的 spec 规范！
+4. 长任务有失偏颇时，你不知道要迭代更新那些文档：
+   - 你竟然不知道要及时的更新 openspec 任务目录下的 `design.md` `proposal.md` `tasks.md` 、openspec 任务的 spec 规格文件来更新迭代标准，以及及时的拓展长任务的 `tasks.md` 任务进度表。
+5. 用 `do-long-task` 全局技能生成的 goal 提示词，是不是太简单了，才导致你执行的时候经常出现失忆啊？你根本就不看很多 openspec 的文件啊？
+
+你的执行结果太差了，是不是 `do-long-task` 全局技能不成熟不完善啊？才导致你执行的时候总是出错、犯错、失忆、偷懒、欺骗啊？
+
+我要求你用 memorix 全面的检查 `migrate-superpowers-docs-to-openspec-longtask` 这个一系列长任务的执行历史记忆，把必要的决策，经验教训都统一整合。深度的编写一个很长很详细的报告文档，系统性给出全面的深度的自我反省翻盘报告，和经验教训文档。
+在 `docs\reports` 目录内编写报告。

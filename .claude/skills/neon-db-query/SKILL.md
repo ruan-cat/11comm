@@ -7,6 +7,22 @@ description: 项目数据库表清单与批量查询工具。提供项目中所�
 
 > 此技能整合并扩展了原有的 `neon-db-list` 功能，不仅提供数据库表清单，还支持批量查询表结构。
 
+## ⚠️ 重要：Neon MCP 连接已验证（2026-07-10）
+
+| 属性             | 值                                                         |
+| ---------------- | ---------------------------------------------------------- |
+| **Project ID**   | `snowy-base-74751932`                                      |
+| **Console 地址** | https://console.neon.tech/app/projects/snowy-base-74751932 |
+| **项目名称**     | neon-11comm-admin                                          |
+| **分支**         | main (ep-rough-cherry-a1hm6zx7)                            |
+| **连接状态**     | ✅ 已验证可用                                              |
+
+**连接验证结果**：
+
+- 表数量：100+ 张
+- 关键表：ct_contracts (5 条）, rp_repair_orders (3 条）, sm_staff (5 条）
+- 数据库连接：`neondb`
+
 ## 功能概述
 
 1. **数据库表清单** - 列出项目中所有数据库表
@@ -40,7 +56,7 @@ description: 项目数据库表清单与批量查询工具。提供项目中所�
 - [Repairs (rp)](#repairs-rp)
 - [Report (rpt)](#report-rpt)
 - [Setting (sm)](#setting-sm)
-- [Auth (系统表)](#auth-系统表)
+- [Auth （系统表）](#auth-系统表)
 
 ---
 
@@ -380,7 +396,7 @@ mcp__Neon__describe_table_schema {tableName: "sm_staff", projectId: "snowy-base-
 | sm_change_password_records  | 改密记录   |
 | sm_community_configurations | 小区配置   |
 
-### Auth (系统表)
+### Auth （系统表）
 
 | 表名              | 说明     |
 | ----------------- | -------- |

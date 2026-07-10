@@ -150,6 +150,33 @@ pnpm -F @01s-11comm/api db:seed          # 正式执行
 
 Phase7 统一 Nitro API 的接口清单见：[OpenSpec 变更 `migrate-superpowers-docs-to-openspec-longtask`](../../openspec/changes/migrate-superpowers-docs-to-openspec-longtask/)
 
+## 数据库连接
+
+### Neon 数据库项目
+
+| 属性                 | 值                                                         |
+| :------------------- | :--------------------------------------------------------- |
+| **Console 地址**     | https://console.neon.tech/app/projects/snowy-base-74751932 |
+| **数据库名称**       | neondb（默认）                                             |
+| **连接字符串**       | 通过环境变量 `DATABASE_URL` 获取                           |
+| **Neon MCP 项目 ID** | `snowy-base-74751932`（用于 MCP 工具配置）                 |
+
+### 环境变量配置
+
+生产环境在 Vercel 项目设置中配置：
+
+- `DATABASE_URL` - Neon 数据库连接字符串
+
+本地开发通过 `.env.local` 配置：
+
+```bash
+DATABASE_URL="postgresql://user:password@ep-snowy-base-74751932.us-east-2.aws.neon.tech/neondb?sslmode=require"
+```
+
+### Neon MCP 连接
+
+在 ZCode MCP 配置中使用项目 ID `snowy-base-74751932` 连接到 Neon 数据库。
+
 ## 健康检查
 
 ```bash
