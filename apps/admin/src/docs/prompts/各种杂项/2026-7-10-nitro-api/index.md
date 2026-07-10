@@ -271,7 +271,7 @@ admin 项目能不能不使用 vite-plugin-vercel 插件？因为 .vercel/output
 apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个章节的内容，很多东西讲的不对。
 严格看看 `🐞 fix(turbo,config,package.json,admin)!: 修复admin项目在vercel部署失败的故障，避免强依赖具体的vercel.json文件。` 这个 git commit 提交的做法，认真的根据这个具体的提交写法和修复内容，去重写，改写`apps\admin\README.md`文档的部署部分，把东西写对！
 
-## 07 <!-- TODO: ZCode正在做 --> 做好生产环境的代码评测
+## 07 <!-- TODO: claude code 正在做 --> 做好生产环境的代码评测
 
 在 openspec 任务 `migrate-superpowers-docs-to-openspec-longtask` 内，我们的阶段七现在终于快到完成阶段了。
 
@@ -295,6 +295,10 @@ apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个
 - `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 目录全部的文档。
 - `.claude\skills\fix-bug\record-bug-fix-memory` 目录内全部的经验教训。
 - `openspec\specs` 任务执行规范。
+
+#### 根据 api 接口路由映射，设计任务清单，并 task.md 任务进度文档
+
+你应该先把全部 nitro 接口的 url 地址列举出来，然后设定一个联调测试的明确计划清单。先在 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask\tasks.md` 内列举出全部需要在浏览器内正式测试的接口，再开始按照计划逐步去浏览器完成清晰的验证。避免你出现严重的偷懒情况。按照 openspec 的技能指导规范来完成任务清单的编写。
 
 #### 本任务高度相关的 skills
 
