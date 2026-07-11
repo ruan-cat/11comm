@@ -358,7 +358,7 @@ apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个
 你必须用谷歌浏览器 MCP，访问的每一个 admin 和 app 项目的具体前端路由页面，点击业务按钮，填写表单，触发接口请求。必须亲自模拟人类在浏览器的真实操作，来完成生产环境级别的功能测试！
 然后用 neon MCP，去检查 neon 数据库的写表，确保你的操作真实的实现了 neon 数据库的写表行为。
 
-## 08 <!-- TODO: ZCode 正在做 --> openspec 长任务的一系列文档组织与记忆问题
+## 08 <!-- 已完成； ZCode 正在做 --> openspec 长任务的一系列文档组织与记忆问题
 
 为什么你会出现这种乱新建文档的错误呢？为什么你当初在执行 `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 长任务时，完全没有一点任何标准，就胡乱的去新建文档呢？导致现在还要单独给你整理文档？是不是你当初执行 `do-long-task` 技能时就没有给你约束清楚怎么在具体的 openspec 工作目录内新建阶段性过程文档？你完全没有一点规范么？
 在 `docs\reports` 目录给我新建一个经验教训！确保你以后执行 `do-long-task` 技能时，不要再出现这样的胡乱新建文档的情况了！
@@ -366,7 +366,7 @@ apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个
 
 ---
 
-<!-- TODO: 已经在ZCode内记录了全新的 goal ，下一次执行时直接点击继续按钮即可 -->
+<!-- 已完成； 已经在ZCode内记录了全新的 goal ，下一次执行时直接点击继续按钮即可；已点击，正在做； -->
 
 你在执行这一些列长任务时，出现了太多问题了！
 
@@ -383,3 +383,5 @@ apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个
 
 我要求你用 memorix 全面的检查 `migrate-superpowers-docs-to-openspec-longtask` 这个一系列长任务的执行历史记忆，把必要的决策，经验教训都统一整合。深度的编写一个很长很详细的报告文档，系统性给出全面的深度的自我反省翻盘报告，和经验教训文档。
 在 `docs\reports` 目录内编写报告。
+
+<!-- 具体报告： apps\admin\src\docs\reports\2026-07-11-openspec-do-longtask-self-reflection-report.md -->
