@@ -1,6 +1,6 @@
 # 代理进度
 
-2026-07-09 §7D 生产门禁解除与 R2 upload live drill 完成：dev→main PR 合并后，CI 全部通过（App 专项 CI、自写的vercel部署工具、发布 Release 三件套），Vercel 三个项目触发部署（app-h5 和 nitro-server READY，admin ERROR 但 CI deploy step 通过）。本轮执行 4 项 §7D 生产验证：① admin production Network（8 核心端点 HTTP 200，含 R2 upload/init）；② app production Network（`/app/staff/STAFF_001` HTTP 200，`/app/purchaseApply.auditApplyOrder` HTTP 409 Phase7 guard blocked）；③ shadow-off drill（admin/app 均配置 standalone 模式直连 `apps/api`）；④ R2 upload live drill（完整链路：init sessionId 生成 → sign-part pre-signed URL → PUT to R2 HTTP 200 → public URL 404 pre-existing 配置问题）。所有 §7D 验证 checkbox 关闭。剩余 1 项 BLOCKED：task1330 `apps/admin/server/**` 最终物理删除（需用户授权）。证据见 `.tmp/phase7-prod-browser/2026-07-09-prod-verification.md`。
+2026-07-09 §7D 生产门禁解除与 R2 upload live drill 完成：dev→main PR 合并后，CI 全部通过（App 专项 CI、自写的 vercel 部署工具、发布 Release 三件套），Vercel 三个项目触发部署（app-h5 和 nitro-server READY，admin ERROR 但 CI deploy step 通过）。本轮执行 4 项 §7D 生产验证：① admin production Network（8 核心端点 HTTP 200，含 R2 upload/init）；② app production Network（`/app/staff/STAFF_001` HTTP 200，`/app/purchaseApply.auditApplyOrder` HTTP 409 Phase7 guard blocked）；③ shadow-off drill（admin/app 均配置 standalone 模式直连 `apps/api`）；④ R2 upload live drill（完整链路：init sessionId 生成 → sign-part pre-signed URL → PUT to R2 HTTP 200 → public URL 404 pre-existing 配置问题）。所有 §7D 验证 checkbox 关闭。剩余 1 项 BLOCKED：task1330 `apps/admin/server/**` 最终物理删除（需用户授权）。证据见 `.tmp/phase7-prod-browser/2026-07-09-prod-verification.md`。
 
 2026-07-08 app §7B task1172/task1173 关闭：`apps/app/server` 目录已物理删除，task1172 改为现有工作区引用扫描，task1173 改为确认删除事实与回滚路径。`apps/app/server` 无活动依赖；`pnpm -F @01s-11comm/app exec vitest run src/tests/runtime-base/runtime-base-url.test.ts` 通过，117 tests passed；`pnpm -F @01s-11comm/app run type-check` 通过；`pnpm -F @01s-11comm/app run build:h5:prod` 在 Windows 本地失败（ESM loader 绝对路径 `d:` 协议不支持），记录为环境阻塞，不阻塞本任务关闭。`tasks.md` 中 task1172 和 task1173 已标记完成；`retirement-evidence-matrix.md` 中 `apps/app/server` 行已标记为 `delete-candidate-completed`。关闭报告见 `apps/admin/src/docs/reports/2026-07-08-app-server-retirement-close-report.md`。
 
@@ -636,4 +636,3 @@
   - §7D 生产 Network/shadow-off：🚫 BLOCKED（需 dev→main + CI + Vercel 部署）
   - §7E 最终删除 `apps/admin/server`：🚫 BLOCKED（同上）
   - git commit/push：⏸️ 暂停（等待用户授权）
-
