@@ -1,5 +1,5 @@
-<!-- TODO: 长任务 未开始
-
+<!--
+	已经严重过时，不予执行
 	先完成旧 app monorepo API 迁移总设计；该设计已迁移至稳定索引 docs\superpowers\phase7-openspec-migration-index.md，canonical OpenSpec change 为 openspec\changes\migrate-superpowers-docs-to-openspec-longtask\
  -->
 
