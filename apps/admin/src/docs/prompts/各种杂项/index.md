@@ -467,3 +467,21 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 - docs\superpowers\specs\2026-04-25-11comm-admin-app-support-feature-expansion-design.md
 
 验证该任务清单是否出现内容上的过时，是否需要大幅度的重构，我们的项目是不是本身就完成大部分功能了？还是说需要尽快补全很多接口？以便确保功能可用？编写报告说明这个计划文档的情况，并给出你的改进建议。
+
+## 041 <!-- TODO: --> 编写兼职接单版本的简历
+
+你的任务是去 `D:\code\ruan-cat\resume\简历\阮中楠-前端开发-4年经验-AI编写的兼职接单版本.md` 内，结合我们项目的具体情况，模仿该简历文档的特点，编写合适的简历部分。你只负责编写，替换 `智慧社区项目 admin 管理后台项目` 和 `智慧社区项目 app uniapp嵌入式H5项目` 部分。预期生成两个项目的简历信息。
+
+### 参考的简历编写技能
+
+`D:\code\ruan-cat\resume\.agents\skills` 目录内全部的编写简历的文档。
+
+### 全面探索本项目的 admin 和 app
+
+1. 全面探索本项目的 admin 和 app 项目，从项目内提炼出大量的内容。
+2. 重点复用 apps\admin\src\docs\resume 目录内的简历面试谈资，做成我的遇到的挑战与技术思考沉淀。
+3. 重点采纳 `.claude\skills\fix-bug\record-bug-fix-memory` 目录内的全部经验教训，做成我的遇到的挑战与技术思考沉淀。
+
+### 注意事项
+
+1. 我们的核心交付结果是 `D:\code\ruan-cat\resume\简历\阮中楠-前端开发-4年经验-AI编写的兼职接单版本.md` 的简历，做好文本替换。不要交付其他的产物。
