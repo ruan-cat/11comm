@@ -385,5 +385,3 @@ apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个
 在 `docs\reports` 目录内编写报告。
 
 <!-- 具体报告： apps\admin\src\docs\reports\2026-07-11-openspec-do-longtask-self-reflection-report.md -->
-
-## 09 <!-- TODO: -->
