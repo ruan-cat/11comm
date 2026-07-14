@@ -1,6 +1,6 @@
 import type { CustomRequestOptions } from '@/http/types'
 import { prependRuntimeBaseUrl } from '@/http/runtime-base'
-import { useUserStore } from '@/store'
+import { useTokenStore } from '@/store/token'
 import { platform } from '@/utils/platform'
 import { stringifyQuery } from './tools/queryString'
 
@@ -27,8 +27,8 @@ const httpInterceptor = {
       ...options.header,
     }
 
-    const userStore = useUserStore()
-    const { token } = userStore.userInfo as unknown as IUserToken
+    const tokenStore = useTokenStore()
+    const token = tokenStore.getValidToken
     if (token) {
       options.header.Authorization = `Bearer ${token}`
     }

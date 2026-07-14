@@ -11,7 +11,7 @@
 import type { IFooItem } from '@/api/foo'
 import { getFooAPI } from '@/api/foo'
 
-const recommendUrl = ref('http://laf.run/signup?code=ohaOgIX')
+const recommendUrl = ref('https://01s-11-server.ruan-cat.com')
 
 // const initialData = {
 //   name: 'initialData',

@@ -128,9 +128,9 @@ export function getEnvBaseUrl() {
   }
 
   // # 有些同学可能需要在微信小程序里面根据 develop、trial、release 分别设置上传地址，参考代码如下。
-  const VITE_SERVER_BASEURL__WEIXIN_DEVELOP = 'https://ukw0y1.laf.run'
-  const VITE_SERVER_BASEURL__WEIXIN_TRIAL = 'https://ukw0y1.laf.run'
-  const VITE_SERVER_BASEURL__WEIXIN_RELEASE = 'https://ukw0y1.laf.run'
+  const VITE_SERVER_BASEURL__WEIXIN_DEVELOP = 'https://01s-11-server.ruan-cat.com'
+  const VITE_SERVER_BASEURL__WEIXIN_TRIAL = 'https://01s-11-server.ruan-cat.com'
+  const VITE_SERVER_BASEURL__WEIXIN_RELEASE = 'https://01s-11-server.ruan-cat.com'
 
   // 微信小程序端环境区分
   if (isMpWeixin) {
@@ -166,9 +166,9 @@ export function getEnvBaseUploadUrl() {
     return baseUploadUrl
   }
 
-  const VITE_UPLOAD_BASEURL__WEIXIN_DEVELOP = 'https://ukw0y1.laf.run/upload'
-  const VITE_UPLOAD_BASEURL__WEIXIN_TRIAL = 'https://ukw0y1.laf.run/upload'
-  const VITE_UPLOAD_BASEURL__WEIXIN_RELEASE = 'https://ukw0y1.laf.run/upload'
+  const VITE_UPLOAD_BASEURL__WEIXIN_DEVELOP = 'https://01s-11-server.ruan-cat.com/upload'
+  const VITE_UPLOAD_BASEURL__WEIXIN_TRIAL = 'https://01s-11-server.ruan-cat.com/upload'
+  const VITE_UPLOAD_BASEURL__WEIXIN_RELEASE = 'https://01s-11-server.ruan-cat.com/upload'
 
   // 微信小程序端环境区分
   if (isMpWeixin) {

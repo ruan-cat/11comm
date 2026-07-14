@@ -1,6 +1,6 @@
-import type { IDoubleTokenRes } from '@/api/types/login'
 import type { CustomRequestOptions } from '@/http/types'
 import { nextTick } from 'vue'
+import { isDoubleTokenRes } from '@/api/types/login'
 import { LOGIN_PAGE } from '@/router/config'
 import { useTokenStore } from '@/store/token'
 import { isDoubleTokenMode } from '@/utils'
@@ -35,15 +35,22 @@ export function http<T>(options: CustomRequestOptions) {
             return reject(res)
           }
           /* -------- 无感刷新 token ----------- */
-          const { refreshToken } = (tokenStore.tokenInfo as IDoubleTokenRes) || {}
+          const refreshToken = isDoubleTokenRes(tokenStore.tokenInfo)
+            ? tokenStore.tokenInfo.refreshToken
+            : ''
+          if (!refreshToken) {
+            await tokenStore.clearLocalAuthState()
+            uni.navigateTo({ url: LOGIN_PAGE })
+            return reject(res)
+          }
           // token 失效的，且有刷新 token 的，才放到请求队列里
-          if ((res.statusCode === 401 || resData.code === 401) && refreshToken) {
+          if (res.statusCode === 401 || resData.code === 401) {
             taskQueue.push(() => {
               resolve(http<T>(options))
             })
           }
           // 如果有 refreshToken 且未在刷新中，发起刷新 token 请求
-          if ((res.statusCode === 401 || resData.code === 401) && refreshToken && !refreshing) {
+          if ((res.statusCode === 401 || resData.code === 401) && !refreshing) {
             refreshing = true
             try {
               // 发起刷新 token 请求（使用 store 的 refreshToken 方法）
@@ -91,7 +98,9 @@ export function http<T>(options: CustomRequestOptions) {
           !options.hideErrorToast
           && uni.showToast({
             icon: 'none',
-            title: (res.data as IResData<T>).msg || '请求错误',
+            title: (res.data as IResData<T> & { message?: string }).message
+              || (res.data as IResData<T>).msg
+              || '请求错误',
           })
           reject(res)
         }

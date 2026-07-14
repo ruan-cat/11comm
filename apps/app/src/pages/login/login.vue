@@ -37,7 +37,7 @@ function doLogin() {
     userId: 123456,
     username: 'abc123456',
     nickname: '菲鸽',
-    avatar: 'https://oss.laf.run/ukw0y1-site/avatar.jpg',
+    avatar: '/static/images/default-avatar.png',
   })
   console.log(redirectUrl.value)
   let path = redirectUrl.value
