@@ -8,11 +8,14 @@ shamefullyHoist: true
 allowBuilds:
   "@logicflow/core": true
   "@parcel/watcher": true
+  "@swc/core": true
   "@uni-helper/unocss-preset-uni": true
   core-js: true
   core-js-pure: true
   es5-ext: true
   esbuild: true
+  less: true
+  protobufjs: true
   simple-git-hooks: true
   typeit: true
   vue-demi: true
@@ -32,6 +35,7 @@ allowedDeprecatedVersions:
   w3c-hr-time: "*"
 
 onlyBuiltDependencies:
+  - "@swc/core"
   - "@uni-helper/unocss-preset-uni"
   - "@parcel/watcher"
   - "@tailwindcss/oxide"
@@ -40,6 +44,7 @@ onlyBuiltDependencies:
   - es5-ext
   - esbuild
   - less
+  - protobufjs
   - simple-git-hooks
   - typeit
   - vue-demi
