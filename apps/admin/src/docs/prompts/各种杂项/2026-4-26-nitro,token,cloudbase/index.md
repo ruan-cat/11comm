@@ -2,6 +2,31 @@
 
 # Nitro 主导微信小程序登录、CloudBase 边界与文件域名设计
 
+## 长任务提示词
+
+```markdown
+/goal 持续执行 OpenSpec change：`openspec/changes/deploy-app-wechat-cloud-mini-program`。
+
+目标：只以 `openspec/changes/deploy-app-wechat-cloud-mini-program/tasks.md` 为唯一任务源，完成全部未完成 checkbox，直到实现、验证、证据与最终摘要都完成。以实际工件为准：完成 `apps/app` 微信小程序生产构建、CloudBase 关联、微信后台合法域名、preview/upload、体验版真机、审核发布与回滚证据；微信登录、`code2Session`、token、refresh/logout/me、scoped auth 和受保护 API 统一由 `apps/api` Nitro 承担。
+
+开始前读取：do-long-task 与 `references/codex-goal-prompt.md`；项目级 OpenSpec skills；必要的微信云小程序、Nitro、CloudBase skills；当前 change 的 `proposal.md`、`design.md`、`specs/**/spec.md`、`tasks.md`、`agent-progress.md`、`agent-findings.md`。缺 progress/findings 先补齐。
+
+执行纪律：
+
+- 每轮只推进一个 task/checkpoint；动手前确认验收、范围和验证命令。
+- 发现遗漏先补 `tasks.md`；改变用户可见行为先同步 `specs`；改变技术路线或验收策略先同步 `design.md`；同步后运行 OpenSpec 校验。
+- 过程报告、截图、日志、调研和验证证据不得散放在 change 根目录，只能放入 `tasks.md` 或规范指定的日期化证据文件。
+- `agent-progress.md` 只记 checkpoint、文件变化、验证摘要和下一步；`agent-findings.md` 只记风险、失败索引、不可重复路径和阻塞入口。
+- 禁止全局安装；小程序端只提交 `{ code: res.code }`；`WECHAT_MP_SECRET`、`session_key`、token、上传私钥不得进入前端、日志、构建产物或报告。
+- CloudBase 只做云环境关联、预览/上传/发布辅助、AI/MCP/运维工具，禁止承载 login 云函数、openid/session_key 获取、主 API、主数据库或主文件存储。
+- request 合法域名必须从 `apps/api/package.json` 的 `homepage` 读取/核对。不新增或恢复 `vercel.json`。
+- 验证按当前 task 执行：按需运行 `pnpm -F @01s-11comm/app build:mp:prod`、`pnpm -F @01s-11comm/api typecheck/test/build:node`、secret 扫描、preview/upload、微信后台域名、体验版真机、审核发布。外部证据不能假完成；验证记录后才勾选 `[x]`。
+
+停止条件：全部任务完成并验证通过；或遇到账号/权限/密钥/微信后台/CloudBase MCP 不可用、破坏性风险、需求冲突、连续 3 次同类失败时停止，写 BLOCKED 摘要、失败证据和下一步所需用户输入。
+```
+
+## 设计
+
 目前先编写清楚各种技术实现边界，和各种可能的坑点，划定清楚各个技术栈工具的功能职责。
 
 初步的设计如下：
