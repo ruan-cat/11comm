@@ -198,6 +198,12 @@ metadata:
 - 适用场景：Windows 本地执行 `pnpm -F @01s-11comm/app build:h5:prod` 时，Node ESM loader 把 `D:\...` 盘符路径识别为不支持的 URL scheme。
 - 关键约束：`build:h5:prod` 必须保留 Windows-only `node --import ./scripts/register-window-path-loader.js` 入口，修改后同时验证 `build:h5:prod` 和 `build:vercel`。
 
+### `apps/app` 微信小程序生产构建的 Windows loader 与 Vue shared hoist 事故（2026-07-14）
+
+- 详细案例：`2026-07-14-app-mp-weixin-build-loader-vue-shared-hoist.md`
+- 适用场景：Windows 本地执行 `pnpm -F @01s-11comm/app build:mp:prod` 时，先出现 `Received protocol 'd:'`，修复入口后又出现 `looseToNumber` 不是从 `@vue/shared@3.0.5` 导出的错误。
+- 关键约束：`build:mp:prod` 必须复用 Windows-only loader 入口；`miniprogram-ci` 引入旧 `@vue/shared@3.0.5` 后，要确保 app 构建上下文解析到 DCloud 小程序运行时需要的 `@vue/shared@3.4.21`。
+
 ### `apps/admin/server` 的 drizzle-orm 多实例类型冲突事故（2026-05-26）
 
 - 详细案例：`2026-05-26-drizzle-orm-multi-instance-type-conflict.md`

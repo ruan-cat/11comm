@@ -144,7 +144,11 @@ pnpm -F @01s-11comm/api db:seed          # 正式执行
 - 入参通过 `readValidatedBody` + Zod Schema 校验
 - Insert 操作使用 `as unknown as NewX` 类型回填
 - 错误响应包含 `error` 和 `stack` 字段
-- **不做任何鉴权**（所有接口公开访问）
+- 普通业务接口默认公开访问；在明确设计的 scoped auth allowlist 范围内允许局部鉴权
+- scoped auth 允许覆盖 admin 登录、小程序登录、Bearer access token、refresh token、logout、me、受保护业务 API，以及 `actor` / `role` / `tenant` 上下文
+- 禁止无设计地给全部接口套全局鉴权；本轮小程序登录主链路由统一 Nitro API 承接，包含微信 `code2Session`、token 签发、刷新和退出登录
+- CloudBase 只作为小程序云开发环境关联、发布、AI/MCP/运维工具层，不承载 login 云函数、不获取 openid、不作为主业务 API、主数据库或主文件存储
+- 本轮不采用 Neon Auth 作为小程序登录主方案；禁止将 `WECHAT_MP_SECRET` 或微信 `session_key` 下发前端或写入日志
 
 ## 接口清单
 

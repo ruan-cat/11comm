@@ -162,12 +162,17 @@ Phase2 MUST 被解释为最小可运行 `apps/api` shadow service 加 fee/paymen
 
 ### Requirement: Nitro runtime governance
 
-统一 `apps/api` runtime MUST 使用 Nitro v3/H3 规范：H3 API 从 `nitro/h3` 导入，禁止直接从 `h3` 导入；禁止新增 JWT、Token、Neon Auth 或任何鉴权中间件；配置通过 runtimeConfig/env 管理；不得在模块顶层创建 Neon/Drizzle 连接；CORS、日志、监控、错误追踪、admin/app API base URL 和 fallback 策略必须作为 runtime governance 证据记录。
+统一 `apps/api` runtime MUST 使用 Nitro v3/H3 规范：H3 API 从 `nitro/h3` 导入，禁止直接从 `h3` 导入；禁止无设计地给所有接口套全局鉴权；允许在 scoped auth allowlist 范围内实现 admin 登录、小程序登录、Bearer access token、refresh token、logout、me、受保护业务 API，以及 `actor` / `role` / `tenant` 上下文；本轮不以 Neon Auth 承接小程序登录主方案；配置通过 runtimeConfig/env 管理；不得在模块顶层创建 Neon/Drizzle 连接；CORS、日志、监控、错误追踪、admin/app API base URL、auth allowlist 和 fallback 策略必须作为 runtime governance 证据记录。
 
 #### Scenario: 新增 apps/api handler
 
 - **WHEN** 后续代理新增或修改 `apps/api` route handler
-- **THEN** handler 必须只做参数读取、运行时组装、错误包装和响应输出，业务逻辑进入 service/repository/adapter，且不得新增鉴权
+- **THEN** handler 必须只做参数读取、运行时组装、错误包装和响应输出，业务逻辑进入 service/repository/adapter；普通业务接口默认公开，只有进入 scoped auth allowlist 的 handler 才能读取 `event.context.actor` 并执行受保护 API 的 actor/role/tenant 检查
+
+#### Scenario: 小程序登录与 scoped auth 边界
+
+- **WHEN** 后续代理实现微信小程序登录、`code2Session`、token 签发、刷新、logout、me 或受保护业务 API
+- **THEN** 这些能力必须落在统一 `apps/api` Nitro 服务内，使用 scoped auth allowlist 管理保护范围；CloudBase 只能作为小程序云开发环境关联、发布、AI/MCP/运维工具层，不承载 login 云函数、不获取 openid、不作为主业务 API、主数据库或主文件存储；`WECHAT_MP_SECRET` 和微信 `session_key` 不得下发前端或写入日志
 
 #### Scenario: 修改运行时配置
 

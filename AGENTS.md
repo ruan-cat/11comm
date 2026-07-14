@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-此文件为 Claude Code (claude.ai/code) 在此代码仓库中工作时提供指导。
+此文件为 Claude Code （claude.ai/code） 在此代码仓库中工作时提供指导。
 
 ## 本项目的技能表
 
@@ -43,7 +43,7 @@
   - 用途：使用 Nitro v3、H3 和 Drizzle ORM 编写服务端 API。
   - 触发时机：开发 CRUD 接口、迁移 Mock 数据到 Neon、修复后端接口逻辑时使用。
   - 参考作用：约束 H3 导入、响应类型、时间字段、数据库连接和常见陷阱。
-  - 约束：本项目 Nitro 接口不做鉴权；H3 函数必须从 `"nitro/h3"` 导入。
+  - 约束：Nitro 允许在明确设计边界内局部恢复鉴权能力；H3 函数必须从 `"nitro/h3"` 导入。
 - `openspec-apply-change`
   - 路径：`.claude/skills/openspec-apply-change/SKILL.md`
   - 用途：实施 OpenSpec 变更中的 tasks。
@@ -149,7 +149,7 @@
 
 在任何沟通下，这些术语都生效。
 
-### 2.1. 核心开发技能 (Core Development Skills)
+### 2.1. 核心开发技能 （Core Development Skills）
 
 - `code-style` ： `.claude\skills\code-style\SKILL.md` `代码风格技能` ，用于说明代码编写规范的技能。
 - `fix-type-error` ：`.claude\skills\fix-type-error\SKILL.md` `修复类型报错技能` ，专门用于修复 TypeScript 类型错误。
@@ -164,7 +164,7 @@
 
 - `project-migration-guide` ：`.claude\skills\project-migration-guide\SKILL.md` `项目迁移指南技能` ，包含影子迁移（Shadow Migration）等大规模架构迁移策略。
 
-### 2.2. 数据库与质量保障技能 (Database & Quality)
+### 2.2. 数据库与质量保障技能 （Database & Quality）
 
 - `schema-and-seed-guardian` ：`.claude\skills\schema-and-seed-guardian\SKILL.md` `Schema与Seed守护技能` ，用于预防数据库 schema 定义和 Direct Seed 模块编写中的常见错误。
 
@@ -174,7 +174,7 @@
 
 - `neon-postgres-zh` ：`.claude\skills\neon-postgres-zh\SKILL.md` `Neon Postgres中文文档技能` ，Neon PostgreSQL 数据库服务的中文参考文档。
 
-### 2.3. OpenSpec 工作流技能 (OpenSpec Workflow Skills)
+### 2.3. OpenSpec 工作流技能 （OpenSpec Workflow Skills）
 
 OpenSpec 是本项目用于管理大型任务和变更的工作流系统。以下技能用于支持 OpenSpec 工作流：
 
@@ -189,11 +189,11 @@ OpenSpec 是本项目用于管理大型任务和变更的工作流系统。以�
 - `openspec-bulk-archive-change` ：批量归档多个变更
 - `openspec-onboard` ：OpenSpec 工作流引导教程
 
-### 2.4. 项目术语 (Project Terminology)
+### 2.4. 项目术语 （Project Terminology）
 
 - 后台项目： 即 `apps\admin\package.json` 项目。又称为 `admin后台项目` 。
 - 类型项目： 即 `apps\type\package.json` 项目。又称为 `type类型项目` 。
-  - **[NEW DEFINITION]** 正在转型为**同构运行时库 (Isomorphic Runtime Library)**，包含 Zod Schemas + Drizzle Tables，提供运行时验证。前后端共享同一 Schema 作为 Single Source of Truth。
+  - **[NEW DEFINITION]** 正在转型为**同构运行时库 （Isomorphic Runtime Library）**，包含 Zod Schemas + Drizzle Tables，提供运行时验证。前后端共享同一 Schema 作为 Single Source of Truth。
 - 客户端代码： 即 后台项目的 `apps\admin\src` 目录，这个目录下的全部代码，都是`客户端代码`。
 - 服务端代码： 即 后台项目的 `apps\admin\server` 目录，这个目录下的全部代码，都是`服务端代码`。
 
@@ -223,7 +223,7 @@ OpenSpec 是本项目用于管理大型任务和变更的工作流系统。以�
 
 > 详见 `type-project-organization` 技能（`.claude/skills/type-project-organization/SKILL.md`）。
 
-> **[ARCHITECTURE TRANSFORMATION NOTICE]** `apps/type` 正在转型为**同构运行时库 (Isomorphic Runtime Library)**，包含 Zod Schemas + Drizzle Tables。Full Stack Type Transformation 完成前，§4.1 的"禁止修改"规则对 Schema 迁移活动豁免。
+> **[ARCHITECTURE TRANSFORMATION NOTICE]** `apps/type` 正在转型为**同构运行时库 （Isomorphic Runtime Library）**，包含 Zod Schemas + Drizzle Tables。Full Stack Type Transformation 完成前，§4.1 的"禁止修改"规则对 Schema 迁移活动豁免。
 
 核心规则（**必须遵守**）：
 
@@ -507,7 +507,7 @@ openspec validate {任务名称} --strict
 ### 10.2. Schema 文件位置规范
 
 - **正确位置**：`apps/type/src/business/{domain}/{module}/schema.ts`
-- **错误位置**：`apps/admin/server/db/schemas/` (已废弃，仅作临时过渡)
+- **错误位置**：`apps/admin/server/db/schemas/` （已废弃，仅作临时过渡）
 
 ### 10.3. 数据库变更维护清单
 
@@ -543,8 +543,8 @@ openspec validate {任务名称} --strict
 
 1. 使用 pnpm 进行包管理
 2. Turbo 处理构建编排
-3. 基于文件的路由 - 在 src/views/中创建.vue 文件用于新页面
-4. 使用 definePage()宏进行路由配置
+3. 基于文件的路由 - 在 src/views/中创建。vue 文件用于新页面
+4. 使用 definePage（）宏进行路由配置
 5. API 接口按业务模块组织
 6. 遵循现有组件模式（自定义组件使用 Re\*前缀）
 7. 使用组合式函数处理共享逻辑
@@ -586,14 +586,16 @@ openspec validate {任务名称} --strict
 
 这是使用全栈构建的库。用该库就能实现将 vite 项目变成全栈项目。以下是使用 nitro v3 开发服务端接口的的注意事项：
 
-#### 12.2.1. 本项目不做任何接口鉴权
+#### 12.2.1. Nitro 局部恢复鉴权能力与小程序登录边界
 
-> **[重要项目特性]** 本项目的 Nitro 接口**不做任何鉴权**。
+> **[重要项目决策]** 用户已确认采用 A 方案：微信小程序登录业务、微信 code2Session、token 签发、刷新、logout、me、受保护业务 API 均由统一 Nitro 接口服务承载。
 >
-> - **禁止**为 Nitro 接口添加 JWT 认证、Token 验证、Neon Auth 鉴权等任何鉴权逻辑。
-> - **禁止**引入 `@neondatabase/auth` 包。
-> - 所有接口均公开访问，无需登录或 Token。
-> - `server/middleware/`、`server/plugins/` 中**不应存在**任何鉴权中间件或插件。
+> - Nitro 允许局部恢复鉴权能力，但不是给全量接口无设计地套鉴权。允许范围包括 admin 登录、微信小程序登录、Bearer token/refresh token、actor/role/tenant 上下文、受保护业务 API。
+> - CloudBase 只作为微信小程序云开发环境关联、发布、AI/MCP/运维工具层，不承载 login 云函数，不获取 openid，不作为主业务 API、主数据库或主文件存储。
+> - **禁止**无设计全局鉴权；未列入受保护范围的普通接口不得顺手加登录态或 Token 校验。
+> - **禁止**把 `WECHAT_MP_SECRET`、`session_key` 下发前端或写入日志。
+> - **禁止**把 Neon Auth 作为本轮微信小程序登录主方案。
+> - **禁止**让 CloudBase 承载主业务后端。
 
 #### 12.2.2. 编写接口需要导入正确的模块
 

@@ -4,40 +4,63 @@ description: 使用 Nitro v3 框架和 H3 编写服务端 API 的技能。适用
 license: MIT
 ---
 
-# Nitro API 开发技能 (Nitro API Development)
+# Nitro API 开发技能 （Nitro API Development）
 
 本技能指导在 `apps/api/server` 目录下使用 **Nitro** 框架开发服务端 API。旧 `apps/admin/server` 仅作为 legacy source 或兼容参考，不再作为长期权威服务端与 DB 运维入口。
 
-## 1. 核心原则 (Core Principles)
+## 1. 核心原则 （Core Principles）
 
-1.  **框架 (Framework)**: 使用 **Nitro v3** 和 **H3** 事件处理器 (`defineHandler`)。
-2.  **数据库 (Database)**: 强制使用 **Drizzle ORM** 进行所有数据库交互。**严禁使用 Mock JSON 文件**。
-3.  **响应格式 (Response Format)**: 必须严格遵循 `JsonVO` 和 `PageDTO` 结构返回 `{ success, code, message, data }`。这两个类型**必须**从 `@01s-11comm/type` 导入。
-4.  **错误处理 (Error Handling)**: 所有 Handler **必须**使用 `try-catch` 包裹全部业务逻辑，catch 块返回标准化错误响应。
-5.  **无状态 (Stateless)**: 保持 API 处理器无状态，所有数据持久化必须通过数据库。
+1.  **框架 （Framework）**: 使用 **Nitro v3** 和 **H3** 事件处理器 (`defineHandler`)。
+2.  **数据库 （Database）**: 强制使用 **Drizzle ORM** 进行所有数据库交互。**严禁使用 Mock JSON 文件**。
+3.  **响应格式 （Response Format）**: 必须严格遵循 `JsonVO` 和 `PageDTO` 结构返回 `{ success, code, message, data }`。这两个类型**必须**从 `@01s-11comm/type` 导入。
+4.  **错误处理 （Error Handling）**: 所有 Handler **必须**使用 `try-catch` 包裹全部业务逻辑，catch 块返回标准化错误响应。
+5.  **无状态 （Stateless）**: 保持 API 处理器无状态，所有数据持久化必须通过数据库。
+6.  **鉴权边界 （Auth Boundary）**: Nitro 允许在明确设计边界内局部恢复鉴权能力，但禁止无设计全局鉴权。
 
-## 2. 开发工作流 (Development Workflow)
+### 1.1. 微信小程序登录与 CloudBase 边界
 
-1.  **定义路由 (Define Route)**: 在 `apps/api/server/routes/api/` 创建文件。文件路径即 API 路由 (例如 `api/users.post.ts` -> `/api/users`)。旧 `apps/admin/server/api/` 只用于对照 legacy source。
-2.  **实现处理器 (Implement Handler)**: 使用 `defineHandler` 定义处理函数，**必须**使用 `try-catch` 包裹。
-3.  **导入类型约束 (Import Types)**: **必须**导入 `import type { JsonVO } from "@01s-11comm/type"`（列表接口额外导入 `PageDTO`）。
-4.  **查询数据库 (Query Database)**: 通过 `useDb(event)` 获取 Drizzle 实例，并从 `@01s-11comm/type` 导入 schema。
-5.  **返回数据 (Return Data)**: 确保返回对象严格符合 `JsonVO<T>` 结构（`{ success, code, message, data }`）。
+**用户已确认采用 A 方案**：微信小程序登录业务、微信 `code2Session`、token 签发、刷新、logout、me、受保护业务 API，均由统一 Nitro 接口服务承载。
 
-## 3. 参考文档 (References)
+允许在 Nitro 中实现的局部鉴权能力包括：
 
-- **API 语法速查**: [api-reference.md](references/api-reference.md) - H3 常用函数 (getQuery, readBody) 及模式。
+- admin 登录。
+- 微信小程序登录。
+- Bearer token / refresh token。
+- actor / role / tenant 上下文。
+- 受保护业务 API。
+
+CloudBase 的定位必须保持为微信小程序云开发环境关联、发布、AI/MCP/运维工具层。CloudBase **不承载** login 云函数，**不获取** openid，**不作为**主业务 API、主数据库或主文件存储。
+
+安全禁止项：
+
+- **禁止**无设计地给全量接口套鉴权；每个受保护 API 必须明确 actor/role/tenant 上下文和保护边界。
+- **禁止**把 `WECHAT_MP_SECRET` 或 `session_key` 下发前端。
+- **禁止**把 `WECHAT_MP_SECRET` 或 `session_key` 写入日志、错误响应、调试输出。
+- **禁止**把 Neon Auth 作为本轮微信小程序登录主方案。
+- **禁止**让 CloudBase 承载主业务后端。
+
+## 2. 开发工作流 （Development Workflow）
+
+1.  **定义路由 （Define Route）**: 在 `apps/api/server/routes/api/` 创建文件。文件路径即 API 路由 （例如 `api/users.post.ts` -> `/api/users`)。旧 `apps/admin/server/api/` 只用于对照 legacy source。
+2.  **实现处理器 （Implement Handler）**: 使用 `defineHandler` 定义处理函数，**必须**使用 `try-catch` 包裹。
+3.  **导入类型约束 （Import Types）**: **必须**导入 `import type { JsonVO } from "@01s-11comm/type"`（列表接口额外导入 `PageDTO`）。
+4.  **查询数据库 （Query Database）**: 通过 `useDb(event)` 获取 Drizzle 实例，并从 `@01s-11comm/type` 导入 schema。
+5.  **返回数据 （Return Data）**: 确保返回对象严格符合 `JsonVO<T>` 结构（`{ success, code, message, data }`）。
+
+## 3. 参考文档 （References）
+
+- **API 语法速查**: [api-reference.md](references/api-reference.md) - H3 常用函数 （getQuery, readBody） 及模式。
 - **代码示例**: [examples.md](references/examples.md) - 标准的 CRUD 处理器示例和 JSON 响应结构。
-- **参数处理**: [request-params-handling.md](references/request-params-handling.md) - **[New]** 详解 `readBody` 使用、参数清洗 (空字符串/pageIndex 映射) 及错误捕获模式。
+- **参数处理**: [request-params-handling.md](references/request-params-handling.md) - **[New]** 详解 `readBody` 使用、参数清洗 （空字符串/pageIndex 映射） 及错误捕获模式。
 - **多平台数据库连接**: [cloudflare-env-database.md](references/cloudflare-env-database.md) - **[关键]** Cloudflare Worker 与 Vercel 平台下的环境变量获取机制、Drizzle+Neon 数据库连接模式，以及 `event.req.runtime.cloudflare.env` 的正确使用方式。
 
-## 4. 返回值类型约束 (Response Type Constraint)
+## 4. 返回值类型约束 （Response Type Constraint）
 
 ### 4.1 核心原则：必须使用类型注解标注响应变量
 
 仅 `import type { JsonVO }` 是**不够的**——这只是一个死导入，TypeScript **不会**检查返回值结构。
 
-**必须**将 `JsonVO` 用作响应变量的**类型注解 (type annotation)**，让 TypeScript 编译器在编译期验证字段结构。
+**必须**将 `JsonVO` 用作响应变量的**类型注解 （type annotation）**，让 TypeScript 编译器在编译期验证字段结构。
 
 ```typescript
 // ❌ 错误：仅导入类型，直接返回字面量 → 形同虚设，TypeScript 不做任何检查
@@ -99,7 +122,7 @@ const errorResponse: JsonVO<null> = {
 return errorResponse;
 ```
 
-## 5. 时间字段格式化 (Timestamp Formatting)
+## 5. 时间字段格式化 （Timestamp Formatting）
 
 ### 5.1 核心原则
 
@@ -109,11 +132,11 @@ return errorResponse;
 
 ### 5.2 字段映射规范
 
-| DB 字段 (Drizzle) | 前端字段 (ListItem) | 转换规则                                |
-| :---------------- | :------------------ | :-------------------------------------- |
-| `createTime`      | `createTime`        | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
-| `updateTime`      | `updateTime`        | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
-| `deletedAt`       | -                   | **移除**（不展示）                      |
+| DB 字段 （Drizzle） | 前端字段 （ListItem） | 转换规则                                |
+| :------------------ | :-------------------- | :-------------------------------------- |
+| `createTime`        | `createTime`          | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
+| `updateTime`        | `updateTime`          | `Date` → `string` (YYYY-MM-DD HH:mm:ss) |
+| `deletedAt`         | -                     | **移除**（不展示）                      |
 
 ### 5.3 使用 formatDateTime 工具函数
 
@@ -163,7 +186,7 @@ const list: XxxListItem[] = data.map((item) => ({
 
 **工具函数源码**: `apps/admin/server/utils/format-date.ts`
 
-## 6. 常见陷阱 (Common Pitfalls)
+## 6. 常见陷阱 （Common Pitfalls）
 
 - **错误的 H3 导入路径（⚠️ 高频错误）**: 所有 H3 函数（`createError`、`defineHandler`、`defineMiddleware`、`readBody`、`getQuery` 等）**必须**从 `"nitro/h3"` 导入，**严禁**从 `"h3"` 直接导入。从 `"h3"` 导入将导致运行时模块解析失败。
   ```typescript
@@ -175,8 +198,11 @@ const list: XxxListItem[] = data.map((item) => ({
 - **错误的响应字段**: 前端组件依赖 `{ success, code, message, data }` 结构（即 `JsonVO`）。使用 `msg` 而非 `message`，或缺失 `success` 字段，会导致前端解析异常。
 - **缺失 try-catch**: 所有 Handler **必须**使用 `try-catch` 包裹，catch 块返回标准化错误响应。
 - **遗漏 Await**: 数据库操作是异步的，必须使用 `await`。
-- **使用原始 SQL**: 除非万不得已，禁止使用 `sql` 模板字符串。请使用 Drizzle 的查询构建器 (Query Builder)。
+- **使用原始 SQL**: 除非万不得已，禁止使用 `sql` 模板字符串。请使用 Drizzle 的查询构建器 （Query Builder）。
 - **重复定义格式化函数**: 必须使用 `server/utils/format-date` 中的工具函数，禁止在 Handler 内重复定义 `formatDateTime`。
+- **鉴权范围漂移**: 允许局部鉴权不等于全量加中间件。微信小程序登录、token 刷新、logout、me 和受保护业务 API 可以设计鉴权；普通公开接口不得顺手加登录态。
+- **CloudBase 职责越界**: CloudBase 只用于小程序云开发环境关联、发布、AI/MCP/运维工具层，不承载 login 云函数，不获取 openid，不作为主业务 API、主数据库或主文件存储。
+- **敏感信息泄露**: `WECHAT_MP_SECRET` 与 `session_key` 只能在服务端安全使用，禁止下发前端或写入日志。
 
 ### 6.1. defineHandler 不支持 HTTP 方法对象格式
 
@@ -195,7 +221,7 @@ export default defineHandler(async (event) => {
 });
 ```
 
-### 6.2. useDb(event: H3Event) 必须传 event
+### 6.2. useDb（event: H3Event） 必须传 event
 
 **所有需要调用数据库的服务端工具函数**，必须将 `event: H3Event` 作为第一个参数，并透传给 `useDb(event)`。
 
@@ -271,7 +297,9 @@ import type { JsonVO } from "@01s-11comm/type";
 import type { JsonVO } from "@ruan-cat/utils/vueuse";
 ```
 
-### 6.7. Neon Auth 客户端类型
+### 6.7. Neon Auth 客户端类型与边界
+
+Neon Auth 不作为本轮微信小程序登录主方案。若既有 admin 登录或明确设计的管理端场景仍需引用 Neon Auth 类型，必须把它限定在对应场景内，不能迁移成小程序登录主链路。
 
 ```typescript
 import { createAuthClient } from "@neondatabase/auth";
@@ -279,7 +307,7 @@ import type { NeonAuthPublicApi } from "@neondatabase/auth";
 export type AuthClientType = NeonAuthPublicApi<any>;
 ```
 
-## 7. 类型回填 (Type Recovery)
+## 7. 类型回填 （Type Recovery）
 
 当 `readValidatedBody` 的类型推导不足以满足 Drizzle `values()` 的严格类型要求时，必须显式回填 Insert 类型。
 
@@ -295,7 +323,7 @@ const body = (await readValidatedBody(event, insertSchema.parse)) as unknown as 
 const result = await db.insert(table).values(body).returning();
 ```
 
-## 8. 多平台数据库连接 (Multi-Platform Database Connection)
+## 8. 多平台数据库连接 （Multi-Platform Database Connection）
 
 > **本节是本项目在 Cloudflare Worker 环境下排查真实严重 Bug 后沉淀的核心经验。所有涉及数据库连接的代码都必须遵守本节规范。**
 
