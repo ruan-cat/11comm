@@ -3,6 +3,16 @@
 		"gitmcp__plus-pro-components": {
 			"type": "http",
 			"url": "https://gitmcp.io/plus-pro-components/plus-pro-components"
+		},
+		"cloudbase": {
+			"command": "pnpm",
+			"args": ["--dir", "apps/app", "exec", "cloudbase-mcp"],
+			"env": {
+				"CLOUDBASE_ENV_ID": "${CLOUDBASE_ENV_ID}",
+				"TENCENTCLOUD_SECRETID": "${TENCENTCLOUD_SECRETID}",
+				"TENCENTCLOUD_SECRETKEY": "${TENCENTCLOUD_SECRETKEY}",
+				"TENCENTCLOUD_SESSIONTOKEN": "${TENCENTCLOUD_SESSIONTOKEN}"
+			}
 		}
 	}
 }

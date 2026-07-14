@@ -1,6 +1,12 @@
 {
 	"version": 1,
 	"skills": {
+		"cloudbase": {
+			"source": "tencentcloudbase/cloudbase-skills",
+			"sourceType": "github",
+			"skillPath": "skills/cloudbase/SKILL.md",
+			"computedHash": "682548a8d0a1005632c7c66a4dfb32430c0ab74cdabbe2b88841f9b155c83f94"
+		},
 		"git-commit": {
 			"source": "ruan-cat/monorepo",
 			"sourceType": "github",
