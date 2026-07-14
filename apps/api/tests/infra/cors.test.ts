@@ -38,6 +38,16 @@ describe("api cors policy", () => {
 		});
 	});
 
+	test("uses authorization in default preflight headers", () => {
+		const headers = buildCorsHeaders({
+			origin: "https://app.example.com",
+			allowedOrigins: ["https://app.example.com"],
+			preflight: true,
+		});
+
+		expect(headers["access-control-allow-headers"]).toContain("authorization");
+	});
+
 	test("allows production admin and app origins by default", () => {
 		for (const origin of [
 			"https://01s-11comm.ruan-cat.com",

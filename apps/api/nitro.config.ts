@@ -16,6 +16,15 @@ export default defineConfig({
 	// CORS policy, detailed-error switches, and Node/Vercel database URL fallbacks.
 	// Cloudflare Worker secrets still come from event.req.runtime?.cloudflare?.env in server/shared/runtime/env.ts.
 	runtimeConfig: {
+		wechat: {
+			appId: process.env.WECHAT_MP_APPID || process.env.WECHAT_MP_APP_ID || "",
+			secret: process.env.WECHAT_MP_SECRET || process.env.WECHAT_APP_SECRET || "",
+		},
+		auth: {
+			tokenSecret: process.env.AUTH_TOKEN_SECRET || process.env.NITRO_AUTH_TOKEN_SECRET || "",
+			accessTokenTtlSeconds: process.env.AUTH_ACCESS_TOKEN_TTL_SECONDS || "",
+			refreshTokenTtlSeconds: process.env.AUTH_REFRESH_TOKEN_TTL_SECONDS || "",
+		},
 		databaseUrl:
 			process.env.comm_admin_11__DATABASE_URL ||
 			process.env.NITRO_DATABASE_URL ||
@@ -58,7 +67,8 @@ export default defineConfig({
 		external: ["cloudflare:workers"],
 	},
 	// Phase3 deployment target: generate Wrangler config for the standalone apps/api service.
-	// Keep this API service public; project policy forbids adding JWT/Token/Neon Auth middleware.
+	// Keep public routes public. Scoped auth is opt-in through explicit route helpers;
+	// do not add an undeclared global JWT, token, or Neon Auth middleware.
 	cloudflare: {
 		deployConfig: true,
 		nodeCompat: true,

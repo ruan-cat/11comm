@@ -11,7 +11,7 @@ export interface CorsHeaderOptions {
 }
 
 const defaultMethods = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"];
-const defaultHeaders = ["content-type", "x-request-id", "x-api-client"];
+const defaultHeaders = ["content-type", "authorization", "x-request-id", "x-api-client"];
 
 export function isOriginAllowed(origin: string | undefined | null, allowedOrigins: string[]): boolean {
 	if (!origin) {
