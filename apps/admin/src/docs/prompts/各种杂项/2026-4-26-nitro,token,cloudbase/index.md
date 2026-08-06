@@ -440,3 +440,36 @@ cloudbase 怎么和 unibest 这个 uniapp 模板相配合？怎么部署一个 u
 
 我的核心目标就是为了实现 app 项目能够部署到云微信小程序内，你把云微信小程序必要的 cli、MCP、skill，都在本地项目准备一下吧。
 对于云微信小程序，我是不想额外学习了，我只能委托你，信任你来完成了。
+
+---
+
+【请提供微信公众平台生产目标小程序 AppID 的脱敏证据，例如后台 AppID 截图、导出记录，或有权限人员确认，并明确是否等于 wxa2abb91f64032a2b】
+
+根据这篇入门文章，我按照以下步骤逐步完成云微信小程序的环境配置了。你看看这对你接下来有没有合适的帮助？
+
+- https://docs.cloudbase.net/quick-start/frameworks/wechat-miniprogram
+
+![2026-07-15-08-06-36](https://gh-img-store.ruan-cat.com/01s-docs/11comm/2026-07-15-08-06-36.png)
+
+已经开通云环境，按照命名规则，cloudbase 云环境名称为 `comm11-app` ，而不是我们常见的 `11comm-app` 。
+
+![2026-07-15-08-10-59](https://gh-img-store.ruan-cat.com/01s-docs/11comm/2026-07-15-08-10-59.png)
+
+已完成购买：
+
+![2026-07-15-08-12-44](https://gh-img-store.ruan-cat.com/01s-docs/11comm/2026-07-15-08-12-44.png)
+
+云环境 id： comm11-app-d2g00fiy71a79e96d
+
+- uniapp 的 cloudbase 云开发模板： https://github.com/TencentCloudBase/awesome-cloudbase-examples/tree/master/universal/cloudbase-uniapp-template
+
+---
+
+验证 cloudbase cli 和 cloudbase MCP 在当前的 Codex 内是否可以正常使用？
+
+<!-- TODO:
+暂停说明 这里其实是需要我首先人工的完成微信小程序的注册 审批 和缴费，然后才能继续完成后续的云小程序开发
+这个过程太麻烦了，故长期暂停了
+ -->
+
+---
