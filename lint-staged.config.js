@@ -72,10 +72,10 @@ export default (files) => {
 	commands.push(...toAppLintCommands(appLintFiles));
 
 	const appMarkdownCommand = toPrettierCommand(
-		"prettier --ignore-unknown --experimental-cli --write",
+		"prettier --ignore-unknown --experimental-cli --write --no-parallel",
 		appMarkdownFiles,
 	);
-	const rootPrettierCommand = toPrettierCommand("prettier --experimental-cli --write", rootPrettierFiles);
+	const rootPrettierCommand = toPrettierCommand("prettier --experimental-cli --write --no-parallel", rootPrettierFiles);
 
 	return commands.concat(appMarkdownCommand, rootPrettierCommand);
 };
