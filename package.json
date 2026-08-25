@@ -90,7 +90,7 @@
 		"js-yaml": "^4.1.1",
 		"lint-staged": "^16.4.0",
 		"lodash-es": "^4.18.1",
-		"nitro": "3.0.1-alpha.2",
+		"nitro": "3.0.260610-beta",
 		"only-allow": "^1.2.2",
 		"pkg-types": "^2.3.1",
 		"pnpm-workspace-yaml": "^1.6.0",
