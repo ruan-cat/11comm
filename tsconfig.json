@@ -10,6 +10,11 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"noEmit": true,
+
+		// === 2026-09-05 优化：tsserver 内存降级（PLAN v2 Task D Batch 1） ===
+		"incremental": true,
+		"tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
+
 		"types": ["node"]
 	},
 	"include": ["./*.ts", "./scripts/**/*.ts", "./tests/**/*.ts"],
