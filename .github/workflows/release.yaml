@@ -39,9 +39,6 @@ jobs:
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
 
-      - name: corepack手动再安装一次pnpm
-        run: corepack enable && corepack install
-
       - name: 安装工作区依赖
         run: pnpm install --frozen-lockfile
 
