@@ -1,4 +1,4 @@
-# 新建独立的 api 接口
+﻿# 新建独立的 api 接口
 
 ```markdown
 /goal 执行 OpenSpec change：`openspec\changes\migrate-superpowers-docs-to-openspec-longtask`。
@@ -293,7 +293,7 @@ apps\admin\README.md 文档写的不对。关于`项目部署（Phase7）`这个
 你的检查项：
 
 - `openspec\changes\migrate-superpowers-docs-to-openspec-longtask` 目录全部的文档。
-- `.claude\skills\fix-bug\record-bug-fix-memory` 目录内全部的经验教训。
+- `.agents\skills\record-bug-fix-memory` 目录内全部的经验教训。
 - `openspec\specs` 任务执行规范。
 
 #### 根据 api 接口路由映射，设计任务清单，并 task.md 任务进度文档

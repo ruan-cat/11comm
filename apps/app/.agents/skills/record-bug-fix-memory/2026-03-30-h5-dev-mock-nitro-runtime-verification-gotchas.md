@@ -19,7 +19,7 @@
    - Alova `baseURL` 已经是 `/dev-api`
    - 运行时请求基址补全还会再次 prepend `/dev-api`
    - mock 定义层历史上也会再补一次代理前缀
-   最终会在部分请求路径上形成 `/dev-api/dev-api/...`，浏览器自然拿到 `404`。
+     最终会在部分请求路径上形成 `/dev-api/dev-api/...`，浏览器自然拿到 `404`。
 2. `vite-plugin-mock-dev-server` 在当前仓库的 Vite 6 配置下，对 alias 快照很敏感；如果直接让它吃完整 alias 集，mock 编译阶段会出现兼容性问题。
 3. Nitro standalone 运行路径实际上部分走的是“原生 Node 直接执行 `server/**/*.ts`”：
    - Node 22 需要 `--experimental-strip-types` 才能直接吃 TypeScript
@@ -63,14 +63,14 @@
 2. `pnpm run build:nitro:node` 通过，说明 standalone Node 产物可构建。
 3. `pnpm run dev:h5:mock` 拉起后，浏览器打开
    - `http://127.0.0.1:3000/#/pages/activity/index?currentCommunityId=COMM_001`
-   并且真实请求
+     并且真实请求
    - `GET http://127.0.0.1:3000/dev-api/app/activities.listActivitiess...`
    - `GET http://127.0.0.1:3000/dev-api/app/dict.queryRepairStates`
-   都返回 `200`。
+     都返回 `200`。
 4. `pnpm run dev:h5:nitro` 拉起后，`http://127.0.0.1:3101/__nitro/health` 返回 `{"status":"ok","runtime":"nitro-standalone",...}`，并且同一活动页的真实请求
    - `GET http://127.0.0.1:3101/app/activities.listActivitiess...`
    - `GET http://127.0.0.1:3101/app/dict.queryRepairStates`
-   都返回 `200`。
+     都返回 `200`。
 5. 最终验证必须基于 fresh 进程、fresh 页面和 fresh Network 记录，不能只根据历史日志、缓存页面或单轮单测结果下结论。
 
 ## 6. 后续约束

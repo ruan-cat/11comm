@@ -1,8 +1,8 @@
-## 1. 基线盘点与任务冻结
+﻿## 1. 基线盘点与任务冻结
 
 - [x] 1.1 读取 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md`，确认本任务采用 A 方案：微信登录与受保护 API 全部落在 Nitro，CloudBase 只做环境和发布辅助。
 - [x] 1.2 读取 `.claude/skills/nitro-api-development/SKILL.md`，确认 H3 从 `nitro/h3` 导入、runtimeConfig/env、数据库连接和 scoped auth 边界。
-- [x] 1.3 读取 `.claude/skills/fix-bug/record-bug-fix-memory/SKILL.md` 及相关事故文件，特别确认 Windows H5 构建 loader 和 Vercel monorepo `vercel.json` 污染事故。
+- [x] 1.3 读取 `.agents/skills/record-bug-fix-memory/SKILL.md` 及相关事故文件，特别确认 Windows H5 构建 loader 和 Vercel monorepo `vercel.json` 污染事故。
 - [x] 1.4 读取 `apps/app/package.json`，记录 `homepage=https://01s-11-app.ruan-cat.com`、`build:mp:prod`、`build:mp-weixin`、`build:h5:prod`、`build:vercel` 当前值。
 - [x] 1.5 读取 `apps/api/package.json`，记录 `homepage=https://01s-11-server.ruan-cat.com`、Nitro build/test/typecheck 脚本当前值。
 - [x] 1.6 读取 `apps/app/manifest.config.ts` 和 `apps/app/env/.env*`，确认 `VITE_WX_APPID`、`VITE_SERVER_BASEURL`、`VITE_11COMM_API_BASE_URL`、production API base URL 和是否已有 CloudBase env 公开配置。

@@ -1,4 +1,4 @@
-# Agent Findings
+﻿# Agent Findings
 
 ## 2026-07-14 编辑子代理 findings
 
@@ -58,7 +58,7 @@
 ### 失败索引
 
 - Memorix 项目搜索未找到 `deploy-app-wechat-cloud-mini-program AppID VITE_WX_APPID 微信小程序 2.1 wxa2abb91f64032a2b` 的历史确认。
-- 项目级 `record-bug-fix-memory` 技能实际位于 `.claude/skills/fix-bug/record-bug-fix-memory/SKILL.md`；用户提示中的 `.agents/skills/fix-bug/...` 路径不存在，本轮已使用实际存在路径读取。
+- 项目级 `record-bug-fix-memory` 技能实际位于 `.agents/skills/record-bug-fix-memory/SKILL.md`；用户提示中的 `.agents/skills/fix-bug/...` 路径不存在，本轮已使用实际存在路径读取。
 
 ### 不可重复路径
 

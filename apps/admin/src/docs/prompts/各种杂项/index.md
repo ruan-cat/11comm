@@ -1,4 +1,4 @@
-# 杂项提示词
+﻿# 杂项提示词
 
 各种零散的提示词都在这里编写。
 
@@ -480,7 +480,7 @@ RePureTableBar 组件的筛选逻辑，很明显跟不上节奏了。需要你�
 
 1. 全面探索本项目的 admin 和 app 项目，从项目内提炼出大量的内容。
 2. 重点复用 apps\admin\src\docs\resume 目录内的简历面试谈资，做成我的遇到的挑战与技术思考沉淀。
-3. 重点采纳 `.claude\skills\fix-bug\record-bug-fix-memory` 目录内的全部经验教训，做成我的遇到的挑战与技术思考沉淀。
+3. 重点采纳 `.agents\skills\record-bug-fix-memory` 目录内的全部经验教训，做成我的遇到的挑战与技术思考沉淀。
 
 ### 注意事项
 

@@ -1,4 +1,4 @@
-<!-- 非常有价值的报告 不予删除 -->
+﻿<!-- 非常有价值的报告 不予删除 -->
 
 # 2026-07-08 APP 项目旧 Nitro 接口退役残留扫描报告
 
@@ -33,12 +33,13 @@
 
 **说明**：`build:nitro`、`build:nitro:node`、`build:nitro:vercel`、`preview:nitro` 已在此前清理中移除，当前仅剩 3 条 `dev:*:nitro` 脚本。
 
-### 2. `apps/app/scripts/`
+### 2`apps/app/scripts/`
 
 - `D:/code/ruan-cat/01s-11comm/apps/app/scripts/dev-h5-nitro.mjs`
 - `D:/code/ruan-cat/01s-11comm/apps/app/scripts/dev-mp-weixin-nitro.mjs`
 
 **说明**：两个脚本内部已改为编排独立 `apps/api` + 前端，顶部注释也写明「app 内置 Nitro 已退役；该脚本只编排独立 apps/api 与 H5/小程序前端」。建议：
+
 - 重命名为 `dev-h5-with-api.mjs` / `dev-mp-weixin-with-api.mjs`（或删除，改用 `turbo`/`concurrently` 等标准方案），
 - 同步更新 `package.json` 脚本名，避免继续传播 `nitro` 概念。
 
@@ -78,11 +79,12 @@
 
 `vite.config.ts` 中按 `VITE_API_RUNTIME` 动态装载 `mockDevServerPlugin` 或 `nitro()` 的逻辑。若多运行时模型随 Nitro 退役而收缩为「mock / 直连统一 API」两种，则 Nitro 分支应当删除。
 
-### 6. `apps/app/src/tests/nitro-runtime/`
+### 6`apps/app/src/tests/nitro-runtime/`
 
 - `D:/code/ruan-cat/01s-11comm/apps/app/src/tests/nitro-runtime/runtime-base-url.test.ts`
 
 **说明**：该文件实际测试的是 `runtime-base` 模块的基址解析逻辑，并非 Nitro 专属。但目录名和测试用例（如 `nitro-standalone`、`nitro-vite`）仍带有 Nitro 历史。建议：
+
 - 将目录重命名为 `runtime-base/` 或 `api-runtime/`，
 - 移除 Nitro 专用运行时用例，保留 mock / 统一 API 相关用例。
 
@@ -134,19 +136,19 @@
 
 - `D:/code/ruan-cat/01s-11comm/apps/app/.claude/skills/api-migration/`
 - `D:/code/ruan-cat/01s-11comm/apps/app/.claude/skills/backend-nitro-drizzle/`
-- `D:/code/ruan-cat/01s-11comm/apps/app/.claude/skills/fix-bug/record-bug-fix-memory/2026-03-30-h5-dev-mock-nitro-runtime-verification-gotchas.md`
+- `D:/code/ruan-cat/01s-11comm/apps/app/.agents/skills/record-bug-fix-memory/2026-03-30-h5-dev-mock-nitro-runtime-verification-gotchas.md`
 
 ---
 
 ## 三、已确认不存在/已清理项
 
-| 检查项 | 状态 |
-| --- | --- |
-| `apps/app/package.json` 中的 `build:nitro`、`build:nitro:node`、`build:nitro:vercel`、`preview:nitro` | 已不存在 |
-| `apps/app/turbo.json` 中的 `build:nitro*` 任务 | 已不存在 |
-| `apps/app/nitro.config.ts` | 文件不存在 |
-| `.github/workflows/` 中调用 `app` 的 `build:nitro*` 步骤 | 已不存在 |
-| `.github/workflows/` 中 `nitro` 关键字 | 已不存在 |
+| 检查项                                                                                                | 状态       |
+| ----------------------------------------------------------------------------------------------------- | ---------- |
+| `apps/app/package.json` 中的 `build:nitro`、`build:nitro:node`、`build:nitro:vercel`、`preview:nitro` | 已不存在   |
+| `apps/app/turbo.json` 中的 `build:nitro*` 任务                                                        | 已不存在   |
+| `apps/app/nitro.config.ts`                                                                            | 文件不存在 |
+| `.github/workflows/` 中调用 `app` 的 `build:nitro*` 步骤                                              | 已不存在   |
+| `.github/workflows/` 中 `nitro` 关键字                                                                | 已不存在   |
 
 ---
 

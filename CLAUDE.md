@@ -1,4 +1,4 @@
-# CLAUDE.md
+﻿# CLAUDE.md
 
 此文件为 Claude Code （claude.ai/code） 在此代码仓库中工作时提供指导。
 
@@ -10,7 +10,7 @@
   - 触发时机：需要把控代码风格、组件写法、导入方式、i18n、按钮与图标规范时使用。
   - 参考作用：作为局部代码编辑时的风格基线，避免引入与项目现有风格冲突的写法。
   - 约束：不应借代码风格之名做无关格式化或扩大重构范围。
-- `record-bug-fix-memory` — `.claude/skills/fix-bug/record-bug-fix-memory/SKILL.md` — bug 修复后的经验与事故记录沉淀（非调试流程本身）。
+- `record-bug-fix-memory` — `.agents/skills/record-bug-fix-memory/SKILL.md` — bug 修复后的经验与事故记录沉淀（非调试流程本身）。
   - **存储架构**：双层存储。SKILL.md 只放流程指导和摘要索引，详细案例存储在同目录下的独立 `YYYY-MM-DD-{slug}.md` 文件中。
   - **阅读方式**：使用此技能前，先读 SKILL.md 了解流程，再根据「案例索引」章节按需读取相关的独立案例文件。
   - **写入方式**：新增经验时，创建独立案例文件，同时在 SKILL.md 的「案例索引」追加摘要。禁止将完整事故正文写入 SKILL.md。
@@ -580,7 +580,7 @@ openspec validate {任务名称} --strict
 3. `prettier.config.mjs`：`endOfLine: "lf"`（**禁止** `"auto"`，`"auto"` 在 Windows 上会保留/引入 CRLF）
 4. `.vscode/settings.json`：`"files.eol": "\n"`
 
-遇到「git status 显示 modified 但 git diff 为空」时，按此顺序排查。详见 `.claude/skills/fix-bug/record-bug-fix-memory/SKILL.md` 中的 CRLF 幽灵修改事故记录。
+遇到「git status 显示 modified 但 git diff 为空」时，按此顺序排查。详见 `.agents/skills/record-bug-fix-memory/SKILL.md` 中的 CRLF 幽灵修改事故记录。
 
 ## 11.2. `apps/app` H5 生产构建的 Windows ESM loader 约束
 
@@ -588,7 +588,7 @@ openspec validate {任务名称} --strict
 
 当前决策是通过 `node --import ./scripts/register-window-path-loader.js` 启动 uni 构建，并且注册脚本只在 Windows 下用 `node:module.register()` 注册 `window-path-loader.js`；Linux/Vercel CI 不注册 loader，保持默认 ESM 解析。不要退回 `--experimental-loader`，该入口会产生 Node experimental warning，且历史上曾和 Vercel 输出目录问题混淆。
 
-修改这条链路后至少验证 `pnpm -F @01s-11comm/app build:h5:prod` 和 `pnpm -F @01s-11comm/app build:vercel`。详细复盘见 `.claude/skills/fix-bug/record-bug-fix-memory/2026-07-09-app-h5-prod-windows-esm-loader.md`，决策说明见 `apps/app/README.md`。
+修改这条链路后至少验证 `pnpm -F @01s-11comm/app build:h5:prod` 和 `pnpm -F @01s-11comm/app build:vercel`。详细复盘见 `.agents/skills/record-bug-fix-memory/2026-07-09-app-h5-prod-windows-esm-loader.md`，决策说明见 `apps/app/README.md`。
 
 ## 12. 获取技术栈对应的上下文
 

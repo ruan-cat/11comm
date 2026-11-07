@@ -1,4 +1,4 @@
-# 编写简历用的提示词
+﻿# 编写简历用的提示词
 
 编写兼职接单版本的简历
 
@@ -12,7 +12,7 @@
 
 1. 全面探索本项目的 admin 和 app 项目，从项目内提炼出大量的内容。
 2. 重点复用 apps\admin\src\docs\resume 目录内的简历面试谈资，做成我的遇到的挑战与技术思考沉淀。
-3. 重点采纳 `.claude\skills\fix-bug\record-bug-fix-memory` 目录内的全部经验教训，做成我的遇到的挑战与技术思考沉淀。
+3. 重点采纳 `.agents\skills\record-bug-fix-memory` 目录内的全部经验教训，做成我的遇到的挑战与技术思考沉淀。
 
 ### 注意事项
 

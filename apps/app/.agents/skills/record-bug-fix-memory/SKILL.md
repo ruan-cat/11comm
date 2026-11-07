@@ -1,4 +1,4 @@
----
+﻿---
 name: record-bug-fix-memory
 description: 当用户要求在 bug 已经定位并修复后，记录排错经验、事故结论、AI 记忆更新、复盘摘要或本地 MCP 记忆时使用。这个技能只负责沉淀"发生了什么、为什么会发生、如何修好、以后要记住什么"，不要把它用于实际修复 bug。
 ---
@@ -352,5 +352,5 @@ description: 当用户要求在 bug 已经定位并修复后，记录排错经�
 
 ## 本仓库落点覆盖
 
-- 本仓库的 bug 经验优先记录在当前技能目录：`.claude/skills/fix-bug/record-bug-fix-memory/*.md`
+- 本仓库的 bug 经验优先记录在当前技能目录：`.agents/skills/record-bug-fix-memory/*.md`
 - 根级 `CLAUDE.md`、`AGENTS.md`、`GEMINI.md` 只在用户明确要求同步 AI 记忆文档时才更新

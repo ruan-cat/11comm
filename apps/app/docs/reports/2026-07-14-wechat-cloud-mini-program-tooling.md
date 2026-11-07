@@ -1,4 +1,4 @@
-# 2026-07-14 微信云小程序本地工具准备说明
+﻿# 2026-07-14 微信云小程序本地工具准备说明
 
 ## 目标
 
@@ -327,7 +327,7 @@ Tasks: 2 successful, 2 total
 关键输出：无输出
 结论：仓库未新增或恢复 vercel.json。
 
-命令：rg -n -- '-----BEGIN [A-Z ]*PRIVATE KEY-----|WECHAT_MP_SECRET\s*[:=]\s*[A-Za-z0-9_-]{8,}|TENCENTCLOUD_SECRETKEY\s*[:=]\s*[A-Za-z0-9_-]{8,}|session_key\s*[:=]\s*[A-Za-z0-9_-]{8,}|access_token\s*[:=]\s*[A-Za-z0-9_-]{8,}|refresh_token\s*[:=]\s*[A-Za-z0-9_-]{8,}' apps/app/src apps/app/env apps/app/scripts apps/app/docs/reports .mcp.json .claude/skills/fix-bug/record-bug-fix-memory
+命令：rg -n -- '-----BEGIN [A-Z ]*PRIVATE KEY-----|WECHAT_MP_SECRET\s*[:=]\s*[A-Za-z0-9_-]{8,}|TENCENTCLOUD_SECRETKEY\s*[:=]\s*[A-Za-z0-9_-]{8,}|session_key\s*[:=]\s*[A-Za-z0-9_-]{8,}|access_token\s*[:=]\s*[A-Za-z0-9_-]{8,}|refresh_token\s*[:=]\s*[A-Za-z0-9_-]{8,}' apps/app/src apps/app/env apps/app/scripts apps/app/docs/reports .mcp.json .agents/skills/record-bug-fix-memory
 退出状态：1
 关键输出：无输出
 结论：未发现真实私钥正文或典型 secret/token 赋值。
@@ -349,7 +349,7 @@ AuditOnlyCount: 66
 
 本轮新增的事故经验已写入：
 
-- `.claude/skills/fix-bug/record-bug-fix-memory/2026-07-14-app-mp-weixin-build-loader-vue-shared-hoist.md`
+- `.agents/skills/record-bug-fix-memory/2026-07-14-app-mp-weixin-build-loader-vue-shared-hoist.md`
 
 ## 2026-07-14 继续执行：Nitro 微信登录与 App 对接
 

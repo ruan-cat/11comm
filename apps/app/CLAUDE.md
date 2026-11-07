@@ -1,4 +1,4 @@
-# CLAUDE.md
+﻿# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `beautiful-component-design` — `.claude/skills/beautiful-component-design/SKILL.md` — 移动端页面美化、FormSectionTitle、选择器与弹层规范。
 - `code-migration` — `.claude/skills/code-migration/SKILL.md` — Vue2 Options API → Vue3 Composition API + TS。
 - `component-migration` — `.claude/skills/component-migration/SKILL.md` — ColorUI / 内置组件 → wot-design-uni。
-- `record-bug-fix-memory` — `.claude/skills/fix-bug/record-bug-fix-memory/SKILL.md` — bug 修复后的经验与事故记录沉淀（非调试流程本身）。
+- `record-bug-fix-memory` — `.agents/skills/record-bug-fix-memory/SKILL.md` — bug 修复后的经验与事故记录沉淀（非调试流程本身）。
 - `route-migration` — `.claude/skills/route-migration/SKILL.md` — `pages.json` → 约定式路由与 TypedRouter。
 - `style-migration` — `.claude/skills/style-migration/SKILL.md` — ColorUI → UnoCSS + wot-design-uni。
 - `use-uniapp-dynamic-page-title` — `.claude/skills/use-uniapp-dynamic-page-title/SKILL.md` — `uni.setNavigationBarTitle` 动态标题。
@@ -58,7 +58,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `use-wd-form`： `使用 wd-form 表单组件编写表单页的实施规范` 技能。即 `.claude\skills\use-wd-form\SKILL.md` 文件。
 - `use-uniapp-dynamic-page-title`： `uni-app 动态页面标题设置` 技能。即 `.claude\skills\use-uniapp-dynamic-page-title\SKILL.md` 文件。
 - `add-new-component`： `新建公共组件规范` 技能。即 `.claude\skills\add-new-component\SKILL.md` 文件。
-- `record-bug-fix-memory`： bug 修复经验沉淀技能（非调试本身）。即 `.claude\skills\fix-bug\record-bug-fix-memory\SKILL.md` 文件。
+- `record-bug-fix-memory`： bug 修复经验沉淀技能（非调试本身）。即 `.agents\skills\record-bug-fix-memory\SKILL.md` 文件。
 
 ### 2.2. 业务术语
 
@@ -671,8 +671,8 @@ src/
 
 - **框架**: uni-app 3.x (Vue3 + TypeScript)
 - **构建工具**: Vite 5.x
-- **状态管理**: Pinia 2.x + pinia-plugin-persistedstate (持久化)
-- **HTTP 请求**: Alova (适配 uni-app)
+- **状态管理**: Pinia 2.x + pinia-plugin-persistedstate （持久化）
+- **HTTP 请求**: Alova （适配 uni-app)
 - **UI 组件库**: wot-design-uni
 - **样式方案**: UnoCSS + SCSS
 - **分页组件**: z-paging
@@ -753,7 +753,7 @@ src/
 
 ## 15. 沟通协作要求
 
-### 15.1. `计划模式`
+### 15.1`计划模式`
 
 在`计划模式`下，请你按照以下方式与我协作：
 
