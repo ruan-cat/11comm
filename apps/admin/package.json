@@ -26,7 +26,7 @@
 		"preview:build": "pnpm build && pnpm preview",
 		"vite:dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 VITE_DISABLE_AUTOGENERATION_IMPORT_FILE=true vite --mode development --configLoader runner",
 		"vite:build:prod": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
-		"vite:build:prod:cloudflare": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
+		"vite:build:prod:cloudflare": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner && node ./scripts/write-cloudflare-output.mjs",
 		"vite:build:prod:github": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
 		"vite:build:prod:vercel": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode production --configLoader runner",
 		"vite:build:staging": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode staging --configLoader runner",

@@ -27,7 +27,7 @@
 		},
 		"vite:build:prod:cloudflare": {
 			"cache": true,
-			"outputs": ["dist/**"]
+			"outputs": ["dist/**", ".output/wrangler.json"]
 		},
 		"vite:build:prod:vercel": {
 			"cache": true,
