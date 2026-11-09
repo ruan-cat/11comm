@@ -56,24 +56,6 @@
   - 触发时机：实现完成、验证通过且用户要求归档时使用。
   - 参考作用：同步规范并收尾变更目录。
   - 约束：未完成或未验证的变更不得归档。
-- `openspec-bulk-archive-change`
-  - 路径：`.claude/skills/openspec-bulk-archive-change/SKILL.md`
-  - 用途：批量归档多个已完成 OpenSpec change。
-  - 触发时机：需要同时归档多个并行变更时使用。
-  - 参考作用：统一处理多个 completed change 的归档流程。
-  - 约束：只归档已完成且可验证的变更。
-- `openspec-continue-change`
-  - 路径：`.claude/skills/openspec-continue-change/SKILL.md`
-  - 用途：继续现有 OpenSpec change 的下一个 artifact。
-  - 触发时机：用户要求继续 workflow、创建下一个 artifact 或推进变更时使用。
-  - 参考作用：按 OpenSpec 阶段推进 proposal、design、spec 或 tasks。
-  - 约束：先读取现有 change 状态，不跳步覆盖已有 artifact。
-- `openspec-explore`
-  - 路径：`.claude/skills/openspec-explore/SKILL.md`
-  - 用途：探索想法、调查问题和澄清需求。
-  - 触发时机：用户想先讨论方案、问题不清楚、需要需求探索时使用。
-  - 参考作用：在写 proposal 或实施前形成更清晰的问题定义。
-  - 约束：探索模式不直接替代实现，结束时应明确下一步。
 - `openspec-ff-change`
   - 路径：`.claude/skills/openspec-ff-change/SKILL.md`
   - 用途：快速创建实现前所需的 OpenSpec artifacts。
@@ -86,24 +68,6 @@
   - 触发时机：用户要新增功能、修复或结构化变更，并希望按 OpenSpec 管理时使用。
   - 参考作用：建立 proposal、spec、design、tasks 的变更骨架。
   - 约束：change 命名和能力边界必须清晰。
-- `openspec-onboard`
-  - 路径：`.claude/skills/openspec-onboard/SKILL.md`
-  - 用途：OpenSpec 工作流引导教程。
-  - 触发时机：用户需要了解或演练完整 OpenSpec 流程时使用。
-  - 参考作用：解释阶段、命令和产物结构。
-  - 约束：不要在普通开发任务中强行进入教学流程。
-- `openspec-sync-specs`
-  - 路径：`.claude/skills/openspec-sync-specs/SKILL.md`
-  - 用途：把 delta specs 同步到 main specs。
-  - 触发时机：用户要求同步规范但暂不归档 change 时使用。
-  - 参考作用：维护主规范与变更规范的一致性。
-  - 约束：同步后应运行对应 OpenSpec 校验。
-- `openspec-verify-change`
-  - 路径：`.claude/skills/openspec-verify-change/SKILL.md`
-  - 用途：验证实现是否匹配 OpenSpec change artifacts。
-  - 触发时机：归档前、交付前或用户要求检查实现质量时使用。
-  - 参考作用：对照 proposal/spec/tasks 检查完整性与一致性。
-  - 约束：发现缺口时不能声称完成，应回到实现或任务更新。
 - `project-migration-guide`
   - 路径：`.claude/skills/project-migration-guide/SKILL.md`
   - 用途：项目范围迁移策略，特别是数据库 schema 和类型系统影子迁移。
@@ -179,15 +143,9 @@
 OpenSpec 是本项目用于管理大型任务和变更的工作流系统。以下技能用于支持 OpenSpec 工作流：
 
 - `openspec-new-change` ：创建新的 OpenSpec 变更任务
-- `openspec-continue-change` ：继续现有 OpenSpec 变更的下一个 artifact
 - `openspec-ff-change` ：快速通过创建所有 artifacts
 - `openspec-apply-change` ：实施 OpenSpec 变更中的 tasks
-- `openspec-verify-change` ：验证 OpenSpec 变更的实施质量
-- `openspec-explore` ：探索模式，用于需求澄清和问题调研
-- `openspec-sync-specs` ：同步 delta specs 到 main specs
 - `openspec-archive-change` ：归档已完成的变更
-- `openspec-bulk-archive-change` ：批量归档多个变更
-- `openspec-onboard` ：OpenSpec 工作流引导教程
 
 ### 2.4. 项目术语 （Project Terminology）
 
