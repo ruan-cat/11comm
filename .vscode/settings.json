@@ -8,8 +8,8 @@
 	},
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
-		// 折叠 AI大模型记忆文件
-		"CLAUDE.md": "GEMINI.md,AGENTS.md",
+		// 折叠 AI大模型记忆文件（AGENTS.md 为唯一事实来源，CLAUDE.md/GEMINI.md 为重定向入口）
+		"AGENTS.md": "CLAUDE.md,GEMINI.md,DESIGN.md",
 		// 折叠 typescript类型文件
 		"tsconfig.json": "tsconfig.*.json, env.d.ts",
 		// 折叠 vite配置文件
@@ -44,6 +44,8 @@
 		"**/.temp": true,
 		"**/.tmp": true,
 		"**/coverage": true,
+		"**/.nyc_output": true,
+		"**/.vitest-reporter-html": true,
 		"**/*.map": true,
 		"**/*.tsbuildinfo": true,
 		"**/.eslintcache": true,
@@ -73,6 +75,8 @@
 		"**/.turbo": true,
 		"**/cache": true,
 		"**/coverage": true,
+		"**/.nyc_output": true,
+		"**/.vitest-reporter-html": true,
 		"**/*.map": true,
 		"**/*.tsbuildinfo": true,
 		"**/.eslintcache": true,
@@ -103,6 +107,9 @@
 		"**/.temp/**": true,
 		"**/.tmp/**": true,
 		"**/coverage/**": true,
+		"**/.nyc_output/**": true,
+		"**/.vitest-reporter-html/**": true,
+		"**/.changeset/**": true,
 		"**/*.map": true,
 		"**/*.tsbuildinfo": true,
 		"**/.eslintcache": true,
@@ -276,6 +283,8 @@
 	"vscodeCustomCodeColor.highlightValueColor": "#b392f0",
 	/** 限制 TypeScript Server 在大仓库中的内存和监听策略 */
 	"typescript.disableAutomaticTypeAcquisition": true,
+	// 使用项目内 TypeScript，保证语言服务版本与依赖一致
+	"typescript.tsdk": "node_modules/typescript/lib",
 	"typescript.tsserver.maxTsServerMemory": 8192,
 	"typescript.tsserver.watchOptions": {
 		"watchFile": "useFsEvents",
@@ -308,6 +317,18 @@
 	},
 	"search.indexing.maxFileSize": 1048576,
 	"search.indexing.batchSize": 1000,
+	// Vue 语言服务器只处理 vue 文件，避免错误处理 Markdown
+	"vue.server.includeLanguages": ["vue"],
 	// 避免 AI 扩展对整个大型 monorepo 持续索引
-	"Codegeex.RepoIndex": false
+	"Codegeex.RepoIndex": false,
+	// 终端默认工作目录锚定工作区根目录
+	"terminal.integrated.cwd": "${workspaceFolder}",
+	"terminal.integrated.splitCwd": "workspaceRoot",
+	// code-runner 用项目依赖运行 TypeScript 单文件
+	"code-runner.executorMap": {
+		"typescript": "pnpm dotenvx run -- tsx $fullFileName"
+	},
+	// iconify 内联提示
+	"iconify.annotations": true,
+	"iconify.inplace": true
 }

@@ -2,18 +2,27 @@
 	"recommendations": [
 		// vue3的 .vue SFCs 的 LSP 语言支持服务
 		"Vue.volar",
+		// TypeScript 语言服务增强（Nightly 版本，支持最新特性）
+		"ms-vscode.vscode-typescript-next",
 		// 使用 prettier 实现格式化
 		"esbenp.prettier-vscode",
 		// 使用 eslint 实现代码检查
 		"dbaeumer.vscode-eslint",
+		// 行内展示错误与警告信息，提升错误可见性
+		"usernamehw.errorlens",
+		// EditorConfig 文件支持（统一不同编辑器的代码风格）
+		"EditorConfig.EditorConfig",
 		// 使用 gitlens 插件 实现git代码管理
 		"eamodio.gitlens",
 		// 使用 git-graph 插件 实现git提交分支图的查看
 		"mhutchie.git-graph",
+		// Vitest 测试用例的可视化运行与管理
+		"vitest.explorer",
 		// UI交互增强插件 TODO高亮
 		"wayou.vscode-todo-highlight",
-		// UI交互增强插件 TODO树统计
-		"Gruntfuggly.todo-tree",
+		// UI交互增强插件 TODO树统计：原 Todo Tree 的活跃维护替代实现
+		// replacement migration: Gruntfuggly.todo-tree -> FanaticPythoner.better-todo-tree
+		"FanaticPythoner.better-todo-tree",
 		// UI交互增强插件 自动导入文件的智能跳转
 		"antfu.goto-alias",
 		// UI交互增强插件 对iconify的图标做图标提示
@@ -27,7 +36,16 @@
 		"lokalise.i18n-ally",
 		"csstools.postcss",
 		"redhat.vscode-yaml",
+		// TailwindCSS 智能提示与补全
 		"bradlc.vscode-tailwindcss",
+		// UnoCSS 智能提示
+		"antfu.unocss",
+		// 颜色值（如 hex、rgb）的行内颜色预览
+		"naumovs.color-highlight",
+		// HTML/JSX 中标签重命名时自动同步修改配对标签
+		"formulahendry.auto-rename-tag",
+		// 粘贴图片并自动上传到图床（PicGo）
+		"Spades.vs-picgo",
 		"vscode-icons-team.vscode-icons",
 		"mikestead.dotenv"
 	],
@@ -36,6 +54,8 @@
 		"Vue.vscode-typescript-vue-plugin",
 		// 不使用 cSpell 插件，该插件提出了太多没必要的语言拼写错误 干扰了大多数人的开发
 		// 故不推荐该插件
-		"streetsidesoftware.code-spell-checker"
+		"streetsidesoftware.code-spell-checker",
+		// 已知被替代的旧 Todo Tree；这里只表达工作区不再推荐，不代表卸载或禁用
+		"Gruntfuggly.todo-tree"
 	]
 }

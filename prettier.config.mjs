@@ -4,6 +4,12 @@ import * as prettierPluginOxc from "@prettier/plugin-oxc";
 const config = {
 	plugins: ["prettier-plugin-lint-md"],
 	overrides: [
+		// .vscode 下的扩展推荐与工作区设置是 JSONC（保留注释），走 jsonc parser，禁止尾逗号
+		{
+			files: [".vscode/extensions.json", ".vscode/settings.json"],
+			parser: "jsonc",
+			trailingComma: "none",
+		},
 		{
 			files: "**/*.{js,mjs,cjs,jsx}",
 			parser: "oxc",
