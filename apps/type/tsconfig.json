@@ -5,6 +5,10 @@
 		"moduleResolution": "bundler",
 		"strict": true,
 		"skipLibCheck": true,
+		// === 2026-11-21 优化：tsserver 内存降级（init-tsconfig） ===
+		"incremental": true,
+		"tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
+		"assumeChangesOnlyAffectDirectDependencies": true,
 		"esModuleInterop": true,
 		"isolatedModules": true,
 		"allowSyntheticDefaultImports": true,

@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    // === 2026-11-21 优化：tsserver 内存降级（init-tsconfig） ===
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
     "target": "ESNext",
     "lib": ["esnext", "dom"],
     "baseUrl": ".",
@@ -27,7 +30,8 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "assumeChangesOnlyAffectDirectDependencies": true
   },
   "vueCompilerOptions": {
     "plugins": ["@uni-helper/uni-types/volar-plugin"]

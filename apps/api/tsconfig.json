@@ -3,6 +3,10 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"noEmit": true,
+		// === 2026-11-21 优化：本地覆盖增量缓存路径，避免继承根 tsconfig 的 tsBuildInfoFile 相对路径解析到仓库根，与根构建互相覆盖（init-tsconfig） ===
+		"incremental": true,
+		"tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
+		"assumeChangesOnlyAffectDirectDependencies": true,
 		"types": ["node", "vitest"],
 		"paths": {
 			"server/*": ["server/*"]
